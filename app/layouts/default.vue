@@ -1,16 +1,18 @@
 <template>
-  <div class="flex flex-col min-h-screen">
+  <div class="min-h-screen flex flex-col">
     <!-- Header -->
-    <header>
-      <Navbar />
+    <header class="flex-none">
+      <MainNav />
     </header>
     <!-- Main content -->
-    <main class="flex-1 flex items-center justify-center p-4">
+    <main class="flex-grow">
       <slot />
     </main>
   </div>
 </template>
-
 <script setup lang="ts">
-// Default layout with TypeScript support
+// Layout configuration
 </script>
+<style scoped>
+/* Add any global layout styles here */
+</style>
