@@ -1,6 +1,10 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
   "files": [],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "skipLibCheck": true
+  },
   "references": [
     {
       "path": "./.nuxt/tsconfig.app.json"

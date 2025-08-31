@@ -30,6 +30,7 @@ export default {
     extend: {
       colors: {
         primary: '#EC5252',
+        'primary-alt': '#ff4830'
       },
       fontFamily: {
         sans: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
