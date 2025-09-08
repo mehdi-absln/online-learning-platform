@@ -142,7 +142,13 @@
           </h2>
         </div>
         <div>
-          <Carousel v-model="currentSlide" :items-to-show="3" :wrap-around="true" class="group">
+          <Carousel
+            :items-to-show="3"
+            :wrap-around="false"
+            :mouse-drag="true"
+            :touch-drag="true"
+            class="group"
+          >
             <Slide v-for="slide in slides" :key="slide.id">
               <div
                 class="w-[90%] rounded-3xl overflow-hidden hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 transform hover:-translate-y-1"
@@ -258,15 +264,7 @@
               </div>
             </Slide>
             <template #addons>
-              <div class="absolute -bottom-12 left-1/2 transform -translate-x-1/2 flex space-x-3">
-                <button
-                  v-for="(slide, index) in slides"
-                  :key="slide.id"
-                  class="w-3 h-3 rounded-full transition-colors duration-300"
-                  :class="currentSlide === index ? 'bg-primary' : 'bg-gray-100'"
-                  @click="currentSlide = index"
-                />
-              </div>
+              <Pagination :paginate-by-items-to-show="true" />
             </template>
           </Carousel>
         </div>
@@ -405,7 +403,7 @@
       </div>
     </section>
     <!-- Testimonials Section -->
-    <section class="py-16 bg-dark-gray">
+    <section class="pt-16 pb-24 bg-dark-gray">
       <div class="container">
         <div class="text-center pb-14">
           <h5 class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
@@ -416,7 +414,13 @@
           </h2>
         </div>
         <div class="relative">
-          <Carousel :items-to-show="2" :wrap-around="false" class="testimonial-carousel">
+          <Carousel
+            :items-to-show="2"
+            :wrap-around="false"
+            :mouse-drag="true"
+            :touch-drag="true"
+            class="testimonial-carousel"
+          >
             <Slide v-for="testimonial in testimonials" :key="testimonial.id">
               <div
                 class="bg-transparent p-8 border-2 border-[#474746] rounded-2xl text-center mx-4 relative overflow-hidden before:content-['\201C'] before:absolute before:top-4 before:right-4 before:text-[#3a3a3a] before:text-9xl before:font-serif before:leading-none before:opacity-20 before:pointer-events-none"
@@ -442,14 +446,57 @@
         </div>
       </div>
     </section>
+    <!-- Blog Section -->
+    <section class="py-16 bg-dark-gray">
+      <div class="container">
+        <div class="text-center pb-14">
+          <h5 class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
+            Latest tips & news
+          </h5>
+          <h2 class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]">
+            Have a look at our news
+          </h2>
+        </div>
+        <div class="flex flex-wrap justify-center gap-8">
+          <div
+            v-for="(item, index) in latestNews"
+            :key="index"
+            class="group cursor-pointer relative overflow-hidden rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)]"
+          >
+            <div class="relative h-48 overflow-hidden">
+              <img
+                :src="item.image"
+                :alt="item.title"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div
+                class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"
+              />
+            </div>
+            <div class="py-8">
+              <div class="flex items-center text-white">
+                <span class="uppercase text-sm font-medium">
+                  by <NuxtLink to="/" class="hover:underline">{{ item.author }}</NuxtLink>
+                </span>
+                <div class="mx-4 bg-primary w-2 h-2" />
+                <span class="uppercase text-sm font-medium">
+                  {{ formatDate(item.date) }}
+                </span>
+              </div>
+              <h4 class="text-[22px] font-semibold text-white mt-4 font-antonio">
+                {{ item.title }}
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
-
-const currentSlide = ref<number>(0)
 
 const trainers = [
   {
@@ -599,6 +646,41 @@ const slides = [
     price: 149.99
   }
 ]
+
+const latestNews = [
+  {
+    id: 1,
+    title: 'New Web Development Course Launched',
+    author: 'Alex Johnson',
+    date: '2025-08-15',
+    image:
+      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=60',
+    excerpt: 'Learn the latest web development technologies in our new comprehensive course.'
+  },
+  {
+    id: 2,
+    title: 'Top 10 Tips for Learning Programming',
+    author: 'Sarah Williams',
+    date: '2025-08-20',
+    image:
+      'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&auto=format&fit=crop&q=60',
+    excerpt: 'Discover the most effective strategies to accelerate your programming journey.'
+  },
+  {
+    id: 3,
+    title: 'The Future of Online Education',
+    author: 'Michael Chen',
+    date: '2025-08-25',
+    image:
+      'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80',
+    excerpt: 'Exploring how technology is transforming the way we learn and acquire new skills.'
+  }
+]
+
+const formatDate = (dateString: string) => {
+  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' }
+  return new Date(dateString).toLocaleDateString('en-US', options)
+}
 
 const testimonials = [
   {
