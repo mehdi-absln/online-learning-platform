@@ -2,6 +2,7 @@
   // https://nuxt.com/docs/guide/concepts/typescript
   "files": [],
   "exclude": ["node_modules"],
+  "skipLibCheck": true,
   "compilerOptions": {
     "skipLibCheck": true
   },

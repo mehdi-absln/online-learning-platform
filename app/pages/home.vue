@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Hero Section -->
     <section class="relative w-full overflow-hidden">
       <div class="absolute top-0 left-0 z-10 pointer-events-none flex flex-col items-start">
         <div class="w-[320px] h-[250px] bg-[#E05243] [clip-path:polygon(0_0,100%_0,0_100%)] z-10" />
@@ -52,7 +53,8 @@
         </div>
       </div>
     </section>
-    <section class="bg-[#191918] py-32">
+    <!-- About Section -->
+    <section class="bg-dark-gray py-32">
       <div class="container flex justify-between items-center flex-wrap md:flex-nowrap gap-x-6">
         <div class="w-[45%] relative">
           <img
@@ -122,6 +124,7 @@
         </div>
       </div>
     </section>
+    <!-- Online Classes Section -->
     <section class="bg-[#1F1F1E] py-32 relative z-0">
       <div
         class="absolute inset-0 flex justify-center gap-[50%] pointer-events-none items-end -z-10"
@@ -139,31 +142,39 @@
           </h2>
         </div>
         <div>
-          <Carousel v-model="currentSlide" :items-to-show="3" :wrap-around="true">
+          <Carousel v-model="currentSlide" :items-to-show="3" :wrap-around="true" class="group">
             <Slide v-for="slide in slides" :key="slide.id">
-              <div class="w-[90%] rounded-3xl overflow-hidden">
+              <div
+                class="w-[90%] rounded-3xl overflow-hidden hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 transform hover:-translate-y-1"
+              >
                 <div class="relative">
                   <div class="relative">
                     <div class="relative h-56">
-                      <div class="absolute inset-0 bg-black bg-opacity-40 z-10" />
+                      <div
+                        class="absolute inset-0 bg-black/40 z-10 transition-all duration-300 group-hover:bg-black/20"
+                      />
                       <img
-                        src="../public/images/laptop-near-whilte-book.jpg"
-                        alt="Course Image"
-                        class="w-full h-full object-cover relative"
+                        :src="slide.image"
+                        :alt="slide.title"
+                        class="w-full h-full object-cover relative transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
                   </div>
                   <div class="absolute top-6 flex items-center justify-between w-full px-4 z-10">
-                    <span class="bg-primary text-white text-[13px] px-5 py-1.5 rounded-full">
-                      COOKING
+                    <span
+                      class="bg-primary text-white text-[13px] px-5 py-1.5 rounded-full font-medium"
+                    >
+                      {{ slide.category }}
                     </span>
-                    <button class="bg-white rounded-full p-1.5 shadow hover:bg-gray-100 transition">
+                    <button
+                      class="bg-white rounded-full p-1.5 shadow hover:bg-gray-100 transition group-hover:bg-primary group-hover:text-white"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        class="h-[18px] w-[18px]"
+                        class="h-[18px] w-[18px] text-primary group-hover:text-white"
                         fill="none"
                         viewBox="0 0 24 24"
-                        stroke="#E05243"
+                        stroke="currentColor"
                       >
                         <path
                           stroke-linecap="round"
@@ -176,19 +187,21 @@
                   </div>
                   <div class="absolute bottom-3 left-4 flex items-center space-x-3 z-10">
                     <img
-                      src="../public/images/laptop-near-whilte-book.jpg"
-                      alt="User"
+                      :src="slide.instructor.avatar"
+                      :alt="slide.instructor.name"
                       class="w-10 h-10 rounded-full border-2 border-solid border-white"
                     />
-                    <span class="font-medium text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
-                      >John Doe</span
-                    >
+                    <span class="font-medium text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                      {{ slide.instructor.name }}
+                    </span>
                   </div>
                 </div>
 
                 <div class="px-4 bg-[#282828]">
-                  <h3 class="text-[22px] font-semibold text-white py-6">
-                    Mastering the Art of Cooking
+                  <h3
+                    class="text-[22px] font-semibold text-white py-6 line-clamp-2 min-h-[72px] flex items-center"
+                  >
+                    {{ slide.title }}
                   </h3>
                   <div class="flex items-center gap-4 text-sm">
                     <div class="flex items-center gap-1">
@@ -197,7 +210,7 @@
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6 text-primary"
+                          class="h-5 w-5 text-primary"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -206,11 +219,13 @@
                             stroke-linecap="round"
                             stroke-linejoin="round"
                             stroke-width="2"
-                            d="M5.121 17.804A9.004 9.004 0 0112 15c2.21 0 4.21.803 5.879 2.121M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
                           />
                         </svg>
                       </div>
-                      <span class="text-white text-base font-medium pl-1">2 students</span>
+                      <span class="text-white text-sm font-medium pl-1"
+                        >{{ slide.stats.students }}Students</span
+                      >
                     </div>
                     <div class="flex items-center gap-1">
                       <div
@@ -257,7 +272,8 @@
         </div>
       </div>
     </section>
-    <section class="py-20 bg-[#191918]">
+    <!-- Stats Section -->
+    <section class="py-20 bg-dark-gray">
       <div class="container">
         <div class="flex flex-wrap justify-center gap-8 text-center">
           <div class="flex-1 min-w-[200px] max-w-[300px] p-6">
@@ -282,16 +298,358 @@
         <hr class="my-6 border-gray-700 block w-full" />
       </div>
     </section>
+    <!-- Trainers Section -->
+    <section class="py-32 bg-dark-gray">
+      <div class="container">
+        <div class="text-center pb-14">
+          <h5 class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
+            Trainers
+          </h5>
+          <h2 class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]">
+            Meet our top trainers
+          </h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full">
+          <div
+            v-for="trainer in trainers"
+            :key="trainer.id"
+            class="relative overflow-hidden h-96 group"
+          >
+            <img
+              :src="trainer.image"
+              :alt="trainer.name"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div
+              class="absolute inset-0 bg-black/60 transition-all duration-300 p-6 flex flex-col items-start justify-end h-full"
+            >
+              <div class="relative overflow-hidden group z-20 py-6 px-6 flex flex-col w-full">
+                <div class="text-center w-full">
+                  <h3
+                    class="text-white text-xl font-bold font-antonio cursor-pointer hover:text-[#021E40] transition-colors duration-300"
+                  >
+                    {{ trainer.name }}
+                  </h3>
+                  <span class="text-white text-xs uppercase pt-1">{{ trainer.role }}</span>
+                </div>
+                <div
+                  class="absolute inset-0 w-1/5 h-full bg-primary transition-all duration-300 group-hover:w-full -z-10"
+                />
+                <div class="flex justify-center space-x-3 pt-4 w-full">
+                  <template v-for="(social, index) in trainer.social" :key="index">
+                    <a
+                      v-if="social.name === 'Facebook'"
+                      :href="social.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-white transition-transform duration-300 hover:-translate-y-1"
+                      :aria-label="social.name"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </a>
+                    <a
+                      v-else-if="social.name === 'Twitter'"
+                      :href="social.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-white transition-transform duration-300 hover:-translate-y-1"
+                      :aria-label="social.name"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"
+                        />
+                      </svg>
+                    </a>
+                    <a
+                      v-else-if="social.name === 'LinkedIn'"
+                      :href="social.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-white transition-transform duration-300 hover:-translate-y-1"
+                      :aria-label="social.name"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+                        />
+                      </svg>
+                    </a>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Testimonials Section -->
+    <section class="py-16 bg-dark-gray">
+      <div class="container">
+        <div class="text-center pb-14">
+          <h5 class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
+            Testimonials
+          </h5>
+          <h2 class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]">
+            What they say about us
+          </h2>
+        </div>
+        <div class="relative">
+          <Carousel :items-to-show="2" :wrap-around="false" class="testimonial-carousel">
+            <Slide v-for="testimonial in testimonials" :key="testimonial.id">
+              <div
+                class="bg-[#282828] p-8 rounded-2xl text-center mx-4 relative overflow-hidden before:content-['\201C'] before:absolute before:top-4 before:right-4 before:text-[#3a3a3a] before:text-9xl before:font-serif before:leading-none before:opacity-20 before:pointer-events-none"
+              >
+                <div
+                  class="w-20 h-20 mx-auto mb-6 rounded-full overflow-hidden border-2 border-primary"
+                >
+                  <img
+                    :src="testimonial.avatar"
+                    :alt="testimonial.name"
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+                <p class="text-gray-300 text-lg mb-6">"{{ testimonial.content }}"</p>
+                <h4 class="text-white text-xl font-semibold">{{ testimonial.name }}</h4>
+                <p class="text-primary text-sm">{{ testimonial.role }}</p>
+              </div>
+            </Slide>
+            <template #addons>
+              <Pagination />
+            </template>
+          </Carousel>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Carousel, Slide } from 'vue3-carousel'
+import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
 
 const currentSlide = ref<number>(0)
 
-const slides = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
+const trainers = [
+  {
+    id: 1,
+    name: 'Jonathan Bean',
+    role: 'Lead Instructor',
+    image:
+      'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&auto=format&fit=crop&q=80',
+    social: [
+      { name: 'Facebook', url: '#' },
+      { name: 'Twitter', url: '#' },
+      { name: 'LinkedIn', url: '#' }
+    ]
+  },
+  {
+    id: 2,
+    name: 'Sarah Johnson',
+    role: 'UI/UX Expert',
+    image:
+      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=80',
+    social: [
+      { name: 'Twitter', url: '#' },
+      { name: 'LinkedIn', url: '#' },
+      { name: 'Instagram', url: '#' }
+    ]
+  },
+  {
+    id: 3,
+    name: 'Michael Chen',
+    role: 'Full Stack Developer',
+    image:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80',
+    social: [
+      { name: 'GitHub', url: '#' },
+      { name: 'LinkedIn', url: '#' },
+      { name: 'Twitter', url: '#' }
+    ]
+  },
+  {
+    id: 4,
+    name: 'Emma Wilson',
+    role: 'DevOps Engineer',
+    image:
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=80',
+    social: [
+      { name: 'Facebook', url: '#' },
+      { name: 'Twitter', url: '#' },
+      { name: 'LinkedIn', url: '#' }
+    ]
+  }
+]
+
+const slides = [
+  {
+    id: 1,
+    title: 'Mastering the Art of Cooking',
+    category: 'COOKING',
+    image:
+      'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&auto=format&fit=crop&q=70',
+    instructor: {
+      name: 'Chef Maria Garcia',
+      avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
+    },
+    stats: {
+      students: 42,
+      lessons: 24,
+      duration: '8h 30m',
+      level: 'Intermediate'
+    },
+    rating: 4.8,
+    price: 89.99
+  },
+  {
+    id: 2,
+    title: 'Web Development Bootcamp',
+    category: 'PROGRAMMING',
+    image:
+      'https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&auto=format&fit=crop&q=60',
+    instructor: {
+      name: 'Alex Johnson',
+      avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
+    },
+    stats: {
+      students: 156,
+      lessons: 36,
+      duration: '42h 15m',
+      level: 'Beginner'
+    },
+    rating: 4.9,
+    price: 129.99
+  },
+  {
+    id: 3,
+    title: 'Digital Marketing Mastery',
+    category: 'MARKETING',
+    image:
+      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60',
+    instructor: {
+      name: 'Sarah Williams',
+      avatar: 'https://randomuser.me/api/portraits/women/28.jpg'
+    },
+    stats: {
+      students: 87,
+      lessons: 18,
+      duration: '15h 45m',
+      level: 'All Levels'
+    },
+    rating: 4.7,
+    price: 79.99
+  },
+  {
+    id: 4,
+    title: 'Photography Fundamentals',
+    category: 'PHOTOGRAPHY',
+    image:
+      'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&auto=format&fit=crop&q=60',
+    instructor: {
+      name: 'James Wilson',
+      avatar: 'https://randomuser.me/api/portraits/men/45.jpg'
+    },
+    stats: {
+      students: 63,
+      lessons: 22,
+      duration: '12h 10m',
+      level: 'Beginner'
+    },
+    rating: 4.6,
+    price: 69.99
+  },
+  {
+    id: 5,
+    title: 'Data Science Essentials',
+    category: 'DATA SCIENCE',
+    image:
+      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60',
+    instructor: {
+      name: 'Dr. Emily Chen',
+      avatar: 'https://randomuser.me/api/portraits/women/52.jpg'
+    },
+    stats: {
+      students: 94,
+      lessons: 30,
+      duration: '35h 20m',
+      level: 'Advanced'
+    },
+    rating: 4.9,
+    price: 149.99
+  }
+]
+
+const testimonials = [
+  {
+    id: 1,
+    name: 'Sarah Johnson',
+    role: 'Web Development Student',
+    content:
+      'The courses here completely transformed my career. The instructors are knowledgeable and the curriculum is well-structured. Highly recommended!',
+    avatar: 'https://randomuser.me/api/portraits/women/32.jpg'
+  },
+  {
+    id: 2,
+    name: 'Michael Chen',
+    role: 'UI/UX Designer',
+    content:
+      'I was able to upgrade my skills significantly through their design courses. The practical projects were especially valuable for my portfolio.',
+    avatar: 'https://randomuser.me/api/portraits/men/42.jpg'
+  },
+  {
+    id: 3,
+    name: 'Emma Rodriguez',
+    role: 'Data Science Enthusiast',
+    content:
+      'The quality of instruction and course materials exceeded my expectations. The community support is also fantastic!',
+    avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
+  },
+  {
+    id: 4,
+    name: 'David Kim',
+    role: 'Full-stack Developer',
+    content:
+      'The hands-on approach helped me understand complex concepts easily. The certificate I earned helped me land a great job!',
+    avatar: 'https://randomuser.me/api/portraits/men/36.jpg'
+  }
+]
 </script>
 
-<style scoped></style>
+<style scoped>
+:deep(.carousel__pagination) {
+  @apply flex justify-center absolute -bottom-11;
+}
+:deep(.carousel__pagination-button) {
+  @apply p-0 m-0 border-0;
+}
+:deep(.carousel__pagination-button) {
+  @apply block w-3 h-3 rounded-full mx-1;
+  @apply bg-gray-400;
+  @apply transition-all duration-300;
+  content: '';
+}
+
+:deep(.carousel__pagination-button--active) {
+  @apply bg-primary;
+}</style>
