@@ -419,7 +419,7 @@
           <Carousel :items-to-show="2" :wrap-around="false" class="testimonial-carousel">
             <Slide v-for="testimonial in testimonials" :key="testimonial.id">
               <div
-                class="bg-[#282828] p-8 rounded-2xl text-center mx-4 relative overflow-hidden before:content-['\201C'] before:absolute before:top-4 before:right-4 before:text-[#3a3a3a] before:text-9xl before:font-serif before:leading-none before:opacity-20 before:pointer-events-none"
+                class="bg-transparent p-8 border-2 border-[#474746] rounded-2xl text-center mx-4 relative overflow-hidden before:content-['\201C'] before:absolute before:top-4 before:right-4 before:text-[#3a3a3a] before:text-9xl before:font-serif before:leading-none before:opacity-20 before:pointer-events-none"
               >
                 <div
                   class="w-20 h-20 mx-auto mb-6 rounded-full overflow-hidden border-2 border-primary"
@@ -652,4 +652,5 @@ const testimonials = [
 
 :deep(.carousel__pagination-button--active) {
   @apply bg-primary;
-}</style>
+}
+</style>
