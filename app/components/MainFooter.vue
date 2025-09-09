@@ -1,5 +1,5 @@
 <template>
-    <footer class="bg-[#0E0E0D] text-white py-16">
+    <div class="bg-[#0E0E0D] text-white py-16">
         <div class="container">
           <div class="flex flex-wrap justify-between">
             <div class="w-full md:w-1/2 lg:w-1/4 px-4 mb-8 lg:mb-0 space-y-4">
@@ -128,6 +128,6 @@
             <p>&copy; {{ new Date().getFullYear() }} EduLearn. All rights reserved.</p>
           </div>
         </div>
-      </footer>
+      </div>
 </template>
 <script setup></script>
