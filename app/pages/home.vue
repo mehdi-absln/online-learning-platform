@@ -491,6 +491,8 @@
         </div>
       </div>
     </section>
+    <!-- Footer Section -->
+    <MainFooter />
   </div>
 </template>
 
