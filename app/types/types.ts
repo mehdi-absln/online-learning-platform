@@ -1,14 +1,13 @@
-export interface LoginFormData {
-  email: string
+export interface SigninFormData {
+  username: string
   password: string
   rememberMe: boolean
 }
 
 export interface SignupFormData {
-  firstName: string
-  lastName: string
+  username: string
   email: string
   password: string
   confirmPassword: string
-  agreeTerms: boolean
+  termsAccepted: boolean
 }
