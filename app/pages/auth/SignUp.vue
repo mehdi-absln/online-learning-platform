@@ -270,8 +270,6 @@ const handleSubmit = async () => {
       }
     } else {
       console.log('Sign up successful:', data.value)
-      const token = useCookie('auth_token')
-      token.value = data.value.token
 
       await navigateTo('/')
     }

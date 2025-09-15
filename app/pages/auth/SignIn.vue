@@ -160,9 +160,6 @@ const handleSubmit = async () => {
       }
     } else {
       console.log('Sign in successful:', data.value)
-
-      const token = useCookie('auth_token')
-      token.value = data.value.token
       await navigateTo('/')
     }
   } catch (err) {
