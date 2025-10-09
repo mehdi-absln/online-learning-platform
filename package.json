@@ -15,28 +15,26 @@
   },
   "dependencies": {
     "@nuxt/eslint": "^1.8.0",
-    "@nuxt/fonts": "^0.11.4",
     "@nuxt/icon": "^1.15.0",
     "@nuxt/image": "^1.10.0",
-    "@prisma/client": "^6.16.1",
-    "@sidebase/nuxt-auth": "^1.0.2",
-    "bcryptjs": "^3.0.2",
-    "jsonwebtoken": "^9.0.2",
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.4.1",
+    "drizzle-orm": "^0.44.6",
+    "jose": "^6.1.0",
     "nuxt": "^4.0.0",
-    "prisma": "^6.16.1",
     "typescript": "^5.9.2",
     "vue": "^3.5.17",
-    "vue-router": "^4.5.1",
     "vue3-carousel": "^0.16.0"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^1.8.0",
     "@nuxtjs/tailwindcss": "^6.14.0",
-    "@types/bcryptjs": "^2.4.6",
-    "@types/jsonwebtoken": "^9.0.10",
+    "@types/bcrypt": "^6.0.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.1",
     "autoprefixer": "^10.4.21",
+    "drizzle-kit": "^0.31.5",
     "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
@@ -44,6 +42,7 @@
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.20.6",
     "vue-eslint-parser": "^10.2.0"
   }
 }
