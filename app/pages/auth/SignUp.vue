@@ -251,7 +251,9 @@ const handleSubmit = async () => {
       body: {
         username: form.username,
         email: form.email,
-        password: form.password
+        password: form.password,
+        confirmPassword: form.confirmPassword,
+        termsAccepted: form.termsAccepted
       }
     })
 
