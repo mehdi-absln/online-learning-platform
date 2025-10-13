@@ -4,6 +4,6 @@ export default defineNuxtConfig({
     '/auth': { redirect: '/auth/signin' },
   },
   devtools: { enabled: true },
-  modules: ['@nuxt/image', '@nuxt/icon', '@nuxt/eslint', '@nuxtjs/tailwindcss'],
+  modules: ['@nuxt/image', '@nuxt/icon', '@nuxt/eslint', '@nuxtjs/tailwindcss', '@pinia/nuxt'],
   css: ['~/assets/css/fonts.css', '~/assets/css/app.css']
 })

@@ -1,5 +1,6 @@
 import { UserService } from '../../db/user-service'
 import { JWTService } from '../../utils/jwt'
+import { errorResponse, successResponse } from '../../utils/response'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -59,24 +60,19 @@ export default defineEventHandler(async (event) => {
       maxAge: 30 * 24 * 60 * 60 * 1000 // Always 30 days for refresh token
     })
 
-    return {
-      success: true,
-      message: 'Sign in successful',
+    return successResponse('Sign in successful', {
       user: {
         id: user.id,
         username: user.username,
         email: user.email
       }
-    }
-  } catch (error) {
+    })
+  } catch (error: any) {
     if (error.statusCode) {
-      throw error
+      return errorResponse(error.statusMessage || 'An error occurred', error.message)
     }
 
     console.error('Sign in error:', error)
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Internal server error'
-    })
+    return errorResponse('Internal server error', error.message)
   }
 })
