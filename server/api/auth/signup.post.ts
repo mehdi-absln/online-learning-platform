@@ -1,4 +1,5 @@
 import { UserService } from '../../db/user-service'
+import { errorResponse, successResponse } from '../../utils/response'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -60,24 +61,19 @@ export default defineEventHandler(async (event) => {
       password
     })
 
-    return {
-      success: true,
-      message: 'Account created successfully',
+    return successResponse('Account created successfully', {
       user: {
         id: newUser.id,
         username: newUser.username,
         email: newUser.email
       }
-    }
-  } catch (error) {
+    })
+  } catch (error: any) {
     if (error.statusCode) {
-      throw error
+      return errorResponse(error.statusMessage || 'An error occurred', error.message)
     }
 
     console.error('Sign up error:', error)
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Internal server error'
-    })
+    return errorResponse('Internal server error', error.message)
   }
 })

@@ -1,5 +1,6 @@
 import { JWTService } from '../../utils/jwt'
 import { UserService } from '../../db/user-service'
+import { errorResponse, successResponse } from '../../utils/response'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -33,23 +34,19 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    return {
-      success: true,
+    return successResponse('User retrieved successfully', {
       user: {
         id: user.id,
         username: user.username,
         email: user.email
       }
-    }
-  } catch (error) {
+    })
+  } catch (error: any) {
     if (error.statusCode) {
-      throw error
+      return errorResponse(error.statusMessage || 'An error occurred', error.message)
     }
 
     console.error('Get current user error:', error)
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Internal server error'
-    })
+    return errorResponse('Internal server error', error.message)
   }
 })

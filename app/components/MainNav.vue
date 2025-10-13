@@ -24,6 +24,14 @@
       </li>
       <li>
         <NuxtLink
+          to="/dashboard"
+          class="font-semibold text-white hover:text-primary transition-colors duration-200"
+        >
+          Dashboard
+        </NuxtLink>
+      </li>
+      <li>
+        <NuxtLink
           to="/pages"
           class="font-semibold text-white hover:text-primary transition-colors duration-200"
         >
