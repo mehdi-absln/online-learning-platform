@@ -1,4 +1,5 @@
 import { UserService } from '../../db/user-service'
+import { AUTH_ERRORS } from '../../../app/types/auth-errors'
 import { errorResponse, successResponse } from '../../utils/response'
 
 export default defineEventHandler(async (event) => {
@@ -11,28 +12,37 @@ export default defineEventHandler(async (event) => {
     if (!username || !email || !password || !confirmPassword) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'All fields are required'
+        statusMessage: AUTH_ERRORS.ALL_FIELDS_REQUIRED
       })
     }
 
     if (password !== confirmPassword) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Passwords do not match'
+        statusMessage: AUTH_ERRORS.PASSWORDS_DONT_MATCH
       })
     }
 
     if (password.length < 6) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Password must be at least 6 characters long'
+        statusMessage: AUTH_ERRORS.PASSWORD_TOO_SHORT
+      })
+    }
+    
+    // Validate password complexity: at least one uppercase, one lowercase, and one number
+    const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+    if (!passwordRegex.test(password)) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: AUTH_ERRORS.PASSWORD_TOO_WEAK
       })
     }
 
     if (!termsAccepted) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'You must accept the terms and conditions'
+        statusMessage: AUTH_ERRORS.TERMS_NOT_ACCEPTED
       })
     }
 
@@ -41,7 +51,7 @@ export default defineEventHandler(async (event) => {
     if (!emailRegex.test(email)) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Please enter a valid email address'
+        statusMessage: AUTH_ERRORS.EMAIL_INVALID
       })
     }
 
@@ -50,7 +60,7 @@ export default defineEventHandler(async (event) => {
     if (existingUser) {
       throw createError({
         statusCode: 409,
-        statusMessage: 'Username or email already exists'
+        statusMessage: AUTH_ERRORS.USERNAME_OR_EMAIL_EXISTS
       })
     }
 
@@ -61,7 +71,7 @@ export default defineEventHandler(async (event) => {
       password
     })
 
-    return successResponse('Account created successfully', {
+    return successResponse(AUTH_ERRORS.ACCOUNT_CREATED_SUCCESS, {
       user: {
         id: newUser.id,
         username: newUser.username,

@@ -1,16 +1,28 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import { useUserStore } from '../stores/user'
+import { useUserStore } from '~/stores/user'
 
-// Mock $fetch globally
-vi.mock('#app', () => ({
-  $fetch: vi.fn()
-}))
+// Mock $fetch and navigateTo
+vi.mock('ofetch', () => {
+  const $fetch = vi.fn()
+  return { $fetch }
+})
 
-// Mock navigateTo globally
-vi.mock('~/app', () => ({
-  navigateTo: vi.fn()
-}))
+vi.mock('nuxt/app', async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    navigateTo: vi.fn()
+  }
+})
+
+// Alternative approach - mock the specific functions we need
+vi.mock('#app', async () => {
+  return {
+    $fetch: vi.fn(),
+    navigateTo: vi.fn()
+  }
+})
 
 describe('User Store', () => {
   beforeEach(() => {

@@ -1,5 +1,6 @@
 import { UserService } from '../../db/user-service'
 import { JWTService } from '../../utils/jwt'
+import { AUTH_ERRORS } from '../../../app/types/auth-errors'
 import { errorResponse, successResponse } from '../../utils/response'
 
 export default defineEventHandler(async (event) => {
@@ -12,7 +13,7 @@ export default defineEventHandler(async (event) => {
     if (!username || !password) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Username and password are required'
+        statusMessage: AUTH_ERRORS.USERNAME_REQUIRED + ' and ' + AUTH_ERRORS.PASSWORD_REQUIRED
       })
     }
 
@@ -22,7 +23,7 @@ export default defineEventHandler(async (event) => {
     if (!user) {
       throw createError({
         statusCode: 401,
-        statusMessage: 'Invalid credentials'
+        statusMessage: AUTH_ERRORS.INVALID_CREDENTIALS
       })
     }
 
@@ -32,7 +33,7 @@ export default defineEventHandler(async (event) => {
     if (!isPasswordValid) {
       throw createError({
         statusCode: 401,
-        statusMessage: 'Invalid credentials'
+        statusMessage: AUTH_ERRORS.INVALID_CREDENTIALS
       })
     }
 
@@ -60,7 +61,7 @@ export default defineEventHandler(async (event) => {
       maxAge: 30 * 24 * 60 * 60 * 1000 // Always 30 days for refresh token
     })
 
-    return successResponse('Sign in successful', {
+    return successResponse(AUTH_ERRORS.SIGNIN_SUCCESS, {
       user: {
         id: user.id,
         username: user.username,
