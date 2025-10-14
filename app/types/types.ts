@@ -57,3 +57,25 @@ export interface SignUpFormErrors {
   confirmPassword: string
   termsAccepted: string
 }
+
+// Validation composable interfaces
+export interface UseZodValidationOptions {
+  autoValidate?: boolean // Enable/disable auto-validation
+  validateOnBlur?: boolean // Validate fields on blur
+  validateOnChange?: boolean // Validate fields on change
+}
+
+export interface ValidationResult<T> {
+  form: T
+  errors: Ref<Partial<Record<keyof T, string>>>
+  isValid: Ref<boolean>
+  isFormValid: Ref<boolean>
+  isDirty: Ref<boolean>
+  touchedFields: Set<keyof T>
+  validateField: (field: keyof T, value: any) => void
+  validateAll: () => boolean
+  getError: (field: keyof T) => string
+  reset: () => void
+  setFieldError: (field: keyof T, error: string) => void
+  markFieldAsTouched: (field: keyof T) => void
+}
