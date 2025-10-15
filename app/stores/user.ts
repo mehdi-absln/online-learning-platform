@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import type { UserState, User, SigninFormData, SignupFormData, AuthResponse } from '~/types/types'
+import type { UserState, SigninFormData, SignupFormData } from '~/types/types'
+import type { User, AuthResponse } from '~/types/shared/auth'
 
 export const useUserStore = defineStore('user', {
   state: (): UserState => ({

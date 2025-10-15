@@ -9,7 +9,8 @@ export interface CreateUserData {
   password: string
 }
 
-export interface User {
+// Server-side User interface with sensitive fields
+export interface DatabaseUser {
   id: number
   username: string
   email: string
@@ -19,7 +20,7 @@ export interface User {
 }
 
 export class UserService {
-  static async createUser(data: CreateUserData): Promise<User> {
+  static async createUser(data: CreateUserData): Promise<DatabaseUser> {
     const passwordHash = await bcrypt.hash(data.password, 12)
 
     const [user] = await db.insert(users).values({
@@ -33,7 +34,7 @@ export class UserService {
     return user
   }
 
-  static async findByUsernameOrEmail(usernameOrEmail: string): Promise<User | null> {
+  static async findByUsernameOrEmail(usernameOrEmail: string): Promise<DatabaseUser | null> {
     const [user] = await db
       .select()
       .from(users)
@@ -48,7 +49,7 @@ export class UserService {
     return user || null
   }
 
-  static async findById(id: number): Promise<User | null> {
+  static async findById(id: number): Promise<DatabaseUser | null> {
     const [user] = await db
       .select()
       .from(users)
