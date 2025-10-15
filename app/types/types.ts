@@ -1,3 +1,5 @@
+import type { User, AuthResponse } from './shared/auth'
+
 export interface SigninFormData {
   username: string
   password: string
@@ -10,12 +12,6 @@ export interface SignupFormData {
   password: string
   confirmPassword: string
   termsAccepted: boolean
-}
-
-export interface User {
-  id: number
-  username: string
-  email: string
 }
 
 export interface UserState {
@@ -39,11 +35,8 @@ export interface SignUpResponse {
   error?: string
 }
 
-export interface AuthResponse {
-  success: boolean
-  user?: User
-  error?: string
-}
+// Re-export shared types for backward compatibility
+export { User, AuthResponse }
 
 export interface SignInFormErrors {
   username: string
