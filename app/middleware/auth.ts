@@ -1,5 +1,3 @@
-import { useUserStore } from '~/stores/user'
-
 export default defineNuxtRouteMiddleware(async (to, from) => {
   // Only run on client side since Pinia doesn't work server-side in middleware
   if (process.client) {

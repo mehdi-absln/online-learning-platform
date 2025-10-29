@@ -17,7 +17,7 @@ export default {
         sm: '1.5rem',
         lg: '2rem',
         xl: '3rem',
-        '2xl': '5.5rem'
+        '2xl': '4rem'
       },
       screens: {
         sm: '640px',
@@ -43,33 +43,5 @@ export default {
       }
     }
   },
-  plugins: [
-    function ({ addComponents }) {
-      addComponents({
-        '.container': {
-          width: '100%',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          paddingLeft: '1rem',
-          paddingRight: '1rem',
-          '@screen sm': {
-            paddingLeft: '1.5rem',
-            paddingRight: '1.5rem'
-          },
-          '@screen lg': {
-            paddingLeft: '2rem',
-            paddingRight: '2rem'
-          },
-          '@screen xl': {
-            paddingLeft: '3rem',
-            paddingRight: '3rem'
-          },
-          '@screen 2xl': {
-            paddingLeft: '5.5rem',
-            paddingRight: '5.5rem'
-          }
-        }
-      })
-    }
-  ]
+  plugins: []
 } satisfies Config

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { useUserStore } from '~/stores/user'
+import type { User } from '~/types/shared/auth'
 
 // Mock $fetch and navigateTo
 vi.mock('ofetch', () => {
@@ -42,7 +43,7 @@ describe('User Store', () => {
 
   it('sets user correctly', () => {
     const userStore = useUserStore()
-    const mockUser = {
+    const mockUser: User = {
       id: 1,
       username: 'testuser',
       email: 'test@example.com'
@@ -57,7 +58,7 @@ describe('User Store', () => {
 
   it('clears user correctly', () => {
     const userStore = useUserStore()
-    const mockUser = {
+    const mockUser: User = {
       id: 1,
       username: 'testuser',
       email: 'test@example.com'

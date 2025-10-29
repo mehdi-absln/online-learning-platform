@@ -56,18 +56,24 @@ export const useUserStore = defineStore('user', {
           method: 'POST',
           body: credentials
         })
-        
+
         if (response?.success && response?.data?.user) {
           this.setUser(response.data.user)
           return { success: true, user: response.data.user } as AuthResponse
         } else {
           this.setError(response?.message || 'Sign in failed')
-          return { success: false, error: response?.error || response?.message || 'Sign in failed' } as AuthResponse
+          return {
+            success: false,
+            error: response?.error || response?.message || 'Sign in failed'
+          } as AuthResponse
         }
       } catch (error: any) {
         console.error('Sign in error:', error)
         this.setError(error.message || 'An unexpected error occurred')
-        return { success: false, error: error.message || 'An unexpected error occurred' } as AuthResponse
+        return {
+          success: false,
+          error: error.message || 'An unexpected error occurred'
+        } as AuthResponse
       } finally {
         this.setLoading(false)
       }
@@ -80,18 +86,24 @@ export const useUserStore = defineStore('user', {
           method: 'POST',
           body: userData
         })
-        
+
         if (response?.success && response?.data?.user) {
           this.setUser(response.data.user)
           return { success: true, user: response.data.user } as AuthResponse
         } else {
           this.setError(response?.message || 'Sign up failed')
-          return { success: false, error: response?.error || response?.message || 'Sign up failed' } as AuthResponse
+          return {
+            success: false,
+            error: response?.error || response?.message || 'Sign up failed'
+          } as AuthResponse
         }
       } catch (error: any) {
         console.error('Sign up error:', error)
         this.setError(error.message || 'An unexpected error occurred')
-        return { success: false, error: error.message || 'An unexpected error occurred' } as AuthResponse
+        return {
+          success: false,
+          error: error.message || 'An unexpected error occurred'
+        } as AuthResponse
       } finally {
         this.setLoading(false)
       }
@@ -102,7 +114,6 @@ export const useUserStore = defineStore('user', {
         const response: any = await $fetch('/api/auth/logout', { method: 'POST' })
         if (response?.success) {
           this.clearUser()
-          // Optionally redirect to home page after logout
           await navigateTo('/home')
         } else {
           this.setError(response?.message || 'Logout failed')
