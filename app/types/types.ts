@@ -51,11 +51,17 @@ export interface SignUpFormErrors {
   termsAccepted: string
 }
 
+// Breadcrumb component interfaces
+export interface BreadcrumbItem {
+  name: string
+  path: string
+}
+
 // Validation composable interfaces
 export interface UseZodValidationOptions {
   autoValidate?: boolean // Enable/disable auto-validation
   validateOnBlur?: boolean // Validate fields on blur
-  validateOnChange?: boolean // Validate fields on change
+  validateOnChange?: boolean // Validate field on change
 }
 
 export interface ValidationResult<T> {

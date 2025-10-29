@@ -1,8 +1,3 @@
-/**
- * Centralized constants for the application
- * Contains shared constants, error messages, and configuration
- */
-
 // Import shared error constants that are consistent between client and server
 import { AUTH_ERRORS as SHARED_AUTH_ERRORS } from '~/types/auth-errors'
 

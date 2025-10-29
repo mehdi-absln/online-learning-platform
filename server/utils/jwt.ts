@@ -1,16 +1,9 @@
 import { SignJWT, jwtVerify } from 'jose'
+import type { JWTPayload } from '~/app/types/shared/auth'
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 )
-
-export interface JWTPayload {
-  userId: number
-  username: string
-  email: string
-  iat?: number
-  exp?: number
-}
 
 export class JWTService {
   static async generateToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): Promise<string> {

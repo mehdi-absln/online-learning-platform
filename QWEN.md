@@ -13,6 +13,8 @@ This is a comprehensive online learning platform built with Nuxt.js, featuring u
 - SQLite database with Drizzle ORM
 - TypeScript for type safety
 - State management with Pinia
+- SEO-friendly with proper meta tags
+- Form validation on both client and server
 
 ### Tech Stack
 - **Framework**: Nuxt.js 4 with Vue 3
@@ -41,6 +43,30 @@ This is a comprehensive online learning platform built with Nuxt.js, featuring u
 │   └── types/          # Type definitions
 ├── server/             # Server-side code
 │   ├── api/            # API routes
+│   ├── db/             # Database related code (schema, services)
+│   └── utils/          # Utility functions
+├── app/                 # Nuxt application files
+│   ├── assets/          # CSS, images and other assets
+│   ├── components/      # Vue components
+│   │   ├── Breadcrumb.vue    # Breadcrumb navigation component
+│   │   └── CourseCard.vue    # Course display card component
+│   ├── composables/     # Vue composables
+│   ├── constants/       # Application constants
+│   ├── layouts/         # Layout components
+│   ├── middleware/      # Route middleware
+│   ├── pages/          # Route components
+│   │   ├── auth/        # Authentication pages
+│   │   ├── courses/     # Course-related pages
+│   │   │   ├── [id].vue # Individual course page
+│   │   │   └── index.vue # Main courses listing page
+│   │   └── ...          # Other pages
+│   ├── plugins/        # Nuxt plugins
+│   ├── public/         # Static assets
+│   ├── stores/         # Pinia stores (in app/stores)
+│   └── types/          # Type definitions
+├── server/             # Server-side code
+│   ├── api/            # API routes
+│   │   └── auth/       # Authentication API routes
 │   ├── db/             # Database related code (schema, services)
 │   └── utils/          # Utility functions
 ├── drizzle/            # Database migration files

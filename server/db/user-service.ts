@@ -2,12 +2,7 @@ import { eq, or } from 'drizzle-orm'
 import { db } from './index'
 import { users } from './schema'
 import bcrypt from 'bcrypt'
-
-export interface CreateUserData {
-  username: string
-  email: string
-  password: string
-}
+import type { CreateUserRequest } from '../../app/types/shared/users'
 
 // Server-side User interface with sensitive fields
 export interface DatabaseUser {
@@ -20,7 +15,7 @@ export interface DatabaseUser {
 }
 
 export class UserService {
-  static async createUser(data: CreateUserData): Promise<DatabaseUser> {
+  static async createUser(data: CreateUserRequest): Promise<DatabaseUser> {
     const passwordHash = await bcrypt.hash(data.password, 12)
 
     const [user] = await db.insert(users).values({

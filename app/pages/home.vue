@@ -9,6 +9,7 @@ useSeoMeta({
 
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
+import CourseCard from '~/components/CourseCard.vue'
 
 const trainers = [
   {
@@ -259,7 +260,7 @@ const testimonials = [
               The key to learning is consistency — nothing more, nothing less. There's no secret
               formula, and it's never out of reach. Every skill starts with a single step.
             </p>
-            <NuxtLink to="/auth/sign-up">
+            <NuxtLink to="/auth/sign-up" class="inline-block">
               <button
                 class="relative font-antonio px-6 py-3 font-semibold text-white bg-gradient-to-r from-primary to-primary/90 group overflow-hidden">
                 <span class="absolute inset-0 w-0 bg-white/10 group-hover:w-full transition-all duration-500" />
@@ -274,7 +275,7 @@ const testimonials = [
       </div>
     </section>
     <!-- About Section -->
-    <section class="bg-dark-gray py-32">
+    <section class="py-32">
       <div class="container flex justify-between items-center flex-wrap md:flex-nowrap gap-x-6">
         <div class="w-[45%] relative">
           <img src="../public/images/laptop-near-whilte-book.jpg" alt="laptop near whilte book"
@@ -356,79 +357,10 @@ const testimonials = [
           </h2>
         </div>
         <div>
-          <Carousel :items-to-show="3" :wrap-around="false" :mouse-drag="true" :touch-drag="true" class="group">
+          <Carousel :items-to-show="3" :wrap-around="false" :mouse-drag="true" :touch-drag="true">
             <Slide v-for="slide in slides" :key="slide.id">
-              <div
-                class="w-[90%] rounded-3xl overflow-hidden hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 transform hover:-translate-y-1">
-                <div class="relative">
-                  <div class="relative">
-                    <div class="relative h-56">
-                      <div
-                        class="absolute inset-0 bg-black/40 z-10 transition-all duration-300 group-hover:bg-black/20" />
-                      <img :src="slide.image" :alt="slide.title"
-                        class="w-full h-full object-cover relative transition-transform duration-500 group-hover:scale-105" />
-                    </div>
-                  </div>
-                  <div class="absolute top-6 flex items-center justify-between w-full px-4 z-10">
-                    <span class="bg-primary text-white text-[13px] px-5 py-1.5 rounded-full font-medium">
-                      {{ slide.category }}
-                    </span>
-                    <button
-                      class="bg-white rounded-full p-1.5 shadow hover:bg-gray-100 transition group-hover:bg-primary group-hover:text-white">
-                      <svg xmlns="http://www.w3.org/2000/svg"
-                        class="h-[18px] w-[18px] text-primary group-hover:text-white" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M5 5v14l7-4 7 4V5a2 2 0 00-2-2H7a2 2 0 00-2 2z" />
-                      </svg>
-                    </button>
-                  </div>
-                  <div class="absolute bottom-3 left-4 flex items-center space-x-3 z-10">
-                    <img :src="slide.instructor.avatar" :alt="slide.instructor.name"
-                      class="w-10 h-10 rounded-full border-2 border-solid border-white" />
-                    <span class="font-medium text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-                      {{ slide.instructor.name }}
-                    </span>
-                  </div>
-                </div>
-
-                <div class="px-4 bg-[#282828]">
-                  <h3 class="text-[22px] font-semibold text-white py-6 line-clamp-2 min-h-[72px] flex items-center">
-                    {{ slide.title }}
-                  </h3>
-                  <div class="flex items-center gap-4 text-sm">
-                    <div class="flex items-center gap-1">
-                      <div
-                        class="w-9 h-9 flex items-center justify-center bg-transparent border border-white rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none"
-                          viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                      </div>
-                      <span class="text-white text-sm font-medium pl-1">{{ slide.stats.students }}Students</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <div
-                        class="w-9 h-9 flex items-center justify-center bg-transparent border border-white rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#f8a406]" fill="currentColor"
-                          viewBox="0 0 20 20">
-                          <path
-                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.21 3.726a1 1 0 00.95.69h3.905c.969 0 1.371 1.24.588 1.81l-3.158 2.295a1 1 0 00-.364 1.118l1.21 3.726c.3.921-.755 1.688-1.54 1.118l-3.158-2.295a1 1 0 00-1.176 0l-3.158 2.295c-.785.57-1.84-.197-1.54-1.118l1.21-3.726a1 1 0 00-.364-1.118L2.396 9.153c-.783-.57-.38-1.81.588-1.81h3.905a1 1 0 00.95-.69l1.21-3.726z" />
-                        </svg>
-                      </div>
-                      <span class="text-white font-medium text-base pl-2">4.8</span>
-                    </div>
-                  </div>
-                  <hr class="my-6 border-gray-700 block" />
-                  <div class="flex items-center justify-between pb-6">
-                    <span class="text-base font-semibold text-primary-alt">$99</span>
-                    <button
-                      class="relative font-medium text-white group overflow-hidden rounded-md transition-colors duration-300 hover:text-primary">
-                      <span class="relative z-10"> Explore Now </span>
-                    </button>
-                  </div>
-                </div>
+              <div class="w-[95%] group">
+                <CourseCard :course="slide" />
               </div>
             </Slide>
             <template #addons>
@@ -439,7 +371,7 @@ const testimonials = [
       </div>
     </section>
     <!-- Stats Section -->
-    <section class="py-20 bg-dark-gray">
+    <section class="py-20">
       <div class="container">
         <div class="flex flex-wrap justify-center gap-8 text-center">
           <div class="flex-1 min-w-[200px] max-w-[300px] p-6">
@@ -465,7 +397,7 @@ const testimonials = [
       </div>
     </section>
     <!-- Trainers Section -->
-    <section class="py-32 bg-dark-gray">
+    <section class="py-32">
       <div class="container">
         <div class="text-center pb-14">
           <h5 class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
@@ -529,7 +461,7 @@ const testimonials = [
       </div>
     </section>
     <!-- Testimonials Section -->
-    <section class="pt-16 pb-24 bg-dark-gray">
+    <section class="pt-16 pb-24">
       <div class="container">
         <div class="text-center pb-14">
           <h5 class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
@@ -561,7 +493,7 @@ const testimonials = [
       </div>
     </section>
     <!-- Blog Section -->
-    <section class="py-16 bg-dark-gray">
+    <section class="py-16">
       <div class="container">
         <div class="text-center pb-14">
           <h5 class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">

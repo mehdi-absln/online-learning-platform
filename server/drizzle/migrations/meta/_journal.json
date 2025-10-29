@@ -1,12 +1,12 @@
 {
-  "version": "7",
+  "version": "5",
   "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
       "version": "6",
-      "when": 1760010040829,
-      "tag": "0000_dapper_lilandra",
+      "when": 1761738183041,
+      "tag": "0000_yellow_living_tribunal",
       "breakpoints": true
     }
   ]
