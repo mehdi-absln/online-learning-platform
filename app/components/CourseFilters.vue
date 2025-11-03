@@ -1,0 +1,109 @@
+<template>
+  <div class="bg-[#282828] rounded-xl p-6 mb-8 border border-[#474746]">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Search Input -->
+      <div>
+        <label class="block text-sm font-medium text-gray-300 mb-2">Search</label>
+        <input
+          v-model="localFilter.searchQuery"
+          type="text"
+          placeholder="Search courses..."
+          class="w-full px-4 py-2 rounded-lg bg-[#1F1F1E] border border-[#474746] text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          @input="applyFilters"
+        />
+      </div>
+
+      <!-- Category Filter -->
+      <div>
+        <label class="block text-sm font-medium text-gray-300 mb-2">Category</label>
+        <select
+          v-model="localFilter.category"
+          class="w-full px-4 py-2 rounded-lg bg-[#1F1F1E] border border-[#474746] text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          @change="applyFilters"
+        >
+          <option value="">All Categories</option>
+          <option v-for="category in categories" :key="category" :value="category">
+            {{ category }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Level Filter -->
+      <div>
+        <label class="block text-sm font-medium text-gray-300 mb-2">Level</label>
+        <select
+          v-model="localFilter.level"
+          class="w-full px-4 py-2 rounded-lg bg-[#1F1F1E] border border-[#474746] text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          @change="applyFilters"
+        >
+          <option value="">All Levels</option>
+          <option v-for="level in levels" :key="level" :value="level">
+            {{ level }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Price Range Filter -->
+      <div>
+        <label class="block text-sm font-medium text-gray-300 mb-2">Price Range</label>
+        <div class="flex space-x-2">
+          <input
+            v-model.number="localFilter.minPrice"
+            type="number"
+            placeholder="Min"
+            class="w-full px-3 py-2 rounded-lg bg-[#1F1F1E] border border-[#474746] text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            @input="applyFilters"
+          />
+          <input
+            v-model.number="localFilter.maxPrice"
+            type="number"
+            placeholder="Max"
+            class="w-full px-3 py-2 rounded-lg bg-[#1F1F1E] border border-[#474746] text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            @input="applyFilters"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Button -->
+    <div class="mt-4 flex justify-end">
+      <button
+        @click="resetFilters"
+        class="px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-700 transition-colors duration-300"
+      >
+        Reset Filters
+      </button>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useCoursesStore } from '~/stores/courses'
+import type { CoursesFilter } from '~/types/courses-filter'
+import { debounce } from 'lodash-es'
+
+const coursesStore = useCoursesStore()
+
+// Initialize local filter with the current filter from the store
+const localFilter = ref<CoursesFilter>({ ...coursesStore.currentFilter })
+
+// Available categories and levels - these might come from an API in a real application
+const categories = ref(['Programming', 'Design', 'Marketing', 'Photography', 'Data Science', 'Business'])
+const levels = ref(['Beginner', 'Intermediate', 'Advanced', 'All Levels'])
+
+// Watch for changes in store filter and update local filter
+watch(() => coursesStore.currentFilter, (newFilter) => {
+  localFilter.value = { ...newFilter }
+}, { deep: true })
+
+const applyFilters = debounce(() => {
+  coursesStore.applyFilter(localFilter.value)
+}, 300)
+
+const resetFilters = () => {
+  localFilter.value = {}
+  coursesStore.resetFilter()
+  coursesStore.fetchAllCourses()
+}
+</script>

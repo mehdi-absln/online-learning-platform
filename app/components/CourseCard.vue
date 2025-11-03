@@ -21,24 +21,26 @@
         >
           {{ course.category }}
         </span>
-        <button
-          class="bg-white rounded-full p-1.5 shadow transition-all duration-300 ease-in-out group-hover:bg-primary group-hover:text-white group-hover:shadow-lg"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-[18px] w-[18px] text-primary group-hover:text-white"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        <div class="relative z-20">
+          <button
+            class="group/bookmark bg-white rounded-full p-1.5 shadow transition-all duration-300 ease-in-out hover:bg-primary hover:shadow-lg"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 5v14l7-4 7 4V5a2 2 0 00-2-2H7a2 2 0 00-2 2z"
-            />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-[18px] w-[18px] text-primary transition-colors duration-300 group-hover/bookmark:text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 5v14l7-4 7 4V5a2 2 0 00-2-2H7a2 2 0 00-2 2z"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
       <div
         class="absolute bottom-3 left-4 flex items-center space-x-3 z-10 transition-all duration-500 ease-in-out group-hover:translate-y-0 group-hover:opacity-100 opacity-90 translate-y-2"
@@ -56,10 +58,15 @@
 
     <div class="px-4 bg-[#282828] flex-1 flex flex-col">
       <h3
-        class="text-[22px] font-semibold text-white py-6 flex-1 flex items-center transition-colors duration-300"
+        class="text-[22px] font-semibold text-white py-6 flex-1 flex items-center transition-all duration-300"
         :title="course.title"
       >
-        {{ course.title }}
+        <NuxtLink
+          :to="`/courses/${course.id}`"
+          class="transition-all duration-300 hover:text-primary"
+        >
+          {{ course.title }}
+        </NuxtLink>
       </h3>
       <div class="flex items-center gap-4 text-sm">
         <div class="flex items-center gap-1">
@@ -108,7 +115,7 @@
         <span class="text-base font-semibold text-primary-alt">${{ course.price }}</span>
         <NuxtLink
           :to="`/courses/${course.id}`"
-          class="relative font-medium text-white transition-all duration-300"
+          class="relative font-medium text-white transition-all duration-300 hover:text-primary"
         >
           <span class="relative z-10"> Explore Now </span>
         </NuxtLink>
