@@ -1,6 +1,6 @@
 import { courses, lessons } from './schema'
 import { db } from './index'
-import { eq, desc, asc } from 'drizzle-orm'
+import { eq, desc, asc, and, gte, lte, like } from 'drizzle-orm'
 import type { InferSelectModel } from 'drizzle-orm'
 import type { CreateCourseData, UpdateCourseData } from '../../app/types/shared/courses'
 
@@ -13,10 +13,50 @@ type Lesson = LessonType
 
 import type { CreateCourseData, UpdateCourseData } from '../../../app/types/shared/courses'
 
-export async function getAllCourses(): Promise<Course[]> {
+export async function getAllCourses(
+  filter: {
+    category?: string;
+    level?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    searchQuery?: string;
+    instructorId?: number;
+  } = {},
+  limit?: number,
+  offset?: number
+): Promise<Course[]> {
   try {
-    // Join courses with users to get instructor information
-    const result = await db
+    // Build where conditions array
+    const whereConditions = []
+    
+    if (filter.category) {
+      whereConditions.push(eq(courses.category, filter.category))
+    }
+
+    if (filter.level) {
+      whereConditions.push(eq(courses.level, filter.level))
+    }
+
+    if (filter.minPrice !== undefined) {
+      whereConditions.push(gte(courses.price, filter.minPrice))
+    }
+
+    if (filter.maxPrice !== undefined) {
+      whereConditions.push(lte(courses.price, filter.maxPrice))
+    }
+
+    if (filter.searchQuery) {
+      whereConditions.push(
+        like(courses.title, `%${filter.searchQuery}%`)
+      )
+    }
+
+    if (filter.instructorId !== undefined) {
+      whereConditions.push(eq(courses.instructorId, filter.instructorId))
+    }
+
+    // Build the base query
+    let query = db
       .select({
         // Course fields
         id: courses.id,
@@ -34,12 +74,93 @@ export async function getAllCourses(): Promise<Course[]> {
         updatedAt: courses.updatedAt,
       })
       .from(courses)
-      .orderBy(desc(courses.createdAt))
+
+    // Apply where conditions if any exist
+    if (whereConditions.length > 0) {
+      if (whereConditions.length === 1) {
+        query = query.where(whereConditions[0])
+      } else {
+        query = query.where(and(...whereConditions))
+      }
+    }
+
+    query = query.orderBy(desc(courses.createdAt))
+    
+    // Apply pagination if specified
+    if (limit !== undefined) {
+      query = query.limit(limit)
+    }
+    
+    if (offset !== undefined) {
+      query = query.offset(offset)
+    }
       
+    const result = await query
     return result
   } catch (error) {
     console.error('Error fetching courses:', error)
     throw new Error('Failed to fetch courses')
+  }
+}
+
+// Function to count courses matching the filters
+export async function getCoursesCount(
+  filter: {
+    category?: string;
+    level?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    searchQuery?: string;
+    instructorId?: number;
+  } = {}
+): Promise<number> {
+  try {
+    // Build where conditions array
+    const whereConditions = []
+    
+    if (filter.category) {
+      whereConditions.push(eq(courses.category, filter.category))
+    }
+
+    if (filter.level) {
+      whereConditions.push(eq(courses.level, filter.level))
+    }
+
+    if (filter.minPrice !== undefined) {
+      whereConditions.push(gte(courses.price, filter.minPrice))
+    }
+
+    if (filter.maxPrice !== undefined) {
+      whereConditions.push(lte(courses.price, filter.maxPrice))
+    }
+
+    if (filter.searchQuery) {
+      whereConditions.push(
+        like(courses.title, `%${filter.searchQuery}%`)
+      )
+    }
+
+    if (filter.instructorId !== undefined) {
+      whereConditions.push(eq(courses.instructorId, filter.instructorId))
+    }
+
+    // Build the base query - get all matching records and count them
+    let query = db.select({ id: courses.id }).from(courses)
+
+    // Apply where conditions if any exist
+    if (whereConditions.length > 0) {
+      if (whereConditions.length === 1) {
+        query = query.where(whereConditions[0])
+      } else {
+        query = query.where(and(...whereConditions))
+      }
+    }
+    
+    const result = await query
+    return result.length
+  } catch (error) {
+    console.error('Error counting courses:', error)
+    throw new Error('Failed to count courses')
   }
 }
 

@@ -1,5 +1,6 @@
 import type { Course } from '~/types/shared/auth'
 import type { DetailedCourse, Lesson } from '~/types/shared/courses'
+import type { CoursesFilter, PaginatedCoursesResponse } from '~/types/courses-filter'
 
 export const useCoursesStore = defineStore('courses', () => {
   // State
@@ -7,15 +8,52 @@ export const useCoursesStore = defineStore('courses', () => {
   const detailedCourse = ref<DetailedCourse | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
+  const currentFilter = ref<CoursesFilter>({})
+  const currentPage = ref(1)
+  const itemsPerPage = ref(12) // Updated to match API default
+  const totalPages = ref(1)
+  const totalItems = ref(0)
 
   // Actions
-  const fetchAllCourses = async () => {
+  const fetchAllCourses = async (filter?: CoursesFilter, page: number = 1) => {
     loading.value = true
     error.value = null
     
     try {
-      console.log('Fetching courses from API...')
-      const response = await $fetch('/api/courses')
+      console.log('Fetching courses from API with filters:', filter, 'page:', page)
+      
+      // If filter is provided, update the current filter
+      if (filter !== undefined) {
+        currentFilter.value = filter
+      }
+      
+      // Build query string from filter and pagination
+      const queryParams = new URLSearchParams()
+      if (currentFilter.value.category) {
+        queryParams.append('category', currentFilter.value.category)
+      }
+      if (currentFilter.value.level) {
+        queryParams.append('level', currentFilter.value.level)
+      }
+      if (currentFilter.value.minPrice !== undefined) {
+        queryParams.append('minPrice', currentFilter.value.minPrice.toString())
+      }
+      if (currentFilter.value.maxPrice !== undefined) {
+        queryParams.append('maxPrice', currentFilter.value.maxPrice.toString())
+      }
+      if (currentFilter.value.searchQuery) {
+        queryParams.append('q', currentFilter.value.searchQuery)
+      }
+      if (currentFilter.value.instructorId) {
+        queryParams.append('instructorId', currentFilter.value.instructorId.toString())
+      }
+      queryParams.append('page', page.toString())
+      queryParams.append('limit', itemsPerPage.value.toString())
+      
+      const queryString = queryParams.toString()
+      const url = `/api/courses?${queryString}`
+      
+      const response: any = await $fetch(url)
       console.log('API response:', response)
       
       if (response.success) {
@@ -23,6 +61,14 @@ export const useCoursesStore = defineStore('courses', () => {
         // The API now returns properly structured data
         courses.value = response.data || []
         console.log('Courses stored in store:', courses.value.length)
+        
+        // Update pagination info if available
+        if (response.pagination) {
+          currentPage.value = response.pagination.currentPage
+          totalPages.value = response.pagination.totalPages
+          totalItems.value = response.pagination.totalItems
+          itemsPerPage.value = response.pagination.itemsPerPage
+        }
       } else {
         console.error('API response not successful:', response.message)
         throw new Error(response.message || 'Failed to fetch courses')
@@ -56,15 +102,41 @@ export const useCoursesStore = defineStore('courses', () => {
     }
   }
 
+  const resetFilter = () => {
+    currentFilter.value = {}
+    currentPage.value = 1
+  }
+
+  const applyFilter = (filter: CoursesFilter) => {
+    currentFilter.value = filter
+    currentPage.value = 1
+    fetchAllCourses(filter, 1)
+  }
+
+  const changePage = (page: number) => {
+    if (page >= 1 && page <= totalPages.value) {
+      currentPage.value = page
+      fetchAllCourses(undefined, page)
+    }
+  }
+
   return {
     // State
     courses,
     detailedCourse,
     loading,
     error,
+    currentFilter,
+    currentPage,
+    itemsPerPage,
+    totalPages,
+    totalItems,
     
     // Actions
     fetchAllCourses,
     fetchCourseById,
+    resetFilter,
+    applyFilter,
+    changePage,
   }
 })
