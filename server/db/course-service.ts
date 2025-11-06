@@ -1,6 +1,6 @@
 import { courses, lessons } from './schema'
 import { db } from './index'
-import { eq, desc, asc, and, gte, lte, like } from 'drizzle-orm'
+import { eq, desc, asc, and, gte, lte, like, inArray, or } from 'drizzle-orm'
 import type { InferSelectModel } from 'drizzle-orm'
 import type { CreateCourseData, UpdateCourseData } from '../../app/types/shared/courses'
 
@@ -16,7 +16,12 @@ import type { CreateCourseData, UpdateCourseData } from '../../../app/types/shar
 export async function getAllCourses(
   filter: {
     category?: string;
+    categories?: string[];
     level?: string;
+    levels?: string[];
+    // tags?: string[];  // Temporarily removed until database column is properly added
+    freeOnly?: boolean;
+    paidOnly?: boolean;
     minPrice?: number;
     maxPrice?: number;
     searchQuery?: string;
@@ -33,8 +38,33 @@ export async function getAllCourses(
       whereConditions.push(eq(courses.category, filter.category))
     }
 
+    if (filter.categories && filter.categories.length > 0) {
+      whereConditions.push(inArray(courses.category, filter.categories))
+    }
+
     if (filter.level) {
       whereConditions.push(eq(courses.level, filter.level))
+    }
+
+    if (filter.levels && filter.levels.length > 0) {
+      whereConditions.push(inArray(courses.level, filter.levels))
+    }
+
+    if (filter.tags && filter.tags.length > 0) {
+      // Looking for courses that have any of the provided tags
+      // We'll search for each tag in the comma-separated tags column
+      const tagConditions = filter.tags.map(tag => like(courses.tags, `%${tag}%`))
+      if (tagConditions.length > 0) {
+        whereConditions.push(tagConditions.length === 1 ? tagConditions[0] : or(...tagConditions))
+      }
+    }
+
+    if (filter.freeOnly) {
+      whereConditions.push(eq(courses.price, 0))
+    }
+
+    if (filter.paidOnly) {
+      whereConditions.push(gte(courses.price, 1))
     }
 
     if (filter.minPrice !== undefined) {
@@ -69,6 +99,7 @@ export async function getAllCourses(
         price: courses.price,
         duration: courses.duration,
         level: courses.level,
+        tags: courses.tags, // Add tags field to the select
         image: courses.image,
         createdAt: courses.createdAt,
         updatedAt: courses.updatedAt,
@@ -94,7 +125,7 @@ export async function getAllCourses(
     if (offset !== undefined) {
       query = query.offset(offset)
     }
-      
+    
     const result = await query
     return result
   } catch (error) {
@@ -107,7 +138,12 @@ export async function getAllCourses(
 export async function getCoursesCount(
   filter: {
     category?: string;
+    categories?: string[];
     level?: string;
+    levels?: string[];
+    // tags?: string[];  // Temporarily removed until database column is properly added
+    freeOnly?: boolean;
+    paidOnly?: boolean;
     minPrice?: number;
     maxPrice?: number;
     searchQuery?: string;
@@ -122,8 +158,33 @@ export async function getCoursesCount(
       whereConditions.push(eq(courses.category, filter.category))
     }
 
+    if (filter.categories && filter.categories.length > 0) {
+      whereConditions.push(inArray(courses.category, filter.categories))
+    }
+
     if (filter.level) {
       whereConditions.push(eq(courses.level, filter.level))
+    }
+
+    if (filter.levels && filter.levels.length > 0) {
+      whereConditions.push(inArray(courses.level, filter.levels))
+    }
+
+    if (filter.tags && filter.tags.length > 0) {
+      // Looking for courses that have any of the provided tags
+      // We'll search for each tag in the comma-separated tags column
+      const tagConditions = filter.tags.map(tag => like(courses.tags, `%${tag}%`))
+      if (tagConditions.length > 0) {
+        whereConditions.push(tagConditions.length === 1 ? tagConditions[0] : or(...tagConditions))
+      }
+    }
+
+    if (filter.freeOnly) {
+      whereConditions.push(eq(courses.price, 0))
+    }
+
+    if (filter.paidOnly) {
+      whereConditions.push(gte(courses.price, 1))
     }
 
     if (filter.minPrice !== undefined) {

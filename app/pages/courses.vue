@@ -8,34 +8,44 @@
         <Breadcrumb :crumbs="breadcrumbCrumbs" />
       </div>
 
-      <CourseFilters />
+      <div class="container py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+          <!-- Sidebar Filters -->
+          <div class="lg:w-1/4">
+            <SidebarFilters />
+          </div>
+          
+          <!-- Main Content -->
+          <div class="lg:w-3/4">
+            <div v-if="coursesStore.loading" class="text-center py-10">
+              <p class="text-white">Loading courses...</p>
+            </div>
 
-      <div v-if="coursesStore.loading" class="text-center py-10">
-        <p class="text-white">Loading courses...</p>
-      </div>
+            <div v-else-if="coursesStore.error" class="text-center py-10">
+              <p class="text-red-500">Error: {{ coursesStore.error }}</p>
+            </div>
 
-      <div v-else-if="coursesStore.error" class="text-center py-10">
-        <p class="text-red-500">Error: {{ coursesStore.error }}</p>
-      </div>
+            <div v-else>
+              <div v-if="coursesStore.courses.length === 0" class="text-center py-10">
+                <p class="text-white text-lg">No courses found matching your filters.</p>
+              </div>
 
-      <div class="container py-24" v-else>
-        <div v-if="coursesStore.courses.length === 0" class="text-center py-10">
-          <p class="text-white text-lg">No courses found matching your filters.</p>
-        </div>
+              <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 [grid-auto-rows:1fr]">
+                <div v-for="course in coursesStore.courses" :key="course.id" class="h-full">
+                  <CourseCard :course="course" class="h-full" />
+                </div>
+              </div>
 
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 [grid-auto-rows:1fr]">
-          <div v-for="course in coursesStore.courses" :key="course.id" class="h-full">
-            <CourseCard :course="course" class="h-full" />
+              <Pagination
+                v-if="coursesStore.courses.length > 0 && coursesStore.totalPages > 1"
+                :current-page="coursesStore.currentPage"
+                :total-pages="coursesStore.totalPages"
+                :on-page-change="coursesStore.changePage"
+                class="mt-12"
+              />
+            </div>
           </div>
         </div>
-
-        <Pagination
-          v-if="coursesStore.courses.length > 0 && coursesStore.totalPages > 1"
-          :current-page="coursesStore.currentPage"
-          :total-pages="coursesStore.totalPages"
-          :on-page-change="coursesStore.changePage"
-          class="mt-12"
-        />
       </div>
     </div>
   </div>
@@ -46,6 +56,7 @@ import Breadcrumb from '~/components/Breadcrumb.vue'
 import CourseCard from '~/components/CourseCard.vue'
 import Pagination from '~/components/Pagination.vue'
 import CourseFilters from '~/components/CourseFilters.vue'
+import SidebarFilters from '~/components/SidebarFilters.vue'
 import { useCoursesStore } from '~/stores/courses'
 
 const coursesStore = useCoursesStore()

@@ -12,9 +12,24 @@ export default defineEventHandler(async (event: H3Event) => {
     // Get query parameters for filtering and pagination
     const query = getQuery(event)
     
+    // Parse categories, levels, and tags as arrays if they exist
+    const parseArrayParam = (param: any): string[] | undefined => {
+      if (!param) return undefined
+      if (Array.isArray(param)) {
+        return param.map(item => safeParseString(item)).filter(item => item !== undefined) as string[]
+      }
+      const singleValue = safeParseString(param)
+      return singleValue ? [singleValue] : undefined
+    }
+
     const filter = {
       category: safeParseString(query.category),
+      categories: parseArrayParam(query.categories),
       level: safeParseString(query.level),
+      levels: parseArrayParam(query.levels),
+      tags: parseArrayParam(query.tags),
+      freeOnly: query.freeOnly === 'true',
+      paidOnly: query.paidOnly === 'true',
       minPrice: safeParseInt(query.minPrice),
       maxPrice: safeParseInt(query.maxPrice),
       searchQuery: safeParseString(query.q),
@@ -39,8 +54,20 @@ export default defineEventHandler(async (event: H3Event) => {
     // Transform the price from cents to dollars for the frontend
     // and add instructor information since the frontend expects it
     const transformedCourses = courses.map(course => ({
-      ...course,
+      id: course.id,
+      title: course.title,
+      description: course.description,
+      category: course.category,
+      instructorId: course.instructorId,
+      studentCount: course.studentCount,
+      rating: course.rating,
       price: course.price / 100, // Convert from cents to dollars
+      duration: course.duration,
+      level: course.level,
+      tags: course.tags, // Include tags field
+      image: course.image,
+      createdAt: course.createdAt,
+      updatedAt: course.updatedAt,
       // Add placeholder instructor information
       instructor: {
         name: 'Instructor Name',

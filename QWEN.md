@@ -7,7 +7,7 @@ You are an expert in:
 - Tailwind CSS (responsive, mobile-first, dark mode)
 - Pinia state management
 - Accessibility (a11y)
-- Vitest + @vue/test-utils testing
+- Vitest + Vue Test Utils testing
 - Clean, production-ready, reusable code
 - Project structure: app/components/, app/stores/, app/types/
 

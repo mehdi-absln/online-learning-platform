@@ -2,10 +2,13 @@ import type { Course } from './shared/auth'
 
 export interface CoursesFilter {
   category?: string
+  categories?: string[]
   level?: string
+  levels?: string[]
+  tags?: string[]
   instructorId?: number
-  minPrice?: number
-  maxPrice?: number
+  freeOnly?: boolean
+  paidOnly?: boolean
   searchQuery?: string
 }
 

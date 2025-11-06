@@ -20,6 +20,7 @@ export const courses = sqliteTable('courses', {
   price: integer('price').notNull(), // Price in cents
   duration: text('duration').notNull(), // e.g., '12 weeks'
   level: text('level').notNull(), // e.g., 'Beginner', 'Intermediate', 'Advanced'
+  tags: text('tags'), // Comma-separated tags for the course
   image: text('image'), // URL to course image
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
