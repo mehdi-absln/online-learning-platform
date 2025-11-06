@@ -15,7 +15,8 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "seed": "tsx scripts/seed.ts"
+    "seed": "tsx scripts/seed.ts",
+    "add-tags-to-existing": "tsx scripts/add-tags-to-existing-courses.ts"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.8.0",

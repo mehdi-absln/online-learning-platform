@@ -34,6 +34,7 @@ export interface Course {
   price: number;
   duration: string;
   level: string; // Add level property
+  tags?: string; // Comma-separated tags for the course
   image: string;
   createdAt: Date;
   updatedAt: Date;

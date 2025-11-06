@@ -32,14 +32,29 @@ export const useCoursesStore = defineStore('courses', () => {
       if (currentFilter.value.category) {
         queryParams.append('category', currentFilter.value.category)
       }
+      if (currentFilter.value.categories && currentFilter.value.categories.length > 0) {
+        currentFilter.value.categories.forEach(category => {
+          queryParams.append('categories', category)
+        })
+      }
       if (currentFilter.value.level) {
         queryParams.append('level', currentFilter.value.level)
       }
-      if (currentFilter.value.minPrice !== undefined) {
-        queryParams.append('minPrice', currentFilter.value.minPrice.toString())
+      if (currentFilter.value.levels && currentFilter.value.levels.length > 0) {
+        currentFilter.value.levels.forEach(level => {
+          queryParams.append('levels', level)
+        })
       }
-      if (currentFilter.value.maxPrice !== undefined) {
-        queryParams.append('maxPrice', currentFilter.value.maxPrice.toString())
+      if (currentFilter.value.tags && currentFilter.value.tags.length > 0) {
+        currentFilter.value.tags.forEach(tag => {
+          queryParams.append('tags', tag)
+        })
+      }
+      if (currentFilter.value.freeOnly) {
+        queryParams.append('freeOnly', 'true')
+      }
+      if (currentFilter.value.paidOnly) {
+        queryParams.append('paidOnly', 'true')
       }
       if (currentFilter.value.searchQuery) {
         queryParams.append('q', currentFilter.value.searchQuery)
