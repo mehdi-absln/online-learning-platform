@@ -4,6 +4,8 @@ import { setResponseStatus } from 'h3'
 import { getQuery } from 'h3'
 import { and, eq, like, gte, lte } from 'drizzle-orm'
 import { safeParseInt, safeParseString } from '../../utils/safe-parse'
+import { transformCoursesForClient } from '../../utils/course-transformer'
+import type { Course } from '~/types/shared/courses'
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
@@ -13,7 +15,7 @@ export default defineEventHandler(async (event: H3Event) => {
     const query = getQuery(event)
     
     // Parse categories, levels, and tags as arrays if they exist
-    const parseArrayParam = (param: any): string[] | undefined => {
+    const parseArrayParam = (param: unknown): string[] | undefined => {
       if (!param) return undefined
       if (Array.isArray(param)) {
         return param.map(item => safeParseString(item)).filter(item => item !== undefined) as string[]
@@ -51,32 +53,7 @@ export default defineEventHandler(async (event: H3Event) => {
     // Calculate pagination info
     const totalPages = Math.ceil(totalCourses / limit)
     
-    // Transform the price from cents to dollars for the frontend
-    // and add instructor information since the frontend expects it
-    const transformedCourses = courses.map(course => ({
-      id: course.id,
-      title: course.title,
-      description: course.description,
-      category: course.category,
-      instructorId: course.instructorId,
-      studentCount: course.studentCount,
-      rating: course.rating,
-      price: course.price / 100, // Convert from cents to dollars
-      duration: course.duration,
-      level: course.level,
-      tags: course.tags, // Include tags field
-      image: course.image,
-      createdAt: course.createdAt,
-      updatedAt: course.updatedAt,
-      // Add placeholder instructor information
-      instructor: {
-        name: 'Instructor Name',
-        avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
-      },
-      stats: {
-        students: course.studentCount
-      }
-    }))
+    const transformedCourses = transformCoursesForClient(courses)
     
     return {
       success: true,
@@ -88,17 +65,17 @@ export default defineEventHandler(async (event: H3Event) => {
         itemsPerPage: limit
       }
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Detailed error in GET /api/courses:', error)
-    console.error('Error name:', error.name)
-    console.error('Error message:', error.message)
-    console.error('Error stack:', error.stack)
+    console.error('Error name:', (error as Error).name)
+    console.error('Error message:', (error as Error).message)
+    console.error('Error stack:', (error as Error).stack)
     
     setResponseStatus(event, 500)
     return {
       success: false,
       message: 'Failed to fetch courses',
-      error: error.message || 'Unknown error occurred',
+      error: (error as Error).message || 'Unknown error occurred',
     }
   }
 })

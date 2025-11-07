@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import type { UseZodValidationOptions, ValidationResult } from '~/types/types'
 
-export function useZodValidation<T extends Record<string, any>>(
+export function useZodValidation<T extends Record<string, unknown>>(
   schema: z.ZodSchema<T>,
   initialData: T,
   options: UseZodValidationOptions = {}
@@ -85,7 +85,7 @@ export function useZodValidation<T extends Record<string, any>>(
   }
 
   // Validate a single field using Zod
-  const validateField = (fieldName: keyof T, value: any) => {
+  const validateField = (fieldName: keyof T, value: unknown) => {
     markFieldAsTouched(fieldName)
 
     // Create a temporary object with the updated value

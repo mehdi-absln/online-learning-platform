@@ -1,6 +1,7 @@
-import type { Course } from '~/types/shared/auth'
+import type { Course } from '~/types/shared/courses'
 import type { DetailedCourse, Lesson } from '~/types/shared/courses'
-import type { CoursesFilter, PaginatedCoursesResponse } from '~/types/courses-filter'
+import type { CoursesFilter } from '~/types/courses-filter'
+import type { ApiResponse, CourseListResponse, CourseDetailResponse } from '~/types/shared/api'
 
 export const useCoursesStore = defineStore('courses', () => {
   // State
@@ -68,7 +69,7 @@ export const useCoursesStore = defineStore('courses', () => {
       const queryString = queryParams.toString()
       const url = `/api/courses?${queryString}`
       
-      const response: any = await $fetch(url)
+      const response = await $fetch<CourseListResponse>(url)
       console.log('API response:', response)
       
       if (response.success) {
@@ -88,8 +89,9 @@ export const useCoursesStore = defineStore('courses', () => {
         console.error('API response not successful:', response.message)
         throw new Error(response.message || 'Failed to fetch courses')
       }
-    } catch (err: any) {
-      error.value = err.message || 'An error occurred while fetching courses'
+    } catch (err: unknown) {
+      const errorMessage = (err as Error)?.message || 'An error occurred while fetching courses'
+      error.value = errorMessage
       console.error('Error fetching courses:', err)
     } finally {
       loading.value = false
@@ -101,7 +103,7 @@ export const useCoursesStore = defineStore('courses', () => {
     error.value = null
     
     try {
-      const response = await $fetch(`/api/courses/${id}`)
+      const response = await $fetch<CourseDetailResponse>(`/api/courses/${id}`)
       
       if (response.success) {
         // The API now returns properly structured data
@@ -109,8 +111,9 @@ export const useCoursesStore = defineStore('courses', () => {
       } else {
         throw new Error(response.message || 'Failed to fetch course')
       }
-    } catch (err: any) {
-      error.value = err.message || 'An error occurred while fetching the course'
+    } catch (err: unknown) {
+      const errorMessage = (err as Error)?.message || 'An error occurred while fetching the course'
+      error.value = errorMessage
       console.error(`Error fetching course with id ${id}:`, err)
     } finally {
       loading.value = false

@@ -1,18 +1,52 @@
-export interface ApiResponse<T = any> {
+// Define common API response types
+
+// Generic response type for API calls
+export interface ApiResponse<T = unknown> {
   success: boolean;
-  message: string;
   data?: T;
+  message?: string;
   error?: string;
-  user?: T; // For auth-specific responses
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+  };
 }
 
-export interface ValidationError {
-  field: string;
-  message: string;
-}
-
-export interface ValidationErrorResponse {
+// Type for authentication responses
+export interface AuthResponse {
   success: boolean;
-  message: string;
-  errors: ValidationError[];
+  user?: import('~/types/shared/auth').User;
+  message?: string;
+  error?: string;
+}
+
+// Type for course list response
+export interface CourseListResponse {
+  success: boolean;
+  data: import('~/types/shared/courses').Course[];
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+  };
+}
+
+// Type for single course response
+export interface CourseDetailResponse {
+  success: boolean;
+  data: import('~/types/shared/courses').DetailedCourse;
+}
+
+// Type for filter options response
+export interface FilterOptionsResponse {
+  success: boolean;
+  data: {
+    categories: string[];
+    levels: string[];
+    tags: string[];
+    instructors: { id: number; name: string }[];
+  };
 }

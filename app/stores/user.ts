@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import type { UserState, SigninFormData, SignupFormData } from '~/types/types'
-import type { User, AuthResponse } from '~/types/shared/auth'
+import type { User } from '~/types/shared/auth'
+import type { ApiResponse, AuthResponse as AuthResponseType } from '~/types/shared/api'
 
 export const useUserStore = defineStore('user', {
   state: (): UserState => ({
@@ -34,15 +35,16 @@ export const useUserStore = defineStore('user', {
     async fetchUser() {
       this.setLoading(true)
       try {
-        const response: any = await $fetch('/api/auth/me')
+        const response = await $fetch<ApiResponse<{ user: User }>>('/api/auth/me')
         if (response?.success && response?.data?.user) {
           this.setUser(response.data.user)
         } else {
           this.clearUser()
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Failed to fetch user:', error)
-        this.setError(error.message || 'Failed to fetch user')
+        const errorMessage = (error as Error)?.message || 'Failed to fetch user'
+        this.setError(errorMessage)
         this.clearUser()
       } finally {
         this.setLoading(false)
@@ -52,28 +54,29 @@ export const useUserStore = defineStore('user', {
     async signIn(credentials: SigninFormData) {
       this.setLoading(true)
       try {
-        const response: any = await $fetch('/api/auth/signin', {
+        const response = await $fetch<AuthResponseType>('/api/auth/signin', {
           method: 'POST',
           body: credentials
         })
 
-        if (response?.success && response?.data?.user) {
-          this.setUser(response.data.user)
-          return { success: true, user: response.data.user } as AuthResponse
+        if (response?.success && response?.user) {
+          this.setUser(response.user)
+          return { success: true, user: response.user }
         } else {
           this.setError(response?.message || 'Sign in failed')
           return {
             success: false,
             error: response?.error || response?.message || 'Sign in failed'
-          } as AuthResponse
+          }
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Sign in error:', error)
-        this.setError(error.message || 'An unexpected error occurred')
+        const errorMessage = (error as Error)?.message || 'An unexpected error occurred'
+        this.setError(errorMessage)
         return {
           success: false,
-          error: error.message || 'An unexpected error occurred'
-        } as AuthResponse
+          error: errorMessage
+        }
       } finally {
         this.setLoading(false)
       }
@@ -82,28 +85,29 @@ export const useUserStore = defineStore('user', {
     async signUp(userData: SignupFormData) {
       this.setLoading(true)
       try {
-        const response: any = await $fetch('/api/auth/signup', {
+        const response = await $fetch<AuthResponseType>('/api/auth/signup', {
           method: 'POST',
           body: userData
         })
 
-        if (response?.success && response?.data?.user) {
-          this.setUser(response.data.user)
-          return { success: true, user: response.data.user } as AuthResponse
+        if (response?.success && response?.user) {
+          this.setUser(response.user)
+          return { success: true, user: response.user }
         } else {
           this.setError(response?.message || 'Sign up failed')
           return {
             success: false,
             error: response?.error || response?.message || 'Sign up failed'
-          } as AuthResponse
+          }
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Sign up error:', error)
-        this.setError(error.message || 'An unexpected error occurred')
+        const errorMessage = (error as Error)?.message || 'An unexpected error occurred'
+        this.setError(errorMessage)
         return {
           success: false,
-          error: error.message || 'An unexpected error occurred'
-        } as AuthResponse
+          error: errorMessage
+        }
       } finally {
         this.setLoading(false)
       }
@@ -111,16 +115,17 @@ export const useUserStore = defineStore('user', {
 
     async logout() {
       try {
-        const response: any = await $fetch('/api/auth/logout', { method: 'POST' })
+        const response = await $fetch<ApiResponse>('/api/auth/logout', { method: 'POST' })
         if (response?.success) {
           this.clearUser()
           await navigateTo('/home')
         } else {
           this.setError(response?.message || 'Logout failed')
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Logout failed:', error)
-        this.setError(error.message || 'Logout failed')
+        const errorMessage = (error as Error)?.message || 'Logout failed'
+        this.setError(errorMessage)
       }
     }
   }

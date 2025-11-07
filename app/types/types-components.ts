@@ -7,5 +7,5 @@ export interface BreadcrumbProps {
 
 // Interfaces for CourseCard component
 export interface CourseCardProps {
-  course: import('./shared/auth').Course
+  course: import('./shared/courses').Course
 }
