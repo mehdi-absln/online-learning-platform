@@ -1,4 +1,28 @@
-import type { Course } from './auth'
+import type { User } from './auth'
+
+// Define Course interface for UI components that includes instructor and stats
+export interface Course {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  instructor: {
+    name: string;
+    avatar: string;
+  };
+  stats: {
+    students: number;
+  };
+  rating: number;
+  price: number;
+  duration: string;
+  level: string;
+  tags?: string;
+  image: string;
+  createdAt: Date;
+  updatedAt: Date;
+  instructorId: number;
+}
 
 // Interfaces for course data operations that can be shared between client and server
 

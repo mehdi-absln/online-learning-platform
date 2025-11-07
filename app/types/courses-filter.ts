@@ -1,4 +1,4 @@
-import type { Course } from './shared/auth'
+import type { Course } from './shared/courses'
 
 export interface CoursesFilter {
   category?: string

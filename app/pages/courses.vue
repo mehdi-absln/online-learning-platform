@@ -17,12 +17,22 @@
           
           <!-- Main Content -->
           <div class="lg:w-3/4">
-            <div v-if="coursesStore.loading" class="text-center py-10">
-              <p class="text-white">Loading courses...</p>
+            <div v-if="!initialLoadCompleted" class="text-center py-10">
+              <div class="flex flex-col items-center justify-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+                <p class="text-white">Loading courses...</p>
+              </div>
             </div>
 
             <div v-else-if="coursesStore.error" class="text-center py-10">
               <p class="text-red-500">Error: {{ coursesStore.error }}</p>
+            </div>
+
+            <div v-else-if="coursesStore.loading" class="text-center py-10">
+              <div class="flex flex-col items-center justify-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+                <p class="text-white">Updating results...</p>
+              </div>
             </div>
 
             <div v-else>
@@ -60,10 +70,12 @@ import SidebarFilters from '~/components/SidebarFilters.vue'
 import { useCoursesStore } from '~/stores/courses'
 
 const coursesStore = useCoursesStore()
+const initialLoadCompleted = ref(false)
 
 // Fetch courses when the component is mounted
 onMounted(async () => {
   await coursesStore.fetchAllCourses()
+  initialLoadCompleted.value = true
 })
 
 useHead({

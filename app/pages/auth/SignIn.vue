@@ -105,7 +105,7 @@ const { form, errors, isValid, isFormValid, validateField, validateAll, getError
 const isLoading = ref(false)
 
 // Handle field blur with validation
-const handleFieldBlur = (fieldName: keyof SigninFormData, value: any) => {
+const handleFieldBlur = (fieldName: keyof SigninFormData, value: unknown) => {
   validateField(fieldName, value)
 }
 

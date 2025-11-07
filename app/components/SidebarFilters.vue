@@ -1,129 +1,144 @@
 <template>
   <div class="bg-[#282828] rounded-xl p-6 border border-[#474746] h-full">
-    <!-- Search Input -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-300 mb-2">Search</label>
-      <input
-        v-model="localFilter.searchQuery"
-        type="text"
-        placeholder="Search courses..."
-        class="w-full px-4 py-2 rounded-lg bg-[#1F1F1E] border border-[#474746] text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-        @input="applyFilters"
-      />
+    <!-- Loading indicator -->
+    <div v-if="loading" class="text-center py-10">
+      <p class="text-white">Loading filters...</p>
     </div>
 
-    <!-- Category Filter -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-300 mb-2">Category</label>
-      <div v-for="category in categories" :key="category" class="flex items-center mb-2">
+    <!-- Error message -->
+    <div v-else-if="error" class="text-center py-10">
+      <p class="text-red-500">Error: {{ error }}</p>
+    </div>
+
+    <!-- Filters -->
+    <div v-else>
+      <!-- Search Input -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-300 mb-2">Search</label>
         <input
-          :id="'category-' + category"
-          type="checkbox"
-          :value="category"
-          v-model="selectedCategories"
-          @change="updateCategoryFilter"
-          class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+          v-model="localFilter.searchQuery"
+          type="text"
+          placeholder="Search courses..."
+          class="w-full px-4 py-2 rounded-lg bg-[#1F1F1E] border border-[#474746] text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          @input="applyFilters"
         />
-        <label :for="'category-' + category" class="ml-2 text-sm text-gray-300">
-          {{ category }}
-        </label>
       </div>
-    </div>
 
-    <!-- Level Filter -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-300 mb-2">Level</label>
-      <div v-for="level in levels" :key="level" class="flex items-center mb-2">
-        <input
-          :id="'level-' + level"
-          type="checkbox"
-          :value="level"
-          v-model="selectedLevels"
-          @change="updateLevelFilter"
-          class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
-        />
-        <label :for="'level-' + level" class="ml-2 text-sm text-gray-300">
-          {{ level }}
-        </label>
-      </div>
-    </div>
-
-    <!-- Tag Filter -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-300 mb-2">Tags</label>
-      <div v-for="tag in tags" :key="tag" class="flex items-center mb-2">
-        <input
-          :id="'tag-' + tag"
-          type="checkbox"
-          :value="tag"
-          v-model="selectedTags"
-          @change="updateTagFilter"
-          class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
-        />
-        <label :for="'tag-' + tag" class="ml-2 text-sm text-gray-300">
-          {{ tag }}
-        </label>
-      </div>
-    </div>
-
-    <!-- Price Filter -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-300 mb-2">Price</label>
-      <div class="flex flex-col">
-        <div class="flex items-center mb-2">
+      <!-- Category Filter -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-300 mb-2">Category</label>
+        <div v-for="category in categories" :key="category" class="flex items-center mb-2">
           <input
-            id="free-only"
+            :id="'category-' + category"
             type="checkbox"
-            v-model="localFilter.freeOnly"
-            @change="updatePriceFilter"
+            :value="category"
+            v-model="selectedCategories"
+            @change="updateCategoryFilter"
             class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
           />
-          <label for="free-only" class="ml-2 text-sm text-gray-300">
-            Free
-          </label>
-        </div>
-        <div class="flex items-center mb-2">
-          <input
-            id="paid-only"
-            type="checkbox"
-            v-model="localFilter.paidOnly"
-            @change="updatePriceFilter"
-            class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
-          />
-          <label for="paid-only" class="ml-2 text-sm text-gray-300">
-            Paid
+          <label :for="'category-' + category" class="ml-2 text-sm text-gray-300">
+            {{ category }}
           </label>
         </div>
       </div>
-    </div>
 
-    <!-- Reset Button -->
-    <div class="mt-4">
-      <button
-        @click="resetFilters"
-        class="w-full px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-700 transition-colors duration-300"
-      >
-        Reset Filters
-      </button>
+      <!-- Level Filter -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-300 mb-2">Level</label>
+        <div v-for="level in levels" :key="level" class="flex items-center mb-2">
+          <input
+            :id="'level-' + level"
+            type="checkbox"
+            :value="level"
+            v-model="selectedLevels"
+            @change="updateLevelFilter"
+            class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+          />
+          <label :for="'level-' + level" class="ml-2 text-sm text-gray-300">
+            {{ level }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Tag Filter -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-300 mb-2">Tags</label>
+        <div v-for="tag in tags" :key="tag" class="flex items-center mb-2">
+          <input
+            :id="'tag-' + tag"
+            type="checkbox"
+            :value="tag"
+            v-model="selectedTags"
+            @change="updateTagFilter"
+            class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+          />
+          <label :for="'tag-' + tag" class="ml-2 text-sm text-gray-300">
+            {{ tag }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Price Filter -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-300 mb-2">Price</label>
+        <div class="flex flex-col">
+          <div class="flex items-center mb-2">
+            <input
+              id="free-only"
+              type="checkbox"
+              v-model="localFilter.freeOnly"
+              @change="updatePriceFilter"
+              class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+            />
+            <label for="free-only" class="ml-2 text-sm text-gray-300">
+              Free
+            </label>
+          </div>
+          <div class="flex items-center mb-2">
+            <input
+              id="paid-only"
+              type="checkbox"
+              v-model="localFilter.paidOnly"
+              @change="updatePriceFilter"
+              class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+            />
+            <label for="paid-only" class="ml-2 text-sm text-gray-300">
+              Paid
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reset Button -->
+      <div class="mt-4">
+        <button
+          @click="resetFilters"
+          class="w-full px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-700 transition-colors duration-300"
+        >
+          Reset Filters
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useCoursesStore } from '~/stores/courses'
+import { useCourseFilters } from '~/composables/useCourseFilters'
 import type { CoursesFilter } from '~/types/courses-filter'
 import { debounce } from 'lodash-es'
 
 const coursesStore = useCoursesStore()
+const { categories, levels, tags, fetchFilterOptions, loading, error } = useCourseFilters()
 
 // Initialize local filter with the current filter from the store
 const localFilter = ref<CoursesFilter>({ ...coursesStore.currentFilter })
 
-// Available categories, levels and tags - these might come from an API in a real application
-const categories = ref(['Programming', 'Design', 'Marketing', 'Photography', 'Data Science', 'Business'])
-const levels = ref(['Beginner', 'Intermediate', 'Advanced'])
-const tags = ref(['WordPress', 'JavaScript', 'Python', 'UI/UX', 'React', 'Vue'])
+// Fetch filter options when component is mounted
+onMounted(async () => {
+  await fetchFilterOptions()
+})
 
 // Initialize selected values based on current filter
 const selectedCategories = ref<string[]>(localFilter.value.category ? [localFilter.value.category] : [])

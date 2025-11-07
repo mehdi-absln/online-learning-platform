@@ -78,12 +78,14 @@ export default defineEventHandler(async (event) => {
         email: newUser.email
       }
     })
-  } catch (error: any) {
-    if (error.statusCode) {
-      return errorResponse(error.statusMessage || 'An error occurred', error.message)
+  } catch (error: unknown) {
+    // Check if the error has a statusCode property (Nuxt/H3 error)
+    if (typeof error === 'object' && error !== null && 'statusCode' in error) {
+      const nuxtError = error as { statusCode?: number; statusMessage?: string; message?: string }
+      return errorResponse(nuxtError.statusMessage || 'An error occurred', nuxtError.message)
     }
 
     console.error('Sign up error:', error)
-    return errorResponse('Internal server error', error.message)
+    return errorResponse('Internal server error', (error as Error).message)
   }
 })

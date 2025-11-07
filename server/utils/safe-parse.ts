@@ -1,7 +1,7 @@
 /**
  * Safely parses a value to number, returning undefined if invalid
  */
-export function safeParseInt(value: any): number | undefined {
+export function safeParseInt(value: unknown): number | undefined {
   if (value === undefined || value === null || value === '') {
     return undefined
   }
@@ -19,7 +19,7 @@ export function safeParseInt(value: any): number | undefined {
 /**
  * Safely converts a value to string, returning undefined if invalid
  */
-export function safeParseString(value: any): string | undefined {
+export function safeParseString(value: unknown): string | undefined {
   if (value === undefined || value === null) {
     return undefined
   }

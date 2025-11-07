@@ -71,7 +71,7 @@ export interface ValidationResult<T> {
   isFormValid: Ref<boolean>
   isDirty: Ref<boolean>
   touchedFields: Set<keyof T>
-  validateField: (field: keyof T, value: any) => void
+  validateField: (field: keyof T, value: unknown) => void
   validateAll: () => boolean
   getError: (field: keyof T) => string
   reset: () => void
