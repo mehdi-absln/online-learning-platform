@@ -91,9 +91,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import { useCoursesStore } from '~/stores/courses'
-import { useCourseFilters } from '~/composables/useCourseFilters'
 import type { CoursesFilter } from '~/types/courses-filter'
 import { debounce } from 'lodash-es'
 

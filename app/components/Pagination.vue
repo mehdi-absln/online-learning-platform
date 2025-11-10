@@ -1,3 +1,5 @@
+<!--suppress ALL -->
+
 <template>
   <div
     class="border border-[#474746] rounded-xl p-3 mt-10 flex flex-wrap items-center justify-between gap-6 shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
