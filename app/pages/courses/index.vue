@@ -68,7 +68,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 const coursesStore = useCoursesStore()
 const initialLoadCompleted = ref<boolean>(false)
 

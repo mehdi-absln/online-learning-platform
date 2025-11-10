@@ -1,4 +1,3 @@
-<!--suppress ALL -->
 <template>
   <div>
     <!-- Breadcrumb -->
@@ -12,6 +11,7 @@
 
         <div v-else-if="coursesStore.error" class="text-center py-10">
           <p class="text-red-500">Error: {{ coursesStore.error }}</p>
+          <NuxtLink to="/courses" class="text-primary mt-4 inline-block">Back to Courses</NuxtLink>
         </div>
 
         <div v-else-if="coursesStore.detailedCourse" class="bg-gray-800 rounded-xl p-8">
@@ -83,8 +83,9 @@
           </button>
         </div>
 
-        <div v-else class="text-center py-10">
+        <div v-else-if="!coursesStore.loading" class="text-center py-10">
           <p class="text-white">Course not found</p>
+          <NuxtLink to="/courses" class="text-primary mt-4 inline-block">Back to Courses</NuxtLink>
         </div>
       </div>
     </div>
@@ -98,14 +99,22 @@ const coursesStore = useCoursesStore()
 const route = useRoute()
 const courseId = parseInt(route.params.id as string)
 
+// Validate course ID
+if (isNaN(courseId) || courseId <= 0) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Course not found'
+  })
+}
+
 // Fetch course details when the component is mounted
 onMounted(async () => {
   await coursesStore.fetchCourseById(courseId)
 })
 
 useHead({
-  title: `${coursesStore.detailedCourse?.title || 'Course'} - Online Learning Platform`,
-  meta: [{ name: 'description', content: coursesStore.detailedCourse?.description || '' }]
+  title: computed(() => `${coursesStore.detailedCourse?.title || 'Course'} - Online Learning Platform`),
+  meta: computed(() => [{ name: 'description', content: coursesStore.detailedCourse?.description || '' }])
 })
 
 const breadcrumbCrumbs = computed(() => [

@@ -19,7 +19,6 @@ export async function getAllCourses(
     categories?: string[];
     level?: string;
     levels?: string[];
-    // tags?: string[];  // Temporarily removed until database column is properly added
     freeOnly?: boolean;
     paidOnly?: boolean;
     minPrice?: number;
@@ -141,7 +140,6 @@ export async function getCoursesCount(
     categories?: string[];
     level?: string;
     levels?: string[];
-    // tags?: string[];  // Temporarily removed until database column is properly added
     freeOnly?: boolean;
     paidOnly?: boolean;
     minPrice?: number;

@@ -1,5 +1,3 @@
-<!--suppress ALL -->
-
 <template>
   <div class="bg-[#0E0E0D] text-white py-16">
     <div class="container">

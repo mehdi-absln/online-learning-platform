@@ -1,4 +1,3 @@
-<!--suppress ALL -->
 <template>
   <div class="bg-[#282828] rounded-xl p-6 border border-[#474746] h-full">
     <!-- Loading indicator -->
@@ -25,7 +24,6 @@
             @input="applyFilters"
           />
           <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <!--suppress HtmlDeprecatedAttribute -->
             <svg
               class="w-5 h-5 text-gray-400"
               fill="none"
@@ -308,7 +306,7 @@
       <div class="mt-6">
         <button
           @click="resetFilters"
-          class="relative w-full font-antonio px-4 py-3 font-semibold text-white bg-gradient-to-r from-primary to-primary/90 group overflow-hidden"
+          class="relative w-full px-4 py-3 font-semibold text-white bg-gradient-to-r from-primary to-primary/90 group overflow-hidden"
         >
           <span
             class="absolute inset-0 w-0 bg-white/10 group-hover:w-full transition-all duration-500"
@@ -338,17 +336,7 @@
 
 <script setup lang="ts">
 import { debounce } from 'lodash-es'
-
-// Define an extended type to ensure all properties are available
-interface ExtendedCoursesFilter {
-  categories: string[]
-  levels: string[]
-  tags: string[]
-  freeOnly: boolean
-  paidOnly: boolean
-  searchQuery: string
-  [key: string]: any // Allow other properties from the original CoursesFilter
-}
+import type { ExtendedCoursesFilter } from '~/types/courses-filter'
 
 const coursesStore = useCoursesStore()
 const { categories, levels, tags, fetchFilterOptions, loading, error } = useCourseFilters()

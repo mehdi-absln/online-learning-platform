@@ -12,6 +12,16 @@ export interface CoursesFilter {
   searchQuery?: string
 }
 
+export interface ExtendedCoursesFilter extends CoursesFilter {
+  categories: string[]
+  levels: string[]
+  tags: string[]
+  freeOnly: boolean
+  paidOnly: boolean
+  searchQuery: string
+  [key: string]: any // Allow other properties from the original CoursesFilter
+}
+
 export interface FilterOptions {
   categories: string[]
   levels: string[]
