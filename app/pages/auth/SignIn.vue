@@ -1,4 +1,3 @@
-<!--suppress ALL -->
 <template>
   <form class="mt-8 space-y-6" @submit.prevent="handleSubmit">
     <div class="text-center">

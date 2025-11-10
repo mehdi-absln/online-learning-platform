@@ -1,5 +1,3 @@
-<!--suppress ALL -->
-
 <script setup lang="ts">
 useSeoMeta({
   title: 'Home - Online Learning Platform',

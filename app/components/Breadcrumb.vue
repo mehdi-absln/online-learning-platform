@@ -1,5 +1,3 @@
-<!--suppress ALL -->
-
 <template>
   <nav class="flex px-4 py-2 text-sm" aria-label="Breadcrumb">
     <ol class="inline-flex items-center space-x-1 md:space-x-3">

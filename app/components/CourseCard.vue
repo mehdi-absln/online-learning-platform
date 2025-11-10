@@ -1,5 +1,3 @@
-<!--suppress ALL -->
-
 <template>
   <div
     class="w-full h-full rounded-3xl overflow-hidden transition-all duration-500 ease-in-out group flex flex-col"
