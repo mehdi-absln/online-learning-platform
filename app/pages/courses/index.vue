@@ -1,42 +1,38 @@
 <template>
   <div>
-    <div>
-      <div
-        class="flex flex-col items-center justify-center text-center py-36 gap-y-4 bg-gradient-to-r from-[#1F1F1E] via-[#282828] to-primary/60 shadow-[inset_0_0_40px_rgba(255,255,255,0.05),_0_10px_30px_rgba(0,0,0,0.6)] backdrop-blur-sm rounded-2xl"
-      >
-        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Courses</h1>
-        <Breadcrumb :crumbs="breadcrumbCrumbs" />
-      </div>
+    <!-- Loading state -->
+    <div v-if="isLoading" class="py-36 flex flex-col items-center justify-center">
+      <LoadingSpinner message="Loading courses..." />
+    </div>
 
-      <div class="container py-8">
+    <!-- Error state -->
+    <div v-else-if="coursesStore.error" class="py-36 flex flex-col items-center justify-center">
+      <p class="text-red-500 text-lg">Error: {{ coursesStore.error }}</p>
+    </div>
+
+    <!-- Course listing -->
+    <div v-else>
+      <!-- Hero -->
+      <header>
+        <div
+          class="flex flex-col items-center justify-center text-center py-36 gap-y-4 bg-gradient-to-r from-[#1F1F1E] via-[#282828] to-primary/60 shadow-[inset_0_0_40px_rgba(255,255,255,0.05),_0_10px_30px_rgba(0,0,0,0.6)] backdrop-blur-sm rounded-2xl"
+        >
+          <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Courses</h1>
+          <Breadcrumb :crumbs="breadcrumbCrumbs" />
+        </div>
+      </header>
+
+      <section class="container py-8">
         <div class="flex flex-col lg:flex-row gap-8">
           <!-- Sidebar Filters -->
-          <div class="lg:w-1/4">
+          <aside class="lg:w-1/4">
             <SidebarFilters />
-          </div>
+          </aside>
 
           <!-- Main Content -->
           <div class="lg:w-3/4">
-            <div v-if="!initialLoadCompleted" class="text-center py-10">
-              <div class="flex flex-col items-center justify-center">
-                <div
-                  class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"
-                ></div>
-                <p class="text-white">Loading courses...</p>
-              </div>
-            </div>
-
-            <div v-else-if="coursesStore.error" class="text-center py-10">
-              <p class="text-red-500">Error: {{ coursesStore.error }}</p>
-            </div>
-
-            <div v-else-if="coursesStore.loading" class="text-center py-10">
-              <div class="flex flex-col items-center justify-center">
-                <div
-                  class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"
-                ></div>
-                <p class="text-white">Updating results...</p>
-              </div>
+            <div v-if="coursesStore.loading" class="text-center py-10">
+              <LoadingSpinner message="Updating results..." />
             </div>
 
             <div v-else>
@@ -63,19 +59,19 @@
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 const coursesStore = useCoursesStore()
-const initialLoadCompleted = ref<boolean>(false)
+const isLoading = ref(true)
 
 // Fetch courses when the component is mounted
 onMounted(async () => {
   await coursesStore.fetchAllCourses()
-  initialLoadCompleted.value = true
+  isLoading.value = false
 })
 
 useHead({
