@@ -32,7 +32,7 @@ export async function getAllCourses(
   try {
     // Build where conditions array
     const whereConditions = []
-    
+
     if (filter.category) {
       whereConditions.push(eq(courses.category, filter.category))
     }
@@ -115,16 +115,16 @@ export async function getAllCourses(
     }
 
     query = query.orderBy(desc(courses.createdAt))
-    
+
     // Apply pagination if specified
     if (limit !== undefined) {
       query = query.limit(limit)
     }
-    
+
     if (offset !== undefined) {
       query = query.offset(offset)
     }
-    
+
     const result = await query
     return result
   } catch (error) {
@@ -151,7 +151,7 @@ export async function getCoursesCount(
   try {
     // Build where conditions array
     const whereConditions = []
-    
+
     if (filter.category) {
       whereConditions.push(eq(courses.category, filter.category))
     }
@@ -214,7 +214,7 @@ export async function getCoursesCount(
         query = query.where(and(...whereConditions))
       }
     }
-    
+
     const result = await query
     return result.length
   } catch (error) {
@@ -246,7 +246,7 @@ export async function getCourseById(id: number): Promise<Course | undefined> {
       .from(courses)
       .where(eq(courses.id, id))
       .limit(1)
-    
+
     return result[0]
   } catch (error) {
     console.error(`Error fetching course with id ${id}:`, error)
@@ -276,7 +276,7 @@ export async function getCoursesByInstructorId(instructorId: number): Promise<Co
       .from(courses)
       .where(eq(courses.instructorId, instructorId))
       .orderBy(desc(courses.createdAt))
-      
+
     return result
   } catch (error) {
     console.error(`Error fetching courses for instructor with id ${instructorId}:`, error)
@@ -296,7 +296,7 @@ export async function createCourse(data: CreateCourseData): Promise<Course> {
         updatedAt: new Date(),
       })
       .returning()
-    
+
     return newCourse
   } catch (error) {
     console.error('Error creating course:', error)
@@ -314,7 +314,7 @@ export async function updateCourse(id: number, data: UpdateCourseData): Promise<
       })
       .where(eq(courses.id, id))
       .returning()
-    
+
     return updatedCourse
   } catch (error) {
     console.error(`Error updating course with id ${id}:`, error)
