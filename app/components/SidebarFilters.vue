@@ -337,24 +337,43 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es'
 import type { ExtendedCoursesFilter } from '~/types/courses-filter'
+import { useRoute } from '#app'
 
 const coursesStore = useCoursesStore()
+const route = useRoute()
 const { categories, levels, tags, fetchFilterOptions, loading, error } = useCourseFilters()
 
-// Initialize local filter with the current filter from the store
+// Initialize local filter with the current filter from the store and URL query
 const localFilter = ref<ExtendedCoursesFilter>({
-  categories: coursesStore.currentFilter.categories || [],
-  levels: coursesStore.currentFilter.levels || [],
-  tags: coursesStore.currentFilter.tags || [],
-  freeOnly: coursesStore.currentFilter.freeOnly || false,
-  paidOnly: coursesStore.currentFilter.paidOnly || false,
-  searchQuery: coursesStore.currentFilter.searchQuery || '',
+  categories: coursesStore.currentFilter.categories || 
+    (route.query.category ? [route.query.category as string] : []) ||
+    [],
+  levels: coursesStore.currentFilter.levels || 
+    (route.query.level ? [route.query.level as string] : []) ||
+    [],
+  tags: coursesStore.currentFilter.tags || 
+    (route.query.tag ? [route.query.tag as string] : route.query.tags ? 
+     (Array.isArray(route.query.tags) ? route.query.tags : [route.query.tags as string]) : []) ||
+    [],
+  freeOnly: coursesStore.currentFilter.freeOnly || 
+    (route.query.freeOnly === 'true'),
+  paidOnly: coursesStore.currentFilter.paidOnly || 
+    (route.query.paidOnly === 'true'),
+  searchQuery: coursesStore.currentFilter.searchQuery || 
+    (route.query.q as string) || '',
   ...coursesStore.currentFilter
 })
 
 // Fetch filter options when component is mounted
 onMounted(async () => {
   await fetchFilterOptions()
+  
+  // Apply filters from URL query after filter options are loaded
+  if (route.query.tag || route.query.tags || route.query.category || 
+      route.query.level || route.query.q || route.query.freeOnly || 
+      route.query.paidOnly) {
+    applyFilters()
+  }
 })
 
 // Watch for changes in store filter and update local filter
