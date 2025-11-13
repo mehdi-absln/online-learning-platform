@@ -238,6 +238,7 @@ export async function getCourseById(id: number): Promise<Course | undefined> {
         price: courses.price,
         duration: courses.duration,
         level: courses.level,
+        tags: courses.tags,
         image: courses.image,
         createdAt: courses.createdAt,
         updatedAt: courses.updatedAt,

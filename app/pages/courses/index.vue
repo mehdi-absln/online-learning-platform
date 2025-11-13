@@ -67,10 +67,55 @@
 <script setup lang="ts">
 const coursesStore = useCoursesStore()
 const isLoading = ref(true)
+const route = useRoute()
 
-// Fetch courses when the component is mounted
+// Fetch courses with filters from URL query parameters
 onMounted(async () => {
-  await coursesStore.fetchAllCourses()
+  // Extract filters from URL query
+  const filters: any = {}
+  
+  if (route.query.category) {
+    filters.category = route.query.category as string
+  }
+  
+  if (route.query.level) {
+    filters.level = route.query.level as string
+  }
+  
+  if (route.query.tag) {
+    // For tag, we need to add it to tags array
+    filters.tags = [route.query.tag as string]
+  } else if (route.query.tags) {
+    // If there are multiple tags in URL
+    const tagParam = route.query.tags
+    filters.tags = Array.isArray(tagParam) ? tagParam : [tagParam as string]
+  }
+  
+  if (route.query.q) {
+    filters.searchQuery = route.query.q as string
+  }
+  
+  if (route.query.instructorId) {
+    filters.instructorId = parseInt(route.query.instructorId as string)
+  }
+  
+  if (route.query.minPrice) {
+    filters.minPrice = parseInt(route.query.minPrice as string)
+  }
+  
+  if (route.query.maxPrice) {
+    filters.maxPrice = parseInt(route.query.maxPrice as string)
+  }
+  
+  if (route.query.freeOnly) {
+    filters.freeOnly = route.query.freeOnly === 'true'
+  }
+  
+  if (route.query.paidOnly) {
+    filters.paidOnly = route.query.paidOnly === 'true'
+  }
+  
+  await coursesStore.fetchAllCourses(filters)
   isLoading.value = false
 })
 

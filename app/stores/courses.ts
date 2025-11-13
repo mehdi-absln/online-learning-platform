@@ -123,17 +123,113 @@ export const useCoursesStore = defineStore('courses', () => {
   const resetFilter = () => {
     currentFilter.value = {}
     currentPage.value = 1
+    
+    // Reset the URL to remove all filters
+    navigateTo('/courses')
+    
+    fetchAllCourses({}, 1)
   }
 
   const applyFilter = (filter: CoursesFilter) => {
     currentFilter.value = filter
     currentPage.value = 1
+    
+    // Build query string from filter
+    const queryParams = new URLSearchParams()
+    if (filter.category) {
+      queryParams.append('category', filter.category)
+    }
+    if (filter.categories && filter.categories.length > 0) {
+      filter.categories.forEach(category => {
+        queryParams.append('categories', category)
+      })
+    }
+    if (filter.level) {
+      queryParams.append('level', filter.level)
+    }
+    if (filter.levels && filter.levels.length > 0) {
+      filter.levels.forEach(level => {
+        queryParams.append('levels', level)
+      })
+    }
+    if (filter.tags && filter.tags.length > 0) {
+      filter.tags.forEach(tag => {
+        queryParams.append('tags', tag)
+      })
+    }
+    if (filter.freeOnly) {
+      queryParams.append('freeOnly', 'true')
+    }
+    if (filter.paidOnly) {
+      queryParams.append('paidOnly', 'true')
+    }
+    if (filter.searchQuery) {
+      queryParams.append('q', filter.searchQuery)
+    }
+    if (filter.instructorId) {
+      queryParams.append('instructorId', filter.instructorId.toString())
+    }
+    queryParams.append('page', '1') // Reset page to 1 when filter changes
+    queryParams.append('limit', itemsPerPage.value.toString())
+
+    // Update the URL to reflect the new filters
+    const queryString = queryParams.toString()
+    const newRoute = queryString ? `/courses?${queryString}` : '/courses'
+    
+    // Use navigateTo to update the URL without page reload
+    navigateTo(newRoute)
+    
     fetchAllCourses(filter, 1)
   }
 
   const changePage = (page: number) => {
     if (page >= 1 && page <= totalPages.value) {
       currentPage.value = page
+      
+      // Build query string from current filter
+      const queryParams = new URLSearchParams()
+      if (currentFilter.value.category) {
+        queryParams.append('category', currentFilter.value.category)
+      }
+      if (currentFilter.value.categories && currentFilter.value.categories.length > 0) {
+        currentFilter.value.categories.forEach(category => {
+          queryParams.append('categories', category)
+        })
+      }
+      if (currentFilter.value.level) {
+        queryParams.append('level', currentFilter.value.level)
+      }
+      if (currentFilter.value.levels && currentFilter.value.levels.length > 0) {
+        currentFilter.value.levels.forEach(level => {
+          queryParams.append('levels', level)
+        })
+      }
+      if (currentFilter.value.tags && currentFilter.value.tags.length > 0) {
+        currentFilter.value.tags.forEach(tag => {
+          queryParams.append('tags', tag)
+        })
+      }
+      if (currentFilter.value.freeOnly) {
+        queryParams.append('freeOnly', 'true')
+      }
+      if (currentFilter.value.paidOnly) {
+        queryParams.append('paidOnly', 'true')
+      }
+      if (currentFilter.value.searchQuery) {
+        queryParams.append('q', currentFilter.value.searchQuery)
+      }
+      if (currentFilter.value.instructorId) {
+        queryParams.append('instructorId', currentFilter.value.instructorId.toString())
+      }
+      queryParams.append('page', page.toString())
+      queryParams.append('limit', itemsPerPage.value.toString())
+
+      // Update the URL to reflect the new page
+      const queryString = queryParams.toString()
+      const newRoute = queryString ? `/courses?${queryString}` : '/courses'
+      
+      navigateTo(newRoute)
+      
       fetchAllCourses(undefined, page)
     }
   }
