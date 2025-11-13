@@ -194,6 +194,9 @@ Type definitions are stored in `app/types/types.ts` with interfaces for:
 - `server/db/user-service.ts` - Database operations for users
 - `server/api/auth/*.ts` - Authentication API routes
 - `app/types/types.ts` - Type definitions
+- `app/types/auth-errors.ts` - Authentication error messages
+- `app/types/shared/auth.ts` - Shared authentication types
+- `server/utils/jwt.ts` - JWT token handling
 - `__tests__/user-store.test.ts` - Example test file
 - `drizzle.config.ts` - Database migration configuration
 

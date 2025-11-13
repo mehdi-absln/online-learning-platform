@@ -316,23 +316,17 @@
                 <h3 class="text-white text-xl font-semibold">Tags</h3>
                 <div class="flex flex-wrap gap-2 mt-4">
                   <template v-if="coursesStore.detailedCourse?.tags">
-                    <NuxtLink 
-                      v-for="tag in coursesStore.detailedCourse.tags.split(',')" 
+                    <NuxtLink
+                      v-for="tag in coursesStore.detailedCourse.tags.split(',').map(t => t.trim())"
                       :key="tag"
-                      :to="`/courses?tag=${encodeURIComponent(tag.trim())}`" 
+                      :to="`/courses?tag=${encodeURIComponent(tag)}`"
                       class="px-3 py-1 bg-gray-700 text-white text-sm rounded-full hover:bg-primary transition-colors duration-300"
                     >
-                      {{ tag.trim() }}
+                      {{ tag }}
                     </NuxtLink>
                   </template>
-                  <span v-else class="text-gray-400 italic">
-                    No tags available
-                  </span>
+                  <span v-else class="text-gray-400 italic"> No tags available </span>
                 </div>
-                <!-- Debug info - remove this in production -->
-                <!-- <div class="mt-2 text-xs text-gray-500">
-                  Debug: Tags value: "{{ coursesStore.detailedCourse?.tags }}"
-                </div> -->
               </div>
             </div>
           </div>
