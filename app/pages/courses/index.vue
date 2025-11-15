@@ -73,15 +73,15 @@ const route = useRoute()
 onMounted(async () => {
   // Extract filters from URL query
   const filters: any = {}
-  
+
   if (route.query.category) {
     filters.category = route.query.category as string
   }
-  
+
   if (route.query.level) {
     filters.level = route.query.level as string
   }
-  
+
   if (route.query.tag) {
     // For tag, we need to add it to tags array
     filters.tags = [route.query.tag as string]
@@ -90,31 +90,31 @@ onMounted(async () => {
     const tagParam = route.query.tags
     filters.tags = Array.isArray(tagParam) ? tagParam : [tagParam as string]
   }
-  
+
   if (route.query.q) {
     filters.searchQuery = route.query.q as string
   }
-  
+
   if (route.query.instructorId) {
     filters.instructorId = parseInt(route.query.instructorId as string)
   }
-  
+
   if (route.query.minPrice) {
     filters.minPrice = parseInt(route.query.minPrice as string)
   }
-  
+
   if (route.query.maxPrice) {
     filters.maxPrice = parseInt(route.query.maxPrice as string)
   }
-  
+
   if (route.query.freeOnly) {
     filters.freeOnly = route.query.freeOnly === 'true'
   }
-  
+
   if (route.query.paidOnly) {
     filters.paidOnly = route.query.paidOnly === 'true'
   }
-  
+
   await coursesStore.fetchAllCourses(filters)
   isLoading.value = false
 })

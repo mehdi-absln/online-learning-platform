@@ -24,12 +24,7 @@
             @input="applyFilters"
           />
           <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <svg
-              class="w-5 h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg class="w-5 h-5 text-gray-400 fill-none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -47,53 +42,13 @@
           <label class="block text-base font-antonio font-bold text-primary mb-4">Category</label>
           <div class="space-y-2">
             <div v-for="category in categories" :key="category" class="flex items-center">
-              <div class="relative">
-                <input
-                  :id="'category-' + category"
-                  type="checkbox"
-                  :value="category"
-                  v-model="localFilter.categories"
-                  @change="applyFilters"
-                  class="w-4 h-4 text-primary bg-[#1F1F1E] border-[#474746] rounded cursor-pointer opacity-0 absolute z-10"
-                />
-                <label
-                  :for="'category-' + category"
-                  class="flex items-center cursor-pointer"
-                  :class="
-                    localFilter.categories.includes(category) ? 'text-primary' : 'text-gray-300'
-                  "
-                >
-                  <span
-                    class="w-4 h-4 flex items-center justify-center rounded border mr-3"
-                    :class="
-                      localFilter.categories.includes(category)
-                        ? 'border-primary bg-primary'
-                        : 'border-[#474746] bg-[#1F1F1E]'
-                    "
-                  >
-                    <svg
-                      v-show="localFilter.categories.includes(category)"
-                      class="w-3 h-3 text-[#1F1F1E]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="3"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                  </span>
-                </label>
-              </div>
-              <label
-                :for="'category-' + category"
-                class="ml-1 text-sm text-gray-300 cursor-pointer flex-1 py-1"
-              >
-                {{ category }}
-              </label>
+              <FilterItemCheckbox
+                :id="'category-' + category"
+                :value="category"
+                v-model="localFilter.categories"
+                @update:modelValue="applyFilters"
+                :label="category"
+              />
             </div>
           </div>
         </div>
@@ -103,52 +58,13 @@
           <label class="block text-base font-antonio font-bold text-primary mb-4">Level</label>
           <div class="space-y-2">
             <div v-for="level in levels" :key="level" class="flex items-center">
-              <div class="relative">
-                <input
-                  :id="'level-' + level"
-                  type="checkbox"
-                  :value="level"
-                  v-model="localFilter.levels"
-                  @change="applyFilters"
-                  class="w-4 h-4 text-primary bg-[#1F1F1E] border-[#474746] rounded cursor-pointer opacity-0 absolute z-10"
-                />
-                <label
-                  :for="'level-' + level"
-                  class="flex items-center cursor-pointer"
-                  :class="localFilter.levels.includes(level) ? 'text-primary' : 'text-gray-300'"
-                >
-                  <span
-                    class="w-4 h-4 flex items-center justify-center rounded border mr-3"
-                    :class="
-                      localFilter.levels.includes(level)
-                        ? 'border-primary bg-primary'
-                        : 'border-[#474746] bg-[#1F1F1E]'
-                    "
-                  >
-                    <svg
-                      v-show="localFilter.levels.includes(level)"
-                      class="w-3 h-3 text-[#1F1F1E]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="3"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                  </span>
-                </label>
-              </div>
-              <label
-                :for="'level-' + level"
-                class="ml-1 text-sm text-gray-300 cursor-pointer flex-1 py-1"
-              >
-                {{ level }}
-              </label>
+              <FilterItemCheckbox
+                :id="'level-' + level"
+                :value="level"
+                v-model="localFilter.levels"
+                @update:modelValue="applyFilters"
+                :label="level"
+              />
             </div>
           </div>
         </div>
@@ -158,52 +74,13 @@
           <label class="block text-base font-antonio font-bold text-primary mb-4">Tags</label>
           <div class="space-y-2">
             <div v-for="tag in tags" :key="tag" class="flex items-center">
-              <div class="relative">
-                <input
-                  :id="'tag-' + tag"
-                  type="checkbox"
-                  :value="tag"
-                  v-model="localFilter.tags"
-                  @change="applyFilters"
-                  class="w-4 h-4 text-primary bg-[#1F1F1E] border-[#474746] rounded cursor-pointer opacity-0 absolute z-10"
-                />
-                <label
-                  :for="'tag-' + tag"
-                  class="flex items-center cursor-pointer"
-                  :class="localFilter.tags.includes(tag) ? 'text-primary' : 'text-gray-300'"
-                >
-                  <span
-                    class="w-4 h-4 flex items-center justify-center rounded border mr-3"
-                    :class="
-                      localFilter.tags.includes(tag)
-                        ? 'border-primary bg-primary'
-                        : 'border-[#474746] bg-[#1F1F1E]'
-                    "
-                  >
-                    <svg
-                      v-show="localFilter.tags.includes(tag)"
-                      class="w-3 h-3 text-[#1F1F1E]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="3"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                  </span>
-                </label>
-              </div>
-              <label
-                :for="'tag-' + tag"
-                class="ml-1 text-sm text-gray-300 cursor-pointer flex-1 py-1"
-              >
-                {{ tag }}
-              </label>
+              <FilterItemCheckbox
+                :id="'tag-' + tag"
+                :value="tag"
+                v-model="localFilter.tags"
+                @update:modelValue="applyFilters"
+                :label="tag"
+              />
             </div>
           </div>
         </div>
@@ -213,90 +90,20 @@
           <label class="block text-base font-antonio font-bold text-primary mb-4">Price</label>
           <div class="space-y-3">
             <div class="flex items-center">
-              <div class="relative">
-                <input
-                  id="free-only"
-                  type="checkbox"
-                  v-model="localFilter.freeOnly"
-                  @change="updatePriceFilter"
-                  class="w-4 h-4 text-primary bg-[#1F1F1E] border-[#474746] rounded cursor-pointer opacity-0 absolute z-10"
-                />
-                <label
-                  for="free-only"
-                  class="flex items-center cursor-pointer"
-                  :class="localFilter.freeOnly ? 'text-primary' : 'text-gray-300'"
-                >
-                  <span
-                    class="w-4 h-4 flex items-center justify-center rounded border mr-3"
-                    :class="
-                      localFilter.freeOnly
-                        ? 'border-primary bg-primary'
-                        : 'border-[#474746] bg-[#1F1F1E]'
-                    "
-                  >
-                    <svg
-                      v-show="localFilter.freeOnly"
-                      class="w-3 h-3 text-[#1F1F1E]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="3"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                  </span>
-                </label>
-              </div>
-              <label for="free-only" class="ml-1 text-sm text-gray-300 cursor-pointer flex-1 py-1">
-                Free
-              </label>
+              <FilterCheckbox
+                id="free-only"
+                label="Free"
+                v-model="localFilter.freeOnly"
+                @change="updatePriceFilter"
+              />
             </div>
             <div class="flex items-center">
-              <div class="relative">
-                <input
-                  id="paid-only"
-                  type="checkbox"
-                  v-model="localFilter.paidOnly"
-                  @change="updatePriceFilter"
-                  class="w-4 h-4 text-primary bg-[#1F1F1E] border-[#474746] rounded cursor-pointer opacity-0 absolute z-10"
-                />
-                <label
-                  for="paid-only"
-                  class="flex items-center cursor-pointer"
-                  :class="localFilter.paidOnly ? 'text-primary' : 'text-gray-300'"
-                >
-                  <span
-                    class="w-4 h-4 flex items-center justify-center rounded border mr-3"
-                    :class="
-                      localFilter.paidOnly
-                        ? 'border-primary bg-primary'
-                        : 'border-[#474746] bg-[#1F1F1E]'
-                    "
-                  >
-                    <svg
-                      v-show="localFilter.paidOnly"
-                      class="w-3 h-3 text-[#1F1F1E]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="3"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                  </span>
-                </label>
-              </div>
-              <label for="paid-only" class="ml-1 text-sm text-gray-300 cursor-pointer flex-1 py-1">
-                Paid
-              </label>
+              <FilterCheckbox
+                id="paid-only"
+                label="Paid"
+                v-model="localFilter.paidOnly"
+                @change="updatePriceFilter"
+              />
             </div>
           </div>
         </div>
@@ -313,8 +120,7 @@
           />
           <span class="relative z-10 flex items-center justify-center">
             <svg
-              class="w-5 h-5 mr-2"
-              fill="none"
+              class="w-5 h-5 mr-2 fill-none"
               stroke="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -345,33 +151,41 @@ const { categories, levels, tags, fetchFilterOptions, loading, error } = useCour
 
 // Initialize local filter with the current filter from the store and URL query
 const localFilter = ref<ExtendedCoursesFilter>({
-  categories: coursesStore.currentFilter.categories || 
+  categories: coursesStore.currentFilter.categories ||
     (route.query.category ? [route.query.category as string] : []) ||
     [],
-  levels: coursesStore.currentFilter.levels || 
+  levels: coursesStore.currentFilter.levels ||
     (route.query.level ? [route.query.level as string] : []) ||
     [],
-  tags: coursesStore.currentFilter.tags || 
-    (route.query.tag ? [route.query.tag as string] : route.query.tags ? 
-     (Array.isArray(route.query.tags) ? route.query.tags : [route.query.tags as string]) : []) ||
+  tags: coursesStore.currentFilter.tags ||
+    (route.query.tag
+      ? [route.query.tag as string]
+      : route.query.tags
+        ? Array.isArray(route.query.tags)
+          ? route.query.tags.map((tag) => tag as string)
+          : [route.query.tags as string]
+        : []) ||
     [],
-  freeOnly: coursesStore.currentFilter.freeOnly || 
-    (route.query.freeOnly === 'true'),
-  paidOnly: coursesStore.currentFilter.paidOnly || 
-    (route.query.paidOnly === 'true'),
-  searchQuery: coursesStore.currentFilter.searchQuery || 
-    (route.query.q as string) || '',
+  freeOnly: coursesStore.currentFilter.freeOnly || route.query.freeOnly === 'true',
+  paidOnly: coursesStore.currentFilter.paidOnly || route.query.paidOnly === 'true',
+  searchQuery: coursesStore.currentFilter.searchQuery || (route.query.q as string) || '',
   ...coursesStore.currentFilter
 })
 
 // Fetch filter options when component is mounted
 onMounted(async () => {
   await fetchFilterOptions()
-  
+
   // Apply filters from URL query after filter options are loaded
-  if (route.query.tag || route.query.tags || route.query.category || 
-      route.query.level || route.query.q || route.query.freeOnly || 
-      route.query.paidOnly) {
+  if (
+    route.query.tag ||
+    route.query.tags ||
+    route.query.category ||
+    route.query.level ||
+    route.query.q ||
+    route.query.freeOnly ||
+    route.query.paidOnly
+  ) {
     applyFilters()
   }
 })
@@ -393,13 +207,16 @@ watch(
   { deep: true }
 )
 
-const updatePriceFilter = () => {
-  // Make sure both freeOnly and paidOnly are not selected at the same time
-  if (localFilter.value.freeOnly && localFilter.value.paidOnly) {
-    // If both are selected, deselect one of them (let's deselect paidOnly)
-    localFilter.value.paidOnly = false
+// Toggle exclusive boolean filters (e.g. freeOnly and paidOnly)
+const toggleExclusiveFilter = (filterName: keyof ExtendedCoursesFilter, oppositeFilterName: keyof ExtendedCoursesFilter) => {
+  if (localFilter.value[filterName] && localFilter.value[oppositeFilterName]) {
+    localFilter.value[oppositeFilterName] = false
   }
   applyFilters()
+}
+
+const updatePriceFilter = () => {
+  toggleExclusiveFilter('freeOnly', 'paidOnly')
 }
 
 const applyFilters = debounce(() => {

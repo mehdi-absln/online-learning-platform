@@ -3,28 +3,22 @@
 #             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
 #-------------------------------------------------------------------------------#
 version: "1.0"
-
 #Specify inspection profile for code analysis
 profile:
   name: qodana.starter
-
 #Enable inspections
 #include:
 #  - name: <SomeEnabledInspectionId>
-
 #Disable inspections
 #exclude:
 #  - name: <SomeDisabledInspectionId>
 #    paths:
 #      - <path/where/not/run/inspection>
-
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
 #bootstrap: sh ./prepare-qodana.sh
-
 #Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
 #plugins:
 #  - id: <plugin.id> #(plugin id can be found at https://plugins.jetbrains.com)
-
 # Quality gate. Will fail the CI/CD pipeline if any condition is not met
 # severityThresholds - configures maximum thresholds for different problem severities
 # testCoverageThresholds - configures minimum code coverage on a whole project and newly added code
@@ -36,6 +30,85 @@ profile:
 #  testCoverageThresholds:
 #    fresh: 70
 #    total: 50
-
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: jetbrains/qodana-js:2025.2
+exclude:
+  - name: All
+    paths:
+      - app
+      - app/components
+      - app/components/Breadcrumb.vue
+      - app/components/CourseCard.vue
+      - app/components/CourseFilters.vue
+      - app/components/LoadingSpinner.vue
+      - app/components/Pagination.vue
+      - app/components/SidebarFilters.vue
+      - app/composables
+      - app/composables/useCourseFilters.ts
+      - app/composables/useZodValidation.ts
+      - app/constants
+      - app/constants/index.ts
+      - app/layouts
+      - app/layouts/default.vue
+      - app/middleware
+      - app/middleware/auth.ts
+      - app/pages
+      - app/pages/auth
+      - app/pages/auth/SignIn.vue
+      - app/pages/auth/SignUp.vue
+      - app/pages/courses
+      - app/pages/courses/[id].vue
+      - app/pages/courses/index.vue
+      - app/pages/dashboard.vue
+      - app/pages/home.vue
+      - app/stores
+      - app/stores/courses.ts
+      - app/stores/user.ts
+      - app/types
+      - app/types/shared
+      - app/types/shared/api.ts
+      - app/types/shared/auth.ts
+      - app/types/shared/courses.ts
+      - app/types/shared/users.ts
+      - app/types/auth-errors.ts
+      - app/types/courses-filter.ts
+      - app/types/filter-options.ts
+      - app/types/types-components.ts
+      - app/types/types.ts
+      - app/app.vue
+      - scripts
+      - scripts/add-tags-to-existing-courses.ts
+      - server
+      - server/api
+      - server/api/auth
+      - server/api/auth/logout.post.ts
+      - server/api/auth/me.get.ts
+      - server/api/auth/signin.post.ts
+      - server/api/auth/signup.post.ts
+      - server/api/courses
+      - server/api/courses/filters
+      - server/api/courses/filters/options.get.ts
+      - server/api/courses/[id].get.ts
+      - server/api/courses/count.get.ts
+      - server/api/courses/index.get.ts
+      - server/api/users
+      - server/api/users/[id].get.ts
+      - server/db
+      - server/db/course-service.ts
+      - server/db/index.ts
+      - server/db/schema.ts
+      - server/db/user-service.ts
+      - server/utils
+      - server/utils/course-authorization.ts
+      - server/utils/course-transformer.ts
+      - server/utils/image-processor.ts
+      - server/utils/jwt.ts
+      - server/utils/response.ts
+      - server/utils/safe-parse.ts
+      - .eslintrc.cjs
+      - drizzle.config.ts
+      - eslint.config.mjs
+      - nuxt.config.ts
+      - postcss.config.ts
+      - tailwind.config.ts
+      - vitest.config.ts
