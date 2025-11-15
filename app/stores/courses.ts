@@ -1,84 +1,62 @@
 import type { Course } from '~/types/shared/courses'
-import type { DetailedCourse, Lesson } from '~/types/shared/courses'
+import type { DetailedCourse } from '~/types/shared/courses'
 import type { CoursesFilter } from '~/types/courses-filter'
-import type { ApiResponse, CourseListResponse, CourseDetailResponse } from '~/types/shared/api'
+import type { CourseListResponse, CourseDetailResponse } from '~/types/shared/api'
 
 export const useCoursesStore = defineStore('courses', () => {
   // State
   const courses = ref<Course[]>([])
   const detailedCourse = ref<DetailedCourse | null>(null)
-  const loading = ref(false)
+  const loading = ref<boolean>(false)
   const error = ref<string | null>(null)
   const currentFilter = ref<CoursesFilter>({})
-  const currentPage = ref(1)
-  const itemsPerPage = ref(12) // Updated to match API default
-  const totalPages = ref(1)
-  const totalItems = ref(0)
+  const currentPage = ref<number>(1)
+  const itemsPerPage = ref<number>(12)
+  const totalPages = ref<number>(1)
+  const totalItems = ref<number>(0)
+
+  // Helper function to build query parameters from filter
+  const buildQueryParams = (filter: CoursesFilter, page: number, limit: number) => {
+    const queryParams = new URLSearchParams()
+    if (filter.category) queryParams.append('category', filter.category)
+    if (filter.categories?.length)
+      filter.categories.forEach((c) => queryParams.append('categories', c))
+    if (filter.level) queryParams.append('level', filter.level)
+    if (filter.levels?.length) filter.levels.forEach((l) => queryParams.append('levels', l))
+    if (filter.tags?.length) filter.tags.forEach((t) => queryParams.append('tags', t))
+    if (filter.freeOnly) queryParams.append('freeOnly', 'true')
+    if (filter.paidOnly) queryParams.append('paidOnly', 'true')
+    if (filter.searchQuery) queryParams.append('q', filter.searchQuery)
+    if (filter.instructorId) queryParams.append('instructorId', filter.instructorId.toString())
+    queryParams.append('page', page.toString())
+    queryParams.append('limit', limit.toString())
+    return queryParams
+  }
+
+  // Helper function to update URL
+  const updateUrl = (queryParams: URLSearchParams) => {
+    const queryString = queryParams.toString()
+    const newRoute = queryString ? `/courses?${queryString}` : '/courses'
+    navigateTo(newRoute)
+  }
 
   // Actions
   const fetchAllCourses = async (filter?: CoursesFilter, page: number = 1) => {
     loading.value = true
     error.value = null
-    
+
     try {
-      console.log('Fetching courses from API with filters:', filter, 'page:', page)
-      
-      // If filter is provided, update the current filter
-      if (filter !== undefined) {
-        currentFilter.value = filter
-      }
-      
-      // Build query string from filter and pagination
-      const queryParams = new URLSearchParams()
-      if (currentFilter.value.category) {
-        queryParams.append('category', currentFilter.value.category)
-      }
-      if (currentFilter.value.categories && currentFilter.value.categories.length > 0) {
-        currentFilter.value.categories.forEach(category => {
-          queryParams.append('categories', category)
-        })
-      }
-      if (currentFilter.value.level) {
-        queryParams.append('level', currentFilter.value.level)
-      }
-      if (currentFilter.value.levels && currentFilter.value.levels.length > 0) {
-        currentFilter.value.levels.forEach(level => {
-          queryParams.append('levels', level)
-        })
-      }
-      if (currentFilter.value.tags && currentFilter.value.tags.length > 0) {
-        currentFilter.value.tags.forEach(tag => {
-          queryParams.append('tags', tag)
-        })
-      }
-      if (currentFilter.value.freeOnly) {
-        queryParams.append('freeOnly', 'true')
-      }
-      if (currentFilter.value.paidOnly) {
-        queryParams.append('paidOnly', 'true')
-      }
-      if (currentFilter.value.searchQuery) {
-        queryParams.append('q', currentFilter.value.searchQuery)
-      }
-      if (currentFilter.value.instructorId) {
-        queryParams.append('instructorId', currentFilter.value.instructorId.toString())
-      }
-      queryParams.append('page', page.toString())
-      queryParams.append('limit', itemsPerPage.value.toString())
-      
+      if (filter) currentFilter.value = filter
+
+      const queryParams = buildQueryParams(currentFilter.value, page, itemsPerPage.value)
       const queryString = queryParams.toString()
       const url = `/api/courses?${queryString}`
-      
+
       const response = await $fetch<CourseListResponse>(url)
-      console.log('API response:', response)
-      
+
       if (response.success) {
-        console.log('Number of courses received:', response.data?.length || 0)
-        // The API now returns properly structured data
         courses.value = response.data || []
-        console.log('Courses stored in store:', courses.value.length)
-        
-        // Update pagination info if available
+
         if (response.pagination) {
           currentPage.value = response.pagination.currentPage
           totalPages.value = response.pagination.totalPages
@@ -86,13 +64,14 @@ export const useCoursesStore = defineStore('courses', () => {
           itemsPerPage.value = response.pagination.itemsPerPage
         }
       } else {
-        console.error('API response not successful:', response.message)
-        throw new Error(response.message || 'Failed to fetch courses')
+        error.value = 'Failed to fetch courses'
       }
     } catch (err: unknown) {
-      const errorMessage = (err as Error)?.message || 'An error occurred while fetching courses'
-      error.value = errorMessage
-      console.error('Error fetching courses:', err)
+      const apiResponse = err as { data?: { message?: string } }
+      error.value =
+        apiResponse.data?.message ||
+        (err as Error)?.message ||
+        'An error occurred while fetching courses'
     } finally {
       loading.value = false
     }
@@ -101,20 +80,21 @@ export const useCoursesStore = defineStore('courses', () => {
   const fetchCourseById = async (id: number) => {
     loading.value = true
     error.value = null
-    
+
     try {
       const response = await $fetch<CourseDetailResponse>(`/api/courses/${id}`)
-      
+
       if (response.success) {
-        // The API now returns properly structured data
         detailedCourse.value = response.data
       } else {
-        throw new Error(response.message || 'Failed to fetch course')
+        error.value = 'Failed to fetch course'
       }
     } catch (err: unknown) {
-      const errorMessage = (err as Error)?.message || 'An error occurred while fetching the course'
-      error.value = errorMessage
-      console.error(`Error fetching course with id ${id}:`, err)
+      const apiResponse = err as { data?: { message?: string } }
+      error.value =
+        apiResponse.data?.message ||
+        (err as Error)?.message ||
+        'An error occurred while fetching the course'
     } finally {
       loading.value = false
     }
@@ -123,114 +103,27 @@ export const useCoursesStore = defineStore('courses', () => {
   const resetFilter = () => {
     currentFilter.value = {}
     currentPage.value = 1
-    
-    // Reset the URL to remove all filters
+
     navigateTo('/courses')
-    
-    fetchAllCourses({}, 1)
+    void fetchAllCourses({}, 1)
   }
 
   const applyFilter = (filter: CoursesFilter) => {
     currentFilter.value = filter
     currentPage.value = 1
-    
-    // Build query string from filter
-    const queryParams = new URLSearchParams()
-    if (filter.category) {
-      queryParams.append('category', filter.category)
-    }
-    if (filter.categories && filter.categories.length > 0) {
-      filter.categories.forEach(category => {
-        queryParams.append('categories', category)
-      })
-    }
-    if (filter.level) {
-      queryParams.append('level', filter.level)
-    }
-    if (filter.levels && filter.levels.length > 0) {
-      filter.levels.forEach(level => {
-        queryParams.append('levels', level)
-      })
-    }
-    if (filter.tags && filter.tags.length > 0) {
-      filter.tags.forEach(tag => {
-        queryParams.append('tags', tag)
-      })
-    }
-    if (filter.freeOnly) {
-      queryParams.append('freeOnly', 'true')
-    }
-    if (filter.paidOnly) {
-      queryParams.append('paidOnly', 'true')
-    }
-    if (filter.searchQuery) {
-      queryParams.append('q', filter.searchQuery)
-    }
-    if (filter.instructorId) {
-      queryParams.append('instructorId', filter.instructorId.toString())
-    }
-    queryParams.append('page', '1') // Reset page to 1 when filter changes
-    queryParams.append('limit', itemsPerPage.value.toString())
 
-    // Update the URL to reflect the new filters
-    const queryString = queryParams.toString()
-    const newRoute = queryString ? `/courses?${queryString}` : '/courses'
-    
-    // Use navigateTo to update the URL without page reload
-    navigateTo(newRoute)
-    
-    fetchAllCourses(filter, 1)
+    const queryParams = buildQueryParams(filter, 1, itemsPerPage.value)
+    updateUrl(queryParams)
+    void fetchAllCourses(filter, 1)
   }
 
   const changePage = (page: number) => {
     if (page >= 1 && page <= totalPages.value) {
       currentPage.value = page
-      
-      // Build query string from current filter
-      const queryParams = new URLSearchParams()
-      if (currentFilter.value.category) {
-        queryParams.append('category', currentFilter.value.category)
-      }
-      if (currentFilter.value.categories && currentFilter.value.categories.length > 0) {
-        currentFilter.value.categories.forEach(category => {
-          queryParams.append('categories', category)
-        })
-      }
-      if (currentFilter.value.level) {
-        queryParams.append('level', currentFilter.value.level)
-      }
-      if (currentFilter.value.levels && currentFilter.value.levels.length > 0) {
-        currentFilter.value.levels.forEach(level => {
-          queryParams.append('levels', level)
-        })
-      }
-      if (currentFilter.value.tags && currentFilter.value.tags.length > 0) {
-        currentFilter.value.tags.forEach(tag => {
-          queryParams.append('tags', tag)
-        })
-      }
-      if (currentFilter.value.freeOnly) {
-        queryParams.append('freeOnly', 'true')
-      }
-      if (currentFilter.value.paidOnly) {
-        queryParams.append('paidOnly', 'true')
-      }
-      if (currentFilter.value.searchQuery) {
-        queryParams.append('q', currentFilter.value.searchQuery)
-      }
-      if (currentFilter.value.instructorId) {
-        queryParams.append('instructorId', currentFilter.value.instructorId.toString())
-      }
-      queryParams.append('page', page.toString())
-      queryParams.append('limit', itemsPerPage.value.toString())
 
-      // Update the URL to reflect the new page
-      const queryString = queryParams.toString()
-      const newRoute = queryString ? `/courses?${queryString}` : '/courses'
-      
-      navigateTo(newRoute)
-      
-      fetchAllCourses(undefined, page)
+      const queryParams = buildQueryParams(currentFilter.value, page, itemsPerPage.value)
+      updateUrl(queryParams)
+      void fetchAllCourses(undefined, page)
     }
   }
 
@@ -245,12 +138,12 @@ export const useCoursesStore = defineStore('courses', () => {
     itemsPerPage,
     totalPages,
     totalItems,
-    
+
     // Actions
     fetchAllCourses,
     fetchCourseById,
     resetFilter,
     applyFilter,
-    changePage,
+    changePage
   }
 })
