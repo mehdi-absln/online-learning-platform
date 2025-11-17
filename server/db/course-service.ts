@@ -343,3 +343,55 @@ export async function getCourseLessons(courseId: number): Promise<Lesson[]> {
     throw new Error('Failed to fetch course lessons')
   }
 }
+
+export async function getAllCategories(): Promise<string[]> {
+  try {
+    const results = await db
+      .select({ category: courses.category })
+      .from(courses)
+      .groupBy(courses.category)
+
+    return results.map(result => result.category)
+  } catch (error) {
+    console.error('Error fetching categories:', error)
+    throw new Error('Failed to fetch categories')
+  }
+}
+
+export async function getAllLevels(): Promise<string[]> {
+  try {
+    const results = await db
+      .select({ level: courses.level })
+      .from(courses)
+      .groupBy(courses.level)
+
+    return results.map(result => result.level)
+  } catch (error) {
+    console.error('Error fetching levels:', error)
+    throw new Error('Failed to fetch levels')
+  }
+}
+
+export async function getAllTags(): Promise<string[]> {
+  try {
+    // Get all courses with tags
+    const coursesWithTags = await db
+      .select({ tags: courses.tags })
+      .from(courses)
+
+    // Extract and split tags
+    const allTags = new Set<string>()
+    for (const course of coursesWithTags) {
+      if (course.tags && typeof course.tags === 'string') {
+        // Split by comma and trim whitespace
+        const tags = course.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '')
+        tags.forEach(tag => allTags.add(tag))
+      }
+    }
+
+    return Array.from(allTags)
+  } catch (error) {
+    console.error('Error fetching tags:', error)
+    throw new Error('Failed to fetch tags')
+  }
+}
