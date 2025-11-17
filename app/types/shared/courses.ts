@@ -53,6 +53,9 @@ export interface UpdateCourseData {
 // Detailed course interface for when we need additional data (e.g., lessons)
 export interface DetailedCourse extends Course {
   lessons: string[];
+  learningObjectives?: string[];
+  courseContent?: CourseContentSection[];
+  reviews?: Review[];
 }
 
 // Lesson interface
@@ -64,4 +67,20 @@ export interface Lesson {
   order: number;
   createdAt: Date;
   updatedAt: Date;
+}
+
+// Course content section interface
+export interface CourseContentSection {
+  title: string;
+  description: string;
+  lessons: number;
+  duration: string;
+}
+
+// Review interface
+export interface Review {
+  reviewerName: string;
+  rating: number;
+  comment: string;
+  date: string;
 }
