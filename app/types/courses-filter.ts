@@ -10,6 +10,8 @@ export interface CoursesFilter {
   freeOnly?: boolean
   paidOnly?: boolean
   searchQuery?: string
+  minPrice?: number
+  maxPrice?: number
 }
 
 export interface ExtendedCoursesFilter extends CoursesFilter {
@@ -19,6 +21,8 @@ export interface ExtendedCoursesFilter extends CoursesFilter {
   freeOnly: boolean
   paidOnly: boolean
   searchQuery: string
+  minPrice?: number
+  maxPrice?: number
   [key: string]: any // Allow other properties from the original CoursesFilter
 }
 

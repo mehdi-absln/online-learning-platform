@@ -62,3 +62,11 @@ const handleChange = (event: Event) => {
   emit('update:modelValue', target.checked)
 }
 </script>
+
+<style scoped>
+input[type='checkbox']:checked:hover {
+  filter: brightness(100%);
+  border-color: #e05243; /* Primary color */
+  background-color: #e05243; /* Primary color */
+}
+</style>

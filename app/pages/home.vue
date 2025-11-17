@@ -11,7 +11,7 @@ useSeoMeta({
 
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
-import CourseCard from '~/components/CourseCard.vue'
+import CourseCard from '~/components/courses/CourseCard.vue'
 
 const trainers = [
   {

@@ -17,11 +17,10 @@
         <label class="block text-base font-antonio font-bold text-primary mb-4">Search</label>
         <div class="relative">
           <input
-            v-model="localFilter.searchQuery"
+            v-model="searchInput"
             type="text"
             placeholder="Search courses..."
             class="w-full pl-10 pr-4 py-3 rounded-lg bg-[#1F1F1E] border border-[#474746] text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            @input="applyFilters"
           />
           <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg class="w-5 h-5 text-gray-400 fill-none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,12 +39,13 @@
         <!-- Category Filter -->
         <div class="pb-6 border-b border-[#474746]">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Category</label>
+          <div v-if="categories.length === 0" class="text-gray-400 text-sm">No categories available</div>
           <div class="space-y-2">
             <div v-for="category in categories" :key="category" class="flex items-center">
-              <FilterItemCheckbox
+              <CourseFilterItemCheckbox
                 :id="'category-' + category"
                 :value="category"
-                v-model="localFilter.categories"
+                v-model="filter.categories"
                 @update:modelValue="applyFilters"
                 :label="category"
               />
@@ -56,12 +56,13 @@
         <!-- Level Filter -->
         <div class="pb-6 border-b border-[#474746]">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Level</label>
+          <div v-if="levels.length === 0" class="text-gray-400 text-sm">No levels available</div>
           <div class="space-y-2">
             <div v-for="level in levels" :key="level" class="flex items-center">
-              <FilterItemCheckbox
+              <CourseFilterItemCheckbox
                 :id="'level-' + level"
                 :value="level"
-                v-model="localFilter.levels"
+                v-model="filter.levels"
                 @update:modelValue="applyFilters"
                 :label="level"
               />
@@ -72,12 +73,13 @@
         <!-- Tag Filter -->
         <div class="pb-6 border-b border-[#474746]">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Tags</label>
+          <div v-if="tags.length === 0" class="text-gray-400 text-sm">No tags available</div>
           <div class="space-y-2">
             <div v-for="tag in tags" :key="tag" class="flex items-center">
-              <FilterItemCheckbox
+              <CourseFilterItemCheckbox
                 :id="'tag-' + tag"
                 :value="tag"
-                v-model="localFilter.tags"
+                v-model="filter.tags"
                 @update:modelValue="applyFilters"
                 :label="tag"
               />
@@ -90,18 +92,18 @@
           <label class="block text-base font-antonio font-bold text-primary mb-4">Price</label>
           <div class="space-y-3">
             <div class="flex items-center">
-              <FilterCheckbox
+              <CourseFilterPriceCheckbox
                 id="free-only"
                 label="Free"
-                v-model="localFilter.freeOnly"
+                v-model="filter.freeOnly"
                 @change="updatePriceFilter"
               />
             </div>
             <div class="flex items-center">
-              <FilterCheckbox
+              <CourseFilterPriceCheckbox
                 id="paid-only"
                 label="Paid"
-                v-model="localFilter.paidOnly"
+                v-model="filter.paidOnly"
                 @change="updatePriceFilter"
               />
             </div>
@@ -141,107 +143,44 @@
 </template>
 
 <script setup lang="ts">
+import { useCourseFilters } from '~/composables/useCourseFilters'
 import { debounce } from 'lodash-es'
-import type { ExtendedCoursesFilter } from '~/types/courses-filter'
-import { useRoute } from '#app'
+import CourseFilterItemCheckbox from '~/components/courses/CourseFilterItemCheckbox.vue'
+import CourseFilterPriceCheckbox from '~/components/courses/CourseFilterPriceCheckbox.vue'
 
-const coursesStore = useCoursesStore()
-const route = useRoute()
-const { categories, levels, tags, fetchFilterOptions, loading, error } = useCourseFilters()
+const {
+  filter,
+  categories,
+  levels,
+  tags,
+  applyFilters,
+  resetFilters,
+  toggleExclusiveFilter,
+  fetchFilterOptions,
+  loading,
+  error
+} = useCourseFilters()
 
-// Initialize local filter with the current filter from the store and URL query
-const localFilter = ref<ExtendedCoursesFilter>({
-  categories: coursesStore.currentFilter.categories ||
-    (route.query.category ? [route.query.category as string] : []) ||
-    [],
-  levels: coursesStore.currentFilter.levels ||
-    (route.query.level ? [route.query.level as string] : []) ||
-    [],
-  tags: coursesStore.currentFilter.tags ||
-    (route.query.tag
-      ? [route.query.tag as string]
-      : route.query.tags
-        ? Array.isArray(route.query.tags)
-          ? route.query.tags.map((tag) => tag as string)
-          : [route.query.tags as string]
-        : []) ||
-    [],
-  freeOnly: coursesStore.currentFilter.freeOnly || route.query.freeOnly === 'true',
-  paidOnly: coursesStore.currentFilter.paidOnly || route.query.paidOnly === 'true',
-  searchQuery: coursesStore.currentFilter.searchQuery || (route.query.q as string) || '',
-  ...coursesStore.currentFilter
-})
+const searchInput = ref(filter.value.searchQuery)
 
-// Fetch filter options when component is mounted
-onMounted(async () => {
-  await fetchFilterOptions()
-
-  // Apply filters from URL query after filter options are loaded
-  if (
-    route.query.tag ||
-    route.query.tags ||
-    route.query.category ||
-    route.query.level ||
-    route.query.q ||
-    route.query.freeOnly ||
-    route.query.paidOnly
-  ) {
-    applyFilters()
-  }
-})
-
-// Watch for changes in store filter and update local filter
-watch(
-  () => coursesStore.currentFilter,
-  (newFilter) => {
-    localFilter.value = {
-      categories: newFilter.categories || [],
-      levels: newFilter.levels || [],
-      tags: newFilter.tags || [],
-      freeOnly: newFilter.freeOnly || false,
-      paidOnly: newFilter.paidOnly || false,
-      searchQuery: newFilter.searchQuery || '',
-      ...newFilter
-    }
-  },
-  { deep: true }
-)
-
-// Toggle exclusive boolean filters (e.g. freeOnly and paidOnly)
-const toggleExclusiveFilter = (filterName: keyof ExtendedCoursesFilter, oppositeFilterName: keyof ExtendedCoursesFilter) => {
-  if (localFilter.value[filterName] && localFilter.value[oppositeFilterName]) {
-    localFilter.value[oppositeFilterName] = false
-  }
+// Watch for changes in search input and apply filters with debounce
+watch(searchInput, debounce((val) => {
+  filter.value.searchQuery = val
   applyFilters()
-}
+}, 300))
+
+// Watch for changes in filter.searchQuery and update search input
+watch(() => filter.value.searchQuery, (val) => {
+  searchInput.value = val
+})
 
 const updatePriceFilter = () => {
   toggleExclusiveFilter('freeOnly', 'paidOnly')
 }
 
-const applyFilters = debounce(() => {
-  coursesStore.applyFilter(localFilter.value)
-}, 300)
-
-const resetFilters = () => {
-  // Reset all filter values to their defaults
-  localFilter.value = {
-    categories: [],
-    levels: [],
-    tags: [],
-    freeOnly: false,
-    paidOnly: false,
-    searchQuery: ''
-  }
-  coursesStore.resetFilter()
-  coursesStore.fetchAllCourses()
-}
+// Fetch filter options when component is mounted
+onMounted(async () => {
+  await fetchFilterOptions()
+})
 </script>
 
-<style scoped>
-input[type='checkbox']:checked:hover {
-  filter: brightness(100%);
-  border-color: #e05243; /* Primary color */
-  background-color: #e05243; /* Primary color */
-}
-</style>
