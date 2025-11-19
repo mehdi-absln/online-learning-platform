@@ -30,10 +30,7 @@
       role="tabpanel"
       :aria-labelledby="`tab-${tab.id}`"
       :hidden="activeIndex !== index"
-      :class="[
-        'pt-4',
-        activeIndex === index ? 'block' : 'hidden'
-      ]"
+      :class="['pt-12', activeIndex === index ? 'block' : 'hidden']"
     >
       <slot :name="tab.slotName" v-if="activeIndex === index" />
     </div>
@@ -41,93 +38,82 @@
 </template>
 
 <script setup lang="ts">
-interface TabItem {
-  id: string;
-  title: string;
-  slotName: string;
-}
+import type { TabItem, TabsProps, TabsEmits } from '~/types/tabs-types'
 
-interface Props {
-  modelValue?: number;
-  ariaLabel?: string;
-  tabs: { title: string; name: string }[];
-}
-
-interface Emits {
-  (e: 'update:modelValue', value: number): void;
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<TabsProps>(), {
   modelValue: 0,
   ariaLabel: 'Tabs',
-  tabs: () => [],
-});
+  tabs: () => []
+})
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<TabsEmits>()
 
-const activeIndex = ref(props.modelValue);
-const tabRefs = ref<HTMLElement[]>([]);
+const activeIndex = ref(props.modelValue)
+const tabRefs = ref<HTMLElement[]>([])
 
 // Convert provided tabs to internal format
 const tabData = computed<TabItem[]>(() => {
   return props.tabs.map((tab, index) => ({
     id: `tab-${index}`,
     title: tab.title,
-    slotName: tab.name,
-  }));
-});
+    slotName: tab.name
+  }))
+})
 
 // Watch for changes in modelValue
-watch(() => props.modelValue, (newValue) => {
-  if (newValue !== activeIndex.value && newValue < tabData.value.length) {
-    activeIndex.value = newValue;
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue !== activeIndex.value && newValue < tabData.value.length) {
+      activeIndex.value = newValue
+    }
   }
-});
+)
 
 const setTabRef = (el: any, index: number) => {
-  if (el) tabRefs.value[index] = el;
-};
+  if (el) tabRefs.value[index] = el
+}
 
 const changeTab = (index: number) => {
   if (index >= 0 && index < tabData.value.length) {
-    activeIndex.value = index;
-    emit('update:modelValue', index);
+    activeIndex.value = index
+    emit('update:modelValue', index)
     // Focus the activated tab for accessibility
     nextTick(() => {
       if (tabRefs.value[index]) {
-        tabRefs.value[index].focus();
+        tabRefs.value[index].focus()
       }
-    });
+    })
   }
-};
+}
 
 const handleKeydown = (event: KeyboardEvent, index: number) => {
   switch (event.key) {
     case 'ArrowLeft':
-      event.preventDefault();
-      focusTab(index > 0 ? index - 1 : tabData.value.length - 1);
-      break;
+      event.preventDefault()
+      focusTab(index > 0 ? index - 1 : tabData.value.length - 1)
+      break
     case 'ArrowRight':
-      event.preventDefault();
-      focusTab(index < tabData.value.length - 1 ? index + 1 : 0);
-      break;
+      event.preventDefault()
+      focusTab(index < tabData.value.length - 1 ? index + 1 : 0)
+      break
     case 'Home':
-      event.preventDefault();
-      focusTab(0);
-      break;
+      event.preventDefault()
+      focusTab(0)
+      break
     case 'End':
-      event.preventDefault();
-      focusTab(tabData.value.length - 1);
-      break;
+      event.preventDefault()
+      focusTab(tabData.value.length - 1)
+      break
     default:
-      break;
+      break
   }
-};
+}
 
 const focusTab = (index: number) => {
-  changeTab(index);
+  changeTab(index)
   if (tabRefs.value[index]) {
-    tabRefs.value[index].focus();
+    tabRefs.value[index].focus()
   }
-};
+}
 </script>

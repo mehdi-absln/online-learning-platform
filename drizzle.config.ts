@@ -1,10 +1,12 @@
-import { defineConfig } from 'drizzle-kit'
+import { config } from 'dotenv'
 
-export default defineConfig({
+config() // Load environment variables
+
+export default {
   schema: './server/db/schema.ts',
-  out: './server/drizzle/migrations',
+  out: './drizzle',
   dialect: 'sqlite',
   dbCredentials: {
-    url: './server/data/db.sqlite',
-  }
-})
+    url: process.env.DATABASE_URL || 'file:./data/db.sqlite',
+  },
+}

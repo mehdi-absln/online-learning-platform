@@ -1,0 +1,1 @@
+ALTER TABLE `lessons` ADD `section_id` integer;

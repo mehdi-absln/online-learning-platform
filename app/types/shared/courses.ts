@@ -75,6 +75,7 @@ export interface CourseContentSection {
   description: string;
   lessons: number;
   duration: string;
+  content?: string[]; // Array of lesson titles for this section
 }
 
 // Review interface

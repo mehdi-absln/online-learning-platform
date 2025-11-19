@@ -37,6 +37,7 @@ This is a comprehensive online learning platform built with Nuxt.js, featuring u
 - State management with Pinia
 - SEO-friendly with proper meta tags
 - Form validation on both client and server
+- Recently added: Tabs component with Course Info and Reviews tabs on course page
 
 ### Tech Stack
 - **Framework**: Nuxt.js 4 with Vue 3
@@ -163,6 +164,34 @@ Type definitions are stored in `app/types/types.ts` with interfaces for:
 - Styled with Tailwind CSS
 - Responsive design principles
 - Form validation and error handling
+- Recently added: Tabs component with proper accessibility features
+
+## Recent Additions: Tabs Component
+
+A reusable Tabs component has been implemented with the following features:
+- Accessible design with proper ARIA attributes
+- Keyboard navigation support (arrow keys, Home, End)
+- Active tab highlighting with a primary color bottom border
+- Named slots for tab content
+- Customizable tab titles
+- Smooth transitions and hover effects
+- Proper TypeScript type definitions
+- Comprehensive unit tests
+- Integration with the course details page to show Course Info and Reviews
+
+### Tabs Component Implementation
+- Located at `app/components/Tabs.vue`
+- Uses `role="tablist"`, `role="tab"`, and `role="tabpanel"` for accessibility
+- Includes proper keyboard event handling
+- Dynamic tab creation based on props
+- Uses a single component approach without requiring separate Tab and TabPanel components
+- No dark mode specific styles
+
+### Course Details Page Integration
+- Updated `app/pages/courses/[id].vue` to use the new Tabs component
+- Implements Course Info and Reviews tabs
+- Added TypeScript interfaces for learning objectives, course content, and reviews in `app/types/shared/courses.ts`
+- Added comprehensive tests in `__tests__/Tabs.test.ts`
 
 ## Development Conventions
 
@@ -198,7 +227,8 @@ Type definitions are stored in `app/types/types.ts` with interfaces for:
 - `app/types/shared/auth.ts` - Shared authentication types
 - `server/utils/jwt.ts` - JWT token handling
 - `__tests__/user-store.test.ts` - Example test file
-- `drizzle.config.ts` - Database migration configuration
+- `app/components/Tabs.vue` - Recently added reusable tabs component
+- `__tests__/Tabs.test.ts` - Tests for the tabs component
 
 ## Troubleshooting
 
