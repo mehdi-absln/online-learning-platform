@@ -92,7 +92,7 @@
           </div>
         </div>
         <div class="w-1/3 space-y-10 absolute -bottom-[44rem] right-0">
-          <div class="rounded-2xl bg-dark-gray">
+          <div class="rounded-2xl bg-dark-gray border border-gray-700">
             <div class="relative overflow-hidden">
               <img
                 class="rounded-t-2xl w-full h-full object-cover"
@@ -308,7 +308,7 @@
               </div>
             </div>
           </div>
-          <div class="rounded-2xl bg-dark-gray">
+          <div class="rounded-2xl bg-dark-gray border border-gray-700">
             <div class="px-9 py-7">
               <h3 class="text-white text-xl font-semibold">Tags</h3>
               <div class="flex flex-wrap gap-2 pt-4 tags-wrapper">
@@ -339,20 +339,14 @@
           ]"
         >
           <template #course-info>
-            <div>
-              <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-                Course Information
-              </h2>
-              <div class="prose dark:prose-invert max-w-none">
-                <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300">Description</h3>
-                <p class="text-gray-600 dark:text-gray-400 mb-6">
-                  {{ coursesStore.detailedCourse.description }}
-                </p>
-
-                <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mt-6">
-                  What You'll Learn
-                </h3>
-                <ul class="list-disc pl-5 text-gray-600 dark:text-gray-400 space-y-2 mb-6">
+            <div class="space-y-6">
+              <div class="space-y-4">
+                <h2 class="text-base font-bold text-primary font-antonio">About Course</h2>
+                <p class="text-gray-300">“{{ coursesStore.detailedCourse.description }}“</p>
+              </div>
+              <div class="space-y-4">
+                <h3 class="text-base font-bold text-primary font-antonio">What Will You Learn?</h3>
+                <ul class="list-disc pl-5 text-gray-600 space-y-2">
                   <li
                     v-for="(learningItem, index) in coursesStore.detailedCourse.learningObjectives"
                     :key="index"
@@ -361,34 +355,26 @@
                     {{ learningItem }}
                   </li>
                 </ul>
-
-                <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mt-6">
-                  Course Content
-                </h3>
-                <div class="space-y-4">
-                  <div
-                    v-for="(section, index) in coursesStore.detailedCourse.courseContent"
-                    :key="index"
-                    class="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
-                  >
-                    <h4 class="font-medium text-gray-800 dark:text-gray-200">
-                      {{ section.title }}
-                    </h4>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">
-                      {{ section.description }}
-                    </p>
-                    <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                      {{ section.lessons }} lessons • {{ section.duration }}
-                    </div>
-                  </div>
-                </div>
+              </div>
+              <div class="space-y-4">
+                <h3 class="text-base font-bold text-primary font-antonio">Course Content</h3>
+                <Accordion
+                  :items="coursesStore.detailedCourse.courseContent.map(section => ({
+                    title: section.title,
+                    description: section.description,
+                    lessons: section.content || [],
+                    duration: section.duration
+                  }))"
+                />
               </div>
             </div>
           </template>
 
           <template #reviews>
             <div>
-              <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Course Reviews</h2>
+              <h3 class="text-base font-bold text-primary font-antonio">
+                Student Ratings & Reviews
+              </h3>
 
               <div
                 v-if="
@@ -417,23 +403,21 @@
                         </svg>
                       </div>
                     </div>
-                    <span class="ml-2 text-gray-600 dark:text-gray-400"
-                      >{{ review.rating }} out of 5</span
-                    >
+                    <span class="ml-2 text-gray-600">{{ review.rating }} out of 5</span>
                   </div>
 
-                  <h4 class="font-semibold text-gray-800 dark:text-gray-200">
+                  <h4 class="font-semibold text-gray-800">
                     {{ review.reviewerName }}
                   </h4>
-                  <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">
+                  <p class="text-gray-600 text-sm mt-1">
                     {{ formatDate(review.date) }}
                   </p>
-                  <p class="text-gray-700 dark:text-gray-300 mt-3">{{ review.comment }}</p>
+                  <p class="text-gray-700 mt-3">{{ review.comment }}</p>
                 </div>
               </div>
 
               <div v-else class="text-center py-10">
-                <p class="text-gray-500 dark:text-gray-400">No reviews yet for this course.</p>
+                <p class="text-gray-500">No reviews yet for this course.</p>
               </div>
             </div>
           </template>

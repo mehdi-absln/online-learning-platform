@@ -1,14 +1,14 @@
 import { H3Event } from 'h3'
-import { getCourseById, getCourseLessons } from '../../db/course-service'
+import { getDetailedCourseById, getCourseLessons } from '../../db/course-service'
 import { getRouterParam, setResponseStatus } from 'h3'
-import { transformCourseForClient } from '../../utils/course-transformer'
+import { transformCourseForClientWithDetails } from '../../utils/course-transformer'
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
-    console.log('Fetching course by ID...')
+    console.log('Fetching detailed course by ID...')
     const id = Number(getRouterParam(event, 'id'))
     console.log('Course ID:', id)
-    
+
     if (isNaN(id) || id <= 0) {
       setResponseStatus(event, 400)
       return {
@@ -16,27 +16,32 @@ export default defineEventHandler(async (event: H3Event) => {
         message: 'Invalid course ID',
       }
     }
-    
-    const course = await getCourseById(id)
-    
-    if (!course) {
+
+    const detailedCourseData = await getDetailedCourseById(id)
+
+    if (!detailedCourseData) {
       setResponseStatus(event, 404)
       return {
         success: false,
         message: 'Course not found',
       }
     }
-    
-    const transformedCourse = transformCourseForClient(course)
-    
-    // Get lessons for this course
-    const lessons = await getCourseLessons(id)
-    
+
+    const { course, learningObjectives, contentSections, reviews, lessons } = detailedCourseData
+
+    // Transform the course with all additional data
+    const transformedCourse = transformCourseForClientWithDetails(
+      course,
+      learningObjectives,
+      contentSections,
+      reviews,
+      lessons
+    )
+
     return {
       success: true,
       data: {
         ...transformedCourse,
-        lessons: lessons.map(lesson => lesson.title), // Just return lesson titles for now
       },
     }
   } catch (error: unknown) {
@@ -44,7 +49,7 @@ export default defineEventHandler(async (event: H3Event) => {
     console.error('Error name:', (error as Error).name)
     console.error('Error message:', (error as Error).message)
     console.error('Error stack:', (error as Error).stack)
-    
+
     setResponseStatus(event, 500)
     return {
       success: false,

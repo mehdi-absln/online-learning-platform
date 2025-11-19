@@ -1,30 +1,40 @@
-import { courses, lessons } from './schema'
+import {
+  courses,
+  lessons,
+  courseLearningObjectives,
+  courseContentSections,
+  reviews
+} from './schema'
 import { db } from './index'
 import { eq, desc, asc, and, gte, lte, like, inArray, or } from 'drizzle-orm'
 import type { InferSelectModel } from 'drizzle-orm'
-import type { CreateCourseData, UpdateCourseData } from '../../app/types/shared/courses'
+import type { CreateCourseData, UpdateCourseData } from '../../../app/types/shared/courses'
 
 // Using the schema types
 type CourseType = InferSelectModel<typeof courses>
 type LessonType = InferSelectModel<typeof lessons>
+type CourseLearningObjectiveType = InferSelectModel<typeof courseLearningObjectives>
+type CourseContentSectionType = InferSelectModel<typeof courseContentSections>
+type ReviewType = InferSelectModel<typeof reviews>
 
 type Course = CourseType
 type Lesson = LessonType
-
-import type { CreateCourseData, UpdateCourseData } from '../../../app/types/shared/courses'
+type CourseLearningObjective = CourseLearningObjectiveType
+type CourseContentSection = CourseContentSectionType
+type Review = ReviewType
 
 export async function getAllCourses(
   filter: {
-    category?: string;
-    categories?: string[];
-    level?: string;
-    levels?: string[];
-    freeOnly?: boolean;
-    paidOnly?: boolean;
-    minPrice?: number;
-    maxPrice?: number;
-    searchQuery?: string;
-    instructorId?: number;
+    category?: string
+    categories?: string[]
+    level?: string
+    levels?: string[]
+    freeOnly?: boolean
+    paidOnly?: boolean
+    minPrice?: number
+    maxPrice?: number
+    searchQuery?: string
+    instructorId?: number
   } = {},
   limit?: number,
   offset?: number
@@ -52,7 +62,7 @@ export async function getAllCourses(
     if (filter.tags && filter.tags.length > 0) {
       // Looking for courses that have any of the provided tags
       // We'll search for each tag in the comma-separated tags column
-      const tagConditions = filter.tags.map(tag => like(courses.tags, `%${tag}%`))
+      const tagConditions = filter.tags.map((tag) => like(courses.tags, `%${tag}%`))
       if (tagConditions.length > 0) {
         whereConditions.push(tagConditions.length === 1 ? tagConditions[0] : or(...tagConditions))
       }
@@ -75,9 +85,7 @@ export async function getAllCourses(
     }
 
     if (filter.searchQuery) {
-      whereConditions.push(
-        like(courses.title, `%${filter.searchQuery}%`)
-      )
+      whereConditions.push(like(courses.title, `%${filter.searchQuery}%`))
     }
 
     if (filter.instructorId !== undefined) {
@@ -101,7 +109,7 @@ export async function getAllCourses(
         tags: courses.tags, // Add tags field to the select
         image: courses.image,
         createdAt: courses.createdAt,
-        updatedAt: courses.updatedAt,
+        updatedAt: courses.updatedAt
       })
       .from(courses)
 
@@ -136,16 +144,16 @@ export async function getAllCourses(
 // Function to count courses matching the filters
 export async function getCoursesCount(
   filter: {
-    category?: string;
-    categories?: string[];
-    level?: string;
-    levels?: string[];
-    freeOnly?: boolean;
-    paidOnly?: boolean;
-    minPrice?: number;
-    maxPrice?: number;
-    searchQuery?: string;
-    instructorId?: number;
+    category?: string
+    categories?: string[]
+    level?: string
+    levels?: string[]
+    freeOnly?: boolean
+    paidOnly?: boolean
+    minPrice?: number
+    maxPrice?: number
+    searchQuery?: string
+    instructorId?: number
   } = {}
 ): Promise<number> {
   try {
@@ -171,7 +179,7 @@ export async function getCoursesCount(
     if (filter.tags && filter.tags.length > 0) {
       // Looking for courses that have any of the provided tags
       // We'll search for each tag in the comma-separated tags column
-      const tagConditions = filter.tags.map(tag => like(courses.tags, `%${tag}%`))
+      const tagConditions = filter.tags.map((tag) => like(courses.tags, `%${tag}%`))
       if (tagConditions.length > 0) {
         whereConditions.push(tagConditions.length === 1 ? tagConditions[0] : or(...tagConditions))
       }
@@ -194,9 +202,7 @@ export async function getCoursesCount(
     }
 
     if (filter.searchQuery) {
-      whereConditions.push(
-        like(courses.title, `%${filter.searchQuery}%`)
-      )
+      whereConditions.push(like(courses.title, `%${filter.searchQuery}%`))
     }
 
     if (filter.instructorId !== undefined) {
@@ -241,7 +247,7 @@ export async function getCourseById(id: number): Promise<Course | undefined> {
         tags: courses.tags,
         image: courses.image,
         createdAt: courses.createdAt,
-        updatedAt: courses.updatedAt,
+        updatedAt: courses.updatedAt
       })
       .from(courses)
       .where(eq(courses.id, id))
@@ -251,6 +257,56 @@ export async function getCourseById(id: number): Promise<Course | undefined> {
   } catch (error) {
     console.error(`Error fetching course with id ${id}:`, error)
     throw new Error('Failed to fetch course')
+  }
+}
+
+// New function to get detailed course information including learning objectives, content sections and reviews
+export async function getDetailedCourseById(id: number) {
+  try {
+    // Get the basic course info
+    const course = await getCourseById(id)
+    if (!course) {
+      return undefined
+    }
+
+    // Get course learning objectives
+    const learningObjectives = await db
+      .select()
+      .from(courseLearningObjectives)
+      .where(eq(courseLearningObjectives.courseId, id))
+      .orderBy(asc(courseLearningObjectives.order))
+
+    // Get course content sections
+    const contentSections = await db
+      .select()
+      .from(courseContentSections)
+      .where(eq(courseContentSections.courseId, id))
+      .orderBy(asc(courseContentSections.order))
+
+    // Get course reviews
+    const courseReviews = await db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.courseId, id))
+      .orderBy(desc(reviews.createdAt))
+
+    // Get course lessons
+    const courseLessons = await db
+      .select()
+      .from(lessons)
+      .where(eq(lessons.courseId, id))
+      .orderBy(asc(lessons.order))
+
+    return {
+      course,
+      learningObjectives,
+      contentSections,
+      reviews: courseReviews,
+      lessons: courseLessons
+    }
+  } catch (error) {
+    console.error(`Error fetching detailed course with id ${id}:`, error)
+    throw new Error('Failed to fetch detailed course')
   }
 }
 
@@ -271,7 +327,7 @@ export async function getCoursesByInstructorId(instructorId: number): Promise<Co
         level: courses.level,
         image: courses.image,
         createdAt: courses.createdAt,
-        updatedAt: courses.updatedAt,
+        updatedAt: courses.updatedAt
       })
       .from(courses)
       .where(eq(courses.instructorId, instructorId))
@@ -293,7 +349,7 @@ export async function createCourse(data: CreateCourseData): Promise<Course> {
         studentCount: 0,
         rating: 0,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .returning()
 
@@ -304,13 +360,16 @@ export async function createCourse(data: CreateCourseData): Promise<Course> {
   }
 }
 
-export async function updateCourse(id: number, data: UpdateCourseData): Promise<Course | undefined> {
+export async function updateCourse(
+  id: number,
+  data: UpdateCourseData
+): Promise<Course | undefined> {
   try {
     const [updatedCourse] = await db
       .update(courses)
       .set({
         ...data,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(courses.id, id))
       .returning()
@@ -351,7 +410,7 @@ export async function getAllCategories(): Promise<string[]> {
       .from(courses)
       .groupBy(courses.category)
 
-    return results.map(result => result.category)
+    return results.map((result) => result.category)
   } catch (error) {
     console.error('Error fetching categories:', error)
     throw new Error('Failed to fetch categories')
@@ -360,12 +419,9 @@ export async function getAllCategories(): Promise<string[]> {
 
 export async function getAllLevels(): Promise<string[]> {
   try {
-    const results = await db
-      .select({ level: courses.level })
-      .from(courses)
-      .groupBy(courses.level)
+    const results = await db.select({ level: courses.level }).from(courses).groupBy(courses.level)
 
-    return results.map(result => result.level)
+    return results.map((result) => result.level)
   } catch (error) {
     console.error('Error fetching levels:', error)
     throw new Error('Failed to fetch levels')
@@ -375,17 +431,18 @@ export async function getAllLevels(): Promise<string[]> {
 export async function getAllTags(): Promise<string[]> {
   try {
     // Get all courses with tags
-    const coursesWithTags = await db
-      .select({ tags: courses.tags })
-      .from(courses)
+    const coursesWithTags = await db.select({ tags: courses.tags }).from(courses)
 
     // Extract and split tags
     const allTags = new Set<string>()
     for (const course of coursesWithTags) {
       if (course.tags && typeof course.tags === 'string') {
         // Split by comma and trim whitespace
-        const tags = course.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '')
-        tags.forEach(tag => allTags.add(tag))
+        const tags = course.tags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter((tag) => tag !== '')
+        tags.forEach((tag) => allTags.add(tag))
       }
     }
 
