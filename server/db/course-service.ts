@@ -8,7 +8,7 @@ import {
 import { db } from './index'
 import { eq, desc, asc, and, gte, lte, like, inArray, or } from 'drizzle-orm'
 import type { InferSelectModel } from 'drizzle-orm'
-import type { CreateCourseData, UpdateCourseData } from '../../../app/types/shared/courses'
+import type { CreateCourseData, UpdateCourseData } from '~/types/shared/courses'
 
 // Using the schema types
 type CourseType = InferSelectModel<typeof courses>
@@ -260,6 +260,47 @@ export async function getCourseById(id: number): Promise<Course | undefined> {
   }
 }
 
+export async function getCourseBySlug(slug: string): Promise<Course | undefined> {
+  try {
+    // Get all courses and find the match by comparing generated slugs
+    const allCourses = await db
+      .select({
+        id: courses.id,
+        title: courses.title,
+        description: courses.description,
+        category: courses.category,
+        instructorId: courses.instructorId,
+        studentCount: courses.studentCount,
+        rating: courses.rating,
+        price: courses.price,
+        duration: courses.duration,
+        level: courses.level,
+        tags: courses.tags,
+        image: courses.image,
+        createdAt: courses.createdAt,
+        updatedAt: courses.updatedAt
+      })
+      .from(courses)
+
+    // Find the course whose generated slug matches the given slug
+    const matchedCourse = allCourses.find(course => {
+      const generatedSlug = course.title
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+
+      return generatedSlug === slug
+    })
+
+    return matchedCourse || null
+  } catch (error) {
+    console.error(`Error fetching course with slug ${slug}:`, error)
+    throw new Error('Failed to fetch course')
+  }
+}
+
 // New function to get detailed course information including learning objectives, content sections and reviews
 export async function getDetailedCourseById(id: number) {
   try {
@@ -306,6 +347,55 @@ export async function getDetailedCourseById(id: number) {
     }
   } catch (error) {
     console.error(`Error fetching detailed course with id ${id}:`, error)
+    throw new Error('Failed to fetch detailed course')
+  }
+}
+
+export async function getDetailedCourseBySlug(slug: string) {
+  try {
+    // Get the basic course info
+    const course = await getCourseBySlug(slug)
+    if (!course) {
+      return undefined
+    }
+
+    // Get course learning objectives
+    const learningObjectives = await db
+      .select()
+      .from(courseLearningObjectives)
+      .where(eq(courseLearningObjectives.courseId, course.id))
+      .orderBy(asc(courseLearningObjectives.order))
+
+    // Get course content sections
+    const contentSections = await db
+      .select()
+      .from(courseContentSections)
+      .where(eq(courseContentSections.courseId, course.id))
+      .orderBy(asc(courseContentSections.order))
+
+    // Get course reviews
+    const courseReviews = await db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.courseId, course.id))
+      .orderBy(desc(reviews.createdAt))
+
+    // Get course lessons
+    const courseLessons = await db
+      .select()
+      .from(lessons)
+      .where(eq(lessons.courseId, course.id))
+      .orderBy(asc(lessons.order))
+
+    return {
+      course,
+      learningObjectives,
+      contentSections,
+      reviews: courseReviews,
+      lessons: courseLessons
+    }
+  } catch (error) {
+    console.error(`Error fetching detailed course with slug ${slug}:`, error)
     throw new Error('Failed to fetch detailed course')
   }
 }

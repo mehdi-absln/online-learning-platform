@@ -66,6 +66,7 @@ interface RawLesson {
   sectionId?: number;
   title: string;
   content?: string;
+  videoUrl?: string; // Optional YouTube video URL
   order: number;
   createdAt: Date;
   updatedAt: Date;
@@ -114,16 +115,22 @@ export function transformCourseForClientWithDetails(
             ? lessons
                 .filter(lesson => lesson.sectionId === section.id)
                 .sort((a, b) => a.order - b.order)
-                .map(lesson => lesson.title)
+                .map(lesson => ({
+                  id: lesson.id, // Include the lesson ID
+                  title: lesson.title,
+                  duration: lesson.duration || `${Math.floor(Math.random() * 10) + 1} min`, // Generate a random duration if not available
+                  videoUrl: lesson.videoUrl // Use existing videoUrl
+                }))
             : []
 
           return {
+            id: section.id,
             title: section.title,
             description: section.description || '',
             lessons: section.lessonsCount,
             duration: section.duration,
             content: sectionLessons // Add lessons array to the section
-          } as CourseContentSection
+          }
         })
     : []
 
