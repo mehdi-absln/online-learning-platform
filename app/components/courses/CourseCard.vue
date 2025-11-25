@@ -62,7 +62,7 @@
         :title="course.title"
       >
         <NuxtLink
-          :to="`/courses/${course.id}`"
+          :to="courseLink"
           class="transition-all duration-300 hover:text-primary"
         >
           {{ course.title }}
@@ -114,7 +114,7 @@
       <div class="flex items-center justify-between pb-6 mt-auto">
         <span class="text-base font-semibold text-primary-alt">${{ course.price }}</span>
         <NuxtLink
-          :to="`/courses/${course.id}`"
+          :to="courseLink"
           class="relative font-medium text-white transition-all duration-300 hover:text-primary"
         >
           <span class="relative z-10"> Explore Now </span>
@@ -126,6 +126,17 @@
 
 <script setup lang="ts">
 import type { CourseCardProps } from '~/types/types-components'
+import { generateSlug } from '@/utils/slug'
 
-defineProps<CourseCardProps>()
+const props = defineProps<CourseCardProps>()
+
+// Computed property to generate course link using slug
+const courseLink = computed(() => {
+  if (props.course.title) {
+    const slug = generateSlug(props.course.title)
+    return `/courses/${slug}`
+  }
+  // Fallback to ID if title is not available
+  return `/courses/${props.course.id}`
+})
 </script>

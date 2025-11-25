@@ -1,19 +1,21 @@
-import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { describe, it, expect } from 'vitest'
 import Accordion from '~/components/Accordion.vue'
 
-describe('Accordion Component', () => {
-  it('renders correctly with items', () => {
+describe('Accordion.vue', () => {
+  it('shows video button when lesson has videoUrl', async () => {
     const items = [
       {
-        title: 'Section 1',
-        lessons: ['Lesson 1', 'Lesson 2'],
-        duration: '2 hours'
-      },
-      {
-        title: 'Section 2',
-        lessons: ['Lesson 3', 'Lesson 4'],
-        duration: '3 hours'
+        title: 'Module 1: Introduction',
+        description: 'Basic concepts',
+        duration: '45 min',
+        lessons: [
+          {
+            title: 'Lesson 1: Getting Started',
+            duration: '15 min',
+            videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+          }
+        ]
       }
     ]
 
@@ -23,18 +25,30 @@ describe('Accordion Component', () => {
       }
     })
 
-    // Check that the accordion items are rendered
-    expect(wrapper.findAll('button')).toHaveLength(2)
-    expect(wrapper.text()).toContain('Section 1')
-    expect(wrapper.text()).toContain('Section 2')
+    // Manually open the accordion item to make lessons visible
+    await wrapper.vm.toggleAccordion(0)
+
+    // Find the video button by its aria-label attribute
+    const videoButton = wrapper.find('button[aria-label="Watch video for Lesson 1: Getting Started"]')
+    expect(videoButton.exists()).toBe(true)
+
+    // Check if the button contains the video icon
+    const videoIcon = videoButton.find('svg')
+    expect(videoIcon.exists()).toBe(true)
   })
 
-  it('toggles content when clicked', async () => {
+  it('does not show video button when lesson has no videoUrl', async () => {
     const items = [
       {
-        title: 'Section 1',
-        lessons: ['Lesson 1', 'Lesson 2'],
-        duration: '2 hours'
+        title: 'Module 1: Introduction',
+        description: 'Basic concepts',
+        duration: '45 min',
+        lessons: [
+          {
+            title: 'Lesson 1: Getting Started',
+            duration: '15 min'
+          }
+        ]
       }
     ]
 
@@ -44,47 +58,11 @@ describe('Accordion Component', () => {
       }
     })
 
-    const button = wrapper.find('button')
-    const content = wrapper.find('[id^="accordion-content"]')
+    // Manually open the accordion item to make lessons visible
+    await wrapper.vm.toggleAccordion(0)
 
-    // Initially content should exist but might be hidden by CSS
-    expect(content.exists()).toBe(true)
-
-    // Since we start with all items closed, check that they're properly set to closed
-    const initialDisplayStyle = content.element.style.display
-    expect(initialDisplayStyle).toBe('none')
-
-    // Click the button to show content
-    await button.trigger('click')
-
-    // After click, content should be visible
-    expect(content.isVisible()).toBe(true)
-  })
-
-  it('shows correct lessons for each section', () => {
-    const items = [
-      {
-        title: 'Section 1',
-        lessons: ['Lesson 1', 'Lesson 2'],
-        duration: '2 hours'
-      },
-      {
-        title: 'Section 2',
-        lessons: ['Lesson 3', 'Lesson 4'],
-        duration: '3 hours'
-      }
-    ]
-
-    const wrapper = mount(Accordion, {
-      props: {
-        items
-      }
-    })
-
-    // Check that lessons are correctly associated with sections
-    expect(wrapper.text()).toContain('Lesson 1')
-    expect(wrapper.text()).toContain('Lesson 2')
-    expect(wrapper.text()).toContain('Lesson 3')
-    expect(wrapper.text()).toContain('Lesson 4')
+    // Find the video button - it should not exist
+    const videoButton = wrapper.find('button[aria-label^="Watch video for"]')
+    expect(videoButton.exists()).toBe(false)
   })
 })

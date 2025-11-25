@@ -5,8 +5,8 @@
   </div>
 
   <!-- Error state -->
-  <div v-else-if="coursesStore.error" class="py-36 flex flex-col items-center justify-center">
-    <p class="text-red-500 text-lg">Error: {{ coursesStore.error }}</p>
+  <div v-else-if="coursesStore.error || hasError" class="py-36 flex flex-col items-center justify-center">
+    <p class="text-red-500 text-lg">Error: {{ coursesStore.error || 'Course not found' }}</p>
     <NuxtLink
       to="/courses"
       class="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
@@ -342,7 +342,7 @@
             <div class="space-y-6">
               <div class="space-y-4">
                 <h2 class="text-base font-bold text-primary font-antonio">About Course</h2>
-                <p class="text-gray-300">“{{ coursesStore.detailedCourse.description }}“</p>
+                <p class="text-gray-300">"{{ coursesStore.detailedCourse.description }}"</p>
               </div>
               <div class="space-y-4">
                 <h3 class="text-base font-bold text-primary font-antonio">What Will You Learn?</h3>
@@ -358,14 +358,23 @@
               </div>
               <div class="space-y-4">
                 <h3 class="text-base font-bold text-primary font-antonio">Course Content</h3>
-                <Accordion
-                  :items="coursesStore.detailedCourse.courseContent.map(section => ({
-                    title: section.title,
-                    description: section.description,
-                    lessons: section.content || [],
-                    duration: section.duration
-                  }))"
-                />
+                <div v-if="coursesStore.detailedCourse?.courseContent">
+                  <Accordion
+                    :items="
+                      coursesStore.detailedCourse.courseContent.map((section) => ({
+                        title: section.title,
+                        description: section.description,
+                        lessons: section.content,
+                        duration: section.duration
+                      }))
+                    "
+                    :course-id="coursesStore.detailedCourse?.id"
+                    :course-slug="coursesStore.detailedCourse?.title ? generateSlug(coursesStore.detailedCourse.title) : undefined"
+                  />
+                </div>
+                <div v-else class="text-center py-10">
+                  <p class="text-gray-500">Course content is not available yet.</p>
+                </div>
               </div>
             </div>
           </template>
@@ -428,16 +437,22 @@
 </template>
 
 <script setup lang="ts">
+import { generateSlug } from '@/utils/slug'
+
 const coursesStore = useCoursesStore()
 const isLoading = ref<boolean>(true)
 
-// Get the course ID from the route params
+// Get the course slug from the route params
 const route = useRoute()
-const courseId = parseInt(route.params.id as string)
+const courseSlug = computed(() => route.params.courseSlug as string)
 
-// Validate course ID
-if (isNaN(courseId) || courseId <= 0) {
-  throw createError({
+// Initialize error state
+const hasError = ref(false)
+
+// Validate course slug
+if (!courseSlug.value) {
+  hasError.value = true
+  showError({
     statusCode: 404,
     statusMessage: 'Course not found'
   })
@@ -445,7 +460,9 @@ if (isNaN(courseId) || courseId <= 0) {
 
 // Fetch course details when the component is mounted
 onMounted(async () => {
-  await coursesStore.fetchCourseById(courseId)
+  if (!hasError.value) {
+    await coursesStore.fetchCourseBySlug(courseSlug.value)
+  }
   isLoading.value = false
 })
 
@@ -460,10 +477,15 @@ useHead({
 
 const breadcrumbCrumbs = computed(() => [
   { name: 'Courses', path: '/courses' },
-  { name: coursesStore.detailedCourse?.title || '', path: `/courses/${courseId}` }
+  {
+    name: coursesStore.detailedCourse?.title || '',
+    path: coursesStore.detailedCourse?.title
+      ? `/courses/${generateSlug(coursesStore.detailedCourse.title)}`
+      : `/courses/${courseSlug.value}`
+  }
 ])
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string): string => {
   const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' }
   return new Date(dateString).toLocaleDateString(undefined, options)
 }

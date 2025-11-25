@@ -1,23 +1,23 @@
 import { H3Event } from 'h3'
-import { getDetailedCourseById, getCourseLessons } from '../../db/course-service'
+import { getDetailedCourseBySlug } from '../../../db/course-service'
 import { getRouterParam, setResponseStatus } from 'h3'
-import { transformCourseForClientWithDetails } from '../../utils/course-transformer'
+import { transformCourseForClientWithDetails } from '../../../utils/course-transformer'
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
-    console.log('Fetching detailed course by ID...')
-    const id = Number(getRouterParam(event, 'id'))
-    console.log('Course ID:', id)
+    console.log('Fetching detailed course by slug...')
+    const slug = getRouterParam(event, 'slug')
+    console.log('Course slug:', slug)
 
-    if (isNaN(id) || id <= 0) {
+    if (!slug) {
       setResponseStatus(event, 400)
       return {
         success: false,
-        message: 'Invalid course ID',
+        message: 'Invalid course slug',
       }
     }
 
-    const detailedCourseData = await getDetailedCourseById(id)
+    const detailedCourseData = await getDetailedCourseBySlug(slug)
 
     if (!detailedCourseData) {
       setResponseStatus(event, 404)
@@ -43,9 +43,10 @@ export default defineEventHandler(async (event: H3Event) => {
       data: {
         ...transformedCourse,
       },
+      courseId: course.id
     }
   } catch (error: unknown) {
-    console.error(`Detailed error in GET /api/courses/[id]:`, error)
+    console.error(`Detailed error in GET /api/courses/slug/[slug]:`, error)
     console.error('Error name:', (error as Error).name)
     console.error('Error message:', (error as Error).message)
     console.error('Error stack:', (error as Error).stack)

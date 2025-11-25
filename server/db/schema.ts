@@ -32,6 +32,7 @@ export const lessons = sqliteTable('lessons', {
   sectionId: integer('section_id'), // Optional foreign key to course content sections
   title: text('title').notNull(),
   content: text('content'), // Content of the lesson
+  videoUrl: text('video_url').notNull(), // Required YouTube video URL
   order: integer('order').notNull(), // Order of the lesson in the course or section
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),

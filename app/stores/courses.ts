@@ -51,12 +51,12 @@ export const useCoursesStore = defineStore('courses', () => {
     }
   }
 
-  const fetchCourseById = async (id: number) => {
+  const fetchCourseBySlug = async (slug: string) => {
     loading.value = true
     error.value = null
 
     try {
-      const response = await $fetch<CourseDetailResponse>(`/api/courses/${id}`)
+      const response = await $fetch<CourseDetailResponse>(`/api/courses/slug/${slug}`)
 
       if (response.success) {
         detailedCourse.value = response.data
@@ -113,7 +113,7 @@ export const useCoursesStore = defineStore('courses', () => {
 
     // Actions
     fetchAllCourses,
-    fetchCourseById,
+    fetchCourseBySlug,
     resetFilter,
     applyFilter,
     changePage
