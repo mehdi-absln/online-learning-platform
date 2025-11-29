@@ -11,10 +11,10 @@ interface RawCourse {
   studentCount: number;
   rating: number;
   price: number;
-  duration: string;
   level: string;
   tags?: string;
   image?: string;
+  slug: string;
   createdAt: Date;
   updatedAt: Date;
   instructor?: {
@@ -40,7 +40,6 @@ interface RawCourseContentSection {
   title: string;
   description?: string;
   lessonsCount: number;
-  duration: string;
   order: number;
   createdAt: Date;
   updatedAt: Date;
@@ -75,9 +74,20 @@ interface RawLesson {
 export function transformCourseForClient(course: RawCourse): CourseType {
   // Convert price from cents to dollars and add instructor information
   return {
-    ...course,
+    id: course.id,
+    title: course.title,
+    description: course.description,
+    category: course.category,
+    instructorId: course.instructorId,
+    studentCount: course.studentCount,
+    rating: course.rating,
     price: course.price / 100, // Convert from cents to dollars
+    level: course.level,
+    tags: course.tags,
     image: processCourseImage(course.image),
+    slug: course.slug, // Include the slug field
+    createdAt: course.createdAt,
+    updatedAt: course.updatedAt,
     instructor: {
       name: course.instructor?.name || 'Instructor Name',
       avatar: processInstructorAvatar(course.instructor?.avatar, course.instructor?.name || 'Instructor Name')
@@ -128,7 +138,6 @@ export function transformCourseForClientWithDetails(
             title: section.title,
             description: section.description || '',
             lessons: section.lessonsCount,
-            duration: section.duration,
             content: sectionLessons // Add lessons array to the section
           }
         })

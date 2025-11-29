@@ -188,7 +188,7 @@ A reusable Tabs component has been implemented with the following features:
 - No dark mode specific styles
 
 ### Course Details Page Integration
-- Updated `app/pages/courses/[id].vue` to use the new Tabs component
+- Updated `app/pages/courses/[courseSlug]/index.vue` to use the new Tabs component
 - Implements Course Info and Reviews tabs
 - Added TypeScript interfaces for learning objectives, course content, and reviews in `app/types/shared/courses.ts`
 - Added comprehensive tests in `__tests__/Tabs.test.ts`

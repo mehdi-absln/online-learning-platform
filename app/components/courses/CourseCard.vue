@@ -130,13 +130,18 @@ import { generateSlug } from '@/utils/slug'
 
 const props = defineProps<CourseCardProps>()
 
-// Computed property to generate course link using slug
+// Computed property to generate course link using stored slug
 const courseLink = computed(() => {
+  if (props.course.slug) {
+    // Use the stored slug from the database
+    return `/courses/${props.course.slug}`
+  }
+  // Fallback to generating slug from title if not available
   if (props.course.title) {
     const slug = generateSlug(props.course.title)
     return `/courses/${slug}`
   }
-  // Fallback to ID if title is not available
+  // Fallback to ID if title is also not available
   return `/courses/${props.course.id}`
 })
 </script>

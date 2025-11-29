@@ -15,10 +15,10 @@ export interface Course {
   };
   rating: number;
   price: number;
-  duration: string;
   level: string;
   tags?: string;
   image: string;
+  slug: string; // URL-friendly slug for the course
   createdAt: Date;
   updatedAt: Date;
   instructorId: number;
@@ -32,7 +32,6 @@ export interface CreateCourseData {
   category: string;
   instructorId: number;
   price: number;
-  duration: string;
   level: string;
   image?: string | null;
 }
@@ -45,7 +44,6 @@ export interface UpdateCourseData {
   studentCount?: number;
   rating?: number;
   price?: number;
-  duration?: string;
   level?: string;
   image?: string | null;
 }
@@ -88,7 +86,6 @@ export interface CourseContentSection {
   title: string;
   description: string;
   lessons: number;
-  duration: string;
   content?: CourseContentLesson[]; // Array of lesson objects with title and duration
 }
 
