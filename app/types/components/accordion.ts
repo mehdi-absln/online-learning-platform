@@ -1,10 +1,12 @@
 export interface CourseContentLesson {
+  id?: number | string; // Optional ID for the lesson
   title: string;
   duration: string; // Duration in format like "5:30" or "10 min"
   videoUrl?: string; // Optional YouTube video URL
 }
 
 export interface AccordionItem {
+  id?: number | string; // Optional ID for the accordion item
   title: string;
   description?: string;
   lessons?: CourseContentLesson[];

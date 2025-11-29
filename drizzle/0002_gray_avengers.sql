@@ -1,1 +1,0 @@
-ALTER TABLE `lessons` ADD `video_url` text NOT NULL;

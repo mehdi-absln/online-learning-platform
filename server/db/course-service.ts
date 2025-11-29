@@ -6,7 +6,7 @@ import {
   reviews
 } from './schema'
 import { db } from './index'
-import { eq, desc, asc, and, gte, lte, like, inArray, or } from 'drizzle-orm'
+import { eq, desc, asc, and, gte, lte, like, inArray, or, sql } from 'drizzle-orm'
 import type { InferSelectModel } from 'drizzle-orm'
 import type { CreateCourseData, UpdateCourseData } from '~/types/shared/courses'
 
@@ -104,7 +104,6 @@ export async function getAllCourses(
         studentCount: courses.studentCount,
         rating: courses.rating,
         price: courses.price,
-        duration: courses.duration,
         level: courses.level,
         tags: courses.tags, // Add tags field to the select
         image: courses.image,
@@ -242,7 +241,6 @@ export async function getCourseById(id: number): Promise<Course | undefined> {
         studentCount: courses.studentCount,
         rating: courses.rating,
         price: courses.price,
-        duration: courses.duration,
         level: courses.level,
         tags: courses.tags,
         image: courses.image,
@@ -262,8 +260,7 @@ export async function getCourseById(id: number): Promise<Course | undefined> {
 
 export async function getCourseBySlug(slug: string): Promise<Course | undefined> {
   try {
-    // Get all courses and find the match by comparing generated slugs
-    const allCourses = await db
+    const result = await db
       .select({
         id: courses.id,
         title: courses.title,
@@ -273,28 +270,18 @@ export async function getCourseBySlug(slug: string): Promise<Course | undefined>
         studentCount: courses.studentCount,
         rating: courses.rating,
         price: courses.price,
-        duration: courses.duration,
         level: courses.level,
         tags: courses.tags,
         image: courses.image,
+        slug: courses.slug,
         createdAt: courses.createdAt,
         updatedAt: courses.updatedAt
       })
       .from(courses)
+      .where(eq(courses.slug, slug))
+      .limit(1)
 
-    // Find the course whose generated slug matches the given slug
-    const matchedCourse = allCourses.find(course => {
-      const generatedSlug = course.title
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/[\s_-]+/g, '-')
-        .replace(/^-+|-+$/g, '')
-
-      return generatedSlug === slug
-    })
-
-    return matchedCourse || null
+    return result[0] || null
   } catch (error) {
     console.error(`Error fetching course with slug ${slug}:`, error)
     throw new Error('Failed to fetch course')
@@ -315,14 +302,14 @@ export async function getDetailedCourseById(id: number) {
       .select()
       .from(courseLearningObjectives)
       .where(eq(courseLearningObjectives.courseId, id))
-      .orderBy(asc(courseLearningObjectives.order))
+      .orderBy(asc(courseLearningObjectives.orderVal))
 
     // Get course content sections
     const contentSections = await db
       .select()
       .from(courseContentSections)
       .where(eq(courseContentSections.courseId, id))
-      .orderBy(asc(courseContentSections.order))
+      .orderBy(asc(courseContentSections.orderVal))
 
     // Get course reviews
     const courseReviews = await db
@@ -336,7 +323,7 @@ export async function getDetailedCourseById(id: number) {
       .select()
       .from(lessons)
       .where(eq(lessons.courseId, id))
-      .orderBy(asc(lessons.order))
+      .orderBy(asc(lessons.orderVal))
 
     return {
       course,
@@ -352,51 +339,57 @@ export async function getDetailedCourseById(id: number) {
 }
 
 export async function getDetailedCourseBySlug(slug: string) {
-  try {
-    // Get the basic course info
-    const course = await getCourseBySlug(slug)
-    if (!course) {
-      return undefined
-    }
+  console.log(`Fetching detailed course with slug: ${slug}`);
 
-    // Get course learning objectives
-    const learningObjectives = await db
-      .select()
-      .from(courseLearningObjectives)
-      .where(eq(courseLearningObjectives.courseId, course.id))
-      .orderBy(asc(courseLearningObjectives.order))
+  // Get the basic course info
+  const course = await getCourseBySlug(slug)
+  if (!course) {
+    console.log(`Course with slug ${slug} not found`);
+    return undefined
+  }
 
-    // Get course content sections
-    const contentSections = await db
-      .select()
-      .from(courseContentSections)
-      .where(eq(courseContentSections.courseId, course.id))
-      .orderBy(asc(courseContentSections.order))
+  console.log(`Found course: ${course.title} (ID: ${course.id})`);
 
-    // Get course reviews
-    const courseReviews = await db
-      .select()
-      .from(reviews)
-      .where(eq(reviews.courseId, course.id))
-      .orderBy(desc(reviews.createdAt))
+  // Get course learning objectives
+  console.log(`Fetching learning objectives for course ID: ${course.id}`);
+  const learningObjectives = await db
+    .select()
+    .from(courseLearningObjectives)
+    .where(eq(courseLearningObjectives.courseId, course.id))
+    .orderBy(asc(courseLearningObjectives.orderVal))
 
-    // Get course lessons
-    const courseLessons = await db
-      .select()
-      .from(lessons)
-      .where(eq(lessons.courseId, course.id))
-      .orderBy(asc(lessons.order))
+  // Get course content sections
+  console.log(`Fetching content sections for course ID: ${course.id}`);
+  const contentSections = await db
+    .select()
+    .from(courseContentSections)
+    .where(eq(courseContentSections.courseId, course.id))
+    .orderBy(asc(courseContentSections.orderVal))
 
-    return {
-      course,
-      learningObjectives,
-      contentSections,
-      reviews: courseReviews,
-      lessons: courseLessons
-    }
-  } catch (error) {
-    console.error(`Error fetching detailed course with slug ${slug}:`, error)
-    throw new Error('Failed to fetch detailed course')
+  // Get course reviews
+  console.log(`Fetching reviews for course ID: ${course.id}`);
+  const courseReviews = await db
+    .select()
+    .from(reviews)
+    .where(eq(reviews.courseId, course.id))
+    .orderBy(desc(reviews.createdAt))
+
+  // Get course lessons
+  console.log(`Fetching lessons for course ID: ${course.id}`);
+  const courseLessons = await db
+    .select()
+    .from(lessons)
+    .where(eq(lessons.courseId, course.id))
+    .orderBy(asc(lessons.orderVal))
+
+  console.log(`Successfully fetched all details for course: ${course.title}`);
+
+  return {
+    course,
+    learningObjectives,
+    contentSections,
+    reviews: courseReviews,
+    lessons: courseLessons
   }
 }
 
@@ -413,7 +406,6 @@ export async function getCoursesByInstructorId(instructorId: number): Promise<Co
         studentCount: courses.studentCount,
         rating: courses.rating,
         price: courses.price,
-        duration: courses.duration,
         level: courses.level,
         image: courses.image,
         createdAt: courses.createdAt,
@@ -432,10 +424,18 @@ export async function getCoursesByInstructorId(instructorId: number): Promise<Co
 
 export async function createCourse(data: CreateCourseData): Promise<Course> {
   try {
+    const slug = data.title
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
     const [newCourse] = await db
       .insert(courses)
       .values({
         ...data,
+        slug,
         studentCount: 0,
         rating: 0,
         createdAt: new Date(),
@@ -455,12 +455,30 @@ export async function updateCourse(
   data: UpdateCourseData
 ): Promise<Course | undefined> {
   try {
+    // If title is being updated, regenerate the slug
+    let slug: string | undefined;
+    if (data.title !== undefined) {
+      slug = data.title
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    const updateData: UpdateCourseData & { slug?: string; updatedAt: Date } = {
+      ...data,
+      updatedAt: new Date()
+    };
+
+    // Only add slug to update if it was generated (i.e., title was changed)
+    if (slug !== undefined) {
+      updateData.slug = slug;
+    }
+
     const [updatedCourse] = await db
       .update(courses)
-      .set({
-        ...data,
-        updatedAt: new Date()
-      })
+      .set(updateData)
       .where(eq(courses.id, id))
       .returning()
 
@@ -486,7 +504,7 @@ export async function getCourseLessons(courseId: number): Promise<Lesson[]> {
       .select()
       .from(lessons)
       .where(eq(lessons.courseId, courseId))
-      .orderBy(asc(lessons.order))
+      .orderBy(asc(lessons.orderVal))
   } catch (error) {
     console.error(`Error fetching lessons for course with id ${courseId}:`, error)
     throw new Error('Failed to fetch course lessons')

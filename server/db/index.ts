@@ -17,7 +17,7 @@ try {
   console.log('Starting database migrations...')
   migrate(db, { migrationsFolder: '../drizzle/migrations' })
   console.log('Database migrations completed successfully')
-  
+
   // Automatic seeding is commented out since DB is already populated
   // Uncomment the following lines if you need to re-seed the database:
   /*

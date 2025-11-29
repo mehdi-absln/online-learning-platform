@@ -32,7 +32,6 @@ export interface Course {
   stats: CourseStats;
   rating: number;
   price: number;
-  duration: string;
   level: string; // Add level property
   tags?: string; // Comma-separated tags for the course
   image: string;

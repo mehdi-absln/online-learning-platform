@@ -127,28 +127,6 @@
                   >
                 </div>
 
-                <div class="flex items-center justify-between pb-4 border-b border-gray-700">
-                  <div class="flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-6 w-6 text-primary mr-3"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span class="text-gray-300">Duration</span>
-                  </div>
-                  <span class="text-white font-medium">{{
-                    coursesStore.detailedCourse?.duration
-                  }}</span>
-                </div>
 
                 <div class="flex items-center justify-between pb-4 border-b border-gray-700">
                   <div class="flex items-center">
@@ -364,8 +342,7 @@
                       coursesStore.detailedCourse.courseContent.map((section) => ({
                         title: section.title,
                         description: section.description,
-                        lessons: section.content,
-                        duration: section.duration
+                        lessons: section.content
                       }))
                     "
                     :course-id="coursesStore.detailedCourse?.id"
@@ -479,9 +456,11 @@ const breadcrumbCrumbs = computed(() => [
   { name: 'Courses', path: '/courses' },
   {
     name: coursesStore.detailedCourse?.title || '',
-    path: coursesStore.detailedCourse?.title
-      ? `/courses/${generateSlug(coursesStore.detailedCourse.title)}`
-      : `/courses/${courseSlug.value}`
+    path: coursesStore.detailedCourse?.slug
+      ? `/courses/${coursesStore.detailedCourse.slug}`
+      : coursesStore.detailedCourse?.title
+        ? `/courses/${generateSlug(coursesStore.detailedCourse.title)}`
+        : `/courses/${courseSlug.value}`
   }
 ])
 
