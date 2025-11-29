@@ -79,7 +79,7 @@
               v-if="lesson.videoUrl"
               class="text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200"
               :aria-label="`Watch video for ${lesson.title}`"
-              @click="goToLesson(index, lessonIndex, lesson)"
+              @click="navigateToLesson(index, lessonIndex, lesson)"
             >
               <svg
                 class="w-5 h-5"
@@ -106,6 +106,7 @@
 
 <script setup lang="ts">
 import type { AccordionProps, CourseContentLesson } from '~/types/components/accordion'
+import { navigateTo } from '#app'
 
 interface Emits {
   'update:modelValue': [index: number]
@@ -123,10 +124,8 @@ const props = withDefaults(defineProps<AccordionProps>(), {
 
 const emit = defineEmits<Emits>()
 
-// Track which accordion items are open using their IDs or indices if no ID is provided
 const openItemIds = ref<Set<string | number>>(new Set())
 
-// Initialize the open state based on modelValue prop
 onMounted(() => {
   if (props.modelValue >= 0 && props.modelValue < props.items.length) {
     const item = props.items[props.modelValue]
@@ -135,24 +134,20 @@ onMounted(() => {
   }
 })
 
-// Check if an accordion item is open
 const isOpen = (index: number) => {
   const item = props.items[index]
   const itemId = item.id ?? index
   return openItemIds.value.has(itemId)
 }
 
-// Toggle the accordion item at the specified index
 const toggleAccordion = (index: number) => {
   const item = props.items[index]
   const itemId = item.id ?? index
 
   if (props.exclusive) {
-    // If exclusive mode, close all and open only the clicked item
     openItemIds.value.clear()
     openItemIds.value.add(itemId)
   } else {
-    // Toggle the state of the clicked item
     if (openItemIds.value.has(itemId)) {
       openItemIds.value.delete(itemId)
     } else {
@@ -160,7 +155,6 @@ const toggleAccordion = (index: number) => {
     }
   }
 
-  // Emit the index of the currently open item (or -1 if none open in non-exclusive mode)
   const openIndex =
     Array.from(openItemIds.value).length > 0
       ? props.items.findIndex((item, idx) => openItemIds.value.has(item.id ?? idx))
@@ -168,34 +162,35 @@ const toggleAccordion = (index: number) => {
   emit('update:modelValue', openIndex)
 }
 
-// Handle keyboard events for accessibility
 const handleKeyDown = (event: KeyboardEvent, index: number) => {
-  switch (event.key) {
-    case ' ':
-    case 'Enter':
-      event.preventDefault()
-      toggleAccordion(index)
-      break
-    case 'ArrowDown':
+  const keyActions: Record<string, () => void> = {
+    ' ': () => toggleAccordion(index),
+    Enter: () => toggleAccordion(index),
+    ArrowDown: () => {
       event.preventDefault()
       focusNext(index)
-      break
-    case 'ArrowUp':
+    },
+    ArrowUp: () => {
       event.preventDefault()
       focusPrevious(index)
-      break
-    case 'Home':
+    },
+    Home: () => {
       event.preventDefault()
       focusFirst()
-      break
-    case 'End':
+    },
+    End: () => {
       event.preventDefault()
       focusLast()
-      break
+    }
+  }
+
+  const action = keyActions[event.key]
+  if (action) {
+    event.preventDefault()
+    action()
   }
 }
 
-// Helper functions for keyboard navigation
 const focusElement = (index: number) => {
   const element = document.getElementById(`accordion-header-${index}`)
   if (element) {
@@ -221,34 +216,40 @@ const focusLast = () => {
   focusElement(props.items.length - 1)
 }
 
-// Function to navigate to lesson page
-const goToLesson = (sectionIndex: number, lessonIndex: number, lesson: CourseContentLesson) => {
-  // Use the lesson ID if available, otherwise fall back to position-based approach
-  const lessonId = lesson.id ?? lessonIndex + 1
+const createLessonUrl = (lesson: CourseContentLesson, lessonIndex: number, courseSlug?: string) => {
+  // Ensure lesson slug exists, as it's a required field
+  if (!lesson.slug) {
+    throw new Error(`Lesson at index ${lessonIndex} is missing required slug property`)
+  }
 
+  if (courseSlug) {
+    // Use pre-generated slug from the lesson data
+    return `/courses/${courseSlug}/lessons/${lesson.slug}`
+  }
+
+  // If no course slug is provided, we cannot create a proper URL since we're using slugs only
+  return null
+}
+
+const navigateToLesson = (
+  sectionIndex: number,
+  lessonIndex: number,
+  lesson: CourseContentLesson
+) => {
   try {
-    let url: string
+    const url = createLessonUrl(lesson, lessonIndex, props.courseSlug)
 
-    // If courseSlug is provided, use slug-based URL, otherwise fallback to ID-based
-    if (props.courseSlug) {
-      const lessonSlug = lesson.title ? generateSlug(lesson.title) : lessonId.toString()
-      url = `/courses/${props.courseSlug}/lessons/${lessonSlug}`
-    } else if (props.courseId !== undefined) {
-      url = `/courses/${props.courseId}/lessons/${lessonId}`
+    if (url) {
+      navigateTo(url)
     } else {
-      // If neither courseSlug nor courseId is provided, emit lesson-click event
       emit('lesson-click', {
         sectionIndex,
         lessonIndex,
         lesson
       })
-      return
     }
-
-    navigateTo(url)
   } catch (error: unknown) {
-    console.error('Error navigating to lesson:', error)
-    // Emit the lesson-click event for external handling if navigation fails
+    console.error('Error creating lesson URL:', error)
     emit('lesson-click', {
       sectionIndex,
       lessonIndex,

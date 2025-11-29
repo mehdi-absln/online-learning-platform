@@ -1,6 +1,7 @@
 export interface CourseContentLesson {
   id?: number | string; // Optional ID for the lesson
   title: string;
+  slug: string; // URL slug for the lesson (required)
   duration: string; // Duration in format like "5:30" or "10 min"
   videoUrl?: string; // Optional YouTube video URL
 }

@@ -22,6 +22,13 @@
       "when": 1764442800000,
       "tag": "0002_add_slug_to_courses",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1764452393000,
+      "tag": "0003_add_slug_to_lessons",
+      "breakpoints": true
     }
   ]
 }

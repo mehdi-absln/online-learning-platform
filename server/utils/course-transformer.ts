@@ -128,6 +128,7 @@ export function transformCourseForClientWithDetails(
                 .map(lesson => ({
                   id: lesson.id, // Include the lesson ID
                   title: lesson.title,
+                  slug: lesson.slug, // Include the lesson slug
                   duration: lesson.duration || `${Math.floor(Math.random() * 10) + 1} min`, // Generate a random duration if not available
                   videoUrl: lesson.videoUrl // Use existing videoUrl
                 }))
