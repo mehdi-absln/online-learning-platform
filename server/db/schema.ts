@@ -31,6 +31,7 @@ export const lessons = sqliteTable('lessons', {
   courseId: integer('course_id').notNull(), // Foreign key to courses table
   sectionId: integer('section_id'), // Optional foreign key to course content sections
   title: text('title').notNull(),
+  slug: text('slug').notNull(), // URL-friendly slug for the lesson
   content: text('content'), // Content of the lesson
   videoUrl: text('video_url').notNull(), // Required YouTube video URL
   orderVal: integer('order_val').notNull(), // Order of the lesson in the course or section

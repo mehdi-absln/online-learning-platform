@@ -345,8 +345,7 @@
                         lessons: section.content
                       }))
                     "
-                    :course-id="coursesStore.detailedCourse?.id"
-                    :course-slug="coursesStore.detailedCourse?.title ? generateSlug(coursesStore.detailedCourse.title) : undefined"
+                    :course-slug="courseSlug.value"
                   />
                 </div>
                 <div v-else class="text-center py-10">
@@ -414,8 +413,6 @@
 </template>
 
 <script setup lang="ts">
-import { generateSlug } from '@/utils/slug'
-
 const coursesStore = useCoursesStore()
 const isLoading = ref<boolean>(true)
 
@@ -458,9 +455,7 @@ const breadcrumbCrumbs = computed(() => [
     name: coursesStore.detailedCourse?.title || '',
     path: coursesStore.detailedCourse?.slug
       ? `/courses/${coursesStore.detailedCourse.slug}`
-      : coursesStore.detailedCourse?.title
-        ? `/courses/${generateSlug(coursesStore.detailedCourse.title)}`
-        : `/courses/${courseSlug.value}`
+      : `/courses/${courseSlug.value}`
   }
 ])
 
