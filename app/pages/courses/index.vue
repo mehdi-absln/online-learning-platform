@@ -44,7 +44,6 @@
 import { extractFilterFromUrl } from '~/utils/course-helpers'
 import CourseSidebarFilters from '~/components/courses/CourseSidebarFilters.vue'
 
-
 const coursesStore = useCoursesStore()
 const isLoading = ref(true)
 const route = useRoute()

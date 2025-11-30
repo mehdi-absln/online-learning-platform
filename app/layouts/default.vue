@@ -7,7 +7,10 @@
       </nav>
     </header>
     <!-- Main content - Adding padding to account for fixed navigation on non-home pages -->
-    <main class="flex-grow min-h-screen" :class="{ 'pt-40': route.path !== '/' && route.path !== '/home' }">
+    <main
+      class="flex-grow min-h-screen"
+      :class="{ 'pt-40': route.path !== '/' && route.path !== '/home' }"
+    >
       <slot />
     </main>
     <footer class="flex-none">

@@ -107,6 +107,7 @@ export async function getAllCourses(
         level: courses.level,
         tags: courses.tags, // Add tags field to the select
         image: courses.image,
+        slug: courses.slug, // Include the slug field
         createdAt: courses.createdAt,
         updatedAt: courses.updatedAt
       })
@@ -339,19 +340,19 @@ export async function getDetailedCourseById(id: number) {
 }
 
 export async function getDetailedCourseBySlug(slug: string) {
-  console.log(`Fetching detailed course with slug: ${slug}`);
+  console.log(`Fetching detailed course with slug: ${slug}`)
 
   // Get the basic course info
   const course = await getCourseBySlug(slug)
   if (!course) {
-    console.log(`Course with slug ${slug} not found`);
+    console.log(`Course with slug ${slug} not found`)
     return undefined
   }
 
-  console.log(`Found course: ${course.title} (ID: ${course.id})`);
+  console.log(`Found course: ${course.title} (ID: ${course.id})`)
 
   // Get course learning objectives
-  console.log(`Fetching learning objectives for course ID: ${course.id}`);
+  console.log(`Fetching learning objectives for course ID: ${course.id}`)
   const learningObjectives = await db
     .select()
     .from(courseLearningObjectives)
@@ -359,7 +360,7 @@ export async function getDetailedCourseBySlug(slug: string) {
     .orderBy(asc(courseLearningObjectives.orderVal))
 
   // Get course content sections
-  console.log(`Fetching content sections for course ID: ${course.id}`);
+  console.log(`Fetching content sections for course ID: ${course.id}`)
   const contentSections = await db
     .select()
     .from(courseContentSections)
@@ -367,7 +368,7 @@ export async function getDetailedCourseBySlug(slug: string) {
     .orderBy(asc(courseContentSections.orderVal))
 
   // Get course reviews
-  console.log(`Fetching reviews for course ID: ${course.id}`);
+  console.log(`Fetching reviews for course ID: ${course.id}`)
   const courseReviews = await db
     .select()
     .from(reviews)
@@ -375,14 +376,14 @@ export async function getDetailedCourseBySlug(slug: string) {
     .orderBy(desc(reviews.createdAt))
 
   // Get course lessons
-  console.log(`Fetching lessons for course ID: ${course.id}`);
+  console.log(`Fetching lessons for course ID: ${course.id}`)
   const courseLessons = await db
     .select()
     .from(lessons)
     .where(eq(lessons.courseId, course.id))
     .orderBy(asc(lessons.orderVal))
 
-  console.log(`Successfully fetched all details for course: ${course.title}`);
+  console.log(`Successfully fetched all details for course: ${course.title}`)
 
   return {
     course,
@@ -408,6 +409,7 @@ export async function getCoursesByInstructorId(instructorId: number): Promise<Co
         price: courses.price,
         level: courses.level,
         image: courses.image,
+        slug: courses.slug, // Include the slug field
         createdAt: courses.createdAt,
         updatedAt: courses.updatedAt
       })
@@ -429,7 +431,7 @@ export async function createCourse(data: CreateCourseData): Promise<Course> {
       .trim()
       .replace(/[^\w\s-]/g, '')
       .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .replace(/^-+|-+$/g, '')
 
     const [newCourse] = await db
       .insert(courses)
@@ -456,24 +458,24 @@ export async function updateCourse(
 ): Promise<Course | undefined> {
   try {
     // If title is being updated, regenerate the slug
-    let slug: string | undefined;
+    let slug: string | undefined
     if (data.title !== undefined) {
       slug = data.title
         .toLowerCase()
         .trim()
         .replace(/[^\w\s-]/g, '')
         .replace(/[\s_-]+/g, '-')
-        .replace(/^-+|-+$/g, '');
+        .replace(/^-+|-+$/g, '')
     }
 
     const updateData: UpdateCourseData & { slug?: string; updatedAt: Date } = {
       ...data,
       updatedAt: new Date()
-    };
+    }
 
     // Only add slug to update if it was generated (i.e., title was changed)
     if (slug !== undefined) {
-      updateData.slug = slug;
+      updateData.slug = slug
     }
 
     const [updatedCourse] = await db

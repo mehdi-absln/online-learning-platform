@@ -15,11 +15,7 @@
       >
         <span
           class="w-4 h-4 flex items-center justify-center rounded border mr-3"
-          :class="
-            modelValue
-              ? 'border-primary bg-primary'
-              : 'border-[#474746] bg-[#1F1F1E]'
-          "
+          :class="modelValue ? 'border-primary bg-primary' : 'border-[#474746] bg-[#1F1F1E]'"
         >
           <svg
             v-show="modelValue"
@@ -37,10 +33,7 @@
         </span>
       </label>
     </div>
-    <label
-      :for="id"
-      class="ml-1 text-sm text-gray-300 cursor-pointer flex-1 py-1"
-    >
+    <label :for="id" class="ml-1 text-sm text-gray-300 cursor-pointer flex-1 py-1">
       {{ label }}
     </label>
   </div>

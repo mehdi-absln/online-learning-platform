@@ -10,15 +10,17 @@ import type { Course } from '~/types/shared/courses'
 export default defineEventHandler(async (event: H3Event) => {
   try {
     console.log('Fetching courses with filters and pagination...')
-    
+
     // Get query parameters for filtering and pagination
     const query = getQuery(event)
-    
+
     // Parse categories, levels, and tags as arrays if they exist
     const parseArrayParam = (param: unknown): string[] | undefined => {
       if (!param) return undefined
       if (Array.isArray(param)) {
-        return param.map(item => safeParseString(item)).filter(item => item !== undefined) as string[]
+        return param
+          .map((item) => safeParseString(item))
+          .filter((item) => item !== undefined) as string[]
       }
       const singleValue = safeParseString(param)
       return singleValue ? [singleValue] : undefined
@@ -35,26 +37,26 @@ export default defineEventHandler(async (event: H3Event) => {
       minPrice: safeParseInt(query.minPrice),
       maxPrice: safeParseInt(query.maxPrice),
       searchQuery: safeParseString(query.q),
-      instructorId: safeParseInt(query.instructorId),
+      instructorId: safeParseInt(query.instructorId)
     }
-    
+
     // Pagination parameters
     const page = query.page ? Math.max(1, Number(query.page)) : 1
     const limit = query.limit ? Math.min(50, Math.max(1, Number(query.limit))) : 12 // Default 12 courses per page
     const offset = (page - 1) * limit
-    
+
     console.log('Applied filters:', filter)
     console.log('Pagination params: page:', page, 'limit:', limit, 'offset:', offset)
-    
+
     // Get filtered courses with pagination
     const courses = await getAllCourses(filter, limit, offset)
     const totalCourses = await getCoursesCount(filter)
-    
+
     // Calculate pagination info
     const totalPages = Math.ceil(totalCourses / limit)
-    
+
     const transformedCourses = transformCoursesForClient(courses)
-    
+
     return {
       success: true,
       data: transformedCourses,
@@ -70,12 +72,12 @@ export default defineEventHandler(async (event: H3Event) => {
     console.error('Error name:', (error as Error).name)
     console.error('Error message:', (error as Error).message)
     console.error('Error stack:', (error as Error).stack)
-    
+
     setResponseStatus(event, 500)
     return {
       success: false,
       message: 'Failed to fetch courses',
-      error: (error as Error).message || 'Unknown error occurred',
+      error: (error as Error).message || 'Unknown error occurred'
     }
   }
 })

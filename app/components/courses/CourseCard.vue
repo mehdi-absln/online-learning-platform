@@ -28,7 +28,6 @@
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-[18px] w-[18px] text-primary transition-colors duration-300 group-hover/bookmark:text-white"
-              fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
@@ -62,11 +61,13 @@
         :title="course.title"
       >
         <NuxtLink
+          v-if="courseLink"
           :to="courseLink"
           class="transition-all duration-300 hover:text-primary"
         >
           {{ course.title }}
         </NuxtLink>
+        <span v-else class="text-white cursor-default">{{ course.title }}</span>
       </h3>
       <div class="flex items-center gap-4 text-sm">
         <div class="flex items-center gap-1">
@@ -76,7 +77,6 @@
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5 text-primary"
-              fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
@@ -114,11 +114,15 @@
       <div class="flex items-center justify-between pb-6 mt-auto">
         <span class="text-base font-semibold text-primary-alt">${{ course.price }}</span>
         <NuxtLink
+          v-if="courseLink"
           :to="courseLink"
           class="relative font-medium text-white transition-all duration-300 hover:text-primary"
         >
           <span class="relative z-10"> Explore Now </span>
         </NuxtLink>
+        <button v-else disabled class="relative font-medium text-gray-500 cursor-not-allowed">
+          <span class="relative z-10"> Explore Now </span>
+        </button>
       </div>
     </div>
   </div>
@@ -126,22 +130,20 @@
 
 <script setup lang="ts">
 import type { CourseCardProps } from '~/types/types-components'
-import { generateSlug } from '@/utils/slug'
 
 const props = defineProps<CourseCardProps>()
 
 // Computed property to generate course link using stored slug
+// If slug is missing, we should not create a link as it indicates data inconsistency
 const courseLink = computed(() => {
   if (props.course.slug) {
     // Use the stored slug from the database
     return `/courses/${props.course.slug}`
   }
-  // Fallback to generating slug from title if not available
-  if (props.course.title) {
-    const slug = generateSlug(props.course.title)
-    return `/courses/${slug}`
-  }
-  // Fallback to ID if title is also not available
-  return `/courses/${props.course.id}`
+
+  // If no slug is available, return an empty string to disable the link
+  // This indicates a data issue that should be addressed on the backend
+  console.warn('Course slug is missing for course:', props.course.title, props.course.id)
+  return ''
 })
 </script>

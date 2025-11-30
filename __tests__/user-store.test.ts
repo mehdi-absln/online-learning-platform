@@ -34,7 +34,7 @@ describe('User Store', () => {
 
   it('initializes with correct state', () => {
     const userStore = useUserStore()
-    
+
     expect(userStore.user).toBeNull()
     expect(userStore.isAuthenticated).toBe(false)
     expect(userStore.loading).toBe(false)
@@ -48,9 +48,9 @@ describe('User Store', () => {
       username: 'testuser',
       email: 'test@example.com'
     }
-    
+
     userStore.setUser(mockUser)
-    
+
     expect(userStore.user).toEqual(mockUser)
     expect(userStore.isAuthenticated).toBe(true)
     expect(userStore.error).toBeNull()
@@ -63,10 +63,10 @@ describe('User Store', () => {
       username: 'testuser',
       email: 'test@example.com'
     }
-    
+
     userStore.setUser(mockUser)
     userStore.clearUser()
-    
+
     expect(userStore.user).toBeNull()
     expect(userStore.isAuthenticated).toBe(false)
     expect(userStore.error).toBeNull()
@@ -74,10 +74,10 @@ describe('User Store', () => {
 
   it('sets loading state correctly', () => {
     const userStore = useUserStore()
-    
+
     userStore.setLoading(true)
     expect(userStore.loading).toBe(true)
-    
+
     userStore.setLoading(false)
     expect(userStore.loading).toBe(false)
   })
@@ -85,10 +85,10 @@ describe('User Store', () => {
   it('sets error correctly', () => {
     const userStore = useUserStore()
     const errorMessage = 'Test error'
-    
+
     userStore.setError(errorMessage)
     expect(userStore.error).toBe(errorMessage)
-    
+
     userStore.setError(null)
     expect(userStore.error).toBeNull()
   })

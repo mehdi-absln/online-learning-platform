@@ -39,7 +39,9 @@
         <!-- Category Filter -->
         <div class="pb-6 border-b border-[#474746]">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Category</label>
-          <div v-if="categories.length === 0" class="text-gray-400 text-sm">No categories available</div>
+          <div v-if="categories.length === 0" class="text-gray-400 text-sm">
+            No categories available
+          </div>
           <div class="space-y-2">
             <div v-for="category in categories" :key="category" class="flex items-center">
               <CourseFilterItemCheckbox
@@ -164,15 +166,21 @@ const {
 const searchInput = ref(filter.value.searchQuery)
 
 // Watch for changes in search input and apply filters with debounce
-watch(searchInput, debounce((val) => {
-  filter.value.searchQuery = val
-  applyFilters()
-}, 300))
+watch(
+  searchInput,
+  debounce((val) => {
+    filter.value.searchQuery = val
+    applyFilters()
+  }, 300)
+)
 
 // Watch for changes in filter.searchQuery and update search input
-watch(() => filter.value.searchQuery, (val) => {
-  searchInput.value = val
-})
+watch(
+  () => filter.value.searchQuery,
+  (val) => {
+    searchInput.value = val
+  }
+)
 
 const updatePriceFilter = () => {
   toggleExclusiveFilter('freeOnly', 'paidOnly')
@@ -183,4 +191,3 @@ onMounted(async () => {
   await fetchFilterOptions()
 })
 </script>
-

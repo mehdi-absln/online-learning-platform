@@ -18,7 +18,9 @@ export const useFetchFilterOptions = () => {
     error.value = null
 
     try {
-      const response = await $fetch<import('~/types/shared/api').FilterOptionsResponse>('/api/courses/filter-options')
+      const response = await $fetch<import('~/types/shared/api').FilterOptionsResponse>(
+        '/api/courses/filter-options'
+      )
       if (response.success) {
         filterOptions.value = {
           categories: response.data?.categories || [],

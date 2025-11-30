@@ -1,6 +1,11 @@
 import { H3Event } from 'h3'
 import { db } from '../../../server/db'
-import { courseLearningObjectives, courseContentSections, reviews, courses } from '../../../server/db/schema'
+import {
+  courseLearningObjectives,
+  courseContentSections,
+  reviews,
+  courses
+} from '../../../server/db/schema'
 import { eq } from 'drizzle-orm'
 
 // Function to check if sample data exists
@@ -19,7 +24,10 @@ export default defineEventHandler(async (event: H3Event) => {
 
     // Check if sample data already exists for this course
     const [objectives, sections, reviewCount] = await Promise.all([
-      db.select().from(courseLearningObjectives).where(eq(courseLearningObjectives.courseId, courseId)),
+      db
+        .select()
+        .from(courseLearningObjectives)
+        .where(eq(courseLearningObjectives.courseId, courseId)),
       db.select().from(courseContentSections).where(eq(courseContentSections.courseId, courseId)),
       db.select().from(reviews).where(eq(reviews.courseId, courseId))
     ])

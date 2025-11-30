@@ -5,25 +5,25 @@ import { getRouterParam, setResponseStatus } from 'h3'
 export default defineEventHandler(async (event: H3Event) => {
   try {
     const id = Number(getRouterParam(event, 'id'))
-    
+
     if (isNaN(id) || id <= 0) {
       setResponseStatus(event, 400)
       return {
         success: false,
-        message: 'Invalid user ID',
+        message: 'Invalid user ID'
       }
     }
-    
+
     const user = await UserService.findById(id)
-    
+
     if (!user) {
       setResponseStatus(event, 404)
       return {
         success: false,
-        message: 'User not found',
+        message: 'User not found'
       }
     }
-    
+
     // Return only public information about the user
     return {
       success: true,
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event: H3Event) => {
     return {
       success: false,
       message: 'Failed to fetch user',
-      error: (error as Error).message || 'Unknown error occurred',
+      error: (error as Error).message || 'Unknown error occurred'
     }
   }
 })

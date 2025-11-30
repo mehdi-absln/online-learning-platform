@@ -13,7 +13,8 @@ export const AUTH_ERRORS = {
   TERMS_NOT_ACCEPTED: 'You must accept the terms and conditions',
   USERNAME_TOO_SHORT: 'Username must be at least 3 characters',
   USERNAME_INVALID_FORMAT: 'Username can only contain letters, numbers and underscores',
-  PASSWORD_TOO_WEAK: 'Password must contain at least one uppercase letter, one lowercase letter, and one number',
+  PASSWORD_TOO_WEAK:
+    'Password must contain at least one uppercase letter, one lowercase letter, and one number',
   EMAIL_ALREADY_EXISTS: 'Email is already registered',
   USERNAME_ALREADY_EXISTS: 'Username is already taken'
 } as const
@@ -25,7 +26,7 @@ export { SHARED_AUTH_ERRORS }
 export const VALIDATION_PATTERNS = {
   USERNAME: /^[a-zA-Z0-9_]+$/,
   EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  PASSWORD: /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/  // Requires uppercase, lowercase, and number
+  PASSWORD: /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/ // Requires uppercase, lowercase, and number
 } as const
 
 // Validation limits

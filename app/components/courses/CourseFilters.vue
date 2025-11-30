@@ -106,9 +106,13 @@ onMounted(async () => {
 })
 
 // Watch for changes in store filter and update local filter
-watch(() => coursesStore.currentFilter, (newFilter) => {
-  localFilter.value = { ...newFilter }
-}, { deep: true })
+watch(
+  () => coursesStore.currentFilter,
+  (newFilter) => {
+    localFilter.value = { ...newFilter }
+  },
+  { deep: true }
+)
 
 const applyFilters = debounce(() => {
   coursesStore.applyFilter(localFilter.value)

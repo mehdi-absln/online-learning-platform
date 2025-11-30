@@ -5,7 +5,10 @@
   </div>
 
   <!-- Error state -->
-  <div v-else-if="coursesStore.error || hasError" class="py-36 flex flex-col items-center justify-center">
+  <div
+    v-else-if="coursesStore.error || hasError"
+    class="py-36 flex flex-col items-center justify-center"
+  >
     <p class="text-red-500 text-lg">Error: {{ coursesStore.error || 'Course not found' }}</p>
     <NuxtLink
       to="/courses"
@@ -126,7 +129,6 @@
                     >${{ coursesStore.detailedCourse?.price }}</span
                   >
                 </div>
-
 
                 <div class="flex items-center justify-between pb-4 border-b border-gray-700">
                   <div class="flex items-center">
