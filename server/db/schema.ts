@@ -6,7 +6,7 @@ export const users = sqliteTable('users', {
   email: text('email').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
 export const courses = sqliteTable('courses', {
@@ -23,7 +23,7 @@ export const courses = sqliteTable('courses', {
   image: text('image'), // URL to course image
   slug: text('slug').notNull().unique(), // URL-friendly slug for the course
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
 export const lessons = sqliteTable('lessons', {
@@ -36,7 +36,7 @@ export const lessons = sqliteTable('lessons', {
   videoUrl: text('video_url').notNull(), // Required YouTube video URL
   orderVal: integer('order_val').notNull(), // Order of the lesson in the course or section
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
 // Table for course learning objectives
@@ -46,7 +46,7 @@ export const courseLearningObjectives = sqliteTable('course_learning_objectives'
   objective: text('objective').notNull(), // Description of the learning objective
   orderVal: integer('order_val').notNull(), // Order of the objective in the list
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
 // Table for course content sections
@@ -58,7 +58,7 @@ export const courseContentSections = sqliteTable('course_content_sections', {
   lessonsCount: integer('lessons_count').notNull(), // Number of lessons in this section
   orderVal: integer('order_val').notNull(), // Order of the section in the course
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })
 
 // Table for course reviews
@@ -71,5 +71,5 @@ export const reviews = sqliteTable('reviews', {
   comment: text('comment'), // Review comment
   date: integer('date', { mode: 'timestamp' }).notNull(), // Date of the review
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 })

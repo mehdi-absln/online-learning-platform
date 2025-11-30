@@ -106,10 +106,7 @@ describe('Course Transformer', () => {
     expect(result.price).toBe(99.99) // Should be converted from cents to dollars
 
     // Check learning objectives
-    expect(result.learningObjectives).toEqual([
-      'Learn testing concepts',
-      'Practice with examples'
-    ])
+    expect(result.learningObjectives).toEqual(['Learn testing concepts', 'Practice with examples'])
 
     // Check course content sections
     expect(result.courseContent).toEqual([

@@ -5,7 +5,7 @@ import * as schema from './schema'
 // import { seedCourses } from '../utils/seed-courses'  // Commenting out automatic seeding since DB is already seeded
 
 // Determine the correct database path
-const dbPath = process.env.DATABASE_URL?.replace('file:', '') || './server/data/db.sqlite'  // Using the db.sqlite file in server/data
+const dbPath = process.env.DATABASE_URL?.replace('file:', '') || './server/data/db.sqlite' // Using the db.sqlite file in server/data
 console.log(`Using database path: ${dbPath}`)
 
 const sqlite = new Database(dbPath)

@@ -1,6 +1,11 @@
 import { H3Event } from 'h3'
 import { db } from '../../../server/db'
-import { courseLearningObjectives, courseContentSections, reviews, courses } from '../../../server/db/schema'
+import {
+  courseLearningObjectives,
+  courseContentSections,
+  reviews,
+  courses
+} from '../../../server/db/schema'
 import { and, eq } from 'drizzle-orm'
 
 // Function to add sample data for a specific course
@@ -38,36 +43,36 @@ export default defineEventHandler(async (event: H3Event) => {
         objective: 'Understand the fundamentals of Vue 3 and Composition API',
         order: 1,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         courseId: courseId,
         objective: 'Learn how to build responsive UIs with Tailwind CSS',
         order: 2,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         courseId: courseId,
         objective: 'Implement state management with Pinia',
         order: 3,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         courseId: courseId,
         objective: 'Create a full-stack Nuxt.js application',
         order: 4,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         courseId: courseId,
         objective: 'Deploy applications to production environments',
         order: 5,
         createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+        updatedAt: new Date()
+      }
     ]
 
     await db.insert(courseLearningObjectives).values(learningObjectivesData)
@@ -82,17 +87,17 @@ export default defineEventHandler(async (event: H3Event) => {
         duration: '2 hours',
         order: 1,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         courseId: courseId,
         title: 'Composition API',
-        description: 'Deep dive into Vue 3\'s Composition API',
+        description: "Deep dive into Vue 3's Composition API",
         lessonsCount: 7,
         duration: '3.5 hours',
         order: 2,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         courseId: courseId,
@@ -102,7 +107,7 @@ export default defineEventHandler(async (event: H3Event) => {
         duration: '2.5 hours',
         order: 3,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         courseId: courseId,
@@ -112,7 +117,7 @@ export default defineEventHandler(async (event: H3Event) => {
         duration: '3 hours',
         order: 4,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         courseId: courseId,
@@ -122,8 +127,8 @@ export default defineEventHandler(async (event: H3Event) => {
         duration: '4 hours',
         order: 5,
         createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+        updatedAt: new Date()
+      }
     ]
 
     await db.insert(courseContentSections).values(contentSectionsData)
@@ -137,7 +142,7 @@ export default defineEventHandler(async (event: H3Event) => {
         comment: 'Excellent course! The instructor explains complex concepts very clearly.',
         date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // A week ago
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         courseId: courseId,
@@ -146,7 +151,7 @@ export default defineEventHandler(async (event: H3Event) => {
         comment: 'Good content, but some examples could be more practical.',
         date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         courseId: courseId,
@@ -155,7 +160,7 @@ export default defineEventHandler(async (event: H3Event) => {
         comment: 'One of the best Vue.js courses I have taken. Highly recommended!',
         date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         courseId: courseId,
@@ -164,8 +169,8 @@ export default defineEventHandler(async (event: H3Event) => {
         comment: 'Decent content but could use more exercises.',
         date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // Two weeks ago
         createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+        updatedAt: new Date()
+      }
     ]
 
     await db.insert(reviews).values(reviewsData)

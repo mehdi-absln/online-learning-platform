@@ -4,7 +4,10 @@
       <LoadingSpinner message="Loading lesson..." />
     </div>
 
-    <div v-else-if="coursesStore.error || hasError" class="py-36 flex flex-col items-center justify-center">
+    <div
+      v-else-if="coursesStore.error || hasError"
+      class="py-36 flex flex-col items-center justify-center"
+    >
       <p class="text-red-500 text-lg">Error: {{ coursesStore.error || 'Lesson not found' }}</p>
       <NuxtLink
         :to="`/courses/${route.params.courseSlug}`"
@@ -15,12 +18,20 @@
     </div>
 
     <div v-else-if="lesson">
-      <NuxtLink
-        :to="courseLink"
-        class="inline-flex items-center text-primary hover:underline mb-6"
-      >
-        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      <NuxtLink :to="courseLink" class="inline-flex items-center text-primary hover:underline mb-6">
+        <svg
+          class="w-4 h-4 mr-1"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          ></path>
         </svg>
         Back to Course
       </NuxtLink>
@@ -50,7 +61,6 @@
 <script setup lang="ts">
 import { useCoursesStore } from '~/stores/courses'
 import type { DetailedLesson } from '~/types/shared/courses'
-import { generateSlug } from '@/utils/slug'
 
 const route = useRoute()
 const coursesStore = useCoursesStore()
@@ -76,16 +86,15 @@ const lesson = computed(() => {
 
   for (const section of coursesStore.detailedCourse.courseContent) {
     if (section.content) {
-      // Find lesson by matching slug with title
-      const foundLesson = section.content.find(content =>
-        generateSlug(content.title) === lessonSlug.value
-      )
+      // Find lesson by matching slug
+      const foundLesson = section.content.find((content) => content.slug === lessonSlug.value)
       if (foundLesson) {
         return {
           ...foundLesson,
           id: foundLesson.id,
           courseId: coursesStore.detailedCourse.id,
-          content: foundLesson.description || foundLesson.title || 'Lesson content will appear here',
+          content:
+            foundLesson.description || foundLesson.title || 'Lesson content will appear here',
           order: foundLesson.order,
           sectionId: section.id,
           createdAt: new Date(),
@@ -114,17 +123,16 @@ const youtubeEmbedUrl = computed(() => {
 
 // Computed property to generate course link using slug
 const courseLink = computed(() => {
-  if (coursesStore.detailedCourse?.title) {
-    const slug = generateSlug(coursesStore.detailedCourse.title)
-    return `/courses/${slug}`
+  if (coursesStore.detailedCourse?.slug) {
+    return `/courses/${coursesStore.detailedCourse.slug}`
   }
-  // Fallback to course slug if title is not available
+  // Fallback to course slug if slug is not available
   return `/courses/${courseSlug.value}`
 })
 
 // Set page metadata
 useSeoMeta({
-  title: () => lesson.value?.title ? `${lesson.value.title} - Lesson` : 'Loading Lesson...',
+  title: () => (lesson.value?.title ? `${lesson.value.title} - Lesson` : 'Loading Lesson...'),
   description: () => lesson.value?.content || 'Course lesson content'
 })
 

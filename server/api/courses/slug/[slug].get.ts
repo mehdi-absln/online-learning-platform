@@ -13,7 +13,7 @@ export default defineEventHandler(async (event: H3Event) => {
       setResponseStatus(event, 400)
       return {
         success: false,
-        message: 'Invalid course slug',
+        message: 'Invalid course slug'
       }
     }
 
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event: H3Event) => {
       setResponseStatus(event, 404)
       return {
         success: false,
-        message: 'Course not found',
+        message: 'Course not found'
       }
     }
 
@@ -41,7 +41,7 @@ export default defineEventHandler(async (event: H3Event) => {
     return {
       success: true,
       data: {
-        ...transformedCourse,
+        ...transformedCourse
       },
       courseId: course.id
     }
@@ -55,7 +55,7 @@ export default defineEventHandler(async (event: H3Event) => {
     return {
       success: false,
       message: 'Failed to fetch course',
-      error: (error as Error).message || 'Unknown error occurred',
+      error: (error as Error).message || 'Unknown error occurred'
     }
   }
 })

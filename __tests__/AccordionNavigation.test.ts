@@ -49,7 +49,9 @@ describe('Accordion.vue', () => {
     await nextTick() // Wait for DOM update after state change
 
     // Find the video button by its aria-label attribute
-    const videoButton = wrapper.find('button[aria-label="Watch video for Lesson 1: Getting Started"]')
+    const videoButton = wrapper.find(
+      'button[aria-label="Watch video for Lesson 1: Getting Started"]'
+    )
 
     // Verify the button exists
     expect(videoButton.exists()).toBe(true)
@@ -97,7 +99,9 @@ describe('Accordion.vue', () => {
     await nextTick() // Wait for DOM update after state change
 
     // Find the video button by its aria-label attribute
-    const videoButton = wrapper.find('button[aria-label="Watch video for Lesson 1: Getting Started"]')
+    const videoButton = wrapper.find(
+      'button[aria-label="Watch video for Lesson 1: Getting Started"]'
+    )
 
     // Verify the button exists
     expect(videoButton.exists()).toBe(true)
@@ -106,6 +110,8 @@ describe('Accordion.vue', () => {
     await videoButton.trigger('click')
 
     // Check that navigateTo was called with the correct slug-based path
-    expect(vi.mocked(navigateTo)).toHaveBeenCalledWith('/courses/introduction-to-vue/lessons/lesson-1-getting-started')
+    expect(vi.mocked(navigateTo)).toHaveBeenCalledWith(
+      '/courses/introduction-to-vue/lessons/lesson-1-getting-started'
+    )
   })
 })

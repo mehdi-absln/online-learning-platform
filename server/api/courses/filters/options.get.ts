@@ -35,8 +35,8 @@ export default defineEventHandler(async (event) => {
     allTagsResult.forEach((row) => {
       if (row.tags) {
         // Split comma-separated tags and trim whitespace
-        const tags = row.tags.split(',').map(tag => tag.trim())
-        tags.forEach(tag => {
+        const tags = row.tags.split(',').map((tag) => tag.trim())
+        tags.forEach((tag) => {
           if (tag) allTags.add(tag)
         })
       }
@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
     return {
       success: false,
       message: 'Failed to fetch filter options',
-      error: (error as Error).message || 'Unknown error occurred',
+      error: (error as Error).message || 'Unknown error occurred'
     }
   }
 })

@@ -3,7 +3,8 @@ export const AUTH_ERRORS = {
   ALL_FIELDS_REQUIRED: 'All fields are required',
   PASSWORDS_DONT_MATCH: 'Passwords do not match',
   PASSWORD_TOO_SHORT: 'Password must be at least 6 characters long',
-  PASSWORD_TOO_WEAK: 'Password must contain at least one uppercase letter, one lowercase letter, and one number',
+  PASSWORD_TOO_WEAK:
+    'Password must contain at least one uppercase letter, one lowercase letter, and one number',
   TERMS_NOT_ACCEPTED: 'You must accept the terms and conditions',
   EMAIL_INVALID: 'Please enter a valid email address',
   USERNAME_OR_EMAIL_EXISTS: 'Username or email already exists',

@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   try {
     // Fetch all courses without any filters to get the total count
     const allCourses = await getAllCourses()
-    
+
     return {
       success: true,
       data: {
@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     return {
       success: false,
       message: 'Failed to fetch courses count',
-      error: (error as Error).message || 'Unknown error occurred',
+      error: (error as Error).message || 'Unknown error occurred'
     }
   }
 })

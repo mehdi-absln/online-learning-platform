@@ -29,7 +29,9 @@ describe('Accordion.vue', () => {
     await wrapper.vm.toggleAccordion(0)
 
     // Find the video button by its aria-label attribute
-    const videoButton = wrapper.find('button[aria-label="Watch video for Lesson 1: Getting Started"]')
+    const videoButton = wrapper.find(
+      'button[aria-label="Watch video for Lesson 1: Getting Started"]'
+    )
     expect(videoButton.exists()).toBe(true)
 
     // Check if the button contains the video icon
@@ -94,40 +96,40 @@ describe('Accordion.vue', () => {
           }
         ]
       }
-    ];
+    ]
 
     const wrapper = mount(Accordion, {
       props: {
         items,
         exclusive: false
       }
-    });
+    })
 
     // Initially no items should be open
-    expect(wrapper.vm.isOpen(0)).toBe(false);
-    expect(wrapper.vm.isOpen(1)).toBe(false);
+    expect(wrapper.vm.isOpen(0)).toBe(false)
+    expect(wrapper.vm.isOpen(1)).toBe(false)
 
     // Open first item
-    await wrapper.vm.toggleAccordion(0);
+    await wrapper.vm.toggleAccordion(0)
 
     // First item should be open, second should remain closed
-    expect(wrapper.vm.isOpen(0)).toBe(true);
-    expect(wrapper.vm.isOpen(1)).toBe(false);
+    expect(wrapper.vm.isOpen(0)).toBe(true)
+    expect(wrapper.vm.isOpen(1)).toBe(false)
 
     // Open second item (both should be open since exclusive is false)
-    await wrapper.vm.toggleAccordion(1);
+    await wrapper.vm.toggleAccordion(1)
 
     // Both items should be open
-    expect(wrapper.vm.isOpen(0)).toBe(true);
-    expect(wrapper.vm.isOpen(1)).toBe(true);
+    expect(wrapper.vm.isOpen(0)).toBe(true)
+    expect(wrapper.vm.isOpen(1)).toBe(true)
 
     // Close first item
-    await wrapper.vm.toggleAccordion(0);
+    await wrapper.vm.toggleAccordion(0)
 
     // First should be closed, second should remain open
-    expect(wrapper.vm.isOpen(0)).toBe(false);
-    expect(wrapper.vm.isOpen(1)).toBe(true);
-  });
+    expect(wrapper.vm.isOpen(0)).toBe(false)
+    expect(wrapper.vm.isOpen(1)).toBe(true)
+  })
 
   it('correctly manages exclusive accordion behavior', async () => {
     const items = [
@@ -157,23 +159,23 @@ describe('Accordion.vue', () => {
           }
         ]
       }
-    ];
+    ]
 
     const wrapper = mount(Accordion, {
       props: {
         items,
         exclusive: true
       }
-    });
+    })
 
     // Open first item
-    await wrapper.vm.toggleAccordion(0);
-    expect(wrapper.vm.isOpen(0)).toBe(true);
-    expect(wrapper.vm.isOpen(1)).toBe(false);
+    await wrapper.vm.toggleAccordion(0)
+    expect(wrapper.vm.isOpen(0)).toBe(true)
+    expect(wrapper.vm.isOpen(1)).toBe(false)
 
     // Open second item - should close first and open second (exclusive behavior)
-    await wrapper.vm.toggleAccordion(1);
-    expect(wrapper.vm.isOpen(0)).toBe(false);
-    expect(wrapper.vm.isOpen(1)).toBe(true);
-  });
+    await wrapper.vm.toggleAccordion(1)
+    expect(wrapper.vm.isOpen(0)).toBe(false)
+    expect(wrapper.vm.isOpen(1)).toBe(true)
+  })
 })

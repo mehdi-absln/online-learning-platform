@@ -9,10 +9,7 @@
         <p class="text-white text-lg">No courses found matching your filters.</p>
       </div>
 
-      <div
-        v-else
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 [grid-auto-rows:1fr]"
-      >
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 [grid-auto-rows:1fr]">
         <div v-for="course in courses" :key="course.id" class="h-full">
           <CourseCard :course="course" class="h-full" />
         </div>

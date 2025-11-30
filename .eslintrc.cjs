@@ -3,9 +3,6 @@ module.exports = {
   extends: ['@nuxt/eslint-config', 'plugin:prettier/recommended'],
   rules: {
     // غیرفعال کردن قانون نام‌گذاری کامپوننت‌ها
-    'vue/multi-word-component-names': 'off',
-
-    // افزودن قوانین سفارشی (اختیاری)
-    'prettier/prettier': ['error', { endOfLine: 'auto' }]
+    'vue/multi-word-component-names': 'off'
   }
 }

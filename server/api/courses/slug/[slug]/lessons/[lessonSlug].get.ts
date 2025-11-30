@@ -33,17 +33,7 @@ export default defineEventHandler(async (event: H3Event) => {
     const { course, learningObjectives, contentSections, reviews, lessons } = detailedCourseData
 
     // Find the lesson based on the lesson slug
-    // Using the same slug generation logic as in the client-side utility
-    const lesson = lessons.find((l) => {
-      const generatedSlug = l.title
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/[\s_-]+/g, '-')
-        .replace(/^-+|-+$/g, '')
-
-      return generatedSlug === lessonSlug
-    })
+    const lesson = lessons.find((l) => l.slug === lessonSlug)
 
     if (!lesson) {
       setResponseStatus(event, 404)

@@ -5,21 +5,21 @@ import Tabs from '~/components/Tabs.vue'
 describe('Tabs.vue', () => {
   const tabsProp = [
     { title: 'Tab 1', name: 'tab1' },
-    { title: 'Tab 2', name: 'tab2' },
+    { title: 'Tab 2', name: 'tab2' }
   ]
 
   const slots = {
     tab1: '<div data-testid="tab1-content">Content of Tab 1</div>',
-    tab2: '<div data-testid="tab2-content">Content of Tab 2</div>',
+    tab2: '<div data-testid="tab2-content">Content of Tab 2</div>'
   }
 
   it('renders tabs with correct titles', () => {
     const wrapper = mount(Tabs, {
       props: {
         tabs: tabsProp,
-        modelValue: 0,
+        modelValue: 0
       },
-      slots,
+      slots
     })
 
     const tabButtons = wrapper.findAll('[role="tab"]')
@@ -32,15 +32,15 @@ describe('Tabs.vue', () => {
     const wrapper = mount(Tabs, {
       props: {
         tabs: tabsProp,
-        modelValue: 0,
+        modelValue: 0
       },
-      slots,
+      slots
     })
 
     // Check that the first tab is active
     const firstTabButton = wrapper.get('[role="tab"]').element as HTMLElement
     expect(firstTabButton.getAttribute('aria-selected')).toBe('true')
-    
+
     // Check that the first tab panel is visible
     const tab1Content = wrapper.find('[data-testid="tab1-content"]')
     expect(tab1Content.exists()).toBe(true)
@@ -51,9 +51,9 @@ describe('Tabs.vue', () => {
     const wrapper = mount(Tabs, {
       props: {
         tabs: tabsProp,
-        modelValue: 0,
+        modelValue: 0
       },
-      slots,
+      slots
     })
 
     // Click on the second tab
@@ -76,9 +76,9 @@ describe('Tabs.vue', () => {
     const wrapper = mount(Tabs, {
       props: {
         tabs: tabsProp,
-        modelValue: 0,
+        modelValue: 0
       },
-      slots,
+      slots
     })
 
     // Click on the second tab
@@ -95,9 +95,9 @@ describe('Tabs.vue', () => {
     const wrapper = mount(Tabs, {
       props: {
         tabs: tabsProp,
-        modelValue: 0,
+        modelValue: 0
       },
-      slots,
+      slots
     })
 
     const tabButtons = wrapper.findAll('[role="tab"]')

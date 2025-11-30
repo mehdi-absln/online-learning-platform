@@ -29,9 +29,9 @@ export default defineEventHandler(async (event) => {
         statusMessage: AUTH_ERRORS.PASSWORD_TOO_SHORT
       })
     }
-    
+
     // Validate password complexity: at least one uppercase, one lowercase, and one number
-    const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+    const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/
     if (!passwordRegex.test(password)) {
       throw createError({
         statusCode: 400,

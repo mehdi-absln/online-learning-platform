@@ -76,7 +76,10 @@ export const updateUrl = (filter: CoursesFilter, page: number, itemsPerPage: num
 }
 
 // Helper function to merge URL filter with store filter
-export const mergeFilters = (storeFilter: CoursesFilter, urlFilter: CoursesFilter): ExtendedCoursesFilter => {
+export const mergeFilters = (
+  storeFilter: CoursesFilter,
+  urlFilter: CoursesFilter
+): ExtendedCoursesFilter => {
   return {
     categories: urlFilter.categories ?? storeFilter.categories ?? [],
     levels: urlFilter.levels ?? storeFilter.levels ?? [],
