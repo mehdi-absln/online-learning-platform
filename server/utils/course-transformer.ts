@@ -69,8 +69,10 @@ interface RawLesson {
   courseId: number
   sectionId?: number
   title: string
+  slug: string // URL-friendly slug for the lesson
   content?: string
   videoUrl?: string // Optional YouTube video URL
+  duration?: string // Duration of the lesson
   order: number
   createdAt: Date
   updatedAt: Date
@@ -135,7 +137,12 @@ export function transformCourseForClientWithDetails(
                   .map((lesson) => ({
                     id: lesson.id, // Include the lesson ID
                     title: lesson.title,
-                    slug: lesson.slug, // Include the lesson slug
+                    slug: lesson.slug || lesson.title
+                      .toLowerCase()
+                      .trim()
+                      .replace(/[^\w\s-]/g, '')
+                      .replace(/[\s_-]+/g, '-')
+                      .replace(/^-+|-+$/g, ''), // Generate slug from title if not available
                     duration: lesson.duration || `${Math.floor(Math.random() * 10) + 1} min`, // Generate a random duration if not available
                     videoUrl: lesson.videoUrl // Use existing videoUrl
                   }))
