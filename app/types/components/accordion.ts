@@ -12,6 +12,7 @@ export interface AccordionItem {
   description?: string
   lessons?: CourseContentLesson[]
   duration?: string
+  disabled?: boolean
 }
 
 export interface AccordionProps {
@@ -25,7 +26,7 @@ export interface AccordionProps {
    * Index of the item that should be open by default
    * @default -1 (no item open)
    */
-  modelValue?: number
+  modelValue?: number | number[]
   /**
    * Course ID for generating lesson links
    */
