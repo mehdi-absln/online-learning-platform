@@ -8,9 +8,7 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
-  breadcrumbCrumbs: { name: string; path: string }[]
-}
+import type { CoursesHeroProps } from '~/types/components/types-components'
 
-defineProps<Props>()
+defineProps<CoursesHeroProps>()
 </script>

@@ -508,7 +508,7 @@ const formatDate = (dateString: string): string => {
   return new Date(dateString).toLocaleDateString(undefined, options)
 }
 
-const goToLessonPage = (sectionIndex: number, lessonIndex: number, lesson: CourseContentLesson) => {
+const goToLessonPage = (lesson: CourseContentLesson) => {
   if (lesson.slug && courseSlug.value) {
     const lessonUrl = `/courses/${courseSlug.value}/lessons/${lesson.slug}`
     navigateTo(lessonUrl)

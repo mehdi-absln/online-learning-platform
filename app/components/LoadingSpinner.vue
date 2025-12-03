@@ -8,11 +8,9 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
-  message?: string
-}
+import type { LoadingSpinnerProps } from '~/types/components/types-components'
 
-withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<LoadingSpinnerProps>(), {
   message: 'Loading...'
 })
 </script>

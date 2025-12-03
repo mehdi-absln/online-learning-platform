@@ -73,9 +73,9 @@
               :key="lesson.id || lessonIndex"
               :class="[
                 'group flex items-center p-3 rounded-md transition-colors',
-                lesson.slug ? 'hover:bg-gray-50 cursor-pointer' : 'cursor-not-allowed opacity-60'
+                lesson.slug ? 'hover:bg-gray-50 cursor-pointer' : 'cursor-not-allowed opacity-60',
               ]"
-              @click="lesson.slug && handleLessonClick(index, lessonIndex, lesson)"
+              @click="lesson.slug && handleLessonClick(lesson)"
             >
               <!-- Lesson Icon -->
               <svg
@@ -133,33 +133,22 @@
 </template>
 
 <script setup lang="ts">
-import type { AccordionProps, CourseContentLesson } from '~/types/components/accordion'
-
-// تعریف رویدادها
-interface Emits {
-  (e: 'update:modelValue', value: number | number[]): void
-  (e: 'lesson-click', sectionIndex: number, lessonIndex: number, lesson: CourseContentLesson): void
-}
+import type { AccordionProps, AccordionEmits, CourseContentLesson } from '~/types/components/accordion'
 
 const props = withDefaults(defineProps<AccordionProps>(), {
   exclusive: false,
-  modelValue: -1, // اگر exclusive=false باشد، بهتر است اینجا آرایه [] باشد، اما منطق شما را حفظ کردم
+  modelValue: () => [],
   courseSlug: undefined,
 })
 
-const emit = defineEmits<Emits>()
+const emit = defineEmits<AccordionEmits>()
 
-// استفاده از Set برای مدیریت وضعیت باز/بسته بودن
 const openItemIds = ref<Set<number>>(new Set())
-// رفرنس به هدرها برای فوکوس کیبورد
 const headerRefs = ref<HTMLElement[]>([])
-
-// پاکسازی در unmount برای جلوگیری از نشت حافظه
 onBeforeUnmount(() => {
   headerRefs.value = []
 })
 
-// همگام‌سازی با watch
 watch(
   () => props.modelValue,
   (newVal) => {
@@ -193,10 +182,8 @@ const toggleAccordion = (index: number) => {
     }
   }
 
-  // Emit کردن مقدار مناسب بر اساس حالت
   if (props.exclusive) {
-    // اگر بسته شد -1، اگر باز شد ایندکس
-    let val: number = -1
+    let val: number
     if (openItemIds.value.size > 0) {
       const firstValue = [...openItemIds.value][0]
       val = firstValue !== undefined ? firstValue : -1
@@ -208,17 +195,14 @@ const toggleAccordion = (index: number) => {
     emit('update:modelValue', val)
   }
   else {
-    // در حالت غیر انحصاری، آرایه برمی‌گردانیم
     emit('update:modelValue', Array.from(openItemIds.value))
   }
 }
 
-// مدیریت کلیک روی درس
-const handleLessonClick = (sectionIndex: number, lessonIndex: number, lesson: CourseContentLesson) => {
-  emit('lesson-click', sectionIndex, lessonIndex, lesson)
+const handleLessonClick = (lesson: CourseContentLesson) => {
+  emit('lesson-click', lesson)
 }
 
-// مدیریت کیبورد
 const handleKeyDown = (event: KeyboardEvent, index: number) => {
   const { key } = event
   const total = props.items.length
@@ -242,8 +226,6 @@ const handleKeyDown = (event: KeyboardEvent, index: number) => {
       break
   }
 }
-
-// تابع کمکی برای فوکوس دادن (بدون استفاده از getElementById)
 const focusHeader = (index: number) => {
   const el = headerRefs.value[index]
   if (el) el.focus()
