@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TabItem, TabsProps, TabsEmits } from '~/types/tabs-types'
+import type { TabItem, TabsProps, TabsEmits } from '~/types/components/tabs-types'
 
 const props = withDefaults(defineProps<TabsProps>(), {
   modelValue: 0,

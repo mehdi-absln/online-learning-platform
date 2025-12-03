@@ -46,14 +46,7 @@
 
 <script setup lang="ts">
 import CourseCard from '~/components/courses/CourseCard.vue'
+import type { CoursesGridProps } from '~/types/types-components'
 
-interface Props {
-  courses: import('~/types/shared/courses').Course[]
-  loading: boolean
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
-}
-
-defineProps<Props>()
+defineProps<CoursesGridProps>()
 </script>

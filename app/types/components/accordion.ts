@@ -1,13 +1,13 @@
 export interface CourseContentLesson {
-  id?: number | string // Optional ID for the lesson
+  id?: number | string
   title: string
-  slug: string // URL slug for the lesson (required)
-  duration: string // Duration in format like "5:30" or "10 min"
-  videoUrl?: string // Optional YouTube video URL
+  slug: string
+  duration: string
+  videoUrl?: string
 }
 
 export interface AccordionItem {
-  id?: number | string // Optional ID for the accordion item
+  id?: number | string
   title: string
   description?: string
   lessons?: CourseContentLesson[]
@@ -17,22 +17,13 @@ export interface AccordionItem {
 
 export interface AccordionProps {
   items: AccordionItem[]
-  /**
-   * Whether only one accordion item can be open at a time
-   * @default false
-   */
   exclusive?: boolean
-  /**
-   * Index of the item that should be open by default
-   * @default -1 (no item open)
-   */
   modelValue?: number | number[]
-  /**
-   * Course ID for generating lesson links
-   */
   courseId?: number
-  /**
-   * Course slug for generating slug-based lesson links
-   */
   courseSlug?: string
+}
+
+export interface AccordionEmits {
+  (e: 'update:modelValue', value: number | number[]): void
+  (e: 'lesson-click', lesson: CourseContentLesson): void
 }
