@@ -367,12 +367,44 @@
                       coursesStore.detailedCourse.courseContent.map((section) => ({
                         title: section.title,
                         description: section.description,
-                        lessons: section.content,
+                        content: section.content, // Store the lessons in a generic property
                       }))
                     "
-                    :course-slug="courseSlug"
-                    @lesson-click="goToLessonPage"
-                  />
+                  >
+                    <template #default="{ item }">
+                      <div class="p-4 space-y-2">
+                        <div
+                          v-for="(lesson, lessonIndex) in item.content"
+                          :key="lessonIndex"
+                          class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer"
+                          @click="goToLessonPage(lesson)"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 text-primary mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                            />
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          <span>{{ lesson.title }}</span>
+                          <span class="ml-auto text-sm text-gray-500">{{ lesson.duration }}</span>
+                        </div>
+                      </div>
+                    </template>
+                  </Accordion>
                 </div>
                 <div
                   v-else
@@ -455,7 +487,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CourseContentLesson } from '~/types/components/accordion'
+import type { CourseContentLesson } from '~/types/shared/courses'
 
 const coursesStore = useCoursesStore()
 const isLoading = ref<boolean>(true)

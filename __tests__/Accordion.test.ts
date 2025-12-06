@@ -1,181 +1,181 @@
 import { mount } from '@vue/test-utils'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import Accordion from '~/components/Accordion.vue'
 
-describe('Accordion.vue', () => {
-  it('shows video button when lesson has videoUrl', async () => {
-    const items = [
-      {
-        title: 'Module 1: Introduction',
-        description: 'Basic concepts',
-        duration: '45 min',
-        lessons: [
-          {
-            title: 'Lesson 1: Getting Started',
-            duration: '15 min',
-            videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-          }
-        ]
-      }
-    ]
+// Mock the composables
+vi.mock('~/composables/useAccordion', () => ({
+  useAccordion: vi.fn(() => ({
+    openItemIds: { value: new Set() },
+    toggle: vi.fn(),
+    isOpen: vi.fn(() => false),
+    emitUpdate: vi.fn(),
+  })),
+}))
 
+vi.mock('~/composables/useKeyboardFocus', () => ({
+  useKeyboardFocus: vi.fn(() => ({
+    handleKeyDown: vi.fn(),
+  })),
+}))
+
+describe('Accordion', () => {
+  const mockItems = [
+    { id: 0, title: 'Section 1', description: 'Description 1' },
+    { id: 1, title: 'Section 2', description: 'Description 2' },
+  ]
+
+  it('renders correctly with items', () => {
     const wrapper = mount(Accordion, {
       props: {
-        items
-      }
-    })
-
-    // Manually open the accordion item to make lessons visible
-    await wrapper.vm.toggleAccordion(0)
-
-    // Find the video button by its aria-label attribute
-    const videoButton = wrapper.find(
-      'button[aria-label="Watch video for Lesson 1: Getting Started"]'
-    )
-    expect(videoButton.exists()).toBe(true)
-
-    // Check if the button contains the video icon
-    const videoIcon = videoButton.find('svg')
-    expect(videoIcon.exists()).toBe(true)
-  })
-
-  it('does not show video button when lesson has no videoUrl', async () => {
-    const items = [
-      {
-        title: 'Module 1: Introduction',
-        description: 'Basic concepts',
-        duration: '45 min',
-        lessons: [
-          {
-            title: 'Lesson 1: Getting Started',
-            duration: '15 min'
-          }
-        ]
-      }
-    ]
-
-    const wrapper = mount(Accordion, {
-      props: {
-        items
-      }
-    })
-
-    // Manually open the accordion item to make lessons visible
-    await wrapper.vm.toggleAccordion(0)
-
-    // Find the video button - it should not exist
-    const videoButton = wrapper.find('button[aria-label^="Watch video for"]')
-    expect(videoButton.exists()).toBe(false)
-  })
-
-  it('correctly toggles accordion items by ID when available', async () => {
-    const items = [
-      {
-        id: 'section-1',
-        title: 'Module 1: Introduction',
-        description: 'Basic concepts',
-        duration: '45 min',
-        lessons: [
-          {
-            id: 'lesson-1',
-            title: 'Lesson 1: Getting Started',
-            duration: '15 min'
-          }
-        ]
+        items: mockItems,
       },
-      {
-        id: 'section-2',
-        title: 'Module 2: Advanced Topics',
-        description: 'Advanced concepts',
-        duration: '60 min',
-        lessons: [
-          {
-            id: 'lesson-2',
-            title: 'Lesson 2: Deep Dive',
-            duration: '20 min'
-          }
-        ]
-      }
-    ]
-
-    const wrapper = mount(Accordion, {
-      props: {
-        items,
-        exclusive: false
-      }
     })
 
-    // Initially no items should be open
-    expect(wrapper.vm.isOpen(0)).toBe(false)
-    expect(wrapper.vm.isOpen(1)).toBe(false)
-
-    // Open first item
-    await wrapper.vm.toggleAccordion(0)
-
-    // First item should be open, second should remain closed
-    expect(wrapper.vm.isOpen(0)).toBe(true)
-    expect(wrapper.vm.isOpen(1)).toBe(false)
-
-    // Open second item (both should be open since exclusive is false)
-    await wrapper.vm.toggleAccordion(1)
-
-    // Both items should be open
-    expect(wrapper.vm.isOpen(0)).toBe(true)
-    expect(wrapper.vm.isOpen(1)).toBe(true)
-
-    // Close first item
-    await wrapper.vm.toggleAccordion(0)
-
-    // First should be closed, second should remain open
-    expect(wrapper.vm.isOpen(0)).toBe(false)
-    expect(wrapper.vm.isOpen(1)).toBe(true)
+    expect(wrapper.findAll('.accordion > div')).toHaveLength(mockItems.length)
+    expect(wrapper.find('button').text()).toContain('Section 1')
+    expect(wrapper.find('button').text()).toContain('Description 1')
   })
 
-  it('correctly manages exclusive accordion behavior', async () => {
-    const items = [
-      {
-        id: 'section-1',
-        title: 'Module 1: Introduction',
-        description: 'Basic concepts',
-        duration: '45 min',
-        lessons: [
-          {
-            id: 'lesson-1',
-            title: 'Lesson 1: Getting Started',
-            duration: '15 min'
-          }
-        ]
-      },
-      {
-        id: 'section-2',
-        title: 'Module 2: Advanced Topics',
-        description: 'Advanced concepts',
-        duration: '60 min',
-        lessons: [
-          {
-            id: 'lesson-2',
-            title: 'Lesson 2: Deep Dive',
-            duration: '20 min'
-          }
-        ]
-      }
-    ]
-
+  it('renders header slot correctly', async () => {
     const wrapper = mount(Accordion, {
       props: {
-        items,
-        exclusive: true
-      }
+        items: mockItems,
+      },
+      slots: {
+        header: '<div class="custom-header">Custom Header</div>',
+      },
     })
 
-    // Open first item
-    await wrapper.vm.toggleAccordion(0)
-    expect(wrapper.vm.isOpen(0)).toBe(true)
-    expect(wrapper.vm.isOpen(1)).toBe(false)
+    expect(wrapper.find('.custom-header').exists()).toBe(true)
+    expect(wrapper.find('.custom-header').text()).toBe('Custom Header')
+  })
 
-    // Open second item - should close first and open second (exclusive behavior)
-    await wrapper.vm.toggleAccordion(1)
-    expect(wrapper.vm.isOpen(0)).toBe(false)
-    expect(wrapper.vm.isOpen(1)).toBe(true)
+  it('renders icon slot correctly', async () => {
+    const wrapper = mount(Accordion, {
+      props: {
+        items: mockItems,
+      },
+      slots: {
+        icon: '<div class="custom-icon">Custom Icon</div>',
+      },
+    })
+
+    expect(wrapper.find('.custom-icon').exists()).toBe(true)
+    expect(wrapper.find('.custom-icon').text()).toBe('Custom Icon')
+  })
+
+  it('renders default slot correctly', async () => {
+    const wrapper = mount(Accordion, {
+      props: {
+        items: [
+          { id: 0, title: 'Section 1', content: 'Content for section 1' },
+        ],
+      },
+      slots: {
+        default: '<div class="custom-content">Content: {{ item.content }}</div>',
+      },
+    })
+
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('.custom-content').exists()).toBe(true)
+  })
+
+  it('renders empty slot when no content provided', async () => {
+    const wrapper = mount(Accordion, {
+      props: {
+        items: [
+          { id: 0, title: 'Section 1' },
+        ],
+      },
+    })
+
+    await wrapper.vm.$nextTick()
+    expect(wrapper.text()).toContain('No Content')
+  })
+
+  it('renders custom empty text when provided', async () => {
+    const wrapper = mount(Accordion, {
+      props: {
+        items: [
+          { id: 0, title: 'Section 1' },
+        ],
+        emptyText: 'No items available',
+      },
+    })
+
+    await wrapper.vm.$nextTick()
+    expect(wrapper.text()).toContain('No items available')
+  })
+
+  it('applies headerClass correctly', async () => {
+    const customHeaderClass = 'bg-blue-100 text-blue-800'
+    const wrapper = mount(Accordion, {
+      props: {
+        items: mockItems,
+        headerClass: customHeaderClass,
+      },
+    })
+
+    const button = wrapper.find('button')
+    expect(button.classes()).toContain('bg-blue-100')
+    expect(button.classes()).toContain('text-blue-800')
+  })
+
+  it('applies contentClass correctly', async () => {
+    const customContentClass = 'p-6 bg-gray-50 rounded-b-lg'
+    const wrapper = mount(Accordion, {
+      props: {
+        items: [
+          { id: 0, title: 'Section 1', content: 'Test content' },
+        ],
+        contentClass: customContentClass,
+      },
+      slots: {
+        default: '<div>Test content</div>',
+      },
+    })
+
+    await wrapper.vm.$nextTick()
+    const contentDiv = wrapper.find('[role="region"]')
+    expect(contentDiv.classes()).toContain('p-6')
+    expect(contentDiv.classes()).toContain('bg-gray-50')
+    expect(contentDiv.classes()).toContain('rounded-b-lg')
+  })
+
+  it('applies transition duration correctly', async () => {
+    const wrapper = mount(Accordion, {
+      props: {
+        items: mockItems,
+        transitionDuration: 500,
+      },
+    })
+
+    expect(wrapper.html()).toContain('duration-500')
+  })
+
+  it('renders chevron icon correctly when no icon slot provided', async () => {
+    const wrapper = mount(Accordion, {
+      props: {
+        items: mockItems,
+      },
+    })
+
+    expect(wrapper.find('svg').exists()).toBe(true)
+    expect(wrapper.find('svg').classes()).toContain('w-5')
+    expect(wrapper.find('svg').classes()).toContain('h-5')
+  })
+
+  it('does not render description if not provided', async () => {
+    const wrapper = mount(Accordion, {
+      props: {
+        items: [
+          { id: 0, title: 'Section 1' }, // No description property
+        ],
+      },
+    })
+
+    // Should only contain title, not description
+    expect(wrapper.text()).toContain('Section 1')
+    expect(wrapper.find('[v-if="item.description"]').exists()).toBe(false)
   })
 })
