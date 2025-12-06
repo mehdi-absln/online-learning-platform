@@ -140,7 +140,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CourseCardProps } from '~/types/types-components'
+import type { CourseCardProps } from '~/types/components/types-components'
 
 const props = defineProps<CourseCardProps>()
 

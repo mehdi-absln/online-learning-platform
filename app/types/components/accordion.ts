@@ -1,29 +1,20 @@
-export interface CourseContentLesson {
-  id?: number | string
-  title: string
-  slug: string
-  duration: string
-  videoUrl?: string
-}
-
 export interface AccordionItem {
   id?: number | string
   title: string
   description?: string
-  lessons?: CourseContentLesson[]
-  duration?: string
+  [key: string]: any // Allow any additional properties for flexibility
   disabled?: boolean
 }
-
+export type AccordionValue = number | number[] | null | undefined
 export interface AccordionProps {
   items: AccordionItem[]
   exclusive?: boolean
-  modelValue?: number | number[]
-  courseId?: number
-  courseSlug?: string
+  modelValue?: AccordionValue
+  emptyText?: string
+  headerClass?: string
+  contentClass?: string
+  transitionDuration?: number
 }
-
 export interface AccordionEmits {
-  (e: 'update:modelValue', value: number | number[]): void
-  (e: 'lesson-click', lesson: CourseContentLesson): void
+  (e: 'update:modelValue', value: AccordionValue): void
 }

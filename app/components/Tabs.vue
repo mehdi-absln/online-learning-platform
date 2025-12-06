@@ -39,6 +39,7 @@
 
 <script setup lang="ts">
 import type { TabItem, TabsProps, TabsEmits } from '~/types/components/tabs-types'
+import { useKeyboardFocus } from '~/composables/useKeyboardFocus'
 
 const props = withDefaults(defineProps<TabsProps>(), {
   modelValue: 0,
@@ -87,33 +88,27 @@ const changeTab = (index: number) => {
   }
 }
 
-const handleKeydown = (event: KeyboardEvent, index: number) => {
-  switch (event.key) {
-    case 'ArrowLeft':
-      event.preventDefault()
-      focusTab(index > 0 ? index - 1 : tabData.value.length - 1)
-      break
-    case 'ArrowRight':
-      event.preventDefault()
-      focusTab(index < tabData.value.length - 1 ? index + 1 : 0)
-      break
-    case 'Home':
-      event.preventDefault()
-      focusTab(0)
-      break
-    case 'End':
-      event.preventDefault()
-      focusTab(tabData.value.length - 1)
-      break
-    default:
-      break
+// Use the keyboard focus composable
+const { handleKeyDown: handleKeyboardNavigation } = useKeyboardFocus({
+  items: tabData,
+  isDisabled: (tab: TabItem, index: number) => {
+    // Determine if a tab is disabled (if there's a way to define this)
+    // For now, we'll assume all tabs are enabled
+    // You can modify this logic based on your requirements
+    return false
   }
-}
+})
 
-const focusTab = (index: number) => {
-  changeTab(index)
-  if (tabRefs.value[index]) {
-    tabRefs.value[index].focus()
-  }
+const handleKeydown = (event: KeyboardEvent, index: number) => {
+  handleKeyboardNavigation(
+    event,
+    index,
+    tabData.value.length,
+    (newIndex) => {
+      if (tabRefs.value[newIndex]) {
+        tabRefs.value[newIndex].focus()
+      }
+    }
+  )
 }
 </script>

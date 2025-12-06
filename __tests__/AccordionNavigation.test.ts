@@ -3,19 +3,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { nextTick } from 'vue'
 import Accordion from '~/components/Accordion.vue'
 
-// Import navigateTo to be able to mock it
-import { navigateTo } from '#app'
-
 describe('Accordion.vue', () => {
   beforeEach(() => {
     // Clear all mock calls before each test
     vi.clearAllMocks()
   })
 
-  it('navigates to lesson page when lesson button is clicked', async () => {
-    const mockNavigateTo = vi.fn()
-    vi.mocked(navigateTo).mockImplementation(mockNavigateTo)
-
+  it('emits lesson-navigate event when lesson is clicked', async () => {
+    const lessonNavigateHandler = vi.fn()
     const items = [
       {
         title: 'Module 1: Introduction',
@@ -26,47 +21,45 @@ describe('Accordion.vue', () => {
             id: 1,
             title: 'Lesson 1: Getting Started',
             duration: '15 min',
-            videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+            slug: 'lesson-1-getting-started'
           }
         ]
       }
     ]
 
-    const courseId = 123
-
     const wrapper = mount(Accordion, {
       props: {
-        items,
-        courseId
+        items
+      },
+      emits: ['lesson-navigate']
+    })
+
+    // Set up event listener
+    wrapper.vm.$emit = vi.fn((event, ...args) => {
+      if (event === 'lesson-navigate') {
+        lessonNavigateHandler(...args)
       }
     })
 
-    // Wait for component to be fully mounted
-    await nextTick()
+    // Click to open accordion
+    const accordionHeader = wrapper.find('button[aria-controls^="accordion-content-"]')
+    await accordionHeader.trigger('click')
 
-    // Manually open the accordion item to make lessons visible
-    await wrapper.vm.toggleAccordion(0)
-    await nextTick() // Wait for DOM update after state change
+    // Find and click the lesson item
+    const lessonElement = wrapper.find('.group.flex.items-center.p-3.rounded-md')
+    await lessonElement.trigger('click')
 
-    // Find the video button by its aria-label attribute
-    const videoButton = wrapper.find(
-      'button[aria-label="Watch video for Lesson 1: Getting Started"]'
-    )
-
-    // Verify the button exists
-    expect(videoButton.exists()).toBe(true)
-
-    // Trigger the click event
-    await videoButton.trigger('click')
-
-    // Check that navigateTo was called with the correct path
-    expect(vi.mocked(navigateTo)).toHaveBeenCalledWith('/courses/123/lessons/1')
+    // Check that the lesson-navigate event was emitted
+    expect(lessonNavigateHandler).toHaveBeenCalledWith({
+      id: 1,
+      title: 'Lesson 1: Getting Started',
+      duration: '15 min',
+      slug: 'lesson-1-getting-started'
+    })
   })
 
-  it('navigates to lesson page using slug when courseSlug is provided', async () => {
-    const mockNavigateTo = vi.fn()
-    vi.mocked(navigateTo).mockImplementation(mockNavigateTo)
-
+  it('does not emit event when lesson is disabled (no slug)', async () => {
+    const lessonNavigateHandler = vi.fn()
     const items = [
       {
         title: 'Module 1: Introduction',
@@ -74,44 +67,38 @@ describe('Accordion.vue', () => {
         duration: '45 min',
         lessons: [
           {
+            id: 1,
             title: 'Lesson 1: Getting Started',
-            duration: '15 min',
-            videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+            duration: '15 min'
+            // No slug - lesson should be disabled
           }
         ]
       }
     ]
 
-    const courseSlug = 'introduction-to-vue'
-
     const wrapper = mount(Accordion, {
       props: {
-        items,
-        courseSlug
+        items
+      },
+      emits: ['lesson-navigate']
+    })
+
+    // Set up event listener
+    wrapper.vm.$emit = vi.fn((event, ...args) => {
+      if (event === 'lesson-navigate') {
+        lessonNavigateHandler(...args)
       }
     })
 
-    // Wait for component to be fully mounted
-    await nextTick()
+    // Click to open accordion
+    const accordionHeader = wrapper.find('button[aria-controls^="accordion-content-"]')
+    await accordionHeader.trigger('click')
 
-    // Manually open the accordion item to make lessons visible
-    await wrapper.vm.toggleAccordion(0)
-    await nextTick() // Wait for DOM update after state change
+    // Find and click the lesson item (should be disabled)
+    const lessonElement = wrapper.find('.group.flex.items-center.p-3.rounded-md')
+    await lessonElement.trigger('click')
 
-    // Find the video button by its aria-label attribute
-    const videoButton = wrapper.find(
-      'button[aria-label="Watch video for Lesson 1: Getting Started"]'
-    )
-
-    // Verify the button exists
-    expect(videoButton.exists()).toBe(true)
-
-    // Trigger the click event
-    await videoButton.trigger('click')
-
-    // Check that navigateTo was called with the correct slug-based path
-    expect(vi.mocked(navigateTo)).toHaveBeenCalledWith(
-      '/courses/introduction-to-vue/lessons/lesson-1-getting-started'
-    )
+    // Check that the lesson-navigate event was not emitted
+    expect(lessonNavigateHandler).not.toHaveBeenCalled()
   })
 })

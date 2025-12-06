@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import CourseCard from '~/components/courses/CourseCard.vue'
-import type { CoursesGridProps } from '~/types/types-components'
+import type { CoursesGridProps } from '~/types/components/types-components'
 
 defineProps<CoursesGridProps>()
 </script>

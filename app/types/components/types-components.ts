@@ -1,4 +1,4 @@
-import type { BreadcrumbItem } from './types'
+import type { BreadcrumbItem } from '../types'
 
 // Interfaces for Breadcrumb component
 export interface BreadcrumbProps {
@@ -7,7 +7,7 @@ export interface BreadcrumbProps {
 
 // Interfaces for CourseCard component
 export interface CourseCardProps {
-  course: import('./shared/courses').Course
+  course: import('~/types/shared/courses').Course
 }
 
 // Interfaces for LoadingSpinner component
@@ -17,7 +17,7 @@ export interface LoadingSpinnerProps {
 
 // Interfaces for CoursesGrid component
 export interface CoursesGridProps {
-  courses: import('./shared/courses').Course[]
+  courses: import('~/types/shared/courses').Course[]
   loading: boolean
   currentPage: number
   totalPages: number
@@ -26,5 +26,5 @@ export interface CoursesGridProps {
 
 // Interfaces for CoursesHero component
 export interface CoursesHeroProps {
-  breadcrumbCrumbs: { name: string; path: string }[]
+  breadcrumbCrumbs: { name: string, path: string }[]
 }
