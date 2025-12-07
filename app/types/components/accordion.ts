@@ -14,6 +14,9 @@ export interface AccordionProps {
   headerClass?: string
   contentClass?: string
   transitionDuration?: number
+  showIcon?: boolean
+  iconClass?: string
+  iconRotateClass?: string
 }
 export interface AccordionEmits {
   (e: 'update:modelValue', value: AccordionValue): void
