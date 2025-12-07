@@ -140,20 +140,17 @@
 </template>
 
 <script setup lang="ts">
-import type { CourseCardProps } from '~/types/components/types-components'
-
+interface CourseCardProps {
+  course: import('~/types/shared/courses').Course
+}
 const props = defineProps<CourseCardProps>()
 
-// Computed property to generate course link using stored slug
-// If slug is missing, we should not create a link as it indicates data inconsistency
 const courseLink = computed(() => {
   if (props.course.slug) {
-    // Use the stored slug from the database
     return `/courses/${props.course.slug}`
   }
 
   // If no slug is available, return an empty string to disable the link
-  // This indicates a data issue that should be addressed on the backend
   console.warn('Course slug is missing for course:', props.course.title, props.course.id)
   return ''
 })
