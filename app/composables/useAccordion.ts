@@ -1,10 +1,17 @@
 import { ref } from 'vue'
 import type { AccordionProps } from '~/types/components/accordion'
 
+interface UseAccordionReturn {
+  openItemIds: import('vue').Ref<Set<number>>
+  toggle: (index: number) => void
+  isOpen: (index: number) => boolean
+  emitUpdate: () => void
+}
+
 export function useAccordion(
   props: AccordionProps,
   emit: (e: 'update:modelValue', value: number | number[] | null) => void,
-) {
+): UseAccordionReturn {
   const openItemIds = ref<Set<number>>(new Set())
 
   const toggle = (index: number) => {

@@ -213,7 +213,7 @@ watch(
 
 const { handleKeyDown: handleKeyboardNavigation } = useKeyboardFocus({
   items: computed(() => props.items),
-  isDisabled: item => !!item.disabled,
+  isDisabled: (item: typeof props.items[number]) => !!item.disabled,
 })
 
 const handleKeyDown = (event: KeyboardEvent, index: number) => {
@@ -221,7 +221,7 @@ const handleKeyDown = (event: KeyboardEvent, index: number) => {
     event,
     index,
     props.items.length,
-    (newIndex) => {
+    (newIndex: number) => {
       if (newIndex >= 0) {
         const element = headerRefs.value.get(newIndex)
         element?.focus()
