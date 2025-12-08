@@ -1,7 +1,6 @@
-import type { Course } from '~/types/shared/courses'
-import type { DetailedCourse } from '~/types/shared/courses'
+import type { Course, DetailedCourse } from '~/types/shared/courses'
 import type { CoursesFilter } from '~/types/courses-filter'
-import type { CourseListResponse, CourseDetailResponse } from '~/types/shared/api'
+import type { CourseListResponse } from '~/types/shared/api'
 import { buildQueryParams, updateUrl } from '~/utils/course-helpers'
 
 export const useCoursesStore = defineStore('courses', () => {
@@ -37,39 +36,20 @@ export const useCoursesStore = defineStore('courses', () => {
           totalItems.value = response.pagination.totalItems
           itemsPerPage.value = response.pagination.itemsPerPage
         }
-      } else {
+      }
+      else {
         error.value = 'Failed to fetch courses'
       }
-    } catch (err: unknown) {
-      const apiResponse = err as { data?: { message?: string } }
-      error.value =
-        apiResponse.data?.message ||
-        (err as Error)?.message ||
-        'An error occurred while fetching courses'
-    } finally {
-      loading.value = false
     }
-  }
-
-  const fetchCourseBySlug = async (slug: string) => {
-    loading.value = true
-    error.value = null
-
-    try {
-      const response = await $fetch<CourseDetailResponse>(`/api/courses/slug/${slug}`)
-
-      if (response.success) {
-        detailedCourse.value = response.data
-      } else {
-        error.value = 'Failed to fetch course'
-      }
-    } catch (err: unknown) {
+    catch (err: unknown) {
       const apiResponse = err as { data?: { message?: string } }
-      error.value =
-        apiResponse.data?.message ||
-        (err as Error)?.message ||
-        'An error occurred while fetching the course'
-    } finally {
+      error.value
+        = apiResponse.data?.message
+          || (err as Error)?.message
+
+          || 'An error occurred while fetching courses'
+    }
+    finally {
       loading.value = false
     }
   }
@@ -113,9 +93,8 @@ export const useCoursesStore = defineStore('courses', () => {
 
     // Actions
     fetchAllCourses,
-    fetchCourseBySlug,
     resetFilter,
     applyFilter,
-    changePage
+    changePage,
   }
 })
