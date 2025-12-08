@@ -9,11 +9,11 @@
 
   <!-- Error state -->
   <div
-    v-else-if="coursesStore.error || hasError"
+    v-else-if="error || !course"
     class="py-36 flex flex-col items-center justify-center"
   >
     <p class="text-red-500 text-lg">
-      Error: {{ coursesStore.error || 'Course not found' }}
+      Error: Course not found
     </p>
     <NuxtLink
       to="/courses"
@@ -37,10 +37,10 @@
           />
           <div class="flex flex-col justify-center min-h-[20rem] space-y-8 text-white">
             <h1 class="text-4xl md:text-5xl font-bold text-white">
-              {{ coursesStore.detailedCourse?.title }}
+              {{ course?.title }}
             </h1>
             <p class="text-white">
-              {{ coursesStore.detailedCourse?.description }}
+              {{ course?.description }}
             </p>
             <div class="flex items-center gap-x-4">
               <div class="flex items-center gap-x-1">
@@ -58,7 +58,7 @@
                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                   />
                 </svg>
-                <span>{{ coursesStore.detailedCourse?.instructor.name }}</span>
+                <span>{{ course?.instructor?.name }}</span>
               </div>
               <div class="w-px h-6 bg-white/30" />
               <NuxtLink
@@ -97,7 +97,7 @@
                     d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
                   />
                 </svg>
-                <span>{{ coursesStore.detailedCourse?.rating ?? 'N/A' }} Ratings</span>
+                <span>{{ course?.rating ?? 'N/A' }} Ratings</span>
               </div>
             </div>
           </div>
@@ -107,8 +107,9 @@
             <div class="relative overflow-hidden">
               <img
                 class="rounded-t-2xl w-full h-full object-cover"
-                :src="coursesStore.detailedCourse?.image"
-                :alt="coursesStore.detailedCourse?.title"
+                :src="course?.image"
+                :alt="course?.title"
+                @error="handleImageError"
               >
               <div class="absolute inset-0 bg-black/50 z-10 rounded-t-2xl" />
             </div>
@@ -135,7 +136,7 @@
                     </svg>
                     <span class="text-gray-300">Price</span>
                   </div>
-                  <span class="text-white font-medium">${{ coursesStore.detailedCourse?.price }}</span>
+                  <span class="text-white font-medium">${{ course?.price }}</span>
                 </div>
 
                 <div class="flex items-center justify-between pb-4 border-b border-gray-700">
@@ -157,7 +158,7 @@
                     <span class="text-gray-300">Level</span>
                   </div>
                   <span class="text-white font-medium">{{
-                    coursesStore.detailedCourse?.level
+                    course?.level
                   }}</span>
                 </div>
 
@@ -180,7 +181,7 @@
                     <span class="text-gray-300">Students</span>
                   </div>
                   <span class="text-white font-medium">{{
-                    coursesStore.detailedCourse?.stats?.students
+                    course?.stats?.students
                   }}</span>
                 </div>
 
@@ -203,7 +204,7 @@
                     <span class="text-gray-300">Category</span>
                   </div>
                   <span class="text-white font-medium">{{
-                    coursesStore.detailedCourse?.category
+                    course?.category
                   }}</span>
                 </div>
 
@@ -304,9 +305,9 @@
                 Tags
               </h3>
               <div class="flex flex-wrap gap-2 pt-4 tags-wrapper">
-                <template v-if="coursesStore.detailedCourse?.tags">
+                <template v-if="course?.tags">
                   <NuxtLink
-                    v-for="tag in coursesStore.detailedCourse.tags.split(',').map((t) => t.trim())"
+                    v-for="tag in course.tags.split(',').map((t) => t.trim())"
                     :key="tag"
                     :to="`/courses?tag=${encodeURIComponent(tag)}`"
                     class="px-3 py-1 bg-gray-700 text-white text-sm rounded-full hover:bg-primary transition-colors duration-300"
@@ -327,7 +328,7 @@
     <div class="py-10 container">
       <div class="w-2/3">
         <Tabs
-          v-if="coursesStore.detailedCourse"
+          v-if="course"
           :tabs="[
             { title: 'Course Info', name: 'course-info' },
             { title: 'Reviews', name: 'reviews' },
@@ -340,7 +341,7 @@
                   About Course
                 </h2>
                 <p class="text-gray-300">
-                  "{{ coursesStore.detailedCourse.description }}"
+                  "{{ course.description }}"
                 </p>
               </div>
               <div class="space-y-4">
@@ -349,7 +350,7 @@
                 </h3>
                 <ul class="list-disc pl-5 text-gray-600 space-y-2">
                   <li
-                    v-for="(learningItem, index) in coursesStore.detailedCourse.learningObjectives"
+                    v-for="(learningItem, index) in course.learningObjectives"
                     :key="index"
                     class="ml-4"
                   >
@@ -361,10 +362,10 @@
                 <h3 class="text-base font-bold text-primary font-antonio">
                   Course Content
                 </h3>
-                <div v-if="coursesStore.detailedCourse?.courseContent">
+                <div v-if="course?.courseContent">
                   <Accordion
                     :items="
-                      coursesStore.detailedCourse.courseContent.map((section) => ({
+                      course.courseContent.map((section) => ({
                         title: section.title,
                         description: section.description,
                         content: section.content, // Store the lessons in a generic property
@@ -426,13 +427,13 @@
 
               <div
                 v-if="
-                  coursesStore.detailedCourse.reviews
-                    && coursesStore.detailedCourse.reviews.length > 0
+                  course.reviews
+                    && course.reviews.length > 0
                 "
                 class="space-y-6"
               >
                 <div
-                  v-for="(review, index) in coursesStore.detailedCourse.reviews"
+                  v-for="(review, index) in course.reviews"
                   :key="index"
                   class="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-0 last:pb-0"
                 >
@@ -489,48 +490,36 @@
 <script setup lang="ts">
 import type { CourseContentLesson } from '~/types/shared/courses'
 
-const coursesStore = useCoursesStore()
-const isLoading = ref<boolean>(true)
-
-// Get the course slug from the route params
 const route = useRoute()
-const courseSlug = computed(() => route.params.courseSlug as string)
 
-// Initialize error state
-const hasError = ref(false)
+const courseSlug = computed(() => route.params.courseSlug as string)
 
 // Validate course slug
 if (!courseSlug.value) {
-  hasError.value = true
-  showError({
+  throw createError({
     statusCode: 404,
     statusMessage: 'Course not found',
   })
 }
 
-// Fetch course details when the component is mounted
-onMounted(async () => {
-  if (!hasError.value) {
-    await coursesStore.fetchCourseBySlug(courseSlug.value)
-  }
-  isLoading.value = false
-})
+// Use the new composable
+const { course, isLoading, error } = useCourse(courseSlug.value)
 
 useHead({
   title: computed(
-    () => `${coursesStore.detailedCourse?.title || 'Course'} - Online Learning Platform`,
+    () => `${course.value?.title || 'Course'} - Online Learning Platform`,
   ),
   meta: computed(() => [
-    { name: 'description', content: coursesStore.detailedCourse?.description || '' },
+    { name: 'description', content: course.value?.description || '' },
   ]),
 })
 
 const breadcrumbCrumbs = computed(() => [
   { name: 'Courses', path: '/courses' },
   {
-    name: coursesStore.detailedCourse?.title || '',
-    path: coursesStore.detailedCourse?.slug
-      ? `/courses/${coursesStore.detailedCourse.slug}`
+    name: course.value?.title || '',
+    path: course.value?.slug
+      ? `/courses/${course.value.slug}`
       : `/courses/${courseSlug.value}`,
   },
 ])
@@ -545,5 +534,10 @@ const goToLessonPage = (lesson: CourseContentLesson) => {
     const lessonUrl = `/courses/${courseSlug.value}/lessons/${lesson.slug}`
     navigateTo(lessonUrl)
   }
+}
+
+const handleImageError = (event: Event) => {
+  const img = event.target as HTMLImageElement
+  img.src = '/images/placeholder-course.svg'
 }
 </script>

@@ -1,14 +1,14 @@
 <template>
   <div class="container mx-auto py-8">
-    <div v-if="coursesStore.loading" class="py-36 flex flex-col items-center justify-center">
+    <div v-if="courseLoading" class="py-36 flex flex-col items-center justify-center">
       <LoadingSpinner message="Loading lesson..." />
     </div>
 
     <div
-      v-else-if="coursesStore.error || hasError"
+      v-else-if="error"
       class="py-36 flex flex-col items-center justify-center"
     >
-      <p class="text-red-500 text-lg">Error: {{ coursesStore.error || 'Lesson not found' }}</p>
+      <p class="text-red-500 text-lg">Error: {{ error || 'Lesson not found' }}</p>
       <NuxtLink
         :to="`/courses/${route.params.courseSlug}`"
         class="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
@@ -59,43 +59,39 @@
 </template>
 
 <script setup lang="ts">
-import { useCoursesStore } from '~/stores/courses'
-import type { DetailedLesson } from '~/types/shared/courses'
+import type { DetailedLesson, CourseContentLesson } from '~/types/shared/courses'
 
 const route = useRoute()
-const coursesStore = useCoursesStore()
 
 const courseSlug = computed(() => route.params.courseSlug as string)
 const lessonSlug = computed(() => route.params.lessonSlug as string)
 
-// Initialize error state
-const hasError = ref(false)
+// Use the new composable
+const { course, isLoading: courseLoading, error } = await useCourse(courseSlug.value)
 
 // Validate slugs
-if (!courseSlug.value || !lessonSlug.value) {
-  hasError.value = true
-  showError({
+if (!courseSlug.value || !lessonSlug.value || error.value) {
+  throw createError({
     statusCode: 404,
     statusMessage: 'Lesson not found'
   })
 }
 
-// Find the current lesson from the store data
+// Find the current lesson from the course data
 const lesson = computed(() => {
-  if (!coursesStore.detailedCourse?.courseContent) return null
+  if (!course.value?.courseContent) return null
 
-  for (const section of coursesStore.detailedCourse.courseContent) {
+  for (const section of course.value.courseContent) {
     if (section.content) {
       // Find lesson by matching slug
-      const foundLesson = section.content.find((content) => content.slug === lessonSlug.value)
+      const foundLesson = section.content.find((content: CourseContentLesson) => content.slug === lessonSlug.value)
       if (foundLesson) {
         return {
           ...foundLesson,
           id: foundLesson.id,
-          courseId: coursesStore.detailedCourse.id,
+          courseId: course.value.id,
           content:
             foundLesson.description || foundLesson.title || 'Lesson content will appear here',
-          order: foundLesson.order,
           sectionId: section.id,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -123,8 +119,8 @@ const youtubeEmbedUrl = computed(() => {
 
 // Computed property to generate course link using slug
 const courseLink = computed(() => {
-  if (coursesStore.detailedCourse?.slug) {
-    return `/courses/${coursesStore.detailedCourse.slug}`
+  if (course.value?.slug) {
+    return `/courses/${course.value.slug}`
   }
   // Fallback to course slug if slug is not available
   return `/courses/${courseSlug.value}`
@@ -135,28 +131,4 @@ useSeoMeta({
   title: () => (lesson.value?.title ? `${lesson.value.title} - Lesson` : 'Loading Lesson...'),
   description: () => lesson.value?.content || 'Course lesson content'
 })
-
-// Fetch course data when the component mounts or route changes
-onMounted(async () => {
-  if (!hasError.value) {
-    await coursesStore.fetchCourseBySlug(courseSlug.value)
-  }
-})
-
-// Watch for route changes and fetch new course data when params change
-watch(
-  () => [route.params.courseSlug, route.params.lessonSlug],
-  async ([newCourseSlug, newLessonSlug], [oldCourseSlug, oldLessonSlug]) => {
-    // Fetch new course data if the course slug has changed OR if we don't have course content yet
-    if (newCourseSlug !== oldCourseSlug || !coursesStore.detailedCourse?.courseContent) {
-      try {
-        await coursesStore.fetchCourseBySlug(newCourseSlug as string)
-      } catch (error) {
-        console.error('Failed to fetch course on route change:', error)
-        // Handle the error appropriately
-      }
-    }
-  },
-  { immediate: true }
-)
 </script>
