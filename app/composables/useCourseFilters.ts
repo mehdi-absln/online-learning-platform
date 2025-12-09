@@ -1,59 +1,22 @@
 import { debounce } from 'lodash-es'
 import type { ExtendedCoursesFilter } from '~/types/courses-filter'
 import { extractFilterFromUrl, mergeFilters } from '~/utils/course-helpers'
-
-// Define the composable for fetching filter options
-export const useFetchFilterOptions = () => {
-  const filterOptions = ref({
-    categories: [] as string[],
-    levels: [] as string[],
-    tags: [] as string[],
-    instructors: [] as { id: number; name: string }[]
-  })
-  const loading = ref(false)
-  const error = ref<string | null>(null)
-
-  const fetchFilterOptions = async () => {
-    loading.value = true
-    error.value = null
-
-    try {
-      const response = await $fetch<import('~/types/shared/api').FilterOptionsResponse>(
-        '/api/courses/filter-options'
-      )
-      if (response.success) {
-        filterOptions.value = {
-          categories: response.data?.categories || [],
-          levels: response.data?.levels || [],
-          tags: response.data?.tags || [],
-          instructors: response.data?.instructors || []
-        }
-      } else {
-        error.value = 'Failed to fetch filter options'
-      }
-    } catch (err: unknown) {
-      const apiResponse = err as { data?: { message?: string } }
-      error.value =
-        apiResponse.data?.message ||
-        (err as Error)?.message ||
-        'An error occurred while fetching filter options'
-    } finally {
-      loading.value = false
-    }
-  }
-
-  return {
-    filterOptions: readonly(filterOptions),
-    loading: readonly(loading),
-    error: readonly(error),
-    fetchFilterOptions
-  }
-}
+import type { FilterOptionsResponse } from '~/types/shared/api'
 
 export const useCourseFilters = () => {
   const coursesStore = useCoursesStore()
   const route = useRoute()
-  const { filterOptions, loading, error, fetchFilterOptions } = useFetchFilterOptions()
+
+  // Filter options with useFetch
+  const { data: optionsData, pending: optionsLoading, error: optionsError } = useFetch<FilterOptionsResponse>(
+    '/api/courses/filter-options',
+    { key: 'filter-options' }
+  )
+
+  const categories = computed(() => optionsData.value?.data?.categories || [])
+  const levels = computed(() => optionsData.value?.data?.levels || [])
+  const tags = computed(() => optionsData.value?.data?.tags || [])
+  const instructors = computed(() => optionsData.value?.data?.instructors || [])
 
   // Initialize filter from store and URL
   const initializeFilter = (): ExtendedCoursesFilter => {
@@ -132,25 +95,17 @@ export const useCourseFilters = () => {
     { deep: true }
   )
 
-  // Extract filter from URL when component is mounted
-  onMounted(() => {
-    const urlFilter = extractFilterFromUrl(route.query)
-    if (Object.keys(urlFilter).length > 0) {
-      coursesStore.applyFilter(urlFilter)
-    }
-  })
 
   return {
     filter,
-    categories: computed(() => filterOptions.value.categories),
-    levels: computed(() => filterOptions.value.levels),
-    tags: computed(() => filterOptions.value.tags),
-    instructors: computed(() => filterOptions.value.instructors),
+    categories,
+    levels,
+    tags,
+    instructors,
     applyFilters,
     resetFilters,
     toggleExclusiveFilter,
-    fetchFilterOptions,
-    loading,
-    error
+    loading: optionsLoading,
+    error: optionsError
   }
 }

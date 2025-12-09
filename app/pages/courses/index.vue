@@ -1,13 +1,21 @@
 <template>
   <div>
     <!-- Loading state -->
-    <div v-if="isLoading" class="py-36 flex flex-col items-center justify-center">
+    <div
+      v-if="isLoading"
+      class="py-36 flex flex-col items-center justify-center"
+    >
       <LoadingSpinner message="Loading courses..." />
     </div>
 
     <!-- Error state -->
-    <div v-else-if="coursesStore.error" class="py-36 flex flex-col items-center justify-center">
-      <p class="text-red-500 text-lg">Error: {{ coursesStore.error }}</p>
+    <div
+      v-else-if="coursesStore.error"
+      class="py-36 flex flex-col items-center justify-center"
+    >
+      <p class="text-red-500 text-lg">
+        Error: {{ coursesStore.error }}
+      </p>
     </div>
 
     <!-- Course listing -->
@@ -27,10 +35,10 @@
           <!-- Main Content -->
           <div class="lg:w-3/4">
             <CoursesGrid
-              :courses="coursesStore.courses"
-              :loading="coursesStore.loading"
-              :current-page="coursesStore.currentPage"
-              :total-pages="coursesStore.totalPages"
+              :courses="courses"
+              :loading="isLoading"
+              :current-page="pagination.currentPage"
+              :total-pages="pagination.totalPages"
               :on-page-change="coursesStore.changePage"
             />
           </div>
@@ -43,23 +51,22 @@
 <script setup lang="ts">
 import { extractFilterFromUrl } from '~/utils/course-helpers'
 import CourseSidebarFilters from '~/components/courses/CourseSidebarFilters.vue'
+import { useCourses } from '~/composables/useCourses'
 
 const coursesStore = useCoursesStore()
-const isLoading = ref(true)
 const route = useRoute()
 
-// Fetch courses with filters from URL query parameters
-onMounted(async () => {
-  // Extract filters from URL query
-  const filters = extractFilterFromUrl(route.query)
+// Extract filter from URL and apply if exists
+const urlFilter = extractFilterFromUrl(route.query)
+if (Object.keys(urlFilter).length > 0) {
+  coursesStore.currentFilter = urlFilter
+}
 
-  await coursesStore.fetchAllCourses()
-  isLoading.value = false
-})
+const { courses, isLoading, error, pagination, refresh } = await useCourses()
 
 useHead({
   title: 'Courses - Online Learning Platform',
-  meta: [{ name: 'description', content: 'Explore a wide range of courses on our platform.' }]
+  meta: [{ name: 'description', content: 'Explore a wide range of courses on our platform.' }],
 })
 
 const breadcrumbCrumbs = [{ name: 'Courses', path: '/courses' }]

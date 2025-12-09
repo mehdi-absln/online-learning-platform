@@ -29,6 +29,7 @@ export async function getAllCourses(
     categories?: string[]
     level?: string
     levels?: string[]
+    tags?: string[]
     freeOnly?: boolean
     paidOnly?: boolean
     minPrice?: number
@@ -148,6 +149,7 @@ export async function getCoursesCount(
     categories?: string[]
     level?: string
     levels?: string[]
+    tags?: string[]
     freeOnly?: boolean
     paidOnly?: boolean
     minPrice?: number
@@ -408,6 +410,7 @@ export async function getCoursesByInstructorId(instructorId: number): Promise<Co
         rating: courses.rating,
         price: courses.price,
         level: courses.level,
+        tags: courses.tags,
         image: courses.image,
         slug: courses.slug, // Include the slug field
         createdAt: courses.createdAt,
