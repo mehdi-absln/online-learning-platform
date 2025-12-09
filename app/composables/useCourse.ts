@@ -1,6 +1,6 @@
 import type { CourseDetailResponse } from '~/types/shared/api'
 
-export const useCourse = (slug: string) => {
+export const useCourse = async (slug: string) => {
   const coursesStore = useCoursesStore()
 
   const { data, pending, error, refresh } = useFetch<CourseDetailResponse>(`/api/courses/slug/${slug}`, {

@@ -84,18 +84,6 @@
         </span>
       </h3>
 
-      <!-- Stats -->
-      <div class="flex items-center gap-4 text-sm">
-        <CourseStatItem
-          icon="students"
-          :value="`${course.stats.students} Students`"
-        />
-        <CourseStatItem
-          icon="rating"
-          :value="course.rating"
-        />
-      </div>
-
       <hr class="my-6 border-gray-700">
 
       <!-- Footer -->

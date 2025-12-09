@@ -109,18 +109,22 @@ onMounted(async () => {
 watch(
   () => coursesStore.currentFilter,
   (newFilter) => {
-    localFilter.value = { ...newFilter }
+    // Update only the changed properties to avoid overriding user input
+    localFilter.value = {
+      ...localFilter.value,
+      ...newFilter
+    }
   },
   { deep: true }
 )
 
-const applyFilters = debounce(() => {
+// Apply filters without debounce to ensure all filters are applied immediately
+const applyFilters = () => {
   coursesStore.applyFilter(localFilter.value)
-}, 300)
+}
 
 const resetFilters = () => {
   localFilter.value = {}
   coursesStore.resetFilter()
-  coursesStore.fetchAllCourses()
 }
 </script>
