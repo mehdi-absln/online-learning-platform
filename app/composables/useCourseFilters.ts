@@ -10,7 +10,7 @@ export const useCourseFilters = () => {
   // Filter options with useFetch
   const { data: optionsData, pending: optionsLoading, error: optionsError } = useFetch<FilterOptionsResponse>(
     '/api/courses/filter-options',
-    { key: 'filter-options' }
+    { key: 'filter-options' },
   )
 
   const categories = computed(() => optionsData.value?.data?.categories || [])
@@ -43,7 +43,7 @@ export const useCourseFilters = () => {
       searchQuery: '',
       instructorId: undefined,
       minPrice: undefined,
-      maxPrice: undefined
+      maxPrice: undefined,
     }
 
     coursesStore.resetFilter()
@@ -52,7 +52,7 @@ export const useCourseFilters = () => {
   // Toggle exclusive boolean filters (freeOnly and paidOnly)
   const toggleExclusiveFilter = (
     filterName: keyof ExtendedCoursesFilter,
-    oppositeFilterName: keyof ExtendedCoursesFilter
+    oppositeFilterName: keyof ExtendedCoursesFilter,
   ) => {
     if (filter.value[filterName] && filter.value[oppositeFilterName]) {
       filter.value[oppositeFilterName] = false
@@ -70,7 +70,7 @@ export const useCourseFilters = () => {
         filter.value = newFilter
       }
     },
-    { immediate: true }
+    { immediate: true },
   )
 
   // Watch for changes in store filter and update local filter
@@ -89,12 +89,11 @@ export const useCourseFilters = () => {
         instructorId: newStoreFilter.instructorId,
         minPrice: newStoreFilter.minPrice,
         maxPrice: newStoreFilter.maxPrice,
-        ...newStoreFilter
+        ...newStoreFilter,
       }
     },
-    { deep: true }
+    { deep: true },
   )
-
 
   return {
     filter,
@@ -106,6 +105,6 @@ export const useCourseFilters = () => {
     resetFilters,
     toggleExclusiveFilter,
     loading: optionsLoading,
-    error: optionsError
+    error: optionsError,
   }
 }

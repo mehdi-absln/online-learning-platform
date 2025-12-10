@@ -7,7 +7,6 @@ export const useCoursesStore = defineStore('courses', () => {
   const courses = ref<Course[]>([])
   const detailedCourse = ref<DetailedCourse | null>(null)
   const loading = ref<boolean>(false)
-  const error = ref<string | null>(null)
   const currentFilter = ref<CoursesFilter>({})
   const currentPage = ref<number>(1)
   const itemsPerPage = ref<number>(12)
@@ -42,7 +41,6 @@ export const useCoursesStore = defineStore('courses', () => {
     courses,
     detailedCourse,
     loading,
-    error,
     currentFilter,
     currentPage,
     itemsPerPage,
