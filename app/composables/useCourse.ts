@@ -1,6 +1,7 @@
 import type { CourseDetailResponse } from '~/types/shared/api'
+import { useApiError } from '~/composables/useApiError'
 
-export const useCourse = async (slug: string) => {
+export const useCourse = (slug: string) => {
   const coursesStore = useCoursesStore()
 
   const { data, pending, error, refresh } = useFetch<CourseDetailResponse>(`/api/courses/slug/${slug}`, {
@@ -24,11 +25,8 @@ export const useCourse = async (slug: string) => {
   // Read from data first, fallback to store
   const course = computed(() => data.value?.data ?? coursesStore.detailedCourse)
 
-  // Check for actual error (not just null data)
-  const hasError = computed(() => {
-    if (error.value) return true
-    return !!(!pending.value && data.value && !data.value.success)
-  })
+  // Check for actual error using shared composable
+  const hasError = useApiError(data, pending, error)
 
   return {
     course,

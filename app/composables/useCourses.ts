@@ -1,4 +1,5 @@
 import type { CourseListResponse } from '~/types/shared/api'
+import { useApiError } from '~/composables/useApiError'
 
 export const useCourses = () => {
   const coursesStore = useCoursesStore()
@@ -70,11 +71,8 @@ export const useCourses = () => {
     }
   })
 
-  // Check for actual error
-  const hasError = computed(() => {
-    if (error.value) return true
-    return !!(!pending.value && data.value && !data.value.success)
-  })
+  // Check for actual error using shared composable
+  const hasError = useApiError(data, pending, error)
 
   return {
     courses,

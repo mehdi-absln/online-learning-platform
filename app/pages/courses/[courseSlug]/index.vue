@@ -503,7 +503,7 @@ if (!courseSlug.value) {
 }
 
 // Use the new composable
-const { course, isLoading, error } = await useCourse(courseSlug.value)
+const { course, isLoading, error } = useCourse(courseSlug.value)
 
 useHead({
   title: computed(

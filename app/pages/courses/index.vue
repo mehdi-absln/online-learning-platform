@@ -10,11 +10,11 @@
 
     <!-- Error state -->
     <div
-      v-else-if="coursesStore.error"
+      v-else-if="error.value"
       class="py-36 flex flex-col items-center justify-center"
     >
       <p class="text-red-500 text-lg">
-        Error: {{ coursesStore.error }}
+        Error loading courses
       </p>
     </div>
 
@@ -62,7 +62,7 @@ if (Object.keys(urlFilter).length > 0) {
   coursesStore.currentFilter = urlFilter
 }
 
-const { courses, isLoading, error, pagination, refresh } = await useCourses()
+const { courses, isLoading, error, pagination, refresh } = useCourses()
 
 useHead({
   title: 'Courses - Online Learning Platform',

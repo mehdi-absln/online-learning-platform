@@ -246,12 +246,12 @@ const updatePriceFilter = () => {
 // Check if any filter is active
 const hasActiveFilters = computed(() => {
   return (
-    filter.value.categories.length > 0 ||
-    filter.value.levels.length > 0 ||
-    filter.value.tags.length > 0 ||
-    filter.value.freeOnly ||
-    filter.value.paidOnly ||
-    !!filter.value.searchQuery
+    filter.value.categories.length > 0
+    || filter.value.levels.length > 0
+    || filter.value.tags.length > 0
+    || filter.value.freeOnly
+    || filter.value.paidOnly
+    || !!filter.value.searchQuery
   )
 })
 
