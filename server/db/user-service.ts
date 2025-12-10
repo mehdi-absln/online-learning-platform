@@ -29,6 +29,10 @@ export class UserService {
       })
       .returning()
 
+    if (!user) {
+      throw new Error('Failed to create user - no result returned')
+    }
+
     return user
   }
 

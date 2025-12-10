@@ -84,7 +84,7 @@ export interface DetailedLesson extends CourseContentLesson {
 export interface CourseContentSection {
   id: number // Required ID field for the section
   title: string
-  description: string
+  description?: string
   lessons: number
   content?: CourseContentLesson[] // Array of lesson objects with title and duration
 }
@@ -95,7 +95,7 @@ export interface CourseContentLesson {
   title: string
   slug: string // URL-friendly slug for the lesson
   duration: string // Duration in format like "5:30" or "10 min"
-  videoUrl: string // Required YouTube video URL
+  videoUrl?: string // Optional YouTube video URL
   description?: string // Optional description field
 }
 

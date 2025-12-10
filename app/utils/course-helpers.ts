@@ -1,7 +1,7 @@
 import type { CoursesFilter, ExtendedCoursesFilter } from '~/types/courses-filter'
 
 // Helper function to extract filter from URL query
-export const extractFilterFromUrl = (urlQuery: Record<string, any>): CoursesFilter => {
+export const extractFilterFromUrl = (urlQuery: Record<string, unknown>): CoursesFilter => {
   const filter: CoursesFilter = {}
 
   // Helper function to parse array parameters

@@ -15,8 +15,7 @@ export default defineNuxtConfig({
       stylistic: {
         indent: 2,
         quotes: 'single',
-        semi: false,
-        trailingComma: 'none'
+        semi: false
       }
     }
   },

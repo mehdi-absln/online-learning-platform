@@ -10,7 +10,7 @@
 
     <!-- Error state -->
     <div
-      v-else-if="error.value"
+      v-else-if="error"
       class="py-36 flex flex-col items-center justify-center"
     >
       <p class="text-red-500 text-lg">

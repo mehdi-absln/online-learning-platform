@@ -51,10 +51,10 @@ async function seedDatabase() {
       studentCount: 120,
       rating: 4.7,
       price: 9999, // $99.99 in cents
-      duration: '8 weeks',
       level: 'Advanced',
       tags: 'typescript,javascript,programming',
       image: '/images/typescript-course.jpg',
+      slug: 'advanced-typescript',
       createdAt: new Date(),
       updatedAt: new Date()
     })
@@ -65,28 +65,28 @@ async function seedDatabase() {
     {
       courseId: course.id,
       objective: 'Understand advanced TypeScript features like generics and decorators',
-      order: 1,
+      orderVal: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
       courseId: course.id,
       objective: 'Learn to write type-safe code with complex type systems',
-      order: 2,
+      orderVal: 2,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
       courseId: course.id,
       objective: 'Implement design patterns using TypeScript',
-      order: 3,
+      orderVal: 3,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
       courseId: course.id,
       objective: 'Create scalable applications with TypeScript',
-      order: 4,
+      orderVal: 4,
       createdAt: new Date(),
       updatedAt: new Date()
     }
@@ -101,8 +101,7 @@ async function seedDatabase() {
       title: 'Advanced Types',
       description: "Deep dive into TypeScript's type system",
       lessonsCount: 5,
-      duration: '10 hours',
-      order: 1,
+      orderVal: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -111,8 +110,7 @@ async function seedDatabase() {
       title: 'Generics and Decorators',
       description: 'Learn to use generics and decorators effectively',
       lessonsCount: 4,
-      duration: '8 hours',
-      order: 2,
+      orderVal: 2,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -121,8 +119,7 @@ async function seedDatabase() {
       title: 'Type-Safe Design Patterns',
       description: 'Implementing design patterns with TypeScript',
       lessonsCount: 6,
-      duration: '12 hours',
-      order: 3,
+      orderVal: 3,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -131,8 +128,7 @@ async function seedDatabase() {
       title: 'Testing and Performance',
       description: 'Advanced testing and performance optimization',
       lessonsCount: 3,
-      duration: '6 hours',
-      order: 4,
+      orderVal: 4,
       createdAt: new Date(),
       updatedAt: new Date()
     }
@@ -146,7 +142,9 @@ async function seedDatabase() {
       courseId: course.id,
       title: 'Introduction to Advanced Types',
       content: 'In this lesson, we cover union types, intersection types, and conditional types.',
-      order: 1,
+      orderVal: 1,
+      slug: 'introduction-to-advanced-types',
+      videoUrl: 'https://example.com/video1',
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -154,7 +152,9 @@ async function seedDatabase() {
       courseId: course.id,
       title: 'Working with Generics',
       content: 'Learn how to create reusable and type-safe components using generics.',
-      order: 2,
+      orderVal: 2,
+      slug: 'working-with-generics',
+      videoUrl: 'https://example.com/video2',
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -162,7 +162,9 @@ async function seedDatabase() {
       courseId: course.id,
       title: 'Understanding Decorators',
       content: 'Exploring TypeScript decorators and how to create custom decorators.',
-      order: 3,
+      orderVal: 3,
+      slug: 'understanding-decorators',
+      videoUrl: 'https://example.com/video3',
       createdAt: new Date(),
       updatedAt: new Date()
     }

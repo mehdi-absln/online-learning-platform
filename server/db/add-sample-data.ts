@@ -27,35 +27,35 @@ async function addSampleData() {
     {
       courseId: courseId,
       objective: 'Understand the fundamentals of Vue 3 and Composition API',
-      order: 1,
+      orderVal: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
       courseId: courseId,
       objective: 'Learn how to build responsive UIs with Tailwind CSS',
-      order: 2,
+      orderVal: 2,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
       courseId: courseId,
       objective: 'Implement state management with Pinia',
-      order: 3,
+      orderVal: 3,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
       courseId: courseId,
       objective: 'Create a full-stack Nuxt.js application',
-      order: 4,
+      orderVal: 4,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
       courseId: courseId,
       objective: 'Deploy applications to production environments',
-      order: 5,
+      orderVal: 5,
       createdAt: new Date(),
       updatedAt: new Date()
     }
@@ -71,8 +71,7 @@ async function addSampleData() {
       title: 'Introduction to Vue 3',
       description: 'Learn the basics of Vue 3 and its new features',
       lessonsCount: 5,
-      duration: '2 hours',
-      order: 1,
+      orderVal: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -81,8 +80,7 @@ async function addSampleData() {
       title: 'Composition API',
       description: "Deep dive into Vue 3's Composition API",
       lessonsCount: 7,
-      duration: '3.5 hours',
-      order: 2,
+      orderVal: 2,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -91,8 +89,7 @@ async function addSampleData() {
       title: 'State Management with Pinia',
       description: 'Managing application state with the new standard',
       lessonsCount: 4,
-      duration: '2.5 hours',
-      order: 3,
+      orderVal: 3,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -101,8 +98,7 @@ async function addSampleData() {
       title: 'UI Development with Tailwind CSS',
       description: 'Building responsive and beautiful UIs',
       lessonsCount: 6,
-      duration: '3 hours',
-      order: 4,
+      orderVal: 4,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -111,8 +107,7 @@ async function addSampleData() {
       title: 'Nuxt.js Fundamentals',
       description: 'Server-side rendering and routing with Nuxt',
       lessonsCount: 8,
-      duration: '4 hours',
-      order: 5,
+      orderVal: 5,
       createdAt: new Date(),
       updatedAt: new Date()
     }

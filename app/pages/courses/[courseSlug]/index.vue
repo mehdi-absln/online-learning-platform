@@ -365,17 +365,17 @@
                 <div v-if="course?.courseContent">
                   <Accordion
                     :items="
-                      course.courseContent.map((section) => ({
-                        title: section.title,
-                        description: section.description,
-                        content: section.content, // Store the lessons in a generic property
+                      courseAccordionItems.map((item) => ({
+                        title: item.title,
+                        description: item.description,
+                        content: item.lessons, // Map to the content property expected by AccordionItem
                       }))
                     "
                   >
                     <template #default="{ item }">
                       <div class="p-4 space-y-2">
                         <div
-                          v-for="(lesson, lessonIndex) in item.content"
+                          v-for="(lesson, lessonIndex) in (item.content as CourseContentLesson[])"
                           :key="lessonIndex"
                           class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer"
                           @click="goToLessonPage(lesson)"
@@ -528,6 +528,17 @@ const formatDate = (dateString: string): string => {
   const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' }
   return new Date(dateString).toLocaleDateString(undefined, options)
 }
+
+// Create properly typed Accordion items for course content sections
+const courseAccordionItems = computed(() => {
+  if (!course.value?.courseContent) return []
+
+  return course.value.courseContent.map((section) => ({
+    title: section.title,
+    description: section.description || undefined,
+    lessons: section.content || [], // Using a more specific property name for lessons
+  }))
+})
 
 const goToLessonPage = (lesson: CourseContentLesson) => {
   if (lesson.slug && courseSlug.value) {

@@ -20,7 +20,14 @@ export default defineEventHandler(async (event: H3Event) => {
       }
     }
 
-    const courseId = existingCourses[0].id
+    const course = existingCourses[0]
+    if (!course) {
+      return {
+        success: false,
+        message: 'No courses found in the database.'
+      }
+    }
+    const courseId = course.id
 
     // Check if sample data already exists for this course
     const [objectives, sections, reviewCount] = await Promise.all([
@@ -36,7 +43,7 @@ export default defineEventHandler(async (event: H3Event) => {
       success: true,
       data: {
         courseId: courseId,
-        courseTitle: existingCourses[0].title,
+        courseTitle: course.title,
         learningObjectivesCount: objectives.length,
         contentSectionsCount: sections.length,
         reviewsCount: reviewCount.length

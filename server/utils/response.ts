@@ -9,10 +9,10 @@ export const successResponse = <T>(message: string, data?: T): ApiResponse<T> =>
 export const successAuthResponse = <T>(message: string, user: T): ApiResponse<T> => ({
   success: true,
   message,
-  user
+  data: user
 })
 
-export const errorResponse = (message: string, error?: string): ApiResponse => ({
+export const errorResponse = <T = unknown>(message: string, error?: string): ApiResponse<T> => ({
   success: false,
   message,
   error

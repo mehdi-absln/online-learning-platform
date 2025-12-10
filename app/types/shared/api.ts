@@ -50,3 +50,16 @@ export interface FilterOptionsResponse {
     instructors: { id: number; name: string }[]
   }
 }
+
+// Type for validation errors
+export interface ValidationError {
+  field: string
+  message: string
+}
+
+// Type for validation error response
+export interface ValidationErrorResponse {
+  success: boolean
+  message: string
+  errors: ValidationError[]
+}

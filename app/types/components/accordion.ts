@@ -2,8 +2,8 @@ export interface AccordionItem {
   id?: number | string
   title: string
   description?: string
-  [key: string]: any // Allow any additional properties for flexibility
   disabled?: boolean
+  [key: string]: unknown // Allow any additional properties for flexibility while keeping it type-safe
 }
 export type AccordionValue = number | number[] | null | undefined
 export interface AccordionProps {
