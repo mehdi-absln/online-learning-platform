@@ -23,7 +23,7 @@ export interface ExtendedCoursesFilter extends CoursesFilter {
   searchQuery: string
   minPrice?: number
   maxPrice?: number
-  [key: string]: any // Allow other properties from the original CoursesFilter
+  [key: string]: unknown // Allow any additional properties for use in dynamic property access
 }
 
 export interface FilterOptions {

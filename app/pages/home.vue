@@ -68,97 +68,107 @@ const slides = [
   {
     id: 1,
     title: 'Mastering the Art of Cooking',
+    description: 'Learn the fundamental techniques of cooking from scratch',
     category: 'COOKING',
-    image:
-      'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&auto=format&fit=crop&q=70',
     instructor: {
       name: 'Chef Maria Garcia',
       avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
     },
     stats: {
-      students: 42,
-      lessons: 24,
-      duration: '8h 30m',
-      level: 'Intermediate'
+      students: 42
     },
     rating: 4.8,
-    price: 89.99
+    price: 89.99,
+    level: 'Intermediate',
+    image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&auto=format&fit=crop&q=70',
+    slug: 'mastering-the-art-of-cooking',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    instructorId: 1
   },
   {
     id: 2,
     title: 'Web Development Bootcamp',
+    description: 'Master modern web development technologies',
     category: 'PROGRAMMING',
-    image:
-      'https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&auto=format&fit=crop&q=60',
     instructor: {
       name: 'Alex Johnson',
       avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
     },
     stats: {
-      students: 156,
-      lessons: 36,
-      duration: '42h 15m',
-      level: 'Beginner'
+      students: 156
     },
     rating: 4.9,
-    price: 129.99
+    price: 129.99,
+    level: 'Beginner',
+    image: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&auto=format&fit=crop&q=60',
+    slug: 'web-development-bootcamp',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    instructorId: 2
   },
   {
     id: 3,
     title: 'Digital Marketing Mastery',
+    description: 'Become an expert in digital marketing strategies',
     category: 'MARKETING',
-    image:
-      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60',
     instructor: {
       name: 'Sarah Williams',
       avatar: 'https://randomuser.me/api/portraits/women/28.jpg'
     },
     stats: {
-      students: 87,
-      lessons: 18,
-      duration: '15h 45m',
-      level: 'All Levels'
+      students: 87
     },
     rating: 4.7,
-    price: 79.99
+    price: 79.99,
+    level: 'All Levels',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60',
+    slug: 'digital-marketing-mastery',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    instructorId: 3
   },
   {
     id: 4,
     title: 'Photography Fundamentals',
+    description: 'Learn the fundamentals of photography',
     category: 'PHOTOGRAPHY',
-    image:
-      'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&auto=format&fit=crop&q=60',
     instructor: {
       name: 'James Wilson',
       avatar: 'https://randomuser.me/api/portraits/men/45.jpg'
     },
     stats: {
-      students: 63,
-      lessons: 22,
-      duration: '12h 10m',
-      level: 'Beginner'
+      students: 63
     },
     rating: 4.6,
-    price: 69.99
+    price: 69.99,
+    level: 'Beginner',
+    image: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&auto=format&fit=crop&q=60',
+    slug: 'photography-fundamentals',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    instructorId: 4
   },
   {
     id: 5,
     title: 'Data Science Essentials',
+    description: 'Essential concepts and techniques in data science',
     category: 'DATA SCIENCE',
-    image:
-      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60',
     instructor: {
       name: 'Dr. Emily Chen',
       avatar: 'https://randomuser.me/api/portraits/women/52.jpg'
     },
     stats: {
-      students: 94,
-      lessons: 30,
-      duration: '35h 20m',
-      level: 'Advanced'
+      students: 94
     },
     rating: 4.9,
-    price: 149.99
+    price: 149.99,
+    level: 'Advanced',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60',
+    slug: 'data-science-essentials',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    instructorId: 5
   }
 ]
 

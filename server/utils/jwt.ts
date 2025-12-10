@@ -1,5 +1,5 @@
 import { SignJWT, jwtVerify } from 'jose'
-import type { JWTPayload } from '~/app/types/shared/auth'
+import type { JWTPayload } from '~/types/shared/auth'
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'your-secret-key-change-in-production'
@@ -17,7 +17,7 @@ export class JWTService {
   static async verifyToken(token: string): Promise<JWTPayload | null> {
     try {
       const { payload } = await jwtVerify(token, JWT_SECRET)
-      return payload as JWTPayload
+      return payload as unknown as JWTPayload
     } catch (error) {
       return null
     }

@@ -1,4 +1,5 @@
 import type { Ref } from 'vue'
+import type { FetchError } from 'ofetch'
 
 interface ApiResponse {
   success?: boolean
@@ -7,7 +8,7 @@ interface ApiResponse {
 export const useApiError = <T extends ApiResponse>(
   data: Ref<T | null | undefined>,
   pending: Ref<boolean>,
-  error: Ref<any>
+  error: Ref<FetchError | undefined>
 ) => {
   const hasError = computed(() => {
     if (error.value) return true

@@ -13,12 +13,12 @@ interface RawCourse {
   description: string
   category: string
   instructorId: number
-  studentCount: number
-  rating: number
+  studentCount: number | null
+  rating: number | null
   price: number
   level: string
-  tags?: string
-  image?: string
+  tags: string | null
+  image: string | null
   slug: string
   createdAt: Date
   updatedAt: Date
@@ -33,7 +33,7 @@ interface RawCourseLearningObjective {
   id: number
   courseId: number
   objective: string
-  order: number
+  orderVal: number
   createdAt: Date
   updatedAt: Date
 }
@@ -43,9 +43,9 @@ interface RawCourseContentSection {
   id: number
   courseId: number
   title: string
-  description?: string
+  description: string | null
   lessonsCount: number
-  order: number
+  orderVal: number
   createdAt: Date
   updatedAt: Date
 }
@@ -55,9 +55,9 @@ interface RawReview {
   id: number
   courseId: number
   reviewerName: string
-  reviewerId?: number
+  reviewerId: number | null
   rating: number
-  comment?: string
+  comment: string | null
   date: Date
   createdAt: Date
   updatedAt: Date
@@ -67,13 +67,13 @@ interface RawReview {
 interface RawLesson {
   id: number
   courseId: number
-  sectionId?: number
+  sectionId: number | null
   title: string
   slug: string // URL-friendly slug for the lesson
-  content?: string
-  videoUrl?: string // Optional YouTube video URL
+  content: string | null
+  videoUrl: string // Required YouTube video URL (as per schema)
   duration?: string // Duration of the lesson
-  order: number
+  orderVal: number
   createdAt: Date
   updatedAt: Date
 }
@@ -86,12 +86,11 @@ export function transformCourseForClient(course: RawCourse): CourseType {
     description: course.description,
     category: course.category,
     instructorId: course.instructorId,
-    studentCount: course.studentCount,
-    rating: course.rating,
+    rating: course.rating || 0, // Handle possible null value
     price: course.price / 100, // Convert from cents to dollars
     level: course.level,
-    tags: course.tags,
-    image: processCourseImage(course.image),
+    tags: course.tags || undefined,
+    image: processCourseImage(course.image) ?? undefined,
     slug: course.slug, // Include the slug field
     createdAt: course.createdAt,
     updatedAt: course.updatedAt,
@@ -103,7 +102,7 @@ export function transformCourseForClient(course: RawCourse): CourseType {
       )
     },
     stats: {
-      students: course.studentCount
+      students: course.studentCount || 0  // Handle possible null value
     }
   }
 }
@@ -120,20 +119,20 @@ export function transformCourseForClientWithDetails(
 
   // Transform learning objectives to an array of strings in order
   const orderedLearningObjectives = learningObjectives
-    ? learningObjectives.sort((a, b) => a.order - b.order).map((obj) => obj.objective)
+    ? learningObjectives.sort((a, b) => a.orderVal - b.orderVal).map((obj) => obj.objective)
     : []
 
   // Transform content sections and group lessons by section
   const orderedContentSections = contentSections
     ? contentSections
-        .sort((a, b) => a.order - b.order)
+        .sort((a, b) => a.orderVal - b.orderVal)
         .map((section) => {
           // Get lessons for this specific section
           const sectionLessons =
             lessons && lessons.length > 0
               ? lessons
                   .filter((lesson) => lesson.sectionId === section.id)
-                  .sort((a, b) => a.order - b.order)
+                  .sort((a, b) => a.orderVal - b.orderVal)
                   .map((lesson) => ({
                     id: lesson.id, // Include the lesson ID
                     title: lesson.title,
@@ -151,7 +150,7 @@ export function transformCourseForClientWithDetails(
           return {
             id: section.id,
             title: section.title,
-            description: section.description || '',
+            description: section.description || undefined,
             lessons: section.lessonsCount,
             content: sectionLessons // Add lessons array to the section
           }

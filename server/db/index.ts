@@ -26,5 +26,6 @@ try {
   */
 } catch (error) {
   // If migration fails because meta files are missing, tables already exist, or other issues, log and continue
-  console.log('Migration issue (this may be normal):', error.message)
+  const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred during migration'
+  console.log('Migration issue (this may be normal):', errorMessage)
 }

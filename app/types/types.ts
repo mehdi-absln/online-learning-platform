@@ -4,6 +4,7 @@ export interface SigninFormData {
   username: string
   password: string
   rememberMe: boolean
+  [key: string]: unknown // Allow any additional properties for use in useZodValidation composable
 }
 
 export interface SignupFormData {
@@ -12,6 +13,7 @@ export interface SignupFormData {
   password: string
   confirmPassword: string
   termsAccepted: boolean
+  [key: string]: unknown // Allow any additional properties for use in useZodValidation composable
 }
 
 export interface UserState {
@@ -36,7 +38,7 @@ export interface SignUpResponse {
 }
 
 // Re-export shared types for backward compatibility
-export { User, AuthResponse }
+export type { User, AuthResponse }
 
 export interface SignInFormErrors {
   username: string

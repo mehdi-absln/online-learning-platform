@@ -89,7 +89,6 @@ export const useCourseFilters = () => {
         instructorId: newStoreFilter.instructorId,
         minPrice: newStoreFilter.minPrice,
         maxPrice: newStoreFilter.maxPrice,
-        ...newStoreFilter,
       }
     },
     { deep: true },
