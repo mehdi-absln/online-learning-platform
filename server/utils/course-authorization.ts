@@ -1,11 +1,10 @@
-import { H3Event } from 'h3'
-import { UserService } from '../db/user-service'
+import type { H3Event } from 'h3'
 
 // Check if the user is authorized to access or modify a course
 export async function checkCourseAuthorization(
   event: H3Event,
   courseId: number,
-  userId?: number
+  userId?: number,
 ): Promise<boolean> {
   // If no user ID is provided, try to get it from the event (e.g., from JWT token)
   if (!userId) {

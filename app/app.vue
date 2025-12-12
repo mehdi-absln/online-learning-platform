@@ -16,6 +16,6 @@ useSeoMeta({
   ogImage: '/images/banner.jpg',
   ogType: 'website',
   ogUrl: 'https://your-learning-platform.com',
-  twitterCard: 'summary_large_image'
+  twitterCard: 'summary_large_image',
 })
 </script>

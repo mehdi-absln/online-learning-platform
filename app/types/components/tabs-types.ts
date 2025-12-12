@@ -8,7 +8,7 @@ export interface TabItem {
 export interface TabsProps {
   modelValue?: number
   ariaLabel?: string
-  tabs: { title: string; name: string; disabled?: boolean }[]
+  tabs: { title: string, name: string, disabled?: boolean }[]
 }
 
 export interface TabsEmits {

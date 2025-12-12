@@ -3,26 +3,26 @@ import type { ApiResponse, ValidationError, ValidationErrorResponse } from '~/ty
 export const successResponse = <T>(message: string, data?: T): ApiResponse<T> => ({
   success: true,
   message,
-  data
+  data,
 })
 
 export const successAuthResponse = <T>(message: string, user: T): ApiResponse<T> => ({
   success: true,
   message,
-  data: user
+  data: user,
 })
 
 export const errorResponse = <T = unknown>(message: string, error?: string): ApiResponse<T> => ({
   success: false,
   message,
-  error
+  error,
 })
 
 export const validationErrorResponse = (
   message: string,
-  errors: ValidationError[]
+  errors: ValidationError[],
 ): ValidationErrorResponse => ({
   success: false,
   message,
-  errors
+  errors,
 })

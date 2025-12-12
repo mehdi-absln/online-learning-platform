@@ -5,21 +5,21 @@ import Tabs from '~/components/Tabs.vue'
 describe('Tabs.vue', () => {
   const tabsProp = [
     { title: 'Tab 1', name: 'tab1' },
-    { title: 'Tab 2', name: 'tab2' }
+    { title: 'Tab 2', name: 'tab2' },
   ]
 
   const slots = {
     tab1: '<div data-testid="tab1-content">Content of Tab 1</div>',
-    tab2: '<div data-testid="tab2-content">Content of Tab 2</div>'
+    tab2: '<div data-testid="tab2-content">Content of Tab 2</div>',
   }
 
   it('renders tabs with correct titles', () => {
     const wrapper = mount(Tabs, {
       props: {
         tabs: tabsProp,
-        modelValue: 0
+        modelValue: 0,
       },
-      slots
+      slots,
     })
 
     const tabButtons = wrapper.findAll('[role="tab"]')
@@ -32,9 +32,9 @@ describe('Tabs.vue', () => {
     const wrapper = mount(Tabs, {
       props: {
         tabs: tabsProp,
-        modelValue: 0
+        modelValue: 0,
       },
-      slots
+      slots,
     })
 
     // Check that the first tab is active
@@ -51,9 +51,9 @@ describe('Tabs.vue', () => {
     const wrapper = mount(Tabs, {
       props: {
         tabs: tabsProp,
-        modelValue: 0
+        modelValue: 0,
       },
-      slots
+      slots,
     })
 
     // Click on the second tab
@@ -76,9 +76,9 @@ describe('Tabs.vue', () => {
     const wrapper = mount(Tabs, {
       props: {
         tabs: tabsProp,
-        modelValue: 0
+        modelValue: 0,
       },
-      slots
+      slots,
     })
 
     // Click on the second tab
@@ -95,9 +95,9 @@ describe('Tabs.vue', () => {
     const wrapper = mount(Tabs, {
       props: {
         tabs: tabsProp,
-        modelValue: 0
+        modelValue: 0,
       },
-      slots
+      slots,
     })
 
     const tabButtons = wrapper.findAll('[role="tab"]')
@@ -119,18 +119,18 @@ describe('Tabs.vue', () => {
   it('handles disabled tabs properly', async () => {
     const tabsWithDisabled = [
       { title: 'Active Tab', name: 'active', disabled: false },
-      { title: 'Disabled Tab', name: 'disabled', disabled: true }
+      { title: 'Disabled Tab', name: 'disabled', disabled: true },
     ]
 
     const wrapper = mount(Tabs, {
       props: {
         tabs: tabsWithDisabled,
-        modelValue: 0
+        modelValue: 0,
       },
       slots: {
         active: '<div data-testid="active-content">Active Tab Content</div>',
-        disabled: '<div data-testid="disabled-content">Disabled Tab Content</div>'
-      }
+        disabled: '<div data-testid="disabled-content">Disabled Tab Content</div>',
+      },
     })
 
     const tabButtons = wrapper.findAll('[role="tab"]')

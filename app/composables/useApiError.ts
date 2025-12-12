@@ -8,7 +8,7 @@ interface ApiResponse {
 export const useApiError = <T extends ApiResponse>(
   data: Ref<T | null | undefined>,
   pending: Ref<boolean>,
-  error: Ref<FetchError | undefined>
+  error: Ref<FetchError | undefined>,
 ) => {
   const hasError = computed(() => {
     if (error.value) return true

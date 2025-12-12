@@ -5,7 +5,7 @@ import {
   courseLearningObjectives,
   courseContentSections,
   reviews,
-  lessons
+  lessons,
 } from './schema'
 import { hash } from 'bcrypt'
 
@@ -22,7 +22,7 @@ async function seedDatabase() {
       email: instructorEmail,
       passwordHash: instructorPassword,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     })
     .returning()
 
@@ -36,7 +36,7 @@ async function seedDatabase() {
       email: studentEmail,
       passwordHash: studentPassword,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     })
     .returning()
 
@@ -56,7 +56,7 @@ async function seedDatabase() {
       image: '/images/typescript-course.jpg',
       slug: 'advanced-typescript',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     })
     .returning()
 
@@ -67,29 +67,29 @@ async function seedDatabase() {
       objective: 'Understand advanced TypeScript features like generics and decorators',
       orderVal: 1,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: course.id,
       objective: 'Learn to write type-safe code with complex type systems',
       orderVal: 2,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: course.id,
       objective: 'Implement design patterns using TypeScript',
       orderVal: 3,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: course.id,
       objective: 'Create scalable applications with TypeScript',
       orderVal: 4,
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
+      updatedAt: new Date(),
+    },
   ]
 
   await db.insert(courseLearningObjectives).values(learningObjectivesData)
@@ -99,11 +99,11 @@ async function seedDatabase() {
     {
       courseId: course.id,
       title: 'Advanced Types',
-      description: "Deep dive into TypeScript's type system",
+      description: 'Deep dive into TypeScript\'s type system',
       lessonsCount: 5,
       orderVal: 1,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: course.id,
@@ -112,7 +112,7 @@ async function seedDatabase() {
       lessonsCount: 4,
       orderVal: 2,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: course.id,
@@ -121,7 +121,7 @@ async function seedDatabase() {
       lessonsCount: 6,
       orderVal: 3,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: course.id,
@@ -130,8 +130,8 @@ async function seedDatabase() {
       lessonsCount: 3,
       orderVal: 4,
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
+      updatedAt: new Date(),
+    },
   ]
 
   await db.insert(courseContentSections).values(contentSectionsData)
@@ -146,7 +146,7 @@ async function seedDatabase() {
       slug: 'introduction-to-advanced-types',
       videoUrl: 'https://example.com/video1',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: course.id,
@@ -156,7 +156,7 @@ async function seedDatabase() {
       slug: 'working-with-generics',
       videoUrl: 'https://example.com/video2',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: course.id,
@@ -166,8 +166,8 @@ async function seedDatabase() {
       slug: 'understanding-decorators',
       videoUrl: 'https://example.com/video3',
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
+      updatedAt: new Date(),
+    },
   ]
 
   await db.insert(lessons).values(lessonsData)
@@ -182,7 +182,7 @@ async function seedDatabase() {
       comment: 'Excellent course! The instructor explains complex concepts very well.',
       date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // A week ago
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: course.id,
@@ -191,7 +191,7 @@ async function seedDatabase() {
       comment: 'Good content but some examples could be more practical.',
       date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: course.id,
@@ -200,8 +200,8 @@ async function seedDatabase() {
       comment: 'One of the best TypeScript courses I have taken. Highly recommended!',
       date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
+      updatedAt: new Date(),
+    },
   ]
 
   await db.insert(reviews).values(reviewsData)

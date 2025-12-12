@@ -25,7 +25,7 @@ async function addTagsToExistingCourses() {
     'MongoDB',
     'Express',
     'PostgreSQL',
-    'Docker'
+    'Docker',
   ]
 
   try {
@@ -63,9 +63,11 @@ async function addTagsToExistingCourses() {
     }
 
     console.log('Successfully updated all courses with tags')
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error updating courses with tags:', error)
-  } finally {
+  }
+  finally {
     sqlite.close()
   }
 }

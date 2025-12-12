@@ -24,7 +24,8 @@ try {
   console.log('Starting to seed courses...')
   seedCourses().catch(console.error)
   */
-} catch (error) {
+}
+catch (error) {
   // If migration fails because meta files are missing, tables already exist, or other issues, log and continue
   const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred during migration'
   console.log('Migration issue (this may be normal):', errorMessage)

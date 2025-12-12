@@ -1,6 +1,5 @@
-import { H3Event } from 'h3'
+import type { H3Event, getRouterParam, setResponseStatus } from 'h3'
 import { UserService } from '../../../server/db/user-service'
-import { getRouterParam, setResponseStatus } from 'h3'
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
@@ -10,7 +9,7 @@ export default defineEventHandler(async (event: H3Event) => {
       setResponseStatus(event, 400)
       return {
         success: false,
-        message: 'Invalid user ID'
+        message: 'Invalid user ID',
       }
     }
 
@@ -20,7 +19,7 @@ export default defineEventHandler(async (event: H3Event) => {
       setResponseStatus(event, 404)
       return {
         success: false,
-        message: 'User not found'
+        message: 'User not found',
       }
     }
 
@@ -31,16 +30,17 @@ export default defineEventHandler(async (event: H3Event) => {
         id: user.id,
         username: user.username,
         name: user.username, // In a real app, we might have a separate name field
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=random` // Using ui-avatars service
-      }
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=random`, // Using ui-avatars service
+      },
     }
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     console.error(`Detailed error in GET /api/users/[id]:`, error)
     setResponseStatus(event, 500)
     return {
       success: false,
       message: 'Failed to fetch user',
-      error: (error as Error).message || 'Unknown error occurred'
+      error: (error as Error).message || 'Unknown error occurred',
     }
   }
 })

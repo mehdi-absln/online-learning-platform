@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     if (!username || !password) {
       throw createError({
         statusCode: 400,
-        statusMessage: AUTH_ERRORS.USERNAME_REQUIRED + ' and ' + AUTH_ERRORS.PASSWORD_REQUIRED
+        statusMessage: AUTH_ERRORS.USERNAME_REQUIRED + ' and ' + AUTH_ERRORS.PASSWORD_REQUIRED,
       })
     }
 
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     if (!user) {
       throw createError({
         statusCode: 401,
-        statusMessage: AUTH_ERRORS.INVALID_CREDENTIALS
+        statusMessage: AUTH_ERRORS.INVALID_CREDENTIALS,
       })
     }
 
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     if (!isPasswordValid) {
       throw createError({
         statusCode: 401,
-        statusMessage: AUTH_ERRORS.INVALID_CREDENTIALS
+        statusMessage: AUTH_ERRORS.INVALID_CREDENTIALS,
       })
     }
 
@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
     const tokenPayload = {
       userId: user.id,
       username: user.username,
-      email: user.email
+      email: user.email,
     }
 
     const accessToken = await JWTService.generateToken(tokenPayload)
@@ -52,26 +52,27 @@ export default defineEventHandler(async (event) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict' as const,
-      maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000 // 30 days or 7 days
+      maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000, // 30 days or 7 days
     }
 
     setCookie(event, 'accessToken', accessToken, cookieOptions)
     setCookie(event, 'refreshToken', refreshToken, {
       ...cookieOptions,
-      maxAge: 30 * 24 * 60 * 60 * 1000 // Always 30 days for refresh token
+      maxAge: 30 * 24 * 60 * 60 * 1000, // Always 30 days for refresh token
     })
 
     return successResponse(AUTH_ERRORS.SIGNIN_SUCCESS, {
       user: {
         id: user.id,
         username: user.username,
-        email: user.email
-      }
+        email: user.email,
+      },
     })
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     // Check if the error has a statusCode property (Nuxt/H3 error)
     if (typeof error === 'object' && error !== null && 'statusCode' in error) {
-      const nuxtError = error as { statusCode?: number; statusMessage?: string; message?: string }
+      const nuxtError = error as { statusCode?: number, statusMessage?: string, message?: string }
       return errorResponse(nuxtError.statusMessage || 'An error occurred', nuxtError.message)
     }
 

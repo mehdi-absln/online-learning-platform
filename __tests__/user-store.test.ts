@@ -13,7 +13,7 @@ vi.mock('nuxt/app', async (importOriginal) => {
   const actual = await importOriginal()
   return {
     ...actual,
-    navigateTo: vi.fn()
+    navigateTo: vi.fn(),
   }
 })
 
@@ -21,7 +21,7 @@ vi.mock('nuxt/app', async (importOriginal) => {
 vi.mock('#app', async () => {
   return {
     $fetch: vi.fn(),
-    navigateTo: vi.fn()
+    navigateTo: vi.fn(),
   }
 })
 
@@ -46,7 +46,7 @@ describe('User Store', () => {
     const mockUser: User = {
       id: 1,
       username: 'testuser',
-      email: 'test@example.com'
+      email: 'test@example.com',
     }
 
     userStore.setUser(mockUser)
@@ -61,7 +61,7 @@ describe('User Store', () => {
     const mockUser: User = {
       id: 1,
       username: 'testuser',
-      email: 'test@example.com'
+      email: 'test@example.com',
     }
 
     userStore.setUser(mockUser)

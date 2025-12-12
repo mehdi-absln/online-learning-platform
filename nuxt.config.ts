@@ -1,23 +1,23 @@
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
-  devServer: {
-    host: 'localhost',
-    port: 3000
-  },
+  modules: ['@nuxt/image', '@nuxt/icon', '@nuxt/eslint', '@nuxtjs/tailwindcss', '@pinia/nuxt'],
+  devtools: { enabled: true },
+  css: ['~/assets/css/fonts.css', '~/assets/css/app.css'],
   routeRules: {
     '/auth': { redirect: '/auth/signin' },
-    '/': { redirect: '/home' }
+    '/': { redirect: '/home' },
   },
-  devtools: { enabled: true },
-  modules: ['@nuxt/image', '@nuxt/icon', '@nuxt/eslint', '@nuxtjs/tailwindcss', '@pinia/nuxt'],
+  devServer: {
+    host: 'localhost',
+    port: 3000,
+  },
+  compatibilityDate: '2025-07-15',
   eslint: {
     config: {
       stylistic: {
         indent: 2,
         quotes: 'single',
-        semi: false
-      }
-    }
+        semi: false,
+      },
+    },
   },
-  css: ['~/assets/css/fonts.css', '~/assets/css/app.css']
 })

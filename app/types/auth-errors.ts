@@ -14,5 +14,5 @@ export const AUTH_ERRORS = {
   CONFIRM_PASSWORD_REQUIRED: 'Confirm password is required',
   INVALID_CREDENTIALS: 'Incorrect username or password',
   ACCOUNT_CREATED_SUCCESS: 'Account created successfully',
-  SIGNIN_SUCCESS: 'Sign in successful'
+  SIGNIN_SUCCESS: 'Sign in successful',
 } as const

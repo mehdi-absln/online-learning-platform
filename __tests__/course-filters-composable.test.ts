@@ -6,7 +6,7 @@ import { useCourseFilters } from '~/composables/useCourseFilters'
 
 // Mock the composable
 vi.mock('~/composables/useCourseFilters', () => ({
-  useCourseFilters: vi.fn()
+  useCourseFilters: vi.fn(),
 }))
 
 describe('SidebarFilters', () => {
@@ -20,7 +20,7 @@ describe('SidebarFilters', () => {
       searchQuery: '',
       instructorId: undefined,
       minPrice: undefined,
-      maxPrice: undefined
+      maxPrice: undefined,
     },
     categories: ['Development', 'Design'],
     levels: ['Beginner', 'Intermediate', 'Advanced'],
@@ -30,7 +30,7 @@ describe('SidebarFilters', () => {
     toggleExclusiveFilter: vi.fn(),
     fetchFilterOptions: vi.fn(),
     loading: false,
-    error: null
+    error: null,
   }
 
   beforeEach(() => {
@@ -40,8 +40,8 @@ describe('SidebarFilters', () => {
   it('renders correctly with filter options', () => {
     const wrapper = mount(SidebarFilters, {
       global: {
-        plugins: [createTestingPinia()]
-      }
+        plugins: [createTestingPinia()],
+      },
     })
 
     expect(wrapper.find('input[placeholder="Search courses..."]').exists()).toBe(true)
@@ -51,8 +51,8 @@ describe('SidebarFilters', () => {
   it('displays filter options', () => {
     const wrapper = mount(SidebarFilters, {
       global: {
-        plugins: [createTestingPinia()]
-      }
+        plugins: [createTestingPinia()],
+      },
     })
 
     // Check that filter options are displayed

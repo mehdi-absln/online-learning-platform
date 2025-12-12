@@ -1,13 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { nextTick } from 'vue'
 import CourseDetailPage from '~/pages/courses/[courseSlug]/index.vue'
 
 // Mock NuxtLink component
 const MockNuxtLink = {
   name: 'NuxtLink',
   template: '<a><slot /></a>',
-  props: ['to']
+  props: ['to'],
 }
 
 // Mock the useCoursesStore
@@ -24,11 +23,11 @@ vi.mock('~/stores/courses', () => ({
       instructor: {
         id: 1,
         name: 'John Doe',
-        avatar: '/instructor-avatar.jpg'
+        avatar: '/instructor-avatar.jpg',
       },
       rating: 4.5,
       stats: {
-        students: 100
+        students: 100,
       },
       level: 'Beginner',
       learningObjectives: ['Learn basics', 'Practice skills'],
@@ -38,9 +37,9 @@ vi.mock('~/stores/courses', () => ({
           title: 'Introduction',
           description: 'Basic concepts',
           content: [
-            { id: 1, title: 'Welcome', duration: '10:30', slug: 'welcome' }
-          ]
-        }
+            { id: 1, title: 'Welcome', duration: '10:30', slug: 'welcome' },
+          ],
+        },
       ],
       reviews: [
         {
@@ -48,13 +47,13 @@ vi.mock('~/stores/courses', () => ({
           reviewerName: 'Jane Smith',
           rating: 5,
           comment: 'Great course!',
-          date: '2023-01-15'
-        }
+          date: '2023-01-15',
+        },
       ],
-      tags: 'javascript, programming'
+      tags: 'javascript, programming',
     },
-    error: null
-  }))
+    error: null,
+  })),
 }))
 
 // Mock useCourse composable
@@ -71,11 +70,11 @@ vi.mock('~/composables/useCourse', () => ({
       instructor: {
         id: 1,
         name: 'John Doe',
-        avatar: '/instructor-avatar.jpg'
+        avatar: '/instructor-avatar.jpg',
       },
       rating: 4.5,
       stats: {
-        students: 100
+        students: 100,
       },
       level: 'Beginner',
       learningObjectives: ['Learn basics', 'Practice skills'],
@@ -85,9 +84,9 @@ vi.mock('~/composables/useCourse', () => ({
           title: 'Introduction',
           description: 'Basic concepts',
           content: [
-            { id: 1, title: 'Welcome', duration: '10:30', slug: 'welcome' }
-          ]
-        }
+            { id: 1, title: 'Welcome', duration: '10:30', slug: 'welcome' },
+          ],
+        },
       ],
       reviews: [
         {
@@ -95,29 +94,29 @@ vi.mock('~/composables/useCourse', () => ({
           reviewerName: 'Jane Smith',
           rating: 5,
           comment: 'Great course!',
-          date: '2023-01-15'
-        }
+          date: '2023-01-15',
+        },
       ],
-      tags: 'javascript, programming'
+      tags: 'javascript, programming',
     },
     isLoading: false,
     error: null,
-    refresh: vi.fn()
-  }))
+    refresh: vi.fn(),
+  })),
 }))
 
 // Mock useRoute
 vi.mock('#app', () => ({
   useRoute: () => ({
     params: {
-      courseSlug: 'test-course'
-    }
-  })
+      courseSlug: 'test-course',
+    },
+  }),
 }))
 
 // Mock createError
 vi.mock('~/composables/useCourses', () => ({
-  createError: vi.fn()
+  createError: vi.fn(),
 }))
 
 describe('CourseDetailPage', () => {
@@ -130,9 +129,9 @@ describe('CourseDetailPage', () => {
     const wrapper = await mount(CourseDetailPage, {
       global: {
         components: {
-          NuxtLink: MockNuxtLink
-        }
-      }
+          NuxtLink: MockNuxtLink,
+        },
+      },
     })
 
     // Wait for async operations to complete

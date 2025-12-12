@@ -26,7 +26,7 @@ describe('Accordion - Basic Tests', () => {
   it('applies custom classes correctly', () => {
     const customHeaderClass = 'bg-blue-100 text-blue-800'
     const customContentClass = 'p-6 bg-gray-50'
-    
+
     const wrapper = mount(Accordion, {
       props: {
         items: mockItems,

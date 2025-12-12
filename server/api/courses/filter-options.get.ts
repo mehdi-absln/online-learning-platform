@@ -1,12 +1,12 @@
 import { getAllCategories, getAllLevels, getAllTags } from '../../db/course-service'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (_event) => {
   try {
     // Get all available filter options from the database
     const [categories, levels, tags] = await Promise.all([
       getAllCategories(),
       getAllLevels(),
-      getAllTags()
+      getAllTags(),
     ])
 
     // For now, hardcoding instructors - in real app, you'd fetch from db
@@ -18,16 +18,17 @@ export default defineEventHandler(async (event) => {
         categories: categories,
         levels: levels,
         tags: tags,
-        instructors: [] // Empty array for now - can be populated from db later
-      }
+        instructors: [], // Empty array for now - can be populated from db later
+      },
     }
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     console.error('Error fetching filter options:', error)
 
     return {
       success: false,
       message: 'Failed to fetch filter options',
-      error: (error as Error)?.message || 'Unknown error occurred'
+      error: (error as Error)?.message || 'Unknown error occurred',
     }
   }
 })

@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     if (!accessToken) {
       throw createError({
         statusCode: 401,
-        statusMessage: 'No access token provided'
+        statusMessage: 'No access token provided',
       })
     }
 
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     if (!payload) {
       throw createError({
         statusCode: 401,
-        statusMessage: 'Invalid access token'
+        statusMessage: 'Invalid access token',
       })
     }
 
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     if (!user) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'User not found'
+        statusMessage: 'User not found',
       })
     }
 
@@ -38,13 +38,14 @@ export default defineEventHandler(async (event) => {
       user: {
         id: user.id,
         username: user.username,
-        email: user.email
-      }
+        email: user.email,
+      },
     })
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     // Check if the error has a statusCode property (Nuxt/H3 error)
     if (typeof error === 'object' && error !== null && 'statusCode' in error) {
-      const nuxtError = error as { statusCode?: number; statusMessage?: string; message?: string }
+      const nuxtError = error as { statusCode?: number, statusMessage?: string, message?: string }
       return errorResponse(nuxtError.statusMessage || 'An error occurred', nuxtError.message)
     }
 

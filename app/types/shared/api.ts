@@ -47,7 +47,7 @@ export interface FilterOptionsResponse {
     categories: string[]
     levels: string[]
     tags: string[]
-    instructors: { id: number; name: string }[]
+    instructors: { id: number, name: string }[]
   }
 }
 

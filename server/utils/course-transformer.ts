@@ -1,8 +1,7 @@
 import type {
   Course as CourseType,
   DetailedCourse,
-  CourseContentSection,
-  Review
+  Review,
 } from '~/types/shared/courses'
 import { processInstructorAvatar, processCourseImage } from './image-processor'
 
@@ -98,12 +97,12 @@ export function transformCourseForClient(course: RawCourse): CourseType {
       name: course.instructor?.name || 'Instructor Name',
       avatar: processInstructorAvatar(
         course.instructor?.avatar,
-        course.instructor?.name || 'Instructor Name'
-      )
+        course.instructor?.name || 'Instructor Name',
+      ),
     },
     stats: {
-      students: course.studentCount || 0  // Handle possible null value
-    }
+      students: course.studentCount || 0, // Handle possible null value
+    },
   }
 }
 
@@ -112,14 +111,14 @@ export function transformCourseForClientWithDetails(
   learningObjectives: RawCourseLearningObjective[] = [],
   contentSections: RawCourseContentSection[] = [],
   reviews: RawReview[] = [],
-  lessons: RawLesson[] = []
+  lessons: RawLesson[] = [],
 ): DetailedCourse {
   // Transform the basic course info
   const basicCourse = transformCourseForClient(course)
 
   // Transform learning objectives to an array of strings in order
   const orderedLearningObjectives = learningObjectives
-    ? learningObjectives.sort((a, b) => a.orderVal - b.orderVal).map((obj) => obj.objective)
+    ? learningObjectives.sort((a, b) => a.orderVal - b.orderVal).map(obj => obj.objective)
     : []
 
   // Transform content sections and group lessons by section
@@ -128,12 +127,12 @@ export function transformCourseForClientWithDetails(
         .sort((a, b) => a.orderVal - b.orderVal)
         .map((section) => {
           // Get lessons for this specific section
-          const sectionLessons =
-            lessons && lessons.length > 0
+          const sectionLessons
+            = lessons && lessons.length > 0
               ? lessons
-                  .filter((lesson) => lesson.sectionId === section.id)
+                  .filter(lesson => lesson.sectionId === section.id)
                   .sort((a, b) => a.orderVal - b.orderVal)
-                  .map((lesson) => ({
+                  .map(lesson => ({
                     id: lesson.id, // Include the lesson ID
                     title: lesson.title,
                     slug: lesson.slug || lesson.title
@@ -143,7 +142,7 @@ export function transformCourseForClientWithDetails(
                       .replace(/[\s_-]+/g, '-')
                       .replace(/^-+|-+$/g, ''), // Generate slug from title if not available
                     duration: lesson.duration || `${Math.floor(Math.random() * 10) + 1} min`, // Generate a random duration if not available
-                    videoUrl: lesson.videoUrl // Use existing videoUrl
+                    videoUrl: lesson.videoUrl, // Use existing videoUrl
                   }))
               : []
 
@@ -152,34 +151,34 @@ export function transformCourseForClientWithDetails(
             title: section.title,
             description: section.description || undefined,
             lessons: section.lessonsCount,
-            content: sectionLessons // Add lessons array to the section
+            content: sectionLessons, // Add lessons array to the section
           }
         })
     : []
 
   // Transform reviews
-  const transformedReviews =
-    reviews && reviews.length > 0
+  const transformedReviews
+    = reviews && reviews.length > 0
       ? reviews.map(
-          (review) =>
+          review =>
             ({
               reviewerName: review.reviewerName,
               rating: review.rating,
               comment: review.comment || '',
-              date: review.date ? review.date.toISOString() : new Date().toISOString()
-            }) as Review
+              date: review.date ? review.date.toISOString() : new Date().toISOString(),
+            }) as Review,
         )
       : []
 
   return {
     ...basicCourse,
-    lessons: lessons && lessons.length > 0 ? lessons.map((lesson) => lesson.title) : [], // Just the lesson titles for the main course
+    lessons: lessons && lessons.length > 0 ? lessons.map(lesson => lesson.title) : [], // Just the lesson titles for the main course
     learningObjectives: orderedLearningObjectives,
     courseContent: orderedContentSections,
-    reviews: transformedReviews
+    reviews: transformedReviews,
   }
 }
 
 export function transformCoursesForClient(courses: RawCourse[]): CourseType[] {
-  return courses.map((course) => transformCourseForClient(course))
+  return courses.map(course => transformCourseForClient(course))
 }

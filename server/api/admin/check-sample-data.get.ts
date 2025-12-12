@@ -1,22 +1,22 @@
-import { H3Event } from 'h3'
+import type { H3Event } from 'h3'
 import { db } from '../../../server/db'
 import {
   courseLearningObjectives,
   courseContentSections,
   reviews,
-  courses
+  courses,
 } from '../../../server/db/schema'
 import { eq } from 'drizzle-orm'
 
 // Function to check if sample data exists
-export default defineEventHandler(async (event: H3Event) => {
+export default defineEventHandler(async (_event: H3Event) => {
   try {
     // Get the first course from the database
     const existingCourses = await db.select().from(courses)
     if (existingCourses.length === 0) {
       return {
         success: false,
-        message: 'No courses found in the database.'
+        message: 'No courses found in the database.',
       }
     }
 
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event: H3Event) => {
     if (!course) {
       return {
         success: false,
-        message: 'No courses found in the database.'
+        message: 'No courses found in the database.',
       }
     }
     const courseId = course.id
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event: H3Event) => {
         .from(courseLearningObjectives)
         .where(eq(courseLearningObjectives.courseId, courseId)),
       db.select().from(courseContentSections).where(eq(courseContentSections.courseId, courseId)),
-      db.select().from(reviews).where(eq(reviews.courseId, courseId))
+      db.select().from(reviews).where(eq(reviews.courseId, courseId)),
     ])
 
     return {
@@ -46,15 +46,16 @@ export default defineEventHandler(async (event: H3Event) => {
         courseTitle: course.title,
         learningObjectivesCount: objectives.length,
         contentSectionsCount: sections.length,
-        reviewsCount: reviewCount.length
-      }
+        reviewsCount: reviewCount.length,
+      },
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error checking sample data:', error)
     return {
       success: false,
       message: 'Failed to check sample data',
-      error: (error as Error).message
+      error: (error as Error).message,
     }
   }
 })
