@@ -115,4 +115,42 @@ describe('Tabs.vue', () => {
     expect(tabPanels[1].attributes('aria-labelledby')).toBe(tabButtons[1].attributes('id'))
     expect(tabPanels[1].element.hidden).toBe(true)
   })
+
+  it('handles disabled tabs properly', async () => {
+    const tabsWithDisabled = [
+      { title: 'Active Tab', name: 'active', disabled: false },
+      { title: 'Disabled Tab', name: 'disabled', disabled: true }
+    ]
+
+    const wrapper = mount(Tabs, {
+      props: {
+        tabs: tabsWithDisabled,
+        modelValue: 0
+      },
+      slots: {
+        active: '<div data-testid="active-content">Active Tab Content</div>',
+        disabled: '<div data-testid="disabled-content">Disabled Tab Content</div>'
+      }
+    })
+
+    const tabButtons = wrapper.findAll('[role="tab"]')
+
+    // Check that disabled tab has appropriate attributes and classes
+    expect(tabButtons[1].attributes('disabled')).toBe('')
+    expect(tabButtons[1].classes()).toContain('cursor-not-allowed')
+    expect(tabButtons[1].classes()).toContain('text-gray-500')
+
+    // Check that clicking on disabled tab does not switch tabs
+    await tabButtons[1].trigger('click')
+
+    // Should remain on active tab
+    expect(tabButtons[0].attributes('aria-selected')).toBe('true')
+    expect(tabButtons[1].attributes('aria-selected')).toBe('false')
+
+    // Check that disabled tab is not keyboard focusable
+    await tabButtons[1].trigger('keydown', { key: 'ArrowRight' })
+    // After pressing arrow key, it should skip the disabled tab and go to the next enabled tab
+    // Since the disabled tab is the last one in this example, it should loop back to the first tab
+    expect(wrapper.vm.activeIndex).toBe(0)
+  })
 })

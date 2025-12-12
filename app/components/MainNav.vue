@@ -2,7 +2,10 @@
   <div
     class="fixed top-0 left-0 right-0 z-50 py-10 flex justify-between items-center bg-transparent container"
   >
-    <NuxtLink to="/home" class="text-xl font-bold text-white drop-shadow-lg">
+    <NuxtLink
+      to="/home"
+      class="text-xl font-bold text-white drop-shadow-lg"
+    >
       ONLINE LEARNING PLATFORM
     </NuxtLink>
     <ul class="flex space-x-8">
@@ -115,8 +118,7 @@
         </svg>
         <span
           class="absolute top-1 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-primary rounded-full"
-          >0</span
-        >
+        >0</span>
       </button>
     </div>
   </div>

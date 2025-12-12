@@ -26,7 +26,7 @@ export const useCourses = () => {
     return params
   })
 
-  const { data, pending, error, refresh } = useFetch<CourseListResponse>('/api/courses', {
+  const { data, pending, error } = useFetch<CourseListResponse>('/api/courses', {
     query: queryParams,
     watch: [queryParams],
     deep: true,
@@ -79,6 +79,5 @@ export const useCourses = () => {
     pagination,
     isLoading: pending,
     error: hasError,
-    refresh,
   }
 }

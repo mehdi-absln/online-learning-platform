@@ -2,11 +2,11 @@
   <div class="relative">
     <input
       :id="id"
+      v-model="selectedValues"
       type="checkbox"
       :value="value"
-      v-model="selectedValues"
       class="w-4 h-4 text-primary bg-[#1F1F1E] border-[#474746] rounded cursor-pointer opacity-0 absolute z-10"
-    />
+    >
     <label
       :for="id"
       class="flex items-center cursor-pointer"
@@ -22,17 +22,21 @@
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
+
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="3"
             d="M5 13l4 4L19 7"
-          ></path>
+          />
         </svg>
       </span>
     </label>
   </div>
-  <label :for="id" class="ml-1 text-sm text-gray-300 cursor-pointer flex-1 py-1">
+  <label
+    :for="id"
+    class="ml-1 text-sm text-gray-300 cursor-pointer flex-1 py-1"
+  >
     {{ label }}
   </label>
 </template>
@@ -57,7 +61,7 @@ const selectedValues = computed({
   },
   set(value: string[]) {
     emit('update:modelValue', value)
-  }
+  },
 })
 </script>
 

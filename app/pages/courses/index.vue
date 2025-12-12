@@ -62,7 +62,7 @@ if (Object.keys(urlFilter).length > 0) {
   coursesStore.currentFilter = urlFilter
 }
 
-const { courses, isLoading, error, pagination, refresh } = useCourses()
+const { courses, isLoading, error, pagination } = useCourses()
 
 useHead({
   title: 'Courses - Online Learning Platform',
