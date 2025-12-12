@@ -533,7 +533,7 @@ const formatDate = (dateString: string): string => {
 const courseAccordionItems = computed(() => {
   if (!course.value?.courseContent) return []
 
-  return course.value.courseContent.map((section) => ({
+  return course.value.courseContent.map(section => ({
     title: section.title,
     description: section.description || undefined,
     lessons: section.content || [], // Using a more specific property name for lessons

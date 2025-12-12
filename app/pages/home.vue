@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Carousel, Slide, Pagination } from 'vue3-carousel'
+import 'vue3-carousel/dist/carousel.css'
+import CourseCard from '~/components/courses/CourseCard.vue'
+
 useSeoMeta({
   title: 'Home - Online Learning Platform',
   ogTitle: 'Home - Online Learning Platform',
@@ -6,14 +10,11 @@ useSeoMeta({
     'Start your learning journey with our comprehensive online courses taught by expert instructors.',
   ogDescription:
     'Start your learning journey with our comprehensive online courses taught by expert instructors.',
-  ogImage: '/images/banner.jpg'
+  ogImage: '/images/banner.jpg',
 })
 
-import { Carousel, Slide, Pagination } from 'vue3-carousel'
-import 'vue3-carousel/dist/carousel.css'
-import CourseCard from '~/components/courses/CourseCard.vue'
-
 const trainers = [
+
   {
     id: 1,
     name: 'Jonathan Bean',
@@ -23,8 +24,8 @@ const trainers = [
     social: [
       { name: 'Facebook', url: '#' },
       { name: 'Twitter', url: '#' },
-      { name: 'LinkedIn', url: '#' }
-    ]
+      { name: 'LinkedIn', url: '#' },
+    ],
   },
   {
     id: 2,
@@ -35,8 +36,8 @@ const trainers = [
     social: [
       { name: 'Twitter', url: '#' },
       { name: 'LinkedIn', url: '#' },
-      { name: 'Instagram', url: '#' }
-    ]
+      { name: 'Instagram', url: '#' },
+    ],
   },
   {
     id: 3,
@@ -47,8 +48,8 @@ const trainers = [
     social: [
       { name: 'GitHub', url: '#' },
       { name: 'LinkedIn', url: '#' },
-      { name: 'Twitter', url: '#' }
-    ]
+      { name: 'Twitter', url: '#' },
+    ],
   },
   {
     id: 4,
@@ -59,9 +60,9 @@ const trainers = [
     social: [
       { name: 'Facebook', url: '#' },
       { name: 'Twitter', url: '#' },
-      { name: 'LinkedIn', url: '#' }
-    ]
-  }
+      { name: 'LinkedIn', url: '#' },
+    ],
+  },
 ]
 
 const slides = [
@@ -72,10 +73,10 @@ const slides = [
     category: 'COOKING',
     instructor: {
       name: 'Chef Maria Garcia',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
+      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
     },
     stats: {
-      students: 42
+      students: 42,
     },
     rating: 4.8,
     price: 89.99,
@@ -84,7 +85,7 @@ const slides = [
     slug: 'mastering-the-art-of-cooking',
     createdAt: new Date(),
     updatedAt: new Date(),
-    instructorId: 1
+    instructorId: 1,
   },
   {
     id: 2,
@@ -93,10 +94,10 @@ const slides = [
     category: 'PROGRAMMING',
     instructor: {
       name: 'Alex Johnson',
-      avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
+      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
     },
     stats: {
-      students: 156
+      students: 156,
     },
     rating: 4.9,
     price: 129.99,
@@ -105,7 +106,7 @@ const slides = [
     slug: 'web-development-bootcamp',
     createdAt: new Date(),
     updatedAt: new Date(),
-    instructorId: 2
+    instructorId: 2,
   },
   {
     id: 3,
@@ -114,10 +115,10 @@ const slides = [
     category: 'MARKETING',
     instructor: {
       name: 'Sarah Williams',
-      avatar: 'https://randomuser.me/api/portraits/women/28.jpg'
+      avatar: 'https://randomuser.me/api/portraits/women/28.jpg',
     },
     stats: {
-      students: 87
+      students: 87,
     },
     rating: 4.7,
     price: 79.99,
@@ -126,7 +127,7 @@ const slides = [
     slug: 'digital-marketing-mastery',
     createdAt: new Date(),
     updatedAt: new Date(),
-    instructorId: 3
+    instructorId: 3,
   },
   {
     id: 4,
@@ -135,10 +136,10 @@ const slides = [
     category: 'PHOTOGRAPHY',
     instructor: {
       name: 'James Wilson',
-      avatar: 'https://randomuser.me/api/portraits/men/45.jpg'
+      avatar: 'https://randomuser.me/api/portraits/men/45.jpg',
     },
     stats: {
-      students: 63
+      students: 63,
     },
     rating: 4.6,
     price: 69.99,
@@ -147,7 +148,7 @@ const slides = [
     slug: 'photography-fundamentals',
     createdAt: new Date(),
     updatedAt: new Date(),
-    instructorId: 4
+    instructorId: 4,
   },
   {
     id: 5,
@@ -156,10 +157,10 @@ const slides = [
     category: 'DATA SCIENCE',
     instructor: {
       name: 'Dr. Emily Chen',
-      avatar: 'https://randomuser.me/api/portraits/women/52.jpg'
+      avatar: 'https://randomuser.me/api/portraits/women/52.jpg',
     },
     stats: {
-      students: 94
+      students: 94,
     },
     rating: 4.9,
     price: 149.99,
@@ -168,8 +169,8 @@ const slides = [
     slug: 'data-science-essentials',
     createdAt: new Date(),
     updatedAt: new Date(),
-    instructorId: 5
-  }
+    instructorId: 5,
+  },
 ]
 
 const latestNews = [
@@ -180,7 +181,7 @@ const latestNews = [
     date: '2025-08-15',
     image:
       'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=60',
-    excerpt: 'Learn the latest web development technologies in our new comprehensive course.'
+    excerpt: 'Learn the latest web development technologies in our new comprehensive course.',
   },
   {
     id: 2,
@@ -189,7 +190,7 @@ const latestNews = [
     date: '2025-08-20',
     image:
       'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&auto=format&fit=crop&q=60',
-    excerpt: 'Discover the most effective strategies to accelerate your programming journey.'
+    excerpt: 'Discover the most effective strategies to accelerate your programming journey.',
   },
   {
     id: 3,
@@ -198,8 +199,8 @@ const latestNews = [
     date: '2025-08-25',
     image:
       'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80',
-    excerpt: 'Exploring how technology is transforming the way we learn and acquire new skills.'
-  }
+    excerpt: 'Exploring how technology is transforming the way we learn and acquire new skills.',
+  },
 ]
 
 const formatDate = (dateString: string) => {
@@ -214,7 +215,7 @@ const testimonials = [
     role: 'Web Development Student',
     content:
       'The courses here completely transformed my career. The instructors are knowledgeable and the curriculum is well-structured. Highly recommended!',
-    avatar: 'https://randomuser.me/api/portraits/women/32.jpg'
+    avatar: 'https://randomuser.me/api/portraits/women/32.jpg',
   },
   {
     id: 2,
@@ -222,7 +223,7 @@ const testimonials = [
     role: 'UI/UX Designer',
     content:
       'I was able to upgrade my skills significantly through their design courses. The practical projects were especially valuable for my portfolio.',
-    avatar: 'https://randomuser.me/api/portraits/men/42.jpg'
+    avatar: 'https://randomuser.me/api/portraits/men/42.jpg',
   },
   {
     id: 3,
@@ -230,7 +231,7 @@ const testimonials = [
     role: 'Data Science Enthusiast',
     content:
       'The quality of instruction and course materials exceeded my expectations. The community support is also fantastic!',
-    avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
+    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
   },
   {
     id: 4,
@@ -238,8 +239,8 @@ const testimonials = [
     role: 'Full-stack Developer',
     content:
       'The hands-on approach helped me understand complex concepts easily. The certificate I earned helped me land a great job!',
-    avatar: 'https://randomuser.me/api/portraits/men/36.jpg'
-  }
+    avatar: 'https://randomuser.me/api/portraits/men/36.jpg',
+  },
 ]
 </script>
 
@@ -265,7 +266,10 @@ const testimonials = [
           <div
             class="w-full h-full bg-cover bg-center bg-no-repeat bg-[url('@/public/images/banner.jpg')]"
           >
-            <div class="absolute inset-0 bg-black bg-opacity-80" aria-hidden="true" />
+            <div
+              class="absolute inset-0 bg-black bg-opacity-80"
+              aria-hidden="true"
+            />
           </div>
         </div>
         <div class="relative h-full flex items-center container">
@@ -281,7 +285,10 @@ const testimonials = [
               The key to learning is consistency — nothing more, nothing less. There's no secret
               formula, and it's never out of reach. Every skill starts with a single step.
             </p>
-            <NuxtLink to="/auth/sign-up" class="inline-block">
+            <NuxtLink
+              to="/auth/sign-up"
+              class="inline-block"
+            >
               <button
                 class="relative font-antonio px-6 py-3 font-semibold text-white bg-gradient-to-r from-primary to-primary/90 group overflow-hidden"
               >
@@ -290,9 +297,7 @@ const testimonials = [
                 />
                 <span class="relative z-10 flex items-center">
                   GET STARTED NOW
-                  <span class="ml-2 transition-transform duration-300 group-hover:translate-x-1"
-                    >→</span
-                  >
+                  <span class="ml-2 transition-transform duration-300 group-hover:translate-x-1">→</span>
                 </span>
               </button>
             </NuxtLink>
@@ -308,7 +313,7 @@ const testimonials = [
             src="../public/images/laptop-near-whilte-book.jpg"
             alt="laptop near whilte book"
             class="h-full object-cover z-20 ml-auto block w-[95%] relative"
-          />
+          >
           <div
             class="absolute left-0 -bottom-[50px] rotate-180 w-0 h-0 border-l-[420px] border-l-transparent border-t-[350px] border-t-[#E05243]"
           />
@@ -329,7 +334,11 @@ const testimonials = [
           <div class="flex flex-wrap justify-between gap-y-6">
             <div class="bg-[#282828] py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
               <div>
-                <img src="../public/icon/UPST0182.png" alt="UPST0182" loading="lazy" />
+                <img
+                  src="../public/icon/UPST0182.png"
+                  alt="UPST0182"
+                  loading="lazy"
+                >
               </div>
               <div>
                 <h5 class="font-antonio font-bold text-white text-base">
@@ -339,7 +348,11 @@ const testimonials = [
             </div>
             <div class="bg-[#282828] py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
               <div>
-                <img src="../public/icon/UPST0181.png" alt="UPST0181" loading="lazy" />
+                <img
+                  src="../public/icon/UPST0181.png"
+                  alt="UPST0181"
+                  loading="lazy"
+                >
               </div>
               <div>
                 <h5 class="font-antonio font-bold text-white text-base">
@@ -349,7 +362,11 @@ const testimonials = [
             </div>
             <div class="bg-[#282828] py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
               <div>
-                <img src="../public/icon/UPST0180.png" alt="UPST0180" loading="lazy" />
+                <img
+                  src="../public/icon/UPST0180.png"
+                  alt="UPST0180"
+                  loading="lazy"
+                >
               </div>
               <div>
                 <h5 class="font-antonio font-bold text-white text-base">
@@ -359,7 +376,11 @@ const testimonials = [
             </div>
             <div class="bg-[#282828] py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
               <div>
-                <img src="../public/icon/UPST0179.png" alt="UPST0179" loading="lazy" />
+                <img
+                  src="../public/icon/UPST0179.png"
+                  alt="UPST0179"
+                  loading="lazy"
+                >
               </div>
               <div>
                 <h5 class="font-antonio font-bold text-white text-base">
@@ -389,8 +410,16 @@ const testimonials = [
           </h2>
         </div>
         <div>
-          <Carousel :items-to-show="3" :wrap-around="false" :mouse-drag="true" :touch-drag="true">
-            <Slide v-for="slide in slides" :key="slide.id">
+          <Carousel
+            :items-to-show="3"
+            :wrap-around="false"
+            :mouse-drag="true"
+            :touch-drag="true"
+          >
+            <Slide
+              v-for="slide in slides"
+              :key="slide.id"
+            >
               <div class="w-[95%] group">
                 <CourseCard :course="slide" />
               </div>
@@ -407,25 +436,41 @@ const testimonials = [
       <div class="container">
         <div class="flex flex-wrap justify-center gap-8 text-center">
           <div class="flex-1 min-w-[200px] max-w-[300px] p-6">
-            <div class="text-5xl font-bold text-primary mb-2 font-antonio">1200</div>
-            <p class="text-white text-base pt-2">Hours Of Learning</p>
+            <div class="text-5xl font-bold text-primary mb-2 font-antonio">
+              1200
+            </div>
+            <p class="text-white text-base pt-2">
+              Hours Of Learning
+            </p>
           </div>
 
           <div class="flex-1 min-w-[200px] max-w-[300px] p-6">
-            <div class="text-5xl font-bold text-primary mb-2 font-antonio">10,145</div>
-            <p class="text-white text-base pt-2">Total Tutorials</p>
+            <div class="text-5xl font-bold text-primary mb-2 font-antonio">
+              10,145
+            </div>
+            <p class="text-white text-base pt-2">
+              Total Tutorials
+            </p>
           </div>
 
           <div class="flex-1 min-w-[200px] max-w-[300px] p-6">
-            <div class="text-5xl font-bold text-primary mb-2 font-antonio">3745</div>
-            <p class="text-white text-base pt-2">Enrolled Learners</p>
+            <div class="text-5xl font-bold text-primary mb-2 font-antonio">
+              3745
+            </div>
+            <p class="text-white text-base pt-2">
+              Enrolled Learners
+            </p>
           </div>
           <div class="flex-1 min-w-[200px] max-w-[300px] p-6">
-            <div class="text-5xl font-bold text-primary mb-2 font-antonio">100%</div>
-            <p class="text-white text-base pt-2">Achieve learning goals</p>
+            <div class="text-5xl font-bold text-primary mb-2 font-antonio">
+              100%
+            </div>
+            <p class="text-white text-base pt-2">
+              Achieve learning goals
+            </p>
           </div>
         </div>
-        <hr class="my-6 border-gray-700 block w-full" />
+        <hr class="my-6 border-gray-700 block w-full">
       </div>
     </section>
     <!-- Trainers Section -->
@@ -449,7 +494,7 @@ const testimonials = [
               :src="trainer.image"
               :alt="trainer.name"
               class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+            >
             <div
               class="absolute inset-0 bg-black/60 transition-all duration-300 p-6 flex flex-col items-start justify-end h-full"
             >
@@ -466,7 +511,10 @@ const testimonials = [
                   class="absolute inset-0 w-1/5 h-full bg-primary transition-all duration-300 group-hover:w-full -z-10"
                 />
                 <div class="flex justify-center space-x-3 pt-4 w-full">
-                  <template v-for="(social, index) in trainer.social" :key="index">
+                  <template
+                    v-for="(social, index) in trainer.social"
+                    :key="index"
+                  >
                     <a
                       v-if="social.name === 'Facebook'"
                       :href="social.url"
@@ -553,7 +601,10 @@ const testimonials = [
             :touch-drag="true"
             class="testimonial-carousel"
           >
-            <Slide v-for="testimonial in testimonials" :key="testimonial.id">
+            <Slide
+              v-for="testimonial in testimonials"
+              :key="testimonial.id"
+            >
               <div
                 class="bg-transparent p-8 border-2 border-[#474746] rounded-2xl text-center mx-4 relative overflow-hidden before:content-['\201C'] before:absolute before:top-4 before:right-4 before:text-[#3a3a3a] before:text-9xl before:font-serif before:leading-none before:opacity-20 before:pointer-events-none"
               >
@@ -564,11 +615,17 @@ const testimonials = [
                     :src="testimonial.avatar"
                     :alt="testimonial.name"
                     class="w-full h-full object-cover"
-                  />
+                  >
                 </div>
-                <p class="text-gray-300 text-lg mb-6">"{{ testimonial.content }}"</p>
-                <h4 class="text-white text-xl font-semibold">{{ testimonial.name }}</h4>
-                <p class="text-primary text-sm">{{ testimonial.role }}</p>
+                <p class="text-gray-300 text-lg mb-6">
+                  "{{ testimonial.content }}"
+                </p>
+                <h4 class="text-white text-xl font-semibold">
+                  {{ testimonial.name }}
+                </h4>
+                <p class="text-primary text-sm">
+                  {{ testimonial.role }}
+                </p>
               </div>
             </Slide>
             <template #addons>
@@ -600,7 +657,7 @@ const testimonials = [
                 :src="item.image"
                 :alt="item.title"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+              >
               <div
                 class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"
               />
@@ -608,7 +665,10 @@ const testimonials = [
             <div class="py-8">
               <div class="flex items-center text-white">
                 <span class="uppercase text-sm font-medium">
-                  by <NuxtLink to="/" class="hover:underline">{{ item.author }}</NuxtLink>
+                  by <NuxtLink
+                    to="/"
+                    class="hover:underline"
+                  >{{ item.author }}</NuxtLink>
                 </span>
                 <div class="mx-4 bg-primary w-2 h-2" />
                 <span class="uppercase text-sm font-medium">
