@@ -3,15 +3,12 @@ import {
   lessons,
   courseLearningObjectives,
   courseContentSections,
-  reviews
+  reviews,
 } from './schema'
 import { db } from './index'
-import { eq, desc, asc, and, gte, lte, like, inArray, or, sql } from 'drizzle-orm'
+import { eq, desc, asc, and, gte, lte, like, inArray, or } from 'drizzle-orm'
 import type { InferSelectModel } from 'drizzle-orm'
 import type { CreateCourseData, UpdateCourseData } from '~/types/shared/courses'
-
-// Helper type to properly handle Drizzle query results
-type DrizzleQueryResult<T> = T extends Promise<infer U> ? U : never
 
 // Using the schema types
 type CourseType = InferSelectModel<typeof courses>
@@ -41,7 +38,7 @@ export async function getAllCourses(
     instructorId?: number
   } = {},
   limit?: number,
-  offset?: number
+  offset?: number,
 ): Promise<Course[]> {
   try {
     // Build where conditions array
@@ -66,7 +63,7 @@ export async function getAllCourses(
     if (filter.tags && filter.tags.length > 0) {
       // Looking for courses that have any of the provided tags
       // We'll search for each tag in the comma-separated tags column
-      const tagConditions = filter.tags.map((tag) => like(courses.tags, `%${tag}%`))
+      const tagConditions = filter.tags.map(tag => like(courses.tags, `%${tag}%`))
       if (tagConditions.length > 0) {
         whereConditions.push(tagConditions.length === 1 ? tagConditions[0] : or(...tagConditions))
       }
@@ -106,7 +103,8 @@ export async function getAllCourses(
       if (whereConditions.length === 1) {
         // @ts-expect-error - Suppressing Drizzle internal type error
         query = query.where(whereConditions[0])
-      } else {
+      }
+      else {
         // @ts-expect-error - Suppressing Drizzle internal type error
         query = query.where(and(...whereConditions))
       }
@@ -129,7 +127,8 @@ export async function getAllCourses(
     // Type assertion to fix Drizzle type errors
     const result: Course[] = await query as Course[]
     return result
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error fetching courses:', error)
     throw new Error('Failed to fetch courses')
   }
@@ -149,7 +148,7 @@ export async function getCoursesCount(
     maxPrice?: number
     searchQuery?: string
     instructorId?: number
-  } = {}
+  } = {},
 ): Promise<number> {
   try {
     // Build where conditions array
@@ -174,7 +173,7 @@ export async function getCoursesCount(
     if (filter.tags && filter.tags.length > 0) {
       // Looking for courses that have any of the provided tags
       // We'll search for each tag in the comma-separated tags column
-      const tagConditions = filter.tags.map((tag) => like(courses.tags, `%${tag}%`))
+      const tagConditions = filter.tags.map(tag => like(courses.tags, `%${tag}%`))
       if (tagConditions.length > 0) {
         whereConditions.push(tagConditions.length === 1 ? tagConditions[0] : or(...tagConditions))
       }
@@ -212,7 +211,8 @@ export async function getCoursesCount(
       if (whereConditions.length === 1) {
         // @ts-expect-error - Suppressing Drizzle internal type error
         query = query.where(whereConditions[0])
-      } else {
+      }
+      else {
         // @ts-expect-error - Suppressing Drizzle internal type error
         query = query.where(and(...whereConditions))
       }
@@ -220,7 +220,8 @@ export async function getCoursesCount(
 
     const result: { id: number }[] = await query as { id: number }[]
     return result.length
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error counting courses:', error)
     throw new Error('Failed to count courses')
   }
@@ -235,7 +236,8 @@ export async function getCourseById(id: number): Promise<Course | undefined> {
       .limit(1)
 
     return result[0] ?? undefined
-  } catch (error) {
+  }
+  catch (error) {
     console.error(`Error fetching course with id ${id}:`, error)
     throw new Error('Failed to fetch course')
   }
@@ -250,7 +252,8 @@ export async function getCourseBySlug(slug: string): Promise<Course | undefined>
       .limit(1)
 
     return result[0] ?? undefined
-  } catch (error) {
+  }
+  catch (error) {
     console.error(`Error fetching course with slug ${slug}:`, error)
     throw new Error('Failed to fetch course')
   }
@@ -298,9 +301,10 @@ export async function getDetailedCourseById(id: number) {
       learningObjectives,
       contentSections,
       reviews: courseReviews,
-      lessons: courseLessons
+      lessons: courseLessons,
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error(`Error fetching detailed course with id ${id}:`, error)
     throw new Error('Failed to fetch detailed course')
   }
@@ -357,7 +361,7 @@ export async function getDetailedCourseBySlug(slug: string) {
     learningObjectives,
     contentSections,
     reviews: courseReviews,
-    lessons: courseLessons
+    lessons: courseLessons,
   }
 }
 
@@ -370,7 +374,8 @@ export async function getCoursesByInstructorId(instructorId: number): Promise<Co
       .orderBy(desc(courses.createdAt))
 
     return result
-  } catch (error) {
+  }
+  catch (error) {
     console.error(`Error fetching courses for instructor with id ${instructorId}:`, error)
     throw new Error('Failed to fetch courses for instructor')
   }
@@ -393,7 +398,7 @@ export async function createCourse(data: CreateCourseData): Promise<Course> {
         studentCount: 0,
         rating: 0,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .returning()
 
@@ -402,7 +407,8 @@ export async function createCourse(data: CreateCourseData): Promise<Course> {
     }
 
     return newCourse
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error creating course:', error)
     throw new Error('Failed to create course')
   }
@@ -410,7 +416,7 @@ export async function createCourse(data: CreateCourseData): Promise<Course> {
 
 export async function updateCourse(
   id: number,
-  data: UpdateCourseData
+  data: UpdateCourseData,
 ): Promise<Course | undefined> {
   try {
     // If title is being updated, regenerate the slug
@@ -424,9 +430,9 @@ export async function updateCourse(
         .replace(/^-+|-+$/g, '')
     }
 
-    const updateData: UpdateCourseData & { slug?: string; updatedAt: Date } = {
+    const updateData: UpdateCourseData & { slug?: string, updatedAt: Date } = {
       ...data,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }
 
     // Only add slug to update if it was generated (i.e., title was changed)
@@ -441,7 +447,8 @@ export async function updateCourse(
       .returning()
 
     return updatedCourse
-  } catch (error) {
+  }
+  catch (error) {
     console.error(`Error updating course with id ${id}:`, error)
     throw new Error('Failed to update course')
   }
@@ -450,7 +457,8 @@ export async function updateCourse(
 export async function deleteCourse(id: number): Promise<void> {
   try {
     await db.delete(courses).where(eq(courses.id, id))
-  } catch (error) {
+  }
+  catch (error) {
     console.error(`Error deleting course with id ${id}:`, error)
     throw new Error('Failed to delete course')
   }
@@ -465,7 +473,8 @@ export async function getCourseLessons(courseId: number): Promise<Lesson[]> {
       .orderBy(asc(lessons.orderVal))
 
     return result
-  } catch (error) {
+  }
+  catch (error) {
     console.error(`Error fetching lessons for course with id ${courseId}:`, error)
     throw new Error('Failed to fetch course lessons')
   }
@@ -478,8 +487,9 @@ export async function getAllCategories(): Promise<string[]> {
       .from(courses)
       .groupBy(courses.category)
 
-    return results.map((result) => result.category)
-  } catch (error) {
+    return results.map(result => result.category)
+  }
+  catch (error) {
     console.error('Error fetching categories:', error)
     throw new Error('Failed to fetch categories')
   }
@@ -489,8 +499,9 @@ export async function getAllLevels(): Promise<string[]> {
   try {
     const results: { level: string }[] = await db.select({ level: courses.level }).from(courses).groupBy(courses.level)
 
-    return results.map((result) => result.level)
-  } catch (error) {
+    return results.map(result => result.level)
+  }
+  catch (error) {
     console.error('Error fetching levels:', error)
     throw new Error('Failed to fetch levels')
   }
@@ -508,14 +519,15 @@ export async function getAllTags(): Promise<string[]> {
         // Split by comma and trim whitespace
         const tags = course.tags
           .split(',')
-          .map((tag) => tag.trim())
-          .filter((tag) => tag !== '')
-        tags.forEach((tag) => allTags.add(tag))
+          .map(tag => tag.trim())
+          .filter(tag => tag !== '')
+        tags.forEach(tag => allTags.add(tag))
       }
     }
 
     return Array.from(allTags)
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error fetching tags:', error)
     throw new Error('Failed to fetch tags')
   }

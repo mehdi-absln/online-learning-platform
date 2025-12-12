@@ -16,7 +16,7 @@ export function validateAndProcessImageUrl(imageUrl: string | null | undefined):
 
     // Check if URL has a valid image extension
     const pathname = url.pathname.toLowerCase()
-    const hasValidExtension = allowedExtensions.some((ext) => pathname.endsWith(ext))
+    const hasValidExtension = allowedExtensions.some(ext => pathname.endsWith(ext))
 
     if (!hasValidExtension) {
       // For now we allow any path since many image hosting services don't use file extensions
@@ -24,7 +24,8 @@ export function validateAndProcessImageUrl(imageUrl: string | null | undefined):
     }
 
     return imageUrl
-  } catch (error) {
+  }
+  catch (error) {
     console.error(`Invalid image URL: ${imageUrl}`, error)
     return null
   }
@@ -50,7 +51,7 @@ export function processCourseImage(imageUrl: string | null | undefined): string 
 // Function to process and validate instructor avatar
 export function processInstructorAvatar(
   avatarUrl: string | null | undefined,
-  instructorName: string
+  instructorName: string,
 ): string {
   if (avatarUrl) {
     const validatedUrl = validateAndProcessImageUrl(avatarUrl)

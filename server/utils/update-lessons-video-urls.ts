@@ -1,11 +1,11 @@
 import { drizzle } from 'drizzle-orm/better-sqlite3'
 import Database from 'better-sqlite3'
 import { lessons } from '../db/schema'
-import { eq, isNull } from 'drizzle-orm'
+import { isNull } from 'drizzle-orm'
 
 // Connect to the database
 const sqlite = new Database(
-  process.env.DATABASE_URL?.replace('file:', '') || './server/data/db.sqlite'
+  process.env.DATABASE_URL?.replace('file:', '') || './server/data/db.sqlite',
 )
 const db = drizzle(sqlite)
 
@@ -13,10 +13,10 @@ async function updateLessonsWithVideoUrls() {
   console.log('Updating lessons with video URLs...')
 
   // Update lessons that don't have a videoUrl
-  const result = await db
+  await db
     .update(lessons)
     .set({
-      videoUrl: 'https://www.youtube.com/watch?v=EDj-Xo8AlSU'
+      videoUrl: 'https://www.youtube.com/watch?v=EDj-Xo8AlSU',
     })
     .where(isNull(lessons.videoUrl))
 

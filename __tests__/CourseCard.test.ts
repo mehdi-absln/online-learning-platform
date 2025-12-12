@@ -7,7 +7,7 @@ import type { Course } from '~/types/shared/courses'
 const MockNuxtLink = {
   name: 'NuxtLink',
   template: '<a><slot /></a>',
-  props: ['to']
+  props: ['to'],
 }
 
 describe('CourseCard', () => {
@@ -22,12 +22,12 @@ describe('CourseCard', () => {
     instructor: {
       id: 1,
       name: 'John Doe',
-      avatar: '/instructor-avatar.jpg'
+      avatar: '/instructor-avatar.jpg',
     },
     rating: 4.5,
     stats: {
-      students: 100
-    }
+      students: 100,
+    },
   }
 
   beforeEach(() => {
@@ -42,13 +42,13 @@ describe('CourseCard', () => {
   it('uses placeholder image when course image fails to load', async () => {
     const wrapper = mount(CourseCard, {
       props: {
-        course: mockCourse
+        course: mockCourse,
       },
       global: {
         components: {
-          NuxtLink: MockNuxtLink
-        }
-      }
+          NuxtLink: MockNuxtLink,
+        },
+      },
     })
 
     // Simulate image error event
@@ -62,13 +62,13 @@ describe('CourseCard', () => {
   it('renders course information correctly', () => {
     const wrapper = mount(CourseCard, {
       props: {
-        course: mockCourse
+        course: mockCourse,
       },
       global: {
         components: {
-          NuxtLink: MockNuxtLink
-        }
-      }
+          NuxtLink: MockNuxtLink,
+        },
+      },
     })
 
     // Check that the course title exists in the rendered HTML
@@ -82,13 +82,13 @@ describe('CourseCard', () => {
   it('emits bookmark event when bookmark button is clicked', async () => {
     const wrapper = mount(CourseCard, {
       props: {
-        course: mockCourse
+        course: mockCourse,
       },
       global: {
         components: {
-          NuxtLink: MockNuxtLink
-        }
-      }
+          NuxtLink: MockNuxtLink,
+        },
+      },
     })
 
     const bookmarkButton = wrapper.find('button')

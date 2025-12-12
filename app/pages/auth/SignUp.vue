@@ -1,15 +1,26 @@
 <template>
-  <form class="mt-8 space-y-6" @submit.prevent="handleSubmit">
+  <form
+    class="mt-8 space-y-6"
+    @submit.prevent="handleSubmit"
+  >
     <div class="text-center">
-      <h3 class="text-2xl font-bold text-white mb-2">Sign up</h3>
+      <h3 class="text-2xl font-bold text-white mb-2">
+        Sign up
+      </h3>
       <p class="text-white">
         Already have an account?
-        <NuxtLink to="/auth/signin" class="text-primary hover:underline"> Sign in</NuxtLink>
+        <NuxtLink
+          to="/auth/signin"
+          class="text-primary hover:underline"
+        > Sign in</NuxtLink>
       </p>
     </div>
     <div class="rounded-md shadow-sm space-y-6 pt-4">
       <div>
-        <label for="username" class="sr-only">Username</label>
+        <label
+          for="username"
+          class="sr-only"
+        >Username</label>
         <input
           id="username"
           v-model="form.username"
@@ -20,15 +31,21 @@
           class="bg-[#2A2A2A] text-white placeholder-gray-400 border border-gray-600 focus:border-primary focus:ring-primary appearance-none rounded-lg relative block w-full px-3 py-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
           :class="{ 'border-red-500': getError('username') }"
           placeholder="Username"
-          @blur="handleFieldBlur('username', form.username)"
-        />
-        <p v-if="getError('username')" class="text-red-500 text-sm mt-1">
+          @blur="handleBlur('username')"
+        >
+        <p
+          v-if="getError('username')"
+          class="text-red-500 text-sm mt-1"
+        >
           {{ getError('username') }}
         </p>
       </div>
 
       <div>
-        <label for="email" class="sr-only">Email</label>
+        <label
+          for="email"
+          class="sr-only"
+        >Email</label>
         <input
           id="email"
           v-model="form.email"
@@ -39,13 +56,21 @@
           class="bg-[#2A2A2A] text-white placeholder-gray-400 border border-gray-600 focus:border-primary focus:ring-primary appearance-none rounded-lg relative block w-full px-3 py-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
           :class="{ 'border-red-500': getError('email') }"
           placeholder="Email"
-          @blur="handleFieldBlur('email', form.email)"
-        />
-        <p v-if="getError('email')" class="text-red-500 text-sm mt-1">{{ getError('email') }}</p>
+          @blur="handleBlur('email')"
+        >
+        <p
+          v-if="getError('email')"
+          class="text-red-500 text-sm mt-1"
+        >
+          {{ getError('email') }}
+        </p>
       </div>
 
       <div>
-        <label for="password" class="sr-only">Password</label>
+        <label
+          for="password"
+          class="sr-only"
+        >Password</label>
         <input
           id="password"
           v-model="form.password"
@@ -56,9 +81,12 @@
           class="bg-[#2A2A2A] text-white placeholder-gray-400 border border-gray-600 focus:border-primary focus:ring-primary appearance-none rounded-lg relative block w-full px-3 py-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
           :class="{ 'border-red-500': getError('password') }"
           placeholder="Password"
-          @blur="handleFieldBlur('password', form.password)"
-        />
-        <p v-if="getError('password')" class="text-red-500 text-sm mt-1">
+          @blur="handleBlur('password')"
+        >
+        <p
+          v-if="getError('password')"
+          class="text-red-500 text-sm mt-1"
+        >
           {{ getError('password') }}
         </p>
         <p class="text-gray-400 text-xs mt-1">
@@ -67,7 +95,10 @@
       </div>
 
       <div>
-        <label for="confirmPassword" class="sr-only">Confirm Password</label>
+        <label
+          for="confirmPassword"
+          class="sr-only"
+        >Confirm Password</label>
         <input
           id="confirmPassword"
           v-model="form.confirmPassword"
@@ -78,9 +109,12 @@
           class="bg-[#2A2A2A] text-white placeholder-gray-400 border border-gray-600 focus:border-primary focus:ring-primary appearance-none rounded-lg relative block w-full px-3 py-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
           :class="{ 'border-red-500': getError('confirmPassword') }"
           placeholder="Confirm Password"
-          @blur="handleFieldBlur('confirmPassword', form.confirmPassword)"
-        />
-        <p v-if="getError('confirmPassword')" class="text-red-500 text-sm mt-1">
+          @blur="handleBlur('confirmPassword')"
+        >
+        <p
+          v-if="getError('confirmPassword')"
+          class="text-red-500 text-sm mt-1"
+        >
           {{ getError('confirmPassword') }}
         </p>
       </div>
@@ -94,14 +128,23 @@
         type="checkbox"
         class="h-4 w-4 appearance-none border-primary border-2 rounded focus:ring-primary checked:bg-primary checked:border-primary"
         :class="{ 'border-red-500': getError('termsAccepted') }"
-        @blur="handleFieldBlur('termsAccepted', form.termsAccepted)"
-      />
-      <label for="terms" class="ml-2 block text-sm text-gray-200">
+        @blur="handleBlur('termsAccepted')"
+      >
+      <label
+        for="terms"
+        class="ml-2 block text-sm text-gray-200"
+      >
         I accept the
-        <NuxtLink to="/terms" class="text-primary hover:underline">Terms and Conditions</NuxtLink>
+        <NuxtLink
+          to="/terms"
+          class="text-primary hover:underline"
+        >Terms and Conditions</NuxtLink>
       </label>
     </div>
-    <p v-if="getError('termsAccepted')" class="text-red-500 text-sm mt-1">
+    <p
+      v-if="getError('termsAccepted')"
+      class="text-red-500 text-sm mt-1"
+    >
       {{ getError('termsAccepted') }}
     </p>
 
@@ -111,7 +154,10 @@
         class="bg-primary w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
         :disabled="!isFormValid || isLoading"
       >
-        <span v-if="isLoading" class="flex items-center">
+        <span
+          v-if="isLoading"
+          class="flex items-center"
+        >
           <svg
             class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
             xmlns="http://www.w3.org/2000/svg"
@@ -125,12 +171,12 @@
               r="10"
               stroke="currentColor"
               stroke-width="4"
-            ></circle>
+            />
             <path
               class="opacity-75"
               fill="currentColor"
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
+            />
           </svg>
           Signing up...
         </span>
@@ -148,12 +194,12 @@ import {
   AUTH_ERRORS,
   SHARED_AUTH_ERRORS,
   VALIDATION_LIMITS,
-  VALIDATION_PATTERNS
+  VALIDATION_PATTERNS,
 } from '~/constants'
 
 definePageMeta({
   layout: 'auth',
-  title: 'Sign Up'
+  title: 'Sign Up',
 })
 
 // Define Zod schema for validation
@@ -173,11 +219,11 @@ const signUpSchema = z
     confirmPassword: z.string().min(1, AUTH_ERRORS.CONFIRM_PASSWORD_REQUIRED),
     termsAccepted: z
       .boolean()
-      .refine((value) => value === true, { message: AUTH_ERRORS.TERMS_NOT_ACCEPTED })
+      .refine(value => value === true, { message: AUTH_ERRORS.TERMS_NOT_ACCEPTED }),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine(data => data.password === data.confirmPassword, {
     message: AUTH_ERRORS.PASSWORDS_DONT_MATCH,
-    path: ['confirmPassword']
+    path: ['confirmPassword'],
   })
 
 const userStore = useUserStore()
@@ -190,22 +236,17 @@ onMounted(() => {
 })
 
 // Use the enhanced validation composable
-const { form, errors, isValid, isFormValid, validateField, validateAll, getError, reset } =
-  useZodValidation<SignupFormData>(signUpSchema, {
+const { form, errors, isFormValid, validateAll, getError, handleBlur }
+  = useZodValidation<SignupFormData>(signUpSchema, {
     username: '',
     email: '',
     password: '',
     confirmPassword: '',
-    termsAccepted: false
+    termsAccepted: false,
   })
 
 // Loading state
 const isLoading = ref(false)
-
-// Handle field blur with validation
-const handleFieldBlur = (fieldName: keyof SignupFormData, value: unknown) => {
-  validateField(fieldName, value)
-}
 
 const handleSubmit = async () => {
   if (!validateAll()) {
@@ -226,7 +267,7 @@ const handleSubmit = async () => {
       email: form.email,
       password: form.password,
       confirmPassword: form.confirmPassword,
-      termsAccepted: form.termsAccepted
+      termsAccepted: form.termsAccepted,
     })
 
     if (!result.success) {
@@ -240,32 +281,42 @@ const handleSubmit = async () => {
         // Check if it's email or username that already exists
         if (result.error?.toLowerCase().includes('email')) {
           errors.value.email = 'Email is already registered'
-        } else if (result.error?.toLowerCase().includes('username')) {
+        }
+        else if (result.error?.toLowerCase().includes('username')) {
           errors.value.username = 'Username is already taken'
-        } else {
+        }
+        else {
           errors.value.email = 'This email or username is already registered'
         }
-      } else if (result.error?.includes(SHARED_AUTH_ERRORS.PASSWORD_TOO_SHORT)) {
+      }
+      else if (result.error?.includes(SHARED_AUTH_ERRORS.PASSWORD_TOO_SHORT)) {
         errors.value.password = SHARED_AUTH_ERRORS.PASSWORD_TOO_SHORT
-      } else if (result.error?.includes(SHARED_AUTH_ERRORS.PASSWORD_TOO_WEAK)) {
+      }
+      else if (result.error?.includes(SHARED_AUTH_ERRORS.PASSWORD_TOO_WEAK)) {
         errors.value.password = 'Password must contain uppercase, lowercase, and number'
-      } else if (result.error?.includes(SHARED_AUTH_ERRORS.PASSWORDS_DONT_MATCH)) {
+      }
+      else if (result.error?.includes(SHARED_AUTH_ERRORS.PASSWORDS_DONT_MATCH)) {
         errors.value.confirmPassword = SHARED_AUTH_ERRORS.PASSWORDS_DONT_MATCH
-      } else if (result.error?.includes(SHARED_AUTH_ERRORS.TERMS_NOT_ACCEPTED)) {
+      }
+      else if (result.error?.includes(SHARED_AUTH_ERRORS.TERMS_NOT_ACCEPTED)) {
         errors.value.termsAccepted = SHARED_AUTH_ERRORS.TERMS_NOT_ACCEPTED
-      } else if (result.error?.includes(SHARED_AUTH_ERRORS.EMAIL_INVALID)) {
+      }
+      else if (result.error?.includes(SHARED_AUTH_ERRORS.EMAIL_INVALID)) {
         errors.value.email = SHARED_AUTH_ERRORS.EMAIL_INVALID
-      } else if (result.error?.includes(SHARED_AUTH_ERRORS.ALL_FIELDS_REQUIRED)) {
+      }
+      else if (result.error?.includes(SHARED_AUTH_ERRORS.ALL_FIELDS_REQUIRED)) {
         errors.value.username = SHARED_AUTH_ERRORS.USERNAME_REQUIRED
         errors.value.email = SHARED_AUTH_ERRORS.EMAIL_REQUIRED || 'Email is required'
         errors.value.password = SHARED_AUTH_ERRORS.PASSWORD_REQUIRED
-        errors.value.confirmPassword =
-          SHARED_AUTH_ERRORS.CONFIRM_PASSWORD_REQUIRED || 'Confirm password is required'
-      } else {
+        errors.value.confirmPassword
+          = SHARED_AUTH_ERRORS.CONFIRM_PASSWORD_REQUIRED || 'Confirm password is required'
+      }
+      else {
         // General error fallback
         errors.value.email = result.error || 'Sign up failed. Please try again.'
       }
-    } else {
+    }
+    else {
       // Sign up successful - ensure error messages are cleared
       ;(Object.keys(errors.value) as (keyof SignupFormData)[]).forEach((key) => {
         errors.value[key] = ''
@@ -274,10 +325,12 @@ const handleSubmit = async () => {
       // Redirect to home or dashboard after successful signup
       await navigateTo('/home')
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Unexpected error during sign up:', error)
     errors.value.email = 'An unexpected error occurred. Please try again.'
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }

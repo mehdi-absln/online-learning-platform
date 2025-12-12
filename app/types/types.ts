@@ -58,19 +58,26 @@ export interface UseZodValidationOptions {
   autoValidate?: boolean // Enable/disable auto-validation
   validateOnBlur?: boolean // Validate fields on blur
   validateOnChange?: boolean // Validate field on change
+  debounceMs?: number // Debounce time in milliseconds for validation
 }
 
 export interface ValidationResult<T> {
   form: T
-  errors: Ref<Partial<Record<keyof T, string>>>
+  errors: Ref<Record<keyof T, string>>
   isValid: Ref<boolean>
   isFormValid: Ref<boolean>
   isDirty: Ref<boolean>
-  touchedFields: Set<keyof T>
-  validateField: (field: keyof T, value: unknown) => void
+  touchedFields: Set<keyof T> // This is reactive via the composable's reactive wrapper
+  validateField: (field: keyof T, value?: unknown) => boolean
   validateAll: () => boolean
   getError: (field: keyof T) => string
-  reset: () => void
+  reset: (newData?: Partial<T>) => void
   setFieldError: (field: keyof T, error: string) => void
   markFieldAsTouched: (field: keyof T) => void
+  handleBlur: (field: keyof T) => void
+  handleChange: (field: keyof T, value: unknown) => void
+  isFieldTouched: (field: keyof T) => boolean
+  clearErrors: () => void
+  clearFieldError: (field: keyof T) => void
+  setFormValues: (values: Partial<T>) => void
 }

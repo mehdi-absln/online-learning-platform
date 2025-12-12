@@ -29,7 +29,7 @@ export interface ExtendedCoursesFilter extends CoursesFilter {
 export interface FilterOptions {
   categories: string[]
   levels: string[]
-  instructors: { id: number; name: string }[]
+  instructors: { id: number, name: string }[]
 }
 
 export interface PaginatedCoursesResponse {

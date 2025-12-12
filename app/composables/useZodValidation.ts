@@ -1,166 +1,177 @@
-import { z } from 'zod'
-import type { UseZodValidationOptions, ValidationResult } from '~/types/types'
+import { reactive, ref, computed, watch, type Ref, type ComputedRef } from 'vue'
+import { useDebounceFn } from '@vueuse/core'
+import type { z } from 'zod'
+import type { UseZodValidationOptions } from '~/types/types'
+
+// ═══════════════════════════════════════════════════════════
+// Types
+// ═══════════════════════════════════════════════════════════
+
+export interface ValidationResult<T extends Record<string, unknown>> {
+  // State
+  form: T
+  errors: Ref<Record<string, string>>
+  touchedFields: Ref<Set<string>>
+
+  // Computed
+  isValid: ComputedRef<boolean>
+  isFormValid: ComputedRef<boolean>
+  isDirty: ComputedRef<boolean>
+
+  // Validation
+  validateField: (fieldName: keyof T, value?: unknown) => boolean
+  debouncedValidateField: (fieldName: keyof T, value?: unknown) => void
+  validateAll: () => boolean
+
+  // Field helpers
+  getError: (field: keyof T) => string
+  setFieldError: (field: keyof T, error: string) => void
+  clearFieldError: (field: keyof T) => void
+  clearErrors: () => void
+
+  // Touch helpers
+  markFieldAsTouched: (field: keyof T) => void
+  isFieldTouched: (field: keyof T) => boolean
+
+  // Form helpers
+  reset: (newData?: Partial<T>) => void
+  setFormValues: (values: Partial<T>) => void
+
+  // Event handlers
+  handleBlur: (field: keyof T) => void
+  handleChange: (field: keyof T, value: unknown) => void
+}
+
+// ═══════════════════════════════════════════════════════════
+// Composable
+// ═══════════════════════════════════════════════════════════
 
 export function useZodValidation<T extends Record<string, unknown>>(
   schema: z.ZodSchema<T>,
   initialData: T,
-  options: UseZodValidationOptions = {}
+  options: UseZodValidationOptions = {},
 ): ValidationResult<T> {
-  const { autoValidate = false, validateOnBlur = true, validateOnChange = false } = options
+  const {
+    autoValidate = false,
+    validateOnBlur = true,
+    validateOnChange = false,
+    debounceMs = 300,
+  } = options
 
-  // Create the reactive form state
-  const form = reactive({ ...initialData }) as T
+  // ═══════════════════════════════════════════════════════════
+  // State
+  // ═══════════════════════════════════════════════════════════
 
-  // Track touched fields
-  const touchedFields = new Set<keyof T>()
+  // ✅ Cast to T to avoid Reactive<T> issues
+  const form = reactive<T>({ ...initialData }) as T
 
-  // Create reactive errors object with the same keys as the form data
-  const errors = ref<Partial<Record<keyof T, string>>>(
-    Object.keys(initialData).reduce(
-      (acc, key) => {
-        acc[key as keyof T] = ''
-        return acc
-      },
-      {} as Partial<Record<keyof T, string>>
-    )
-  ) as Ref<Partial<Record<keyof T, string>>>
+  // ✅ Use ref instead of reactive for Set
+  const touchedFields = ref(new Set<string>())
 
-  // Computed property to check if the form is valid (for error display purposes)
+  // ✅ Use string keys to avoid keyof T issues with ref
+  const errors = ref<Record<string, string>>(
+    Object.fromEntries(Object.keys(initialData).map(key => [key, ''])),
+  )
+
+  // ═══════════════════════════════════════════════════════════
+  // Computed (Cached)
+  // ═══════════════════════════════════════════════════════════
+
+  const schemaValidation = computed(() => schema.safeParse(form))
+
+  const hasNoFieldErrors = computed(() =>
+    Object.values(errors.value).every(error => !error),
+  )
+
   const isValid = computed(() => {
-    // When no fields have been touched, form is considered valid (prevents early error display)
-    if (touchedFields.size === 0) {
-      return true
-    }
-
-    // Check if all field-specific errors are empty
-    const noFieldErrors = Object.values(errors.value).every((error) => !error)
-
-    // Validate the entire form against the schema to handle cross-field validations
-    const result = schema.safeParse(form)
-    if (result.success) {
-      return noFieldErrors
-    } else {
-      // If there are schema-level errors (like cross-field validations), form is invalid
-      return false
-    }
+    if (touchedFields.value.size === 0) return true
+    return schemaValidation.value.success && hasNoFieldErrors.value
   })
 
-  // Computed property to check if the form is valid regardless of whether fields have been touched (for button enabling/disabling)
-  const isFormValid = computed(() => {
-    // Check if all field-specific errors are empty
-    const noFieldErrors = Object.values(errors.value).every((error) => !error)
+  const isFormValid = computed(() => schemaValidation.value.success)
 
-    // Validate the entire form against the schema to handle cross-field validations
-    const result = schema.safeParse(form)
-    if (result.success) {
-      return noFieldErrors
-    } else {
-      // If there are schema-level errors (like cross-field validations), form is invalid
-      return false
-    }
-  })
+  const isDirty = computed(() =>
+    Object.keys(initialData).some(
+      key => initialData[key] !== form[key as keyof T],
+    ),
+  )
 
-  // Computed property to check if form is dirty (any field has been modified)
-  const isDirty = computed(() => {
-    return Object.keys(initialData).some((key) => {
-      const initialValue = initialData[key as keyof T]
-      const currentValue = form[key as keyof T]
-      return initialValue !== currentValue
-    })
-  })
+  // ═══════════════════════════════════════════════════════════
+  // Core Methods
+  // ═══════════════════════════════════════════════════════════
 
-  // Helper to get error for a specific field
+  const markFieldAsTouched = (field: keyof T): void => {
+    touchedFields.value.add(field as string)
+  }
+
+  const isFieldTouched = (field: keyof T): boolean => {
+    return touchedFields.value.has(field as string)
+  }
+
   const getError = (field: keyof T): string => {
-    return errors.value[field] || ''
+    return errors.value[field as string] || ''
   }
 
-  // Manually set an error for a field
-  const setFieldError = (field: keyof T, error: string) => {
-    errors.value[field] = error
+  const setFieldError = (field: keyof T, error: string): void => {
+    errors.value[field as string] = error
   }
 
-  // Mark a field as touched
-  const markFieldAsTouched = (field: keyof T) => {
-    touchedFields.add(field)
+  const clearFieldError = (field: keyof T): void => {
+    errors.value[field as string] = ''
   }
 
-  // Validate a single field using Zod
-  const validateField = (fieldName: keyof T, value: unknown) => {
+  const clearErrors = (): void => {
+    Object.keys(errors.value).forEach((key) => {
+      errors.value[key] = ''
+    })
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Validation Methods
+  // ═══════════════════════════════════════════════════════════
+
+  const validateField = (fieldName: keyof T, value?: unknown): boolean => {
     markFieldAsTouched(fieldName)
 
-    // Create a temporary object with the updated value
-    const tempData = { ...form, [fieldName]: value }
+    const dataToValidate = value !== undefined
+      ? { ...form, [fieldName]: value }
+      : form
 
-    // Use safeParse to avoid throwing exceptions
-    const result = schema.safeParse(tempData)
+    const result = schema.safeParse(dataToValidate)
 
     if (result.success) {
-      // Clear error if validation passes
-      errors.value[fieldName] = ''
-    } else {
-      // Find errors related to the current field
-      const fieldIssues = result.error.issues.filter(
-        (issue: z.ZodIssue) =>
-          issue &&
-          typeof issue === 'object' &&
-          'path' in issue &&
-          issue.path &&
-          Array.isArray(issue.path) &&
-          issue.path[0] === fieldName
-      )
-
-      if (
-        fieldIssues.length > 0 &&
-        fieldIssues[0] &&
-        typeof fieldIssues[0] === 'object' &&
-        'message' in fieldIssues[0]
-      ) {
-        // Set the first error message for this field
-        errors.value[fieldName] =
-          typeof fieldIssues[0].message === 'string' ? fieldIssues[0].message : 'Validation error'
-      } else {
-        // Clear error if validation fails but not for this specific field
-        errors.value[fieldName] = ''
-      }
+      errors.value[fieldName as string] = ''
+      return true
     }
+
+    const fieldError = result.error.issues.find(
+      issue => issue.path[0] === fieldName,
+    )
+    errors.value[fieldName as string] = fieldError?.message || ''
+
+    return !fieldError
   }
 
-  // Validate the entire form
+  const _debouncedValidate = useDebounceFn(
+    (fieldName: keyof T, value?: unknown) => validateField(fieldName, value),
+    debounceMs,
+  )
+
+  const debouncedValidateField = (fieldName: keyof T, value?: unknown): void => {
+    void _debouncedValidate(fieldName, value)
+  }
+
   const validateAll = (): boolean => {
-    // Mark all fields as touched
-    Object.keys(initialData).forEach((key) => {
-      touchedFields.add(key as keyof T)
-    })
+    Object.keys(initialData).forEach(key => touchedFields.value.add(key))
 
     const result = schema.safeParse(form)
+    clearErrors()
 
-    if (result.success) {
-      // Clear all errors if validation passes
-      Object.keys(errors.value).forEach((key) => {
-        errors.value[key as keyof T] = ''
-      })
-      return true
-    } else {
-      // Clear all errors first
-      Object.keys(errors.value).forEach((key) => {
-        errors.value[key as keyof T] = ''
-      })
-
-      // Set errors based on Zod validation errors
-      result.error.issues.forEach((issue: z.ZodIssue) => {
-        if (
-          issue &&
-          typeof issue === 'object' &&
-          'path' in issue &&
-          'message' in issue &&
-          issue.path &&
-          Array.isArray(issue.path)
-        ) {
-          const fieldKey = issue.path[0] as keyof T
-          if (fieldKey in errors.value) {
-            errors.value[fieldKey] =
-              typeof issue.message === 'string' ? issue.message : 'Validation error'
-          }
+    if (!result.success) {
+      result.error.issues.forEach((issue) => {
+        const fieldKey = issue.path[0] as string
+        if (fieldKey in errors.value && !errors.value[fieldKey]) {
+          errors.value[fieldKey] = issue.message
         }
       })
     }
@@ -168,40 +179,87 @@ export function useZodValidation<T extends Record<string, unknown>>(
     return result.success
   }
 
-  // Reset the form to initial state
-  const reset = () => {
-    Object.keys(initialData).forEach((key) => {
-      form[key as keyof T] = initialData[key as keyof T]
-      errors.value[key as keyof T] = ''
+  // ═══════════════════════════════════════════════════════════
+  // Form Helpers
+  // ═══════════════════════════════════════════════════════════
+
+  const reset = (newData?: Partial<T>): void => {
+    const resetData = { ...initialData, ...newData }
+    Object.keys(resetData).forEach((key) => {
+      ;(form as Record<string, unknown>)[key] = resetData[key as keyof T]
     })
-    touchedFields.clear()
+    clearErrors()
+    touchedFields.value.clear()
   }
 
-  // Auto-validation watcher
-  if (autoValidate) {
+  const setFormValues = (values: Partial<T>): void => {
+    Object.entries(values).forEach(([key, value]) => {
+      if (key in form) {
+        ;(form as Record<string, unknown>)[key] = value
+      }
+    })
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Event Handlers
+  // ═══════════════════════════════════════════════════════════
+
+  const handleBlur = (field: keyof T): void => {
+    if (validateOnBlur) {
+      validateField(field)
+    }
+  }
+
+  const handleChange = (field: keyof T, value: unknown): void => {
+    ;(form as Record<string, unknown>)[field as string] = value
+    if (validateOnChange) {
+      debouncedValidateField(field, value)
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Watchers
+  // ═══════════════════════════════════════════════════════════
+
+  if (autoValidate && !validateOnChange) {
     watch(
-      form,
-      () => {
-        if (touchedFields.size > 0) {
-          validateAll()
-        }
+      () => ({ ...form }),
+      (newVal, oldVal) => {
+        if (touchedFields.value.size === 0) return
+
+        Object.keys(newVal).forEach((key) => {
+          if (newVal[key] !== oldVal?.[key] && touchedFields.value.has(key)) {
+            debouncedValidateField(key as keyof T)
+          }
+        })
       },
-      { deep: true }
+      { deep: true },
     )
   }
+
+  // ═══════════════════════════════════════════════════════════
+  // Return
+  // ═══════════════════════════════════════════════════════════
 
   return {
     form,
     errors,
+    touchedFields,
     isValid,
     isFormValid,
     isDirty,
-    touchedFields,
     validateField,
+    debouncedValidateField,
     validateAll,
     getError,
-    reset,
     setFieldError,
-    markFieldAsTouched
+    clearFieldError,
+    clearErrors,
+    markFieldAsTouched,
+    isFieldTouched,
+    reset,
+    setFormValues,
+    handleBlur,
+    handleChange,
   }
 }

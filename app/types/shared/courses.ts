@@ -1,5 +1,3 @@
-import type { User } from './auth'
-
 // Define Course interface for UI components that includes instructor and stats
 export interface Course {
   id: number

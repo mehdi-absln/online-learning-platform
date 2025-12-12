@@ -1,6 +1,5 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { nextTick } from 'vue'
 import Accordion from '~/components/Accordion.vue'
 
 describe('Accordion.vue', () => {
@@ -21,17 +20,17 @@ describe('Accordion.vue', () => {
             id: 1,
             title: 'Lesson 1: Getting Started',
             duration: '15 min',
-            slug: 'lesson-1-getting-started'
-          }
-        ]
-      }
+            slug: 'lesson-1-getting-started',
+          },
+        ],
+      },
     ]
 
     const wrapper = mount(Accordion, {
       props: {
-        items
+        items,
       },
-      emits: ['lesson-navigate']
+      emits: ['lesson-navigate'],
     })
 
     // Set up event listener
@@ -54,7 +53,7 @@ describe('Accordion.vue', () => {
       id: 1,
       title: 'Lesson 1: Getting Started',
       duration: '15 min',
-      slug: 'lesson-1-getting-started'
+      slug: 'lesson-1-getting-started',
     })
   })
 
@@ -69,18 +68,18 @@ describe('Accordion.vue', () => {
           {
             id: 1,
             title: 'Lesson 1: Getting Started',
-            duration: '15 min'
+            duration: '15 min',
             // No slug - lesson should be disabled
-          }
-        ]
-      }
+          },
+        ],
+      },
     ]
 
     const wrapper = mount(Accordion, {
       props: {
-        items
+        items,
       },
-      emits: ['lesson-navigate']
+      emits: ['lesson-navigate'],
     })
 
     // Set up event listener

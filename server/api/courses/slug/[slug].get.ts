@@ -1,6 +1,5 @@
-import { H3Event } from 'h3'
+import type { H3Event, getRouterParam, setResponseStatus } from 'h3'
 import { getDetailedCourseBySlug } from '../../../db/course-service'
-import { getRouterParam, setResponseStatus } from 'h3'
 import { transformCourseForClientWithDetails } from '../../../utils/course-transformer'
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -13,7 +12,7 @@ export default defineEventHandler(async (event: H3Event) => {
       setResponseStatus(event, 400)
       return {
         success: false,
-        message: 'Invalid course slug'
+        message: 'Invalid course slug',
       }
     }
 
@@ -23,7 +22,7 @@ export default defineEventHandler(async (event: H3Event) => {
       setResponseStatus(event, 404)
       return {
         success: false,
-        message: 'Course not found'
+        message: 'Course not found',
       }
     }
 
@@ -35,17 +34,18 @@ export default defineEventHandler(async (event: H3Event) => {
       learningObjectives,
       contentSections,
       reviews,
-      lessons
+      lessons,
     )
 
     return {
       success: true,
       data: {
-        ...transformedCourse
+        ...transformedCourse,
       },
-      courseId: course.id
+      courseId: course.id,
     }
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     console.error(`Detailed error in GET /api/courses/slug/[slug]:`, error)
     console.error('Error name:', (error as Error).name)
     console.error('Error message:', (error as Error).message)
@@ -55,7 +55,7 @@ export default defineEventHandler(async (event: H3Event) => {
     return {
       success: false,
       message: 'Failed to fetch course',
-      error: (error as Error).message || 'Unknown error occurred'
+      error: (error as Error).message || 'Unknown error occurred',
     }
   }
 })

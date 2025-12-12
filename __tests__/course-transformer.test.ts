@@ -19,8 +19,8 @@ const mockCourse = {
   updatedAt: new Date(),
   instructor: {
     name: 'Test Instructor',
-    avatar: '/test-avatar.jpg'
-  }
+    avatar: '/test-avatar.jpg',
+  },
 }
 
 const mockLearningObjectives = [
@@ -30,7 +30,7 @@ const mockLearningObjectives = [
     objective: 'Learn testing concepts',
     order: 1,
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
   },
   {
     id: 2,
@@ -38,8 +38,8 @@ const mockLearningObjectives = [
     objective: 'Practice with examples',
     order: 2,
     createdAt: new Date(),
-    updatedAt: new Date()
-  }
+    updatedAt: new Date(),
+  },
 ]
 
 const mockContentSections = [
@@ -52,7 +52,7 @@ const mockContentSections = [
     duration: '2 hours',
     order: 1,
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
   },
   {
     id: 2,
@@ -63,8 +63,8 @@ const mockContentSections = [
     duration: '5 hours',
     order: 2,
     createdAt: new Date(),
-    updatedAt: new Date()
-  }
+    updatedAt: new Date(),
+  },
 ]
 
 const mockReviews = [
@@ -77,7 +77,7 @@ const mockReviews = [
     comment: 'Great course!',
     date: new Date(),
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
   },
   {
     id: 2,
@@ -87,8 +87,8 @@ const mockReviews = [
     comment: 'Good content but could be more practical',
     date: new Date(),
     createdAt: new Date(),
-    updatedAt: new Date()
-  }
+    updatedAt: new Date(),
+  },
 ]
 
 describe('Course Transformer', () => {
@@ -97,7 +97,7 @@ describe('Course Transformer', () => {
       mockCourse,
       mockLearningObjectives,
       mockContentSections,
-      mockReviews
+      mockReviews,
     )
 
     // Check basic course properties
@@ -115,15 +115,15 @@ describe('Course Transformer', () => {
         description: 'Basic concepts',
         lessons: 3,
         duration: '2 hours',
-        content: []
+        content: [],
       },
       {
         title: 'Advanced Topics',
         description: 'In-depth content',
         lessons: 5,
         duration: '5 hours',
-        content: []
-      }
+        content: [],
+      },
     ])
 
     // Check reviews

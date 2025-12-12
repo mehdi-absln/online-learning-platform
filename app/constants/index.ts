@@ -16,7 +16,7 @@ export const AUTH_ERRORS = {
   PASSWORD_TOO_WEAK:
     'Password must contain at least one uppercase letter, one lowercase letter, and one number',
   EMAIL_ALREADY_EXISTS: 'Email is already registered',
-  USERNAME_ALREADY_EXISTS: 'Username is already taken'
+  USERNAME_ALREADY_EXISTS: 'Username is already taken',
 } as const
 
 // Export the shared errors for use in API response handling
@@ -26,7 +26,7 @@ export { SHARED_AUTH_ERRORS }
 export const VALIDATION_PATTERNS = {
   USERNAME: /^[a-zA-Z0-9_]+$/,
   EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  PASSWORD: /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/ // Requires uppercase, lowercase, and number
+  PASSWORD: /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, // Requires uppercase, lowercase, and number
 } as const
 
 // Validation limits
@@ -35,5 +35,5 @@ export const VALIDATION_LIMITS = {
   USERNAME_MAX: 50,
   PASSWORD_MIN: 6,
   PASSWORD_MAX: 100,
-  EMAIL_MAX: 255
+  EMAIL_MAX: 255,
 } as const

@@ -8,7 +8,7 @@ export const useUserStore = defineStore('user', {
     user: null,
     isAuthenticated: false,
     loading: false,
-    error: null
+    error: null,
   }),
 
   actions: {
@@ -38,15 +38,18 @@ export const useUserStore = defineStore('user', {
         const response = await $fetch<ApiResponse<{ user: User }>>('/api/auth/me')
         if (response?.success && response?.data?.user) {
           this.setUser(response.data.user)
-        } else {
+        }
+        else {
           this.clearUser()
         }
-      } catch (error: unknown) {
+      }
+      catch (error: unknown) {
         console.error('Failed to fetch user:', error)
         const errorMessage = (error as Error)?.message || 'Failed to fetch user'
         this.setError(errorMessage)
         this.clearUser()
-      } finally {
+      }
+      finally {
         this.setLoading(false)
       }
     },
@@ -56,28 +59,31 @@ export const useUserStore = defineStore('user', {
       try {
         const response = await $fetch<AuthResponseType>('/api/auth/signin', {
           method: 'POST',
-          body: credentials
+          body: credentials,
         })
 
         if (response?.success && response?.user) {
           this.setUser(response.user)
           return { success: true, user: response.user }
-        } else {
+        }
+        else {
           this.setError(response?.message || 'Sign in failed')
           return {
             success: false,
-            error: response?.error || response?.message || 'Sign in failed'
+            error: response?.error || response?.message || 'Sign in failed',
           }
         }
-      } catch (error: unknown) {
+      }
+      catch (error: unknown) {
         console.error('Sign in error:', error)
         const errorMessage = (error as Error)?.message || 'An unexpected error occurred'
         this.setError(errorMessage)
         return {
           success: false,
-          error: errorMessage
+          error: errorMessage,
         }
-      } finally {
+      }
+      finally {
         this.setLoading(false)
       }
     },
@@ -87,28 +93,31 @@ export const useUserStore = defineStore('user', {
       try {
         const response = await $fetch<AuthResponseType>('/api/auth/signup', {
           method: 'POST',
-          body: userData
+          body: userData,
         })
 
         if (response?.success && response?.user) {
           this.setUser(response.user)
           return { success: true, user: response.user }
-        } else {
+        }
+        else {
           this.setError(response?.message || 'Sign up failed')
           return {
             success: false,
-            error: response?.error || response?.message || 'Sign up failed'
+            error: response?.error || response?.message || 'Sign up failed',
           }
         }
-      } catch (error: unknown) {
+      }
+      catch (error: unknown) {
         console.error('Sign up error:', error)
         const errorMessage = (error as Error)?.message || 'An unexpected error occurred'
         this.setError(errorMessage)
         return {
           success: false,
-          error: errorMessage
+          error: errorMessage,
         }
-      } finally {
+      }
+      finally {
         this.setLoading(false)
       }
     },
@@ -119,14 +128,16 @@ export const useUserStore = defineStore('user', {
         if (response?.success) {
           this.clearUser()
           await navigateTo('/home')
-        } else {
+        }
+        else {
           this.setError(response?.message || 'Logout failed')
         }
-      } catch (error: unknown) {
+      }
+      catch (error: unknown) {
         console.error('Logout failed:', error)
         const errorMessage = (error as Error)?.message || 'Logout failed'
         this.setError(errorMessage)
       }
-    }
-  }
+    },
+  },
 })

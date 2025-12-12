@@ -1,11 +1,7 @@
-import { H3Event } from 'h3'
+import type { H3Event, setResponseStatus, getQuery } from 'h3'
 import { getAllCourses, getCoursesCount } from '../../db/course-service'
-import { setResponseStatus } from 'h3'
-import { getQuery } from 'h3'
-import { and, eq, like, gte, lte } from 'drizzle-orm'
 import { safeParseInt, safeParseString } from '../../utils/safe-parse'
 import { transformCoursesForClient } from '../../utils/course-transformer'
-import type { Course } from '~/types/shared/courses'
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
@@ -19,8 +15,8 @@ export default defineEventHandler(async (event: H3Event) => {
       if (!param) return undefined
       if (Array.isArray(param)) {
         return param
-          .map((item) => safeParseString(item))
-          .filter((item) => item !== undefined) as string[]
+          .map(item => safeParseString(item))
+          .filter(item => item !== undefined) as string[]
       }
       const singleValue = safeParseString(param)
       return singleValue ? [singleValue] : undefined
@@ -37,7 +33,7 @@ export default defineEventHandler(async (event: H3Event) => {
       minPrice: safeParseInt(query.minPrice),
       maxPrice: safeParseInt(query.maxPrice),
       searchQuery: safeParseString(query.q),
-      instructorId: safeParseInt(query.instructorId)
+      instructorId: safeParseInt(query.instructorId),
     }
 
     // Pagination parameters
@@ -64,10 +60,11 @@ export default defineEventHandler(async (event: H3Event) => {
         currentPage: page,
         totalPages,
         totalItems: totalCourses,
-        itemsPerPage: limit
-      }
+        itemsPerPage: limit,
+      },
     }
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     console.error('Detailed error in GET /api/courses:', error)
     console.error('Error name:', (error as Error).name)
     console.error('Error message:', (error as Error).message)
@@ -77,7 +74,7 @@ export default defineEventHandler(async (event: H3Event) => {
     return {
       success: false,
       message: 'Failed to fetch courses',
-      error: (error as Error).message || 'Unknown error occurred'
+      error: (error as Error).message || 'Unknown error occurred',
     }
   }
 })

@@ -12,21 +12,21 @@ export default defineEventHandler(async (event) => {
     if (!username || !email || !password || !confirmPassword) {
       throw createError({
         statusCode: 400,
-        statusMessage: AUTH_ERRORS.ALL_FIELDS_REQUIRED
+        statusMessage: AUTH_ERRORS.ALL_FIELDS_REQUIRED,
       })
     }
 
     if (password !== confirmPassword) {
       throw createError({
         statusCode: 400,
-        statusMessage: AUTH_ERRORS.PASSWORDS_DONT_MATCH
+        statusMessage: AUTH_ERRORS.PASSWORDS_DONT_MATCH,
       })
     }
 
     if (password.length < 6) {
       throw createError({
         statusCode: 400,
-        statusMessage: AUTH_ERRORS.PASSWORD_TOO_SHORT
+        statusMessage: AUTH_ERRORS.PASSWORD_TOO_SHORT,
       })
     }
 
@@ -35,14 +35,14 @@ export default defineEventHandler(async (event) => {
     if (!passwordRegex.test(password)) {
       throw createError({
         statusCode: 400,
-        statusMessage: AUTH_ERRORS.PASSWORD_TOO_WEAK
+        statusMessage: AUTH_ERRORS.PASSWORD_TOO_WEAK,
       })
     }
 
     if (!termsAccepted) {
       throw createError({
         statusCode: 400,
-        statusMessage: AUTH_ERRORS.TERMS_NOT_ACCEPTED
+        statusMessage: AUTH_ERRORS.TERMS_NOT_ACCEPTED,
       })
     }
 
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
     if (!emailRegex.test(email)) {
       throw createError({
         statusCode: 400,
-        statusMessage: AUTH_ERRORS.EMAIL_INVALID
+        statusMessage: AUTH_ERRORS.EMAIL_INVALID,
       })
     }
 
@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
     if (existingUser) {
       throw createError({
         statusCode: 409,
-        statusMessage: AUTH_ERRORS.USERNAME_OR_EMAIL_EXISTS
+        statusMessage: AUTH_ERRORS.USERNAME_OR_EMAIL_EXISTS,
       })
     }
 
@@ -68,20 +68,21 @@ export default defineEventHandler(async (event) => {
     const newUser = await UserService.createUser({
       username,
       email,
-      password
+      password,
     })
 
     return successResponse(AUTH_ERRORS.ACCOUNT_CREATED_SUCCESS, {
       user: {
         id: newUser.id,
         username: newUser.username,
-        email: newUser.email
-      }
+        email: newUser.email,
+      },
     })
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     // Check if the error has a statusCode property (Nuxt/H3 error)
     if (typeof error === 'object' && error !== null && 'statusCode' in error) {
-      const nuxtError = error as { statusCode?: number; statusMessage?: string; message?: string }
+      const nuxtError = error as { statusCode?: number, statusMessage?: string, message?: string }
       return errorResponse(nuxtError.statusMessage || 'An error occurred', nuxtError.message)
     }
 

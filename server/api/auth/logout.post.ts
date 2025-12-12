@@ -6,14 +6,15 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
-      message: 'Logged out successfully'
+      message: 'Logged out successfully',
     }
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     console.error('Logout error:', error)
     return {
       success: false,
       message: 'Logout failed',
-      error: (error as Error).message
+      error: (error as Error).message,
     }
   }
 })

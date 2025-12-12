@@ -8,12 +8,12 @@ export default defineVitestConfig({
         rootDir: './',
         overrides: {
           // any overrides for the Nuxt config during testing
-        }
-      }
+        },
+      },
     },
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html']
-    }
-  }
+      reporter: ['text', 'json', 'html'],
+    },
+  },
 })

@@ -1,4 +1,4 @@
-import { mount, shallowMount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import Accordion from '~/components/Accordion.vue'
 
@@ -253,7 +253,7 @@ describe('Accordion - Comprehensive Tests', () => {
     it('toggles accordion on click', async () => {
       const mockToggle = vi.fn()
       const mockIsOpen = vi.fn().mockReturnValue(false)
-      
+
       const { useAccordion } = await import('~/composables/useAccordion')
       vi.mocked(useAccordion).mockReturnValue({
         openItemIds: { value: new Set() },
@@ -270,12 +270,12 @@ describe('Accordion - Comprehensive Tests', () => {
 
       const button = wrapper.find('button')
       await button.trigger('click')
-      
+
       expect(mockToggle).toHaveBeenCalledWith(0)
     })
 
     it('shows correct open state', async () => {
-      const mockIsOpen = vi.fn().mockImplementation((index) => index === 0)
+      const mockIsOpen = vi.fn().mockImplementation(index => index === 0)
 
       const { useAccordion } = await import('~/composables/useAccordion')
       vi.mocked(useAccordion).mockReturnValue({
@@ -310,7 +310,7 @@ describe('Accordion - Comprehensive Tests', () => {
 
       const disabledButton = wrapper.findAll('button')[0]
       const enabledButton = wrapper.findAll('button')[1]
-      
+
       expect(disabledButton.attributes('disabled')).toBe('')
       expect(enabledButton.attributes('disabled')).toBe(undefined)
     })

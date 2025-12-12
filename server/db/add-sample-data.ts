@@ -1,7 +1,6 @@
 import { drizzle } from 'drizzle-orm/better-sqlite3'
 import Database from 'better-sqlite3'
 import { courseLearningObjectives, courseContentSections, reviews, courses } from './schema'
-import { hash } from 'bcrypt'
 
 // Connect to the database
 const sqlite = new Database(process.env.DATABASE_URL || './data/db.sqlite')
@@ -29,36 +28,36 @@ async function addSampleData() {
       objective: 'Understand the fundamentals of Vue 3 and Composition API',
       orderVal: 1,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: courseId,
       objective: 'Learn how to build responsive UIs with Tailwind CSS',
       orderVal: 2,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: courseId,
       objective: 'Implement state management with Pinia',
       orderVal: 3,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: courseId,
       objective: 'Create a full-stack Nuxt.js application',
       orderVal: 4,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: courseId,
       objective: 'Deploy applications to production environments',
       orderVal: 5,
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
+      updatedAt: new Date(),
+    },
   ]
 
   await db.insert(courseLearningObjectives).values(learningObjectivesData)
@@ -73,16 +72,16 @@ async function addSampleData() {
       lessonsCount: 5,
       orderVal: 1,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: courseId,
       title: 'Composition API',
-      description: "Deep dive into Vue 3's Composition API",
+      description: 'Deep dive into Vue 3\'s Composition API',
       lessonsCount: 7,
       orderVal: 2,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: courseId,
@@ -91,7 +90,7 @@ async function addSampleData() {
       lessonsCount: 4,
       orderVal: 3,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: courseId,
@@ -100,7 +99,7 @@ async function addSampleData() {
       lessonsCount: 6,
       orderVal: 4,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: courseId,
@@ -109,8 +108,8 @@ async function addSampleData() {
       lessonsCount: 8,
       orderVal: 5,
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
+      updatedAt: new Date(),
+    },
   ]
 
   await db.insert(courseContentSections).values(contentSectionsData)
@@ -125,7 +124,7 @@ async function addSampleData() {
       comment: 'Excellent course! The instructor explains complex concepts very clearly.',
       date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // A week ago
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: courseId,
@@ -134,7 +133,7 @@ async function addSampleData() {
       comment: 'Good content, but some examples could be more practical.',
       date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: courseId,
@@ -143,7 +142,7 @@ async function addSampleData() {
       comment: 'One of the best Vue.js courses I have taken. Highly recommended!',
       date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       courseId: courseId,
@@ -152,8 +151,8 @@ async function addSampleData() {
       comment: 'Decent content but could use more exercises.',
       date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // Two weeks ago
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
+      updatedAt: new Date(),
+    },
   ]
 
   await db.insert(reviews).values(reviewsData)

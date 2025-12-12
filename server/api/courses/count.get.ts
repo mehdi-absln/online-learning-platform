@@ -10,16 +10,17 @@ export default defineEventHandler(async (event) => {
       success: true,
       data: {
         totalCourses: allCourses.length,
-        courses: allCourses // Include the courses data to inspect
-      }
+        courses: allCourses, // Include the courses data to inspect
+      },
     }
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     console.error('Error fetching courses count:', error)
     setResponseStatus(event, 500)
     return {
       success: false,
       message: 'Failed to fetch courses count',
-      error: (error as Error).message || 'Unknown error occurred'
+      error: (error as Error).message || 'Unknown error occurred',
     }
   }
 })
