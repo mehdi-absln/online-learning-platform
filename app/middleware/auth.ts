@@ -1,6 +1,6 @@
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   // Only run on client side since Pinia doesn't work server-side in middleware
-  if (process.client) {
+  if (import.meta.client) {
     const userStore = useUserStore()
 
     // Check if the route requires authentication

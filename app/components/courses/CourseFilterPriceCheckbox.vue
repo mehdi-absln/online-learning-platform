@@ -5,9 +5,9 @@
         :id="id"
         type="checkbox"
         :checked="modelValue"
-        @change="handleChange"
         class="w-4 h-4 text-primary bg-[#1F1F1E] border-[#474746] rounded cursor-pointer opacity-0 absolute z-10"
-      />
+        @change="handleChange"
+      >
       <label
         :for="id"
         class="flex items-center cursor-pointer"
@@ -28,18 +28,22 @@
               stroke-linejoin="round"
               stroke-width="3"
               d="M5 13l4 4L19 7"
-            ></path>
+            />
           </svg>
         </span>
       </label>
     </div>
-    <label :for="id" class="ml-1 text-sm text-gray-300 cursor-pointer flex-1 py-1">
+    <label
+      :for="id"
+      class="ml-1 text-sm text-gray-300 cursor-pointer flex-1 py-1"
+    >
       {{ label }}
     </label>
   </div>
 </template>
 
 <script setup lang="ts">
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps<{
   id: string
   label: string
