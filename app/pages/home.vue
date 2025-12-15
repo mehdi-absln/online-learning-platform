@@ -332,7 +332,7 @@ const testimonials = [
             people.
           </p>
           <div class="flex flex-wrap justify-between gap-y-6">
-            <div class="bg-[#282828] py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
+            <div class="bg-dark-bg py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
               <div>
                 <img
                   src="../public/icon/UPST0182.png"
@@ -346,7 +346,7 @@ const testimonials = [
                 </h5>
               </div>
             </div>
-            <div class="bg-[#282828] py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
+            <div class="bg-dark-bg py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
               <div>
                 <img
                   src="../public/icon/UPST0181.png"
@@ -360,7 +360,7 @@ const testimonials = [
                 </h5>
               </div>
             </div>
-            <div class="bg-[#282828] py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
+            <div class="bg-dark-bg py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
               <div>
                 <img
                   src="../public/icon/UPST0180.png"
@@ -374,7 +374,7 @@ const testimonials = [
                 </h5>
               </div>
             </div>
-            <div class="bg-[#282828] py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
+            <div class="bg-dark-bg py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
               <div>
                 <img
                   src="../public/icon/UPST0179.png"
@@ -393,7 +393,7 @@ const testimonials = [
       </div>
     </section>
     <!-- Online Classes Section -->
-    <section class="bg-[#1F1F1E] py-32 relative z-0">
+    <section class="bg-dark-surface py-32 relative z-0">
       <div
         class="absolute inset-0 flex justify-center gap-[50%] pointer-events-none items-end -z-10"
       >
@@ -606,7 +606,7 @@ const testimonials = [
               :key="testimonial.id"
             >
               <div
-                class="bg-transparent p-8 border-2 border-[#474746] rounded-2xl text-center mx-4 relative overflow-hidden before:content-['\201C'] before:absolute before:top-4 before:right-4 before:text-[#3a3a3a] before:text-9xl before:font-serif before:leading-none before:opacity-20 before:pointer-events-none"
+                class="bg-transparent p-8 border-2 border-dark-divider rounded-2xl text-center mx-4 relative overflow-hidden before:content-['\201C'] before:absolute before:top-4 before:right-4 before:text-[#3a3a3a] before:text-9xl before:font-serif before:leading-none before:opacity-20 before:pointer-events-none"
               >
                 <div
                   class="w-20 h-20 mx-auto mb-6 rounded-full overflow-hidden border-2 border-primary"

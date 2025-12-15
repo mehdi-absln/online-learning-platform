@@ -1,13 +1,13 @@
 import type { User, AuthResponse } from './shared/auth'
 
-export interface SigninFormData {
+export interface SignInFormData {
   username: string
   password: string
   rememberMe: boolean
   [key: string]: unknown // Allow any additional properties for use in useZodValidation composable
 }
 
-export interface SignupFormData {
+export interface SignUpFormData {
   username: string
   email: string
   password: string

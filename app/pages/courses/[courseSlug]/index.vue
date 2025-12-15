@@ -27,7 +27,7 @@
   <div v-else>
     <!-- Hero -->
     <header
-      class="min-h-[28rem] py-5 bg-gradient-to-r from-[#1F1F1E] via-[#282828] to-primary/60 shadow-[inset_0_0_40px_rgba(255,255,255,0.05),_0_10px_30px_rgba(0,0,0,0.6)] backdrop-blur-sm rounded-2xl"
+      class="min-h-[28rem] py-5 bg-gradient-to-r from-dark-surface via-dark-bg to-primary/60 shadow-[inset_0_0_40px_rgba(255,255,255,0.05),_0_10px_30px_rgba(0,0,0,0.6)] backdrop-blur-sm rounded-2xl"
     >
       <div class="container relative flex flex-wrap justify-between">
         <div class="w-2/3">

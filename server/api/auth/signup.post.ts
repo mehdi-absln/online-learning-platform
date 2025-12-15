@@ -1,4 +1,4 @@
-import { UserService } from '../../db/user-service'
+import { findByUsernameOrEmail, createUser } from '../../db/user-service'
 import { AUTH_ERRORS } from '../../../app/types/auth-errors'
 import { errorResponse, successResponse } from '../../utils/response'
 
@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Check if user already exists
-    const existingUser = await UserService.findByUsernameOrEmail(username)
+    const existingUser = await findByUsernameOrEmail(username)
     if (existingUser) {
       throw createError({
         statusCode: 409,
@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Create new user
-    const newUser = await UserService.createUser({
+    const newUser = await createUser({
       username,
       email,
       password,

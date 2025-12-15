@@ -1,5 +1,5 @@
-import { UserService } from '../../db/user-service'
-import { JWTService } from '../../utils/jwt'
+import { findByUsernameOrEmail, verifyPassword } from '../../db/user-service'
+import { generateToken, generateRefreshToken } from '../../utils/jwt'
 import { AUTH_ERRORS } from '../../../app/types/auth-errors'
 import { errorResponse, successResponse } from '../../utils/response'
 
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Find user by username or email
-    const user = await UserService.findByUsernameOrEmail(username)
+    const user = await findByUsernameOrEmail(username)
 
     if (!user) {
       throw createError({
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Verify password
-    const isPasswordValid = await UserService.verifyPassword(password, user.passwordHash)
+    const isPasswordValid = await verifyPassword(password, user.passwordHash)
 
     if (!isPasswordValid) {
       throw createError({
@@ -44,8 +44,8 @@ export default defineEventHandler(async (event) => {
       email: user.email,
     }
 
-    const accessToken = await JWTService.generateToken(tokenPayload)
-    const refreshToken = await JWTService.generateRefreshToken(tokenPayload)
+    const accessToken = await generateToken(tokenPayload)
+    const refreshToken = await generateRefreshToken(tokenPayload)
 
     // Set cookies
     const cookieOptions = {

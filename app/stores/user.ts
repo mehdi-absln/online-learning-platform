@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import type { UserState, SigninFormData, SignupFormData } from '~/types/types'
+import type { UserState } from '~/types/types'
+import type { SignInFormData, SignUpFormData } from '~/schemas/auth'
 import type { User } from '~/types/shared/auth'
 import type { ApiResponse, AuthResponse as AuthResponseType } from '~/types/shared/api'
 
@@ -54,7 +55,7 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    async signIn(credentials: SigninFormData) {
+    async signIn(credentials: SignInFormData) {
       this.setLoading(true)
       try {
         const response = await $fetch<AuthResponseType>('/api/auth/signin', {
@@ -62,9 +63,9 @@ export const useUserStore = defineStore('user', {
           body: credentials,
         })
 
-        if (response?.success && response?.user) {
-          this.setUser(response.user)
-          return { success: true, user: response.user }
+        if (response?.success && response?.data?.user) {
+          this.setUser(response.data.user)
+          return { success: true, user: response.data.user }
         }
         else {
           this.setError(response?.message || 'Sign in failed')
@@ -88,7 +89,7 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    async signUp(userData: SignupFormData) {
+    async signUp(userData: SignUpFormData) {
       this.setLoading(true)
       try {
         const response = await $fetch<AuthResponseType>('/api/auth/signup', {
@@ -96,9 +97,9 @@ export const useUserStore = defineStore('user', {
           body: userData,
         })
 
-        if (response?.success && response?.user) {
-          this.setUser(response.user)
-          return { success: true, user: response.user }
+        if (response?.success && response?.data?.user) {
+          this.setUser(response.data.user)
+          return { success: true, user: response.data.user }
         }
         else {
           this.setError(response?.message || 'Sign up failed')

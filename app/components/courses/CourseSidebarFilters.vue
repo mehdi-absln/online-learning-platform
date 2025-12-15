@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[#282828] rounded-xl p-6 border border-[#474746] h-full">
+  <div class="bg-dark-bg rounded-xl p-6 border border-dark-divider h-full">
     <div
       v-if="loading"
       class="text-center py-10"
@@ -27,7 +27,7 @@
             v-model="searchInput"
             type="text"
             placeholder="Search courses..."
-            class="w-full pl-10 pr-10 py-3 rounded-lg bg-[#1F1F1E] border border-[#474746] text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            class="w-full pl-10 pr-10 py-3 rounded-lg bg-dark-surface border border-dark-divider text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
           <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg
@@ -69,7 +69,7 @@
 
       <div class="space-y-6">
         <!-- Category Filter -->
-        <div class="pb-6 border-b border-[#474746]">
+        <div class="pb-6 border-b border-dark-divider">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Category</label>
           <div
             v-if="categories.length === 0"
@@ -83,7 +83,7 @@
               :key="category"
               class="flex items-center"
             >
-              <CourseFilterItemCheckbox
+              <CourseFilterCheckbox
                 :id="'category-' + category"
                 v-model="filter.categories"
                 :value="category"
@@ -95,7 +95,7 @@
         </div>
 
         <!-- Level Filter -->
-        <div class="pb-6 border-b border-[#474746]">
+        <div class="pb-6 border-b border-dark-divider">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Level</label>
           <div
             v-if="levels.length === 0"
@@ -109,7 +109,7 @@
               :key="level"
               class="flex items-center"
             >
-              <CourseFilterItemCheckbox
+              <CourseFilterCheckbox
                 :id="'level-' + level"
                 v-model="filter.levels"
                 :value="level"
@@ -121,7 +121,7 @@
         </div>
 
         <!-- Tag Filter -->
-        <div class="pb-6 border-b border-[#474746]">
+        <div class="pb-6 border-b border-dark-divider">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Tags</label>
           <div
             v-if="tags.length === 0"
@@ -135,7 +135,7 @@
               :key="tag"
               class="flex items-center"
             >
-              <CourseFilterItemCheckbox
+              <CourseFilterCheckbox
                 :id="'tag-' + tag"
                 v-model="filter.tags"
                 :value="tag"
@@ -147,23 +147,23 @@
         </div>
 
         <!-- Price Filter -->
-        <div class="pb-6 border-b border-[#474746]">
+        <div class="pb-6 border-b border-dark-divider">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Price</label>
           <div class="space-y-3">
             <div class="flex items-center">
-              <CourseFilterPriceCheckbox
+              <CourseFilterCheckbox
                 id="free-only"
                 v-model="filter.freeOnly"
                 label="Free"
-                @change="updatePriceFilter"
+                @update:model-value="handleFreeOnlyChange"
               />
             </div>
             <div class="flex items-center">
-              <CourseFilterPriceCheckbox
+              <CourseFilterCheckbox
                 id="paid-only"
                 v-model="filter.paidOnly"
                 label="Paid"
-                @change="updatePriceFilter"
+                @update:model-value="handlePaidOnlyChange"
               />
             </div>
           </div>
@@ -205,8 +205,7 @@
 <script setup lang="ts">
 import { useCourseFilters } from '~/composables/useCourseFilters'
 import { debounce } from 'lodash-es'
-import CourseFilterItemCheckbox from '~/components/courses/CourseFilterItemCheckbox.vue'
-import CourseFilterPriceCheckbox from '~/components/courses/CourseFilterPriceCheckbox.vue'
+import CourseFilterCheckbox from '~/components/courses/CourseFilterCheckbox.vue'
 
 const {
   filter,
@@ -221,6 +220,18 @@ const {
 } = useCourseFilters()
 
 const searchInput = ref(filter.value.searchQuery)
+
+// Helper functions to handle filter updates
+const handleFreeOnlyChange = (newValue: boolean | string[]) => {
+  if (typeof newValue === 'boolean') {
+    toggleExclusiveFilter('freeOnly', 'paidOnly', newValue)
+  }
+}
+const handlePaidOnlyChange = (newValue: boolean | string[]) => {
+  if (typeof newValue === 'boolean') {
+    toggleExclusiveFilter('paidOnly', 'freeOnly', newValue)
+  }
+}
 
 // Watch for changes in search input and apply filters with debounce
 watch(
@@ -238,10 +249,6 @@ watch(
     searchInput.value = val
   },
 )
-
-const updatePriceFilter = () => {
-  toggleExclusiveFilter('freeOnly', 'paidOnly')
-}
 
 // Check if any filter is active
 const hasActiveFilters = computed(() => {
