@@ -7,6 +7,8 @@ export interface CoursesFilter {
   levels?: string[]
   tags?: string[]
   instructorId?: number
+  priceFilter?: 'all' | 'free' | 'paid'
+  // For backward compatibility with old URL parameters
   freeOnly?: boolean
   paidOnly?: boolean
   searchQuery?: string
@@ -18,6 +20,8 @@ export interface ExtendedCoursesFilter extends CoursesFilter {
   categories: string[]
   levels: string[]
   tags: string[]
+  priceFilter: 'all' | 'free' | 'paid'
+  // For backward compatibility with old URL parameters
   freeOnly: boolean
   paidOnly: boolean
   searchQuery: string

@@ -77,21 +77,12 @@
           >
             No categories available
           </div>
-          <div class="space-y-2">
-            <div
-              v-for="category in categories"
-              :key="category"
-              class="flex items-center"
-            >
-              <CourseFilterCheckbox
-                :id="'category-' + category"
-                v-model="filter.categories"
-                :value="category"
-                :label="category"
-                @update:model-value="applyFilters"
-              />
-            </div>
-          </div>
+          <FilterCheckboxGroup
+            v-model="filter.categories"
+            name="category"
+            :options="categories.map(c => ({ label: c, value: c }))"
+            @update:model-value="applyFilters"
+          />
         </div>
 
         <!-- Level Filter -->
@@ -103,21 +94,12 @@
           >
             No levels available
           </div>
-          <div class="space-y-2">
-            <div
-              v-for="level in levels"
-              :key="level"
-              class="flex items-center"
-            >
-              <CourseFilterCheckbox
-                :id="'level-' + level"
-                v-model="filter.levels"
-                :value="level"
-                :label="level"
-                @update:model-value="applyFilters"
-              />
-            </div>
-          </div>
+          <FilterCheckboxGroup
+            v-model="filter.levels"
+            name="level"
+            :options="levels.map(l => ({ label: l, value: l }))"
+            @update:model-value="applyFilters"
+          />
         </div>
 
         <!-- Tag Filter -->
@@ -129,44 +111,23 @@
           >
             No tags available
           </div>
-          <div class="space-y-2">
-            <div
-              v-for="tag in tags"
-              :key="tag"
-              class="flex items-center"
-            >
-              <CourseFilterCheckbox
-                :id="'tag-' + tag"
-                v-model="filter.tags"
-                :value="tag"
-                :label="tag"
-                @update:model-value="applyFilters"
-              />
-            </div>
-          </div>
+          <FilterCheckboxGroup
+            v-model="filter.tags"
+            name="tag"
+            :options="tags.map(t => ({ label: t, value: t }))"
+            @update:model-value="applyFilters"
+          />
         </div>
 
         <!-- Price Filter -->
         <div class="pb-6 border-b border-dark-divider">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Price</label>
-          <div class="space-y-3">
-            <div class="flex items-center">
-              <CourseFilterCheckbox
-                id="free-only"
-                v-model="filter.freeOnly"
-                label="Free"
-                @update:model-value="handleFreeOnlyChange"
-              />
-            </div>
-            <div class="flex items-center">
-              <CourseFilterCheckbox
-                id="paid-only"
-                v-model="filter.paidOnly"
-                label="Paid"
-                @update:model-value="handlePaidOnlyChange"
-              />
-            </div>
-          </div>
+          <FilterRadioGroup
+            v-model="filter.priceFilter"
+            name="price"
+            :options="priceOptions"
+            @update:model-value="applyFilters"
+          />
         </div>
       </div>
 
@@ -205,7 +166,8 @@
 <script setup lang="ts">
 import { useCourseFilters } from '~/composables/useCourseFilters'
 import { debounce } from 'lodash-es'
-import CourseFilterCheckbox from '~/components/courses/CourseFilterCheckbox.vue'
+import FilterRadioGroup from '~/components/courses/FilterRadioGroup.vue'
+import FilterCheckboxGroup from '~/components/courses/FilterCheckboxGroup.vue'
 
 const {
   filter,
@@ -214,24 +176,17 @@ const {
   tags,
   applyFilters,
   resetFilters,
-  toggleExclusiveFilter,
   loading,
   error,
 } = useCourseFilters()
 
 const searchInput = ref(filter.value.searchQuery)
 
-// Helper functions to handle filter updates
-const handleFreeOnlyChange = (newValue: boolean | string[]) => {
-  if (typeof newValue === 'boolean') {
-    toggleExclusiveFilter('freeOnly', 'paidOnly', newValue)
-  }
-}
-const handlePaidOnlyChange = (newValue: boolean | string[]) => {
-  if (typeof newValue === 'boolean') {
-    toggleExclusiveFilter('paidOnly', 'freeOnly', newValue)
-  }
-}
+const priceOptions = [
+  { label: 'All', value: 'all' },
+  { label: 'Free', value: 'free' },
+  { label: 'Paid', value: 'paid' },
+]
 
 // Watch for changes in search input and apply filters with debounce
 watch(
@@ -256,8 +211,7 @@ const hasActiveFilters = computed(() => {
     filter.value.categories.length > 0
     || filter.value.levels.length > 0
     || filter.value.tags.length > 0
-    || filter.value.freeOnly
-    || filter.value.paidOnly
+    || filter.value.priceFilter !== 'all'
     || !!filter.value.searchQuery
   )
 })
