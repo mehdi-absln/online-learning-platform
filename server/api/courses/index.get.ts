@@ -1,4 +1,5 @@
-import type { H3Event, setResponseStatus, getQuery } from 'h3'
+import type { H3Event } from 'h3'
+import { getQuery, setResponseStatus } from 'h3'
 import { getAllCourses, getCoursesCount } from '../../db/course-service'
 import { safeParseInt, safeParseString } from '../../utils/safe-parse'
 import { transformCoursesForClient } from '../../utils/course-transformer'

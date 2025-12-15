@@ -50,12 +50,16 @@ export const useCourseFilters = () => {
   }
 
   // Toggle exclusive boolean filters (freeOnly and paidOnly)
+  type BooleanFilterKeys =
+    'freeOnly' | 'paidOnly'
+
   const toggleExclusiveFilter = (
-    filterName: keyof ExtendedCoursesFilter,
-    oppositeFilterName: keyof ExtendedCoursesFilter,
+    changedFilter: BooleanFilterKeys,
+    oppositeFilter: BooleanFilterKeys,
+    newValue: boolean,
   ) => {
-    if (filter.value[filterName] && filter.value[oppositeFilterName]) {
-      filter.value[oppositeFilterName] = false
+    if (newValue) {
+      filter.value[oppositeFilter] = false
     }
     applyFilters()
   }

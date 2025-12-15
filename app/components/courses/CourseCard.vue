@@ -64,7 +64,7 @@
     </div>
 
     <!-- Content Section -->
-    <div class="px-4 bg-[#282828] flex-1 flex flex-col">
+    <div class="px-4 bg-dark-bg flex-1 flex flex-col">
       <h3
         class="text-[22px] font-semibold text-white py-6 flex-1 flex items-center"
         :title="course.title"

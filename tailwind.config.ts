@@ -32,6 +32,9 @@ export default {
         'primary': '#EC5252',
         'primary-alt': '#ff4830',
         'dark-gray': '#191918',
+        'dark-divider': '#474746',
+        'dark-surface': '#1F1F1E',
+        'dark-bg': '#282828',
       },
       fontFamily: {
         sans: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],

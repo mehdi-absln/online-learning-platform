@@ -1,11 +1,17 @@
 import { reactive, ref, computed, watch, type Ref, type ComputedRef } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import type { z } from 'zod'
-import type { UseZodValidationOptions } from '~/types/types'
 
 // ═══════════════════════════════════════════════════════════
 // Types
 // ═══════════════════════════════════════════════════════════
+
+export interface UseZodValidationOptions {
+  autoValidate?: boolean
+  validateOnBlur?: boolean
+  validateOnChange?: boolean
+  debounceMs?: number
+}
 
 export interface ValidationResult<T extends Record<string, unknown>> {
   // State
@@ -62,13 +68,10 @@ export function useZodValidation<T extends Record<string, unknown>>(
   // State
   // ═══════════════════════════════════════════════════════════
 
-  // ✅ Cast to T to avoid Reactive<T> issues
   const form = reactive<T>({ ...initialData }) as T
 
-  // ✅ Use ref instead of reactive for Set
   const touchedFields = ref(new Set<string>())
 
-  // ✅ Use string keys to avoid keyof T issues with ref
   const errors = ref<Record<string, string>>(
     Object.fromEntries(Object.keys(initialData).map(key => [key, ''])),
   )
@@ -242,23 +245,36 @@ export function useZodValidation<T extends Record<string, unknown>>(
   // ═══════════════════════════════════════════════════════════
 
   return {
+    // State
     form,
     errors,
     touchedFields,
+
+    // Computed
     isValid,
     isFormValid,
     isDirty,
+
+    // Validation
     validateField,
     debouncedValidateField,
     validateAll,
+
+    // Field helpers
     getError,
     setFieldError,
     clearFieldError,
     clearErrors,
+
+    // Touch helpers
     markFieldAsTouched,
     isFieldTouched,
+
+    // Form helpers
     reset,
     setFormValues,
+
+    // Event handlers
     handleBlur,
     handleChange,
   }

@@ -1,5 +1,5 @@
 import type { H3Event, getRouterParam, setResponseStatus } from 'h3'
-import { UserService } from '../../../server/db/user-service'
+import { findById } from '../../../server/db/user-service'
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event: H3Event) => {
       }
     }
 
-    const user = await UserService.findById(id)
+    const user = await findById(id)
 
     if (!user) {
       setResponseStatus(event, 404)

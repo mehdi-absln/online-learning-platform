@@ -5,239 +5,119 @@
   >
     <div class="text-center">
       <h3 class="text-2xl font-bold text-white mb-2">
-        Sign up
+        Sign Up
       </h3>
       <p class="text-white">
         Already have an account?
         <NuxtLink
           to="/auth/signin"
           class="text-primary hover:underline"
-        > Sign in</NuxtLink>
+        >Sign in</NuxtLink>
       </p>
     </div>
+
     <div class="rounded-md shadow-sm space-y-6 pt-4">
-      <div>
-        <label
-          for="username"
-          class="sr-only"
-        >Username</label>
-        <input
-          id="username"
-          v-model="form.username"
-          name="username"
-          type="text"
-          autocomplete="username"
-          required
-          class="bg-[#2A2A2A] text-white placeholder-gray-400 border border-gray-600 focus:border-primary focus:ring-primary appearance-none rounded-lg relative block w-full px-3 py-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-          :class="{ 'border-red-500': getError('username') }"
-          placeholder="Username"
-          @blur="handleBlur('username')"
-        >
-        <p
-          v-if="getError('username')"
-          class="text-red-500 text-sm mt-1"
-        >
-          {{ getError('username') }}
-        </p>
-      </div>
+      <FormInput
+        id="username"
+        v-model="form.username"
+        label="Username"
+        name="username"
+        autocomplete="username"
+        placeholder="Username"
+        required
+        :error="getError('username')"
+        @blur="handleBlur('username')"
+      />
 
-      <div>
-        <label
-          for="email"
-          class="sr-only"
-        >Email</label>
-        <input
-          id="email"
-          v-model="form.email"
-          name="email"
-          type="email"
-          autocomplete="email"
-          required
-          class="bg-[#2A2A2A] text-white placeholder-gray-400 border border-gray-600 focus:border-primary focus:ring-primary appearance-none rounded-lg relative block w-full px-3 py-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-          :class="{ 'border-red-500': getError('email') }"
-          placeholder="Email"
-          @blur="handleBlur('email')"
-        >
-        <p
-          v-if="getError('email')"
-          class="text-red-500 text-sm mt-1"
-        >
-          {{ getError('email') }}
-        </p>
-      </div>
+      <FormInput
+        id="email"
+        v-model="form.email"
+        type="email"
+        label="Email"
+        name="email"
+        autocomplete="email"
+        placeholder="Email"
+        required
+        :error="getError('email')"
+        @blur="handleBlur('email')"
+      />
 
-      <div>
-        <label
-          for="password"
-          class="sr-only"
-        >Password</label>
-        <input
-          id="password"
-          v-model="form.password"
-          name="password"
-          type="password"
-          autocomplete="new-password"
-          required
-          class="bg-[#2A2A2A] text-white placeholder-gray-400 border border-gray-600 focus:border-primary focus:ring-primary appearance-none rounded-lg relative block w-full px-3 py-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-          :class="{ 'border-red-500': getError('password') }"
-          placeholder="Password"
-          @blur="handleBlur('password')"
-        >
-        <p
-          v-if="getError('password')"
-          class="text-red-500 text-sm mt-1"
-        >
-          {{ getError('password') }}
-        </p>
-        <p class="text-gray-400 text-xs mt-1">
-          Password must be at least 6 characters with uppercase, lowercase, and number
-        </p>
-      </div>
+      <FormInput
+        id="password"
+        v-model="form.password"
+        type="password"
+        label="Password"
+        name="password"
+        autocomplete="new-password"
+        placeholder="Password"
+        required
+        :error="getError('password')"
+        hint="Password must be at least 6 characters with uppercase, lowercase, and number"
+        @blur="handleBlur('password')"
+      />
 
-      <div>
-        <label
-          for="confirmPassword"
-          class="sr-only"
-        >Confirm Password</label>
-        <input
-          id="confirmPassword"
-          v-model="form.confirmPassword"
-          name="confirmPassword"
-          type="password"
-          autocomplete="new-password"
-          required
-          class="bg-[#2A2A2A] text-white placeholder-gray-400 border border-gray-600 focus:border-primary focus:ring-primary appearance-none rounded-lg relative block w-full px-3 py-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-          :class="{ 'border-red-500': getError('confirmPassword') }"
-          placeholder="Confirm Password"
-          @blur="handleBlur('confirmPassword')"
-        >
-        <p
-          v-if="getError('confirmPassword')"
-          class="text-red-500 text-sm mt-1"
-        >
-          {{ getError('confirmPassword') }}
-        </p>
-      </div>
+      <FormInput
+        id="confirmPassword"
+        v-model="form.confirmPassword"
+        type="password"
+        label="Confirm Password"
+        name="confirmPassword"
+        autocomplete="new-password"
+        placeholder="Confirm Password"
+        required
+        :error="getError('confirmPassword')"
+        @blur="handleBlur('confirmPassword')"
+      />
     </div>
 
-    <div class="flex items-center">
-      <input
-        id="terms"
-        v-model="form.termsAccepted"
-        name="terms"
-        type="checkbox"
-        class="h-4 w-4 appearance-none border-primary border-2 rounded focus:ring-primary checked:bg-primary checked:border-primary"
-        :class="{ 'border-red-500': getError('termsAccepted') }"
-        @blur="handleBlur('termsAccepted')"
-      >
-      <label
-        for="terms"
-        class="ml-2 block text-sm text-gray-200"
-      >
-        I accept the
-        <NuxtLink
-          to="/terms"
-          class="text-primary hover:underline"
-        >Terms and Conditions</NuxtLink>
-      </label>
-    </div>
-    <p
-      v-if="getError('termsAccepted')"
-      class="text-red-500 text-sm mt-1"
+    <FormCheckbox
+      id="terms"
+      v-model="form.termsAccepted"
+      name="terms"
+      :error="getError('termsAccepted')"
+      @blur="handleBlur('termsAccepted')"
     >
-      {{ getError('termsAccepted') }}
-    </p>
+      I accept the
+      <NuxtLink
+        to="/terms"
+        class="text-primary hover:underline"
+      >Terms and Conditions</NuxtLink>
+    </FormCheckbox>
 
-    <div>
-      <button
-        type="submit"
-        class="bg-primary w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        :disabled="!isFormValid || isLoading"
-      >
-        <span
-          v-if="isLoading"
-          class="flex items-center"
-        >
-          <svg
-            class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            />
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
-          </svg>
-          Signing up...
-        </span>
-        <span v-else>Sign up</span>
-      </button>
-    </div>
+    <SubmitButton
+      :loading="isLoading"
+      :disabled="!isFormValid || isLoading"
+      text="Sign up"
+      loading-text="Signing up..."
+    />
   </form>
 </template>
 
 <script setup lang="ts">
-import type { SignupFormData, AuthResponse } from '~/types/types'
-import { z } from 'zod'
-import { useZodValidation } from '~/composables/useZodValidation'
-import {
-  AUTH_ERRORS,
-  SHARED_AUTH_ERRORS,
-  VALIDATION_LIMITS,
-  VALIDATION_PATTERNS,
-} from '~/constants'
+// Import necessary types and schemas for authentication
+import type { AuthResponse } from '~/types/types'
+import { signUpSchema, type SignUpFormData } from '~/schemas/auth'
+import { handleSignUpError } from '~/utils/authErrorHandler'
 
-definePageMeta({
-  layout: 'auth',
-  title: 'Sign Up',
-})
+// Import custom form components
+import SubmitButton from '~/components/ui/SubmitButton.vue'
+import FormCheckbox from '~/components/ui/FormCheckbox.vue'
+import FormInput from '~/components/ui/FormInput.vue'
 
-// Define Zod schema for validation
-const signUpSchema = z
-  .object({
-    username: z
-      .string()
-      .min(VALIDATION_LIMITS.USERNAME_MIN, AUTH_ERRORS.USERNAME_TOO_SHORT)
-      .max(VALIDATION_LIMITS.USERNAME_MAX)
-      .regex(VALIDATION_PATTERNS.USERNAME, AUTH_ERRORS.USERNAME_INVALID_FORMAT),
-    email: z.string().email(AUTH_ERRORS.EMAIL_INVALID).max(VALIDATION_LIMITS.EMAIL_MAX),
-    password: z
-      .string()
-      .min(VALIDATION_LIMITS.PASSWORD_MIN, AUTH_ERRORS.PASSWORD_TOO_WEAK)
-      .max(VALIDATION_LIMITS.PASSWORD_MAX)
-      .regex(VALIDATION_PATTERNS.PASSWORD, AUTH_ERRORS.PASSWORD_TOO_WEAK),
-    confirmPassword: z.string().min(1, AUTH_ERRORS.CONFIRM_PASSWORD_REQUIRED),
-    termsAccepted: z
-      .boolean()
-      .refine(value => value === true, { message: AUTH_ERRORS.TERMS_NOT_ACCEPTED }),
-  })
-  .refine(data => data.password === data.confirmPassword, {
-    message: AUTH_ERRORS.PASSWORDS_DONT_MATCH,
-    path: ['confirmPassword'],
-  })
+// Define page metadata
+definePageMeta({ layout: 'auth', title: 'Sign Up' })
 
+// Get user store instance to manage authentication state
 const userStore = useUserStore()
 
-// Redirect authenticated users away from auth pages
+// Redirect authenticated users to home page
 onMounted(() => {
-  if (userStore.isAuthenticated) {
-    navigateTo('/home')
-  }
+  if (userStore.isAuthenticated) navigateTo('/home')
 })
 
-// Use the enhanced validation composable
-const { form, errors, isFormValid, validateAll, getError, handleBlur }
-  = useZodValidation<SignupFormData>(signUpSchema, {
+// Initialize form state and validation functions using Zod schema
+const { form, isFormValid, validateAll, getError, handleBlur, setFieldError, clearErrors }
+  = useZodValidation<SignUpFormData>(signUpSchema, {
     username: '',
     email: '',
     password: '',
@@ -245,23 +125,25 @@ const { form, errors, isFormValid, validateAll, getError, handleBlur }
     termsAccepted: false,
   })
 
-// Loading state
+// Loading state for submit button
 const isLoading = ref(false)
 
+/**
+ * Handle form submission for user sign up
+ * - Validates form fields
+ * - Calls sign up API via user store
+ * - Shows success/error messages
+ */
 const handleSubmit = async () => {
-  if (!validateAll()) {
-    return
-  }
+  // Skip submission if validation fails
+  if (!validateAll()) return
 
-  // Clear any previous error messages before attempting sign up
-  ;(Object.keys(errors.value) as (keyof SignupFormData)[]).forEach((key) => {
-    errors.value[key] = ''
-  })
-
+  // Clear previous errors and set loading state
+  clearErrors()
   isLoading.value = true
 
   try {
-    // Call the sign up method from the store
+    // Attempt to register user with provided credentials
     const result: AuthResponse = await userStore.signUp({
       username: form.username,
       email: form.email,
@@ -270,67 +152,26 @@ const handleSubmit = async () => {
       termsAccepted: form.termsAccepted,
     })
 
+    // Handle sign up response
     if (!result.success) {
-      // Clear previous errors
-      ;(Object.keys(errors.value) as (keyof SignupFormData)[]).forEach((key) => {
-        errors.value[key] = ''
-      })
-
-      // Handle sign up failure with specific error message routing
-      if (result.error?.includes(SHARED_AUTH_ERRORS.USERNAME_OR_EMAIL_EXISTS)) {
-        // Check if it's email or username that already exists
-        if (result.error?.toLowerCase().includes('email')) {
-          errors.value.email = 'Email is already registered'
-        }
-        else if (result.error?.toLowerCase().includes('username')) {
-          errors.value.username = 'Username is already taken'
-        }
-        else {
-          errors.value.email = 'This email or username is already registered'
-        }
-      }
-      else if (result.error?.includes(SHARED_AUTH_ERRORS.PASSWORD_TOO_SHORT)) {
-        errors.value.password = SHARED_AUTH_ERRORS.PASSWORD_TOO_SHORT
-      }
-      else if (result.error?.includes(SHARED_AUTH_ERRORS.PASSWORD_TOO_WEAK)) {
-        errors.value.password = 'Password must contain uppercase, lowercase, and number'
-      }
-      else if (result.error?.includes(SHARED_AUTH_ERRORS.PASSWORDS_DONT_MATCH)) {
-        errors.value.confirmPassword = SHARED_AUTH_ERRORS.PASSWORDS_DONT_MATCH
-      }
-      else if (result.error?.includes(SHARED_AUTH_ERRORS.TERMS_NOT_ACCEPTED)) {
-        errors.value.termsAccepted = SHARED_AUTH_ERRORS.TERMS_NOT_ACCEPTED
-      }
-      else if (result.error?.includes(SHARED_AUTH_ERRORS.EMAIL_INVALID)) {
-        errors.value.email = SHARED_AUTH_ERRORS.EMAIL_INVALID
-      }
-      else if (result.error?.includes(SHARED_AUTH_ERRORS.ALL_FIELDS_REQUIRED)) {
-        errors.value.username = SHARED_AUTH_ERRORS.USERNAME_REQUIRED
-        errors.value.email = SHARED_AUTH_ERRORS.EMAIL_REQUIRED || 'Email is required'
-        errors.value.password = SHARED_AUTH_ERRORS.PASSWORD_REQUIRED
-        errors.value.confirmPassword
-          = SHARED_AUTH_ERRORS.CONFIRM_PASSWORD_REQUIRED || 'Confirm password is required'
-      }
-      else {
-        // General error fallback
-        errors.value.email = result.error || 'Sign up failed. Please try again.'
-      }
+      // Display specific error messages for each field
+      handleSignUpError(result.error, setFieldError)
     }
     else {
-      // Sign up successful - ensure error messages are cleared
-      ;(Object.keys(errors.value) as (keyof SignupFormData)[]).forEach((key) => {
-        errors.value[key] = ''
-      })
-      console.log('Sign up successful:', result)
-      // Redirect to home or dashboard after successful signup
+      // Navigate to home page on successful sign up
       await navigateTo('/home')
     }
   }
   catch (error) {
-    console.error('Unexpected error during sign up:', error)
-    errors.value.email = 'An unexpected error occurred. Please try again.'
+    // Log unexpected errors in development mode
+    if (import.meta.dev) {
+      console.error('Unexpected error:', error)
+    }
+    // Set generic error message on email field
+    setFieldError('email', 'An unexpected error occurred.')
   }
   finally {
+    // Reset loading state
     isLoading.value = false
   }
 }

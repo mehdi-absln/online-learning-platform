@@ -1,5 +1,5 @@
-import { JWTService } from '../../utils/jwt'
-import { UserService } from '../../db/user-service'
+import { verifyToken } from '../../utils/jwt'
+import { findById } from '../../db/user-service'
 import { errorResponse, successResponse } from '../../utils/response'
 
 export default defineEventHandler(async (event) => {
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Verify token
-    const payload = await JWTService.verifyToken(accessToken)
+    const payload = await verifyToken(accessToken)
 
     if (!payload) {
       throw createError({
@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Get user details
-    const user = await UserService.findById(payload.userId)
+    const user = await findById(payload.userId)
 
     if (!user) {
       throw createError({
