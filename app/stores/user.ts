@@ -63,9 +63,9 @@ export const useUserStore = defineStore('user', {
           body: credentials,
         })
 
-        if (response?.success && response?.data?.user) {
-          this.setUser(response.data.user)
-          return { success: true, user: response.data.user }
+        if (response?.success && response?.user) {
+          this.setUser(response.user)
+          return { success: true, user: response.user }
         }
         else {
           this.setError(response?.message || 'Sign in failed')
@@ -97,9 +97,9 @@ export const useUserStore = defineStore('user', {
           body: userData,
         })
 
-        if (response?.success && response?.data?.user) {
-          this.setUser(response.data.user)
-          return { success: true, user: response.data.user }
+        if (response?.success && response?.user) {
+          this.setUser(response.user)
+          return { success: true, user: response.user }
         }
         else {
           this.setError(response?.message || 'Sign up failed')

@@ -38,6 +38,7 @@ export const useCourseFilters = () => {
       categories: [],
       levels: [],
       tags: [],
+      priceFilter: 'all',
       freeOnly: false,
       paidOnly: false,
       searchQuery: '',
@@ -49,20 +50,6 @@ export const useCourseFilters = () => {
     coursesStore.resetFilter()
   }
 
-  // Toggle exclusive boolean filters (freeOnly and paidOnly)
-  type BooleanFilterKeys =
-    'freeOnly' | 'paidOnly'
-
-  const toggleExclusiveFilter = (
-    changedFilter: BooleanFilterKeys,
-    oppositeFilter: BooleanFilterKeys,
-    newValue: boolean,
-  ) => {
-    if (newValue) {
-      filter.value[oppositeFilter] = false
-    }
-    applyFilters()
-  }
 
   // Watch for changes in route and update filter accordingly
   watch(
@@ -87,8 +74,7 @@ export const useCourseFilters = () => {
         categories: newStoreFilter.categories || [],
         levels: newStoreFilter.levels || [],
         tags: newStoreFilter.tags || [],
-        freeOnly: newStoreFilter.freeOnly || false,
-        paidOnly: newStoreFilter.paidOnly || false,
+        priceFilter: newStoreFilter.priceFilter || 'all',
         searchQuery: newStoreFilter.searchQuery || '',
         instructorId: newStoreFilter.instructorId,
         minPrice: newStoreFilter.minPrice,
@@ -106,7 +92,6 @@ export const useCourseFilters = () => {
     instructors,
     applyFilters,
     resetFilters,
-    toggleExclusiveFilter,
     loading: optionsLoading,
     error: optionsError,
   }

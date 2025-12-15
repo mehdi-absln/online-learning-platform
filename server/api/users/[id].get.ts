@@ -1,4 +1,5 @@
-import type { H3Event, getRouterParam, setResponseStatus } from 'h3'
+import type { H3Event } from 'h3'
+import { getRouterParam, setResponseStatus } from 'h3'
 import { findById } from '../../../server/db/user-service'
 
 export default defineEventHandler(async (event: H3Event) => {

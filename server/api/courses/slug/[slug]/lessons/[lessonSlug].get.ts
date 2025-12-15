@@ -1,4 +1,5 @@
-import type { H3Event, getRouterParam, setResponseStatus } from 'h3'
+import type { H3Event } from 'h3'
+import { getRouterParam, setResponseStatus } from 'h3'
 import { getDetailedCourseBySlug } from '~~/server/db/course-service'
 import { transformCourseForClientWithDetails } from '~~/server/utils/course-transformer'
 

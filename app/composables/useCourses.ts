@@ -16,8 +16,8 @@ export const useCourses = () => {
     if (filter.level) params.level = filter.level
     if (filter.levels?.length) params.levels = filter.levels
     if (filter.tags?.length) params.tags = filter.tags
-    if (filter.freeOnly) params.freeOnly = true
-    if (filter.paidOnly) params.paidOnly = true
+    if (filter.priceFilter === 'free') params.freeOnly = true
+    if (filter.priceFilter === 'paid') params.paidOnly = true
     if (filter.searchQuery) params.q = filter.searchQuery
     if (filter.instructorId) params.instructorId = filter.instructorId
     if (filter.minPrice) params.minPrice = filter.minPrice

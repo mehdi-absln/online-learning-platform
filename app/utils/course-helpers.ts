@@ -49,11 +49,10 @@ export const extractFilterFromUrl = (urlQuery: Record<string, unknown>): Courses
   }
 
   if (urlQuery.freeOnly) {
-    filter.freeOnly = urlQuery.freeOnly === 'true'
+    filter.priceFilter = urlQuery.freeOnly === 'true' ? 'free' : filter.priceFilter
   }
-
   if (urlQuery.paidOnly) {
-    filter.paidOnly = urlQuery.paidOnly === 'true'
+    filter.priceFilter = urlQuery.paidOnly === 'true' ? 'paid' : filter.priceFilter
   }
 
   return filter
@@ -69,8 +68,8 @@ export const buildQueryParams = (filter: CoursesFilter, page: number, limit: num
   if (filter.level) queryParams.append('level', filter.level)
   if (filter.levels?.length) filter.levels.forEach(l => queryParams.append('levels', l))
   if (filter.tags?.length) filter.tags.forEach(t => queryParams.append('tags', t))
-  if (filter.freeOnly) queryParams.append('freeOnly', 'true')
-  if (filter.paidOnly) queryParams.append('paidOnly', 'true')
+  if (filter.priceFilter === 'free') queryParams.append('freeOnly', 'true')
+  if (filter.priceFilter === 'paid') queryParams.append('paidOnly', 'true')
   if (filter.searchQuery) queryParams.append('q', filter.searchQuery)
   if (filter.instructorId) queryParams.append('instructorId', filter.instructorId.toString())
   if (filter.minPrice) queryParams.append('minPrice', filter.minPrice.toString())
@@ -94,15 +93,33 @@ export const mergeFilters = (
   storeFilter: CoursesFilter,
   urlFilter: CoursesFilter,
 ): ExtendedCoursesFilter => {
+  // Determine price filter based on URL and store values
+  let priceFilter: 'all' | 'free' | 'paid' = 'all'
+
+  if (urlFilter.priceFilter) {
+    priceFilter = urlFilter.priceFilter
+  } else if (urlFilter.freeOnly) {
+    priceFilter = 'free'
+  } else if (urlFilter.paidOnly) {
+    priceFilter = 'paid'
+  } else if (storeFilter.priceFilter) {
+    priceFilter = storeFilter.priceFilter
+  } else if (storeFilter.freeOnly) {
+    priceFilter = 'free'
+  } else if (storeFilter.paidOnly) {
+    priceFilter = 'paid'
+  }
+
   return {
     categories: urlFilter.categories ?? storeFilter.categories ?? [],
     levels: urlFilter.levels ?? storeFilter.levels ?? [],
     tags: urlFilter.tags ?? storeFilter.tags ?? [],
+    priceFilter,
     freeOnly: urlFilter.freeOnly ?? storeFilter.freeOnly ?? false,
     paidOnly: urlFilter.paidOnly ?? storeFilter.paidOnly ?? false,
     searchQuery: urlFilter.searchQuery ?? storeFilter.searchQuery ?? '',
     instructorId: urlFilter.instructorId ?? storeFilter.instructorId,
     minPrice: urlFilter.minPrice ?? storeFilter.minPrice,
     maxPrice: urlFilter.maxPrice ?? storeFilter.maxPrice,
-  } as ExtendedCoursesFilter
+  }
 }
