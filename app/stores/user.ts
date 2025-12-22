@@ -1,144 +1,159 @@
 import { defineStore } from 'pinia'
-import type { UserState } from '~/types/types'
 import type { SignInFormData, SignUpFormData } from '~/schemas/auth'
 import type { User } from '~/types/shared/auth'
-import type { ApiResponse, AuthResponse as AuthResponseType } from '~/types/shared/api'
+import type { ApiResponse, AuthResponse, AuthResponse as AuthResponseType } from '~/types/shared/api'
 
-export const useUserStore = defineStore('user', {
-  state: (): UserState => ({
-    user: null,
-    isAuthenticated: false,
-    loading: false,
-    error: null,
-  }),
+export const useUserStore = defineStore('user', () => {
+  // State
+  const user = ref<User | null>(null)
+  const isAuthenticated = ref<boolean>(false)
+  const loading = ref<boolean>(false)
+  const error = ref<string | null>(null)
 
-  actions: {
-    setUser(user: User) {
-      this.user = user
-      this.isAuthenticated = true
-      this.error = null
-    },
+  // Actions
+  const setUser = (userData: User) => {
+    user.value = userData
+    isAuthenticated.value = true
+    error.value = null
+  }
 
-    clearUser() {
-      this.user = null
-      this.isAuthenticated = false
-      this.error = null
-    },
+  const clearUser = () => {
+    user.value = null
+    isAuthenticated.value = false
+    error.value = null
+  }
 
-    setLoading(loading: boolean) {
-      this.loading = loading
-    },
+  const setLoading = (isLoading: boolean) => {
+    loading.value = isLoading
+  }
 
-    setError(error: string | null) {
-      this.error = error
-    },
+  const setError = (errorMessage: string | null) => {
+    error.value = errorMessage
+  }
 
-    async fetchUser() {
-      this.setLoading(true)
-      try {
-        const response = await $fetch<ApiResponse<{ user: User }>>('/api/auth/me')
-        if (response?.success && response?.data?.user) {
-          this.setUser(response.data.user)
-        }
-        else {
-          this.clearUser()
-        }
+  const fetchUser = async () => {
+    setLoading(true)
+    try {
+      const response = await $fetch<ApiResponse<{ user: User }>>('/api/auth/me')
+      if (response?.success && response?.data?.user) {
+        setUser(response.data.user)
       }
-      catch (error: unknown) {
-        console.error('Failed to fetch user:', error)
-        const errorMessage = (error as Error)?.message || 'Failed to fetch user'
-        this.setError(errorMessage)
-        this.clearUser()
+      else {
+        clearUser()
       }
-      finally {
-        this.setLoading(false)
-      }
-    },
+    }
+    catch (error: unknown) {
+      console.error('Failed to fetch user:', error)
+      const errorMessage = (error as Error)?.message || 'Failed to fetch user'
+      setError(errorMessage)
+      clearUser()
+    }
+    finally {
+      setLoading(false)
+    }
+  }
 
-    async signIn(credentials: SignInFormData) {
-      this.setLoading(true)
-      try {
-        const response = await $fetch<AuthResponseType>('/api/auth/signin', {
-          method: 'POST',
-          body: credentials,
-        })
+  const signIn = async (credentials: SignInFormData) => {
+    setLoading(true)
+    try {
+      const response = await $fetch<AuthResponseType>('/api/auth/signin', {
+        method: 'POST',
+        body: credentials,
+      })
 
-        if (response?.success && response?.user) {
-          this.setUser(response.user)
-          return { success: true, user: response.user }
-        }
-        else {
-          this.setError(response?.message || 'Sign in failed')
-          return {
-            success: false,
-            error: response?.error || response?.message || 'Sign in failed',
-          }
-        }
+      if (response?.success && response?.user) {
+        setUser(response.user)
+        return { success: true, user: response.user }
       }
-      catch (error: unknown) {
-        console.error('Sign in error:', error)
-        const errorMessage = (error as Error)?.message || 'An unexpected error occurred'
-        this.setError(errorMessage)
+      else {
+        setError(response?.message || 'Sign in failed')
         return {
           success: false,
-          error: errorMessage,
+          error: response?.error || response?.message || 'Sign in failed',
         }
       }
-      finally {
-        this.setLoading(false)
+    }
+    catch (error: unknown) {
+      console.error('Sign in error:', error)
+      const errorMessage = (error as Error)?.message || 'An unexpected error occurred'
+      setError(errorMessage)
+      return {
+        success: false,
+        error: errorMessage,
       }
-    },
+    }
+    finally {
+      setLoading(false)
+    }
+  }
 
-    async signUp(userData: SignUpFormData) {
-      this.setLoading(true)
-      try {
-        const response = await $fetch<AuthResponseType>('/api/auth/signup', {
-          method: 'POST',
-          body: userData,
-        })
+  const signUp = async (userData: SignUpFormData) => {
+    setLoading(true)
+    try {
+      const response = await $fetch<AuthResponse>('/api/auth/signup', {
+        method: 'POST',
+        body: userData,
+      })
 
-        if (response?.success && response?.user) {
-          this.setUser(response.user)
-          return { success: true, user: response.user }
-        }
-        else {
-          this.setError(response?.message || 'Sign up failed')
-          return {
-            success: false,
-            error: response?.error || response?.message || 'Sign up failed',
-          }
-        }
+      if (response?.success && response?.user) {
+        setUser(response.user)
+        return { success: true, user: response.user }
       }
-      catch (error: unknown) {
-        console.error('Sign up error:', error)
-        const errorMessage = (error as Error)?.message || 'An unexpected error occurred'
-        this.setError(errorMessage)
+      else {
+        setError(response?.message || 'Sign up failed')
         return {
           success: false,
-          error: errorMessage,
+          error: response?.error || response?.message || 'Sign up failed',
         }
       }
-      finally {
-        this.setLoading(false)
+    }
+    catch (error: unknown) {
+      console.error('Sign up error:', error)
+      const errorMessage = (error as Error)?.message || 'An unexpected error occurred'
+      setError(errorMessage)
+      return {
+        success: false,
+        error: errorMessage,
       }
-    },
+    }
+    finally {
+      setLoading(false)
+    }
+  }
 
-    async logout() {
-      try {
-        const response = await $fetch<ApiResponse>('/api/auth/logout', { method: 'POST' })
-        if (response?.success) {
-          this.clearUser()
-          await navigateTo('/home')
-        }
-        else {
-          this.setError(response?.message || 'Logout failed')
-        }
+  const logout = async () => {
+    try {
+      const response = await $fetch<ApiResponse>('/api/auth/logout', { method: 'POST' })
+      if (response?.success) {
+        clearUser()
+        await navigateTo('/home')
       }
-      catch (error: unknown) {
-        console.error('Logout failed:', error)
-        const errorMessage = (error as Error)?.message || 'Logout failed'
-        this.setError(errorMessage)
+      else {
+        setError(response?.message || 'Logout failed')
       }
-    },
-  },
+    }
+    catch (error: unknown) {
+      console.error('Logout failed:', error)
+      const errorMessage = (error as Error)?.message || 'Logout failed'
+      setError(errorMessage)
+    }
+  }
+
+  return {
+    // State
+    user,
+    isAuthenticated,
+    loading,
+    error,
+
+    // Actions
+    setUser,
+    clearUser,
+    setLoading,
+    setError,
+    fetchUser,
+    signIn,
+    signUp,
+    logout,
+  }
 })

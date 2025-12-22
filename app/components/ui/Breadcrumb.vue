@@ -6,7 +6,7 @@
     <ol class="inline-flex items-center space-x-1 md:space-x-3">
       <li class="inline-flex items-center">
         <NuxtLink
-          to="/"
+          to="/app/public"
           class="inline-flex items-center text-sm font-medium text-gray-300 hover:text-primary transition-colors duration-300"
         >
           <svg

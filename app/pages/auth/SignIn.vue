@@ -74,7 +74,7 @@
 // Import necessary types and schemas for authentication
 import type { AuthResponse } from '~/types/types'
 import { signInSchema, type SignInFormData } from '~/schemas/auth'
-import { handleSignInError } from '~/utils/authErrorHandler'
+import { handleSignInError } from '~/utils/auth-error-handler-helpers'
 
 // Import custom form components
 import FormInput from '~/components/ui/FormInput.vue'

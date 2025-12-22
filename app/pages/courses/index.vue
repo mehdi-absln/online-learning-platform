@@ -1,24 +1,20 @@
 <template>
   <div>
-    <!-- Loading state -->
-    <div
-      v-if="isLoading"
-      class="py-36 flex flex-col items-center justify-center"
-    >
-      <LoadingSpinner message="Loading courses..." />
-    </div>
-
     <!-- Error state -->
     <div
-      v-else-if="error"
+      v-if="error"
       class="py-36 flex flex-col items-center justify-center"
     >
       <p class="text-red-500 text-lg">
         Error loading courses
       </p>
+      <p
+        v-if="error"
+        class="text-red-400 text-sm mt-2"
+      >
+        {{ error.message || error }}
+      </p>
     </div>
-
-    <!-- Course listing -->
     <div v-else>
       <!-- Hero -->
       <header>
@@ -36,7 +32,7 @@
           <div class="lg:w-3/4">
             <CoursesGrid
               :courses="courses"
-              :loading="isLoading"
+              :loading="isLoading || coursesStore.loading"
               :current-page="pagination.currentPage"
               :total-pages="pagination.totalPages"
               :on-page-change="coursesStore.changePage"
@@ -49,18 +45,10 @@
 </template>
 
 <script setup lang="ts">
-import { extractFilterFromUrl } from '~/utils/course-helpers'
 import CourseSidebarFilters from '~/components/courses/CourseSidebarFilters.vue'
-import { useCourses } from '~/composables/useCourses'
+import { useCourseFilters } from '~/composables/useCourseFilters'
 
 const coursesStore = useCoursesStore()
-const route = useRoute()
-
-// Extract filter from URL and apply if exists
-const urlFilter = extractFilterFromUrl(route.query)
-if (Object.keys(urlFilter).length > 0) {
-  coursesStore.currentFilter = urlFilter
-}
 
 const { courses, isLoading, error, pagination } = useCourses()
 

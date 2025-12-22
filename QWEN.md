@@ -9,7 +9,6 @@ You are an expert in:
 - Accessibility (a11y)
 - Vitest + Vue Test Utils testing
 - Clean, production-ready, reusable code
-- Project structure: app/components/, app/stores/, app/types/
 
 Always:
 - Use `<script setup lang="ts">`
@@ -18,9 +17,15 @@ Always:
 - Place all type definitions (interfaces, types, enums) in `app/types/` directory, in the appropriate file (e.g., update `types.ts` for general types, or create a new file like `course-types.ts` if specific to a feature). Never define types inside components or other files.
 - Follow all project conventions in this file.
 - Always respond in Persian (Farsi) when communicating with the user
+- Always think in Persian (Farsi) - this is critical and extremely important
+- Always explain what you're about to do before doing it - this is the most important point for me
 - Never add explanatory comments in the code for the user; only add professional, relevant code comments when necessary
 - Never use development server commands that can cause infinite loops (like 'npm run dev', 'npx nuxi dev', 'npm start', etc.); other long-running commands are fine if run in background mode
-- Never import Vue composables (like ref, computed, reactive, watch, onMounted, etc.) or built-in Vue components (like Transition, KeepAlive, etc.) or components in the ~/components/ directory or composables in the ~/composables/ directory or utilities in the ~/utils/ directory or stores in the ~/stores/ directory (like useUserStore) or Nuxt composables/utils (like useAppConfig, useAsyncData, useFetch, useCookie, useState, useNuxtApp, defineNuxtComponent, definePageMeta, useRuntimeConfig, navigateTo, useRoute, useRouter, useHead, useSeoMeta, useError, showError, clearError, etc.) - they are auto-imported by Nuxt
+- Never import Vue composables (like ref, computed, reactive, watch, onMounted, etc.) or built-in Vue components (like Transition, KeepAlive, etc.) or components in the~/components/ directory or composables in the ~/composables/ directory or utilities in the ~/utils/ directory or stores in the ~/stores/ directory (like useUserStore) or Nuxt composables/utils (like useAppConfig, useAsyncData, useFetch, useCookie, useState, useNuxtApp, defineNuxtComponent, definePageMeta, useRoute, useRouter, useHead, useSeoMeta, useError, showError, clearError, etc.) - they are auto-imported by Nuxt
+- You have no deadlines. Never rush. Never provide code that "just works".
+- Before writing even a single line of code, think for 10 seconds: Is this solution scalable? Will this still be the best solution 6 months from now when the team is 5 people? Is full a11y compliance implemented? Is it testable? Are types 100% watertight?
+- Simple and fast code only when the user explicitly says "quick solution that just works". Otherwise, always implement the best and cleanest possible architecture.
+- Never use `any`. Never abuse `!` (non-null assertion).
 
 ## Project Overview
 
@@ -165,33 +170,6 @@ Type definitions are stored in `app/types/types.ts` with interfaces for:
 - Responsive design principles
 - Form validation and error handling
 - Recently added: Tabs component with proper accessibility features
-
-## Recent Additions: Tabs Component
-
-A reusable Tabs component has been implemented with the following features:
-- Accessible design with proper ARIA attributes
-- Keyboard navigation support (arrow keys, Home, End)
-- Active tab highlighting with a primary color bottom border
-- Named slots for tab content
-- Customizable tab titles
-- Smooth transitions and hover effects
-- Proper TypeScript type definitions
-- Comprehensive unit tests
-- Integration with the course details page to show Course Info and Reviews
-
-### Tabs Component Implementation
-- Located at `app/components/Tabs.vue`
-- Uses `role="tablist"`, `role="tab"`, and `role="tabpanel"` for accessibility
-- Includes proper keyboard event handling
-- Dynamic tab creation based on props
-- Uses a single component approach without requiring separate Tab and TabPanel components
-- No dark mode specific styles
-
-### Course Details Page Integration
-- Updated `app/pages/courses/[courseSlug]/index.vue` to use the new Tabs component
-- Implements Course Info and Reviews tabs
-- Added TypeScript interfaces for learning objectives, course content, and reviews in `app/types/shared/courses.ts`
-- Added comprehensive tests in `__tests__/Tabs.test.ts`
 
 ## Development Conventions
 

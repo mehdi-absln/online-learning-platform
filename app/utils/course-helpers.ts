@@ -1,125 +1,140 @@
-import type { CoursesFilter, ExtendedCoursesFilter } from '~/types/courses-filter'
+import type { CoursesFilter } from '~/types/courses-filter'
 
-// Helper function to extract filter from URL query
-export const extractFilterFromUrl = (urlQuery: Record<string, unknown>): CoursesFilter => {
+export interface UrlQueryParams {
+  category?: string
+  categories?: string | string[]
+  level?: string
+  levels?: string | string[]
+  tag?: string
+  tags?: string | string[]
+  q?: string
+  instructorId?: string
+  minPrice?: string
+  maxPrice?: string
+  freeOnly?: string
+  paidOnly?: string
+  page?: string
+  limit?: string
+}
+
+export interface UrlParams {
+  filter: CoursesFilter
+  page: number
+  limit: number
+}
+
+/** Parse route query → structured filter + pagination (supports both old singular & new plural params) */
+export const extractParamsFromUrl = (urlQuery: UrlQueryParams): UrlParams => {
   const filter: CoursesFilter = {}
 
-  // Helper function to parse array parameters
-  const parseArrayParam = (param: unknown): string[] | undefined => {
+  const parseArrayParam = (param: string | string[] | undefined): string[] | undefined => {
     if (!param) return undefined
-    if (Array.isArray(param)) return param as string[]
-    return [param as string]
+    if (Array.isArray(param)) return param
+    return [param]
   }
 
-  if (urlQuery.category) {
-    filter.category = urlQuery.category as string
-  }
-  if (urlQuery.categories) {
-    filter.categories = parseArrayParam(urlQuery.categories)
-  }
-
-  if (urlQuery.level) {
-    filter.level = urlQuery.level as string
-  }
-  if (urlQuery.levels) {
-    filter.levels = parseArrayParam(urlQuery.levels)
+  const parseNumberParam = (param: string | undefined): number | undefined => {
+    if (!param) return undefined
+    const parsed = parseInt(param)
+    return isNaN(parsed) ? undefined : parsed
   }
 
-  if (urlQuery.tag) {
-    filter.tags = [urlQuery.tag as string]
-  }
-  else if (urlQuery.tags) {
-    filter.tags = parseArrayParam(urlQuery.tags)
-  }
+  // Filters
+  if (urlQuery.category) filter.categories = [urlQuery.category]
+  if (urlQuery.categories) filter.categories = parseArrayParam(urlQuery.categories)
 
-  if (urlQuery.q) {
-    filter.searchQuery = urlQuery.q as string
-  }
+  if (urlQuery.level) filter.levels = [urlQuery.level]
+  if (urlQuery.levels) filter.levels = parseArrayParam(urlQuery.levels)
+
+  if (urlQuery.tag) filter.tags = [urlQuery.tag]
+  else if (urlQuery.tags) filter.tags = parseArrayParam(urlQuery.tags)
+
+  if (urlQuery.q) filter.searchQuery = urlQuery.q
 
   if (urlQuery.instructorId) {
-    filter.instructorId = parseInt(urlQuery.instructorId as string)
+    const parsedId = parseNumberParam(urlQuery.instructorId)
+    if (parsedId !== undefined) filter.instructorId = parsedId
   }
 
   if (urlQuery.minPrice) {
-    filter.minPrice = parseInt(urlQuery.minPrice as string)
+    const parsedMinPrice = parseNumberParam(urlQuery.minPrice)
+    if (parsedMinPrice !== undefined) filter.minPrice = parsedMinPrice
   }
-
   if (urlQuery.maxPrice) {
-    filter.maxPrice = parseInt(urlQuery.maxPrice as string)
+    const parsedMaxPrice = parseNumberParam(urlQuery.maxPrice)
+    if (parsedMaxPrice !== undefined) filter.maxPrice = parsedMaxPrice
   }
 
-  if (urlQuery.freeOnly) {
-    filter.priceFilter = urlQuery.freeOnly === 'true' ? 'free' : filter.priceFilter
-  }
-  if (urlQuery.paidOnly) {
-    filter.priceFilter = urlQuery.paidOnly === 'true' ? 'paid' : filter.priceFilter
-  }
+  if (urlQuery.freeOnly === 'true') filter.priceFilter = 'free'
+  else if (urlQuery.paidOnly === 'true') filter.priceFilter = 'paid'
 
-  return filter
+  // Pagination fallback
+  const page = urlQuery.page ? parseNumberParam(urlQuery.page) : 1
+  const limit = urlQuery.limit ? parseNumberParam(urlQuery.limit) : 12
+
+  return {
+    filter,
+    page: typeof page === 'number' ? page : 1,
+    limit: typeof limit === 'number' ? limit : 12,
+  }
 }
 
-// Helper function to build query parameters from filter
-export const buildQueryParams = (filter: CoursesFilter, page: number, limit: number) => {
-  const queryParams = new URLSearchParams()
-  if (filter.category) queryParams.append('category', filter.category)
-  if (filter.categories?.length)
-    filter.categories.forEach(c => queryParams.append('categories', c))
+/** Order-independent array comparison */
+export const arraysEqual = (a: string[] = [], b: string[] = []): boolean => {
+  if (a.length !== b.length) return false
+  const sortedA = [...a].sort()
+  const sortedB = [...b].sort()
+  return sortedA.every((val, i) => val === sortedB[i])
+}
 
-  if (filter.level) queryParams.append('level', filter.level)
-  if (filter.levels?.length) filter.levels.forEach(l => queryParams.append('levels', l))
-  if (filter.tags?.length) filter.tags.forEach(t => queryParams.append('tags', t))
+/** Deep equality check for filters (used to prevent unnecessary updates) */
+export const isFilterEqual = (a: CoursesFilter, b: CoursesFilter): boolean => {
+  return (
+    (a.searchQuery ?? '') === (b.searchQuery ?? '')
+    && (a.priceFilter ?? 'all') === (b.priceFilter ?? 'all')
+    && (a.instructorId ?? null) === (b.instructorId ?? null)
+    && (a.minPrice ?? null) === (b.minPrice ?? null)
+    && (a.maxPrice ?? null) === (b.maxPrice ?? null)
+    && arraysEqual(a.categories ?? [], b.categories ?? [])
+    && arraysEqual(a.levels ?? [], b.levels ?? [])
+    && arraysEqual(a.tags ?? [], b.tags ?? [])
+  )
+}
+
+/** Build clean URLSearchParams – only active filters are included */
+export const buildQueryParams = (filter: CoursesFilter, page: number, limit: number): URLSearchParams => {
+  const queryParams = new URLSearchParams()
+
+  if (filter.categories?.length) filter.categories.forEach(c => c && queryParams.append('categories', c))
+  if (filter.levels?.length) filter.levels.forEach(l => l && queryParams.append('levels', l))
+  if (filter.tags?.length) filter.tags.forEach(t => t && queryParams.append('tags', t))
+
   if (filter.priceFilter === 'free') queryParams.append('freeOnly', 'true')
   if (filter.priceFilter === 'paid') queryParams.append('paidOnly', 'true')
   if (filter.searchQuery) queryParams.append('q', filter.searchQuery)
-  if (filter.instructorId) queryParams.append('instructorId', filter.instructorId.toString())
-  if (filter.minPrice) queryParams.append('minPrice', filter.minPrice.toString())
-  if (filter.maxPrice) queryParams.append('maxPrice', filter.maxPrice.toString())
+  if (filter.instructorId !== undefined) queryParams.append('instructorId', filter.instructorId.toString())
+  if (filter.minPrice !== undefined) queryParams.append('minPrice', filter.minPrice.toString())
+  if (filter.maxPrice !== undefined) queryParams.append('maxPrice', filter.maxPrice.toString())
+
   queryParams.append('page', page.toString())
   queryParams.append('limit', limit.toString())
+
   return queryParams
 }
 
-// Helper function to update URL based on filter and page
-export const updateUrl = (filter: CoursesFilter, page: number, itemsPerPage: number) => {
+/** Update browser URL without triggering full navigation or history spam */
+export const updateUrl = (filter: CoursesFilter, page: number, itemsPerPage: number): void => {
+  if (!import.meta.client) return
+
   const queryParams = buildQueryParams(filter, page, itemsPerPage)
   const queryString = queryParams.toString()
   const newRoute = queryString ? `/courses?${queryString}` : '/courses'
+
   const router = useRouter()
-  router.replace(newRoute)
-}
-
-// Helper function to merge URL filter with store filter
-export const mergeFilters = (
-  storeFilter: CoursesFilter,
-  urlFilter: CoursesFilter,
-): ExtendedCoursesFilter => {
-  // Determine price filter based on URL and store values
-  let priceFilter: 'all' | 'free' | 'paid' = 'all'
-
-  if (urlFilter.priceFilter) {
-    priceFilter = urlFilter.priceFilter
-  } else if (urlFilter.freeOnly) {
-    priceFilter = 'free'
-  } else if (urlFilter.paidOnly) {
-    priceFilter = 'paid'
-  } else if (storeFilter.priceFilter) {
-    priceFilter = storeFilter.priceFilter
-  } else if (storeFilter.freeOnly) {
-    priceFilter = 'free'
-  } else if (storeFilter.paidOnly) {
-    priceFilter = 'paid'
+  try {
+    router.replace(newRoute)
   }
-
-  return {
-    categories: urlFilter.categories ?? storeFilter.categories ?? [],
-    levels: urlFilter.levels ?? storeFilter.levels ?? [],
-    tags: urlFilter.tags ?? storeFilter.tags ?? [],
-    priceFilter,
-    freeOnly: urlFilter.freeOnly ?? storeFilter.freeOnly ?? false,
-    paidOnly: urlFilter.paidOnly ?? storeFilter.paidOnly ?? false,
-    searchQuery: urlFilter.searchQuery ?? storeFilter.searchQuery ?? '',
-    instructorId: urlFilter.instructorId ?? storeFilter.instructorId,
-    minPrice: urlFilter.minPrice ?? storeFilter.minPrice,
-    maxPrice: urlFilter.maxPrice ?? storeFilter.maxPrice,
+  catch (error) {
+    console.error('Failed to update URL:', error)
   }
 }

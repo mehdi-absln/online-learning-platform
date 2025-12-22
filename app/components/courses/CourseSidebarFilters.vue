@@ -72,16 +72,16 @@
         <div class="pb-6 border-b border-dark-divider">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Category</label>
           <div
-            v-if="categories.length === 0"
+            v-if="!categories || categories.length === 0"
             class="text-gray-400 text-sm"
           >
             No categories available
           </div>
           <FilterCheckboxGroup
-            v-model="filter.categories"
+            :model-value="filter.categories || []"
             name="category"
-            :options="categories.map(c => ({ label: c, value: c }))"
-            @update:model-value="applyFilters"
+            :options="categories?.map(c => ({ label: c, value: c })) || []"
+            @update:model-value="handleCategoryChange"
           />
         </div>
 
@@ -89,16 +89,16 @@
         <div class="pb-6 border-b border-dark-divider">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Level</label>
           <div
-            v-if="levels.length === 0"
+            v-if="!levels || levels.length === 0"
             class="text-gray-400 text-sm"
           >
             No levels available
           </div>
           <FilterCheckboxGroup
-            v-model="filter.levels"
+            :model-value="filter.levels || []"
             name="level"
-            :options="levels.map(l => ({ label: l, value: l }))"
-            @update:model-value="applyFilters"
+            :options="levels?.map(l => ({ label: l, value: l })) || []"
+            @update:model-value="handleLevelChange"
           />
         </div>
 
@@ -106,27 +106,26 @@
         <div class="pb-6 border-b border-dark-divider">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Tags</label>
           <div
-            v-if="tags.length === 0"
+            v-if="!tags || tags.length === 0"
             class="text-gray-400 text-sm"
           >
             No tags available
           </div>
           <FilterCheckboxGroup
-            v-model="filter.tags"
+            :model-value="filter.tags || []"
             name="tag"
-            :options="tags.map(t => ({ label: t, value: t }))"
-            @update:model-value="applyFilters"
+            :options="tags?.map(t => ({ label: t, value: t })) || []"
+            @update:model-value="handleTagChange"
           />
         </div>
-
         <!-- Price Filter -->
         <div class="pb-6 border-b border-dark-divider">
           <label class="block text-base font-antonio font-bold text-primary mb-4">Price</label>
           <FilterRadioGroup
-            v-model="filter.priceFilter"
+            :model-value="filter.priceFilter || 'all'"
             name="price"
             :options="priceOptions"
-            @update:model-value="applyFilters"
+            @update:model-value="handlePriceChange"
           />
         </div>
       </div>
@@ -165,7 +164,6 @@
 
 <script setup lang="ts">
 import { useCourseFilters } from '~/composables/useCourseFilters'
-import { debounce } from 'lodash-es'
 import FilterRadioGroup from '~/components/courses/FilterRadioGroup.vue'
 import FilterCheckboxGroup from '~/components/courses/FilterCheckboxGroup.vue'
 
@@ -174,13 +172,13 @@ const {
   categories,
   levels,
   tags,
-  applyFilters,
+  applyFiltersImmediate,
   resetFilters,
   loading,
   error,
 } = useCourseFilters()
 
-const searchInput = ref(filter.value.searchQuery)
+const searchInput = ref(filter.value.searchQuery || '')
 
 const priceOptions = [
   { label: 'All', value: 'all' },
@@ -188,30 +186,65 @@ const priceOptions = [
   { label: 'Paid', value: 'paid' },
 ]
 
-// Watch for changes in search input and apply filters with debounce
+// Separate handlers for each filter type
+const handleCategoryChange = (newCategories: string[]) => {
+  applyFiltersImmediate({
+    ...filter.value,
+    categories: newCategories,
+  })
+}
+
+const handleLevelChange = (newLevels: string[]) => {
+  applyFiltersImmediate({
+    ...filter.value,
+    levels: newLevels,
+  })
+}
+
+const handleTagChange = (newTags: string[]) => {
+  applyFiltersImmediate({
+    ...filter.value,
+    tags: newTags,
+  })
+}
+
+const handlePriceChange = (newPrice: string) => {
+  applyFiltersImmediate({
+    ...filter.value,
+    priceFilter: newPrice as 'all' | 'free' | 'paid',
+  })
+}
+
+// Debounced search using applyFilters
+const { applyFilters } = useCourseFilters()
+
 watch(
   searchInput,
-  debounce((val) => {
-    filter.value.searchQuery = val
-    applyFilters()
-  }, 300),
+  (val) => {
+    applyFilters({
+      ...filter.value,
+      searchQuery: val,
+    })
+  },
 )
 
-// Watch for changes in filter.searchQuery and update search input
+// Watch for external changes to filter.searchQuery
 watch(
   () => filter.value.searchQuery,
   (val) => {
-    searchInput.value = val
+    if (val !== searchInput.value) {
+      searchInput.value = val || ''
+    }
   },
 )
 
 // Check if any filter is active
 const hasActiveFilters = computed(() => {
   return (
-    filter.value.categories.length > 0
-    || filter.value.levels.length > 0
-    || filter.value.tags.length > 0
-    || filter.value.priceFilter !== 'all'
+    (filter.value.categories && filter.value.categories.length > 0)
+    || (filter.value.levels && filter.value.levels.length > 0)
+    || (filter.value.tags && filter.value.tags.length > 0)
+    || (filter.value.priceFilter && filter.value.priceFilter !== 'all')
     || !!filter.value.searchQuery
   )
 })
@@ -219,7 +252,9 @@ const hasActiveFilters = computed(() => {
 // Clear search input
 const clearSearch = () => {
   searchInput.value = ''
-  filter.value.searchQuery = ''
-  applyFilters()
+  applyFiltersImmediate({
+    ...filter.value,
+    searchQuery: '',
+  })
 }
 </script>

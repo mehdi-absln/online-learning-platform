@@ -12,18 +12,18 @@
           type="checkbox"
           :name="name"
           :value="option.value"
-          :checked="modelValue.includes(option.value)"
+          :checked="isChecked(option.value)"
           class="sr-only peer"
           @change="handleChange(option.value, $event)"
         >
         <span
           class="w-4 h-4 rounded border transition-colors flex items-center justify-center"
-          :class="modelValue.includes(option.value)
+          :class="isChecked(option.value)
             ? 'border-primary bg-primary'
             : 'border-dark-divider bg-dark-surface group-hover:border-gray-500'"
         >
           <svg
-            v-show="modelValue.includes(option.value)"
+            v-show="isChecked(option.value)"
             class="w-3 h-3 text-dark-surface"
             fill="none"
             stroke="currentColor"
@@ -39,8 +39,8 @@
         </span>
       </div>
       <span
-        class="text-sm transition-colors"
-        :class="modelValue.includes(option.value) ? 'text-primary' : 'text-gray-300'"
+        class="text-sm transition-colors capitalize"
+        :class="isChecked(option.value) ? 'text-primary' : 'text-gray-300'"
       >
         {{ option.label }}
       </span>
@@ -57,18 +57,30 @@ interface Option {
 const props = defineProps<{
   name: string
   options: Option[]
-  modelValue: string[]
+  modelValue?: string[] // Make optional to handle SSR case where it might be undefined
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: string[]]
 }>()
 
+// Safe check to determine if option is selected, handling undefined modelValue
+const isChecked = (value: string): boolean => {
+  if (!props.modelValue || !Array.isArray(props.modelValue)) {
+    return false
+  }
+  return props.modelValue.includes(value)
+}
+
 const handleChange = (value: string, event: Event) => {
   const checked = (event.target as HTMLInputElement).checked
+
+  // Ensure modelValue is an array to avoid errors
+  const currentValue = Array.isArray(props.modelValue) ? props.modelValue : []
+
   const newValue = checked
-    ? [...props.modelValue, value]
-    : props.modelValue.filter(v => v !== value)
+    ? [...currentValue, value]
+    : currentValue.filter(v => v !== value)
   emit('update:modelValue', newValue)
 }
 </script>

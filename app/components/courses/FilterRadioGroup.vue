@@ -39,7 +39,7 @@
         </span>
       </div>
       <span
-        class="text-sm transition-colors"
+        class="text-sm transition-colors capitalize"
         :class="modelValue === option.value ? 'text-primary' : 'text-gray-300'"
       >
         {{ option.label }}
