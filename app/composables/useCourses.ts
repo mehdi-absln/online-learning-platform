@@ -1,83 +1,107 @@
 import type { CourseListResponse } from '~/types/shared/api'
 import { useApiError } from '~/composables/useApiError'
 
+interface UrlQueryParams {
+  page: number
+  limit: number
+  categories?: string[]
+  levels?: string[]
+  tags?: string[]
+  q?: string
+  instructorId?: number
+  minPrice?: number
+  maxPrice?: number
+  freeOnly?: boolean
+  paidOnly?: boolean
+}
+
+/**
+ * Reactive course list fetcher with full sync between:
+ * → Pinia store (filter + pagination)
+ * → URL query params (via useCourseFilters)
+ * → API endpoint
+ */
 export const useCourses = () => {
   const coursesStore = useCoursesStore()
 
+  /** Build clean API query params from current filter state – only includes active filters */
   const queryParams = computed(() => {
     const filter = coursesStore.currentFilter
-    const params: Record<string, string | string[] | number | boolean> = {
+    const params: UrlQueryParams = {
       page: coursesStore.currentPage,
       limit: coursesStore.itemsPerPage,
     }
 
-    if (filter.category) params.category = filter.category
     if (filter.categories?.length) params.categories = filter.categories
-    if (filter.level) params.level = filter.level
     if (filter.levels?.length) params.levels = filter.levels
     if (filter.tags?.length) params.tags = filter.tags
     if (filter.priceFilter === 'free') params.freeOnly = true
     if (filter.priceFilter === 'paid') params.paidOnly = true
     if (filter.searchQuery) params.q = filter.searchQuery
-    if (filter.instructorId) params.instructorId = filter.instructorId
-    if (filter.minPrice) params.minPrice = filter.minPrice
-    if (filter.maxPrice) params.maxPrice = filter.maxPrice
+    if (filter.instructorId !== undefined && filter.instructorId !== null) {
+      params.instructorId = filter.instructorId
+    }
+    if (filter.minPrice !== undefined && filter.minPrice !== null) {
+      params.minPrice = filter.minPrice
+    }
+    if (filter.maxPrice !== undefined && filter.maxPrice !== null) {
+      params.maxPrice = filter.maxPrice
+    }
 
     return params
   })
 
+  /** Auto-refetch whenever filter or page changes */
   const { data, pending, error } = useFetch<CourseListResponse>('/api/courses', {
     query: queryParams,
     watch: [queryParams],
-    deep: true,
-    transform: (response: CourseListResponse): CourseListResponse => {
-      if (response.success && response.data) {
-        // Sync with store
-        coursesStore.courses = response.data
-        if (response.pagination) {
-          coursesStore.currentPage = response.pagination.currentPage
-          coursesStore.totalPages = response.pagination.totalPages
-          coursesStore.totalItems = response.pagination.totalItems
-          coursesStore.itemsPerPage = response.pagination.itemsPerPage
+
+    /** Update store on successful response */
+    onResponse: ({ response }) => {
+      if (response._data?.success && response._data.data) {
+        coursesStore.setCourses(response._data.data)
+        if (response._data.pagination) {
+          coursesStore.setPagination(response._data.pagination)
         }
       }
-      return response
+
+      nextTick(() => {
+        coursesStore.loading = false
+      })
+    },
+
+    /** Log error and finalize loading state */
+    onResponseError: ({ response, error: fetchError }) => {
+      console.error('Error loading courses:', {
+        status: response?.status,
+        error: fetchError,
+        data: response?._data,
+      })
+
+      nextTick(() => {
+        coursesStore.loading = false
+      })
     },
   })
 
-  // Sync with store
-  watch(data, (newData) => {
-    if (newData?.success && newData.data) {
-      coursesStore.courses = newData.data
-      if (newData.pagination) {
-        coursesStore.currentPage = newData.pagination.currentPage
-        coursesStore.totalPages = newData.pagination.totalPages
-        coursesStore.totalItems = newData.pagination.totalItems
-        coursesStore.itemsPerPage = newData.pagination.itemsPerPage
-      }
-    }
-  }, { immediate: true })
+  const hasError = useApiError(data, pending, error)
 
-  // Read from data first, fallback to store
-  const courses = computed(() => data.value?.data || coursesStore.courses)
-  const pagination = computed(() => {
-    if (data.value?.pagination) return data.value.pagination
-    // Fallback to store values if not in response
-    return {
+  return {
+    /** Current page courses – reactive */
+    courses: computed(() => data.value?.data || []),
+
+    /** Pagination info with fallback to store values during initial load */
+    pagination: computed(() => data.value?.pagination || {
       currentPage: coursesStore.currentPage,
       totalPages: coursesStore.totalPages,
       totalItems: coursesStore.totalItems,
       itemsPerPage: coursesStore.itemsPerPage,
-    }
-  })
+    }),
 
-  // Check for actual error using shared composable
-  const hasError = useApiError(data, pending, error)
+    /** Loading when fetching OR when store is preparing next request */
+    isLoading: computed(() => pending.value || coursesStore.loading),
 
-  return {
-    courses,
-    pagination,
-    isLoading: pending,
+    /** Unified error state (network, 404, 500, etc.) */
     error: hasError,
   }
 }
