@@ -3,7 +3,7 @@
     <div
       v-for="(item, index) in items"
       :key="item.id || index"
-      class="border border-gray-200 rounded-lg overflow-hidden bg-white"
+      class="overflow-hidden "
     >
       <!-- Header -->
       <button
@@ -13,9 +13,9 @@
         :aria-controls="`accordion-content-${index}`"
         :disabled="item.disabled"
         :class="[
-          'flex items-center justify-between w-full p-4 text-start',
-          'bg-gray-50 hover:bg-gray-100 transition-colors duration-200',
-          'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset',
+          'flex items-center justify-between w-full p-4 text-start group hover:bg-primary/95',
+          'bg-dark-bg transition-colors duration-200',
+          'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset border border-dark-divider rounded-lg',
           'disabled:opacity-50 disabled:cursor-not-allowed',
           props.headerClass,
         ]"
@@ -28,38 +28,41 @@
           :index="index"
           :is-open="isOpen(index)"
         >
-          <span class="flex flex-col flex-1 mr-4 text-start pointer-events-none">
-            <span class="text-lg font-medium text-gray-900 leading-6">
+          <div class="flex flex-col pointer-events-none">
+            <h4
+              class="text-lg font-semibold text-white leading-6"
+              :aria-describedby="item.description ? `accordion-description-${index}` : undefined"
+            >
               {{ item.title }}
-            </span>
+            </h4>
             <span
               v-if="item.description"
-              class="mt-1 text-sm font-normal text-gray-600"
+              :id="`accordion-description-${index}`"
+              class="mt-1 text-sm font-normal text-white/70 group-hover:text-white/90 transition-colors duration-200"
             >
               {{ item.description }}
             </span>
-          </span>
+          </div>
+          <svg
+            v-if="showIcon"
+            class="stroke-white/70 group-hover:stroke-white/90"
+            :class="[
+              iconClass || 'w-5 h-5 text-gray-500',
+              'transition-transform duration-300 shrink-0',
+              isOpen(index) ? (iconRotateClass || 'rotate-180') : '',
+            ]"
+            fill="none"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
         </slot>
-
-        <svg
-          v-if="showIcon"
-          :class="[
-            iconClass || 'w-5 h-5 text-gray-500',
-            'transition-transform duration-300 shrink-0',
-            isOpen(index) ? (iconRotateClass || 'rotate-180') : '',
-          ]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
       </button>
 
       <Transition
@@ -76,25 +79,30 @@
           role="region"
           :aria-labelledby="`accordion-header-${index}`"
           :class="[
-            'border-t border-gray-200 overflow-hidden',
+            'overflow-hidden',
             props.contentClass,
           ]"
         >
           <!-- Content -->
-          <slot
-            :item="item"
-            :index="index"
-            :is-open="isOpen(index)"
+          <div
+            role="group"
+            :aria-labelledby="`accordion-header-${index}`"
           >
-            <!-- Empty State -->
             <slot
-              name="empty"
               :item="item"
               :index="index"
+              :is-open="isOpen(index)"
             >
-              {{ props.emptyText }}
+              <!-- Empty State -->
+              <slot
+                name="empty"
+                :item="item"
+                :index="index"
+              >
+                {{ props.emptyText }}
+              </slot>
             </slot>
-          </slot>
+          </div>
         </div>
       </Transition>
     </div>
@@ -102,11 +110,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onBeforeUpdate } from 'vue'
-import { useAccordion } from '~/composables/useAccordion'
-import { useKeyboardFocus } from '~/composables/useKeyboardFocus'
 import type { AccordionProps, AccordionEmits } from '~/types/components/accordion'
-import type { ComponentPublicInstance } from 'vue'
 
 const props = withDefaults(defineProps<AccordionProps>(), {
   exclusive: false,

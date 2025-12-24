@@ -29,8 +29,8 @@
     <header
       class="min-h-[28rem] py-5 bg-gradient-to-r from-dark-surface via-dark-bg to-primary/60 shadow-[inset_0_0_40px_rgba(255,255,255,0.05),_0_10px_30px_rgba(0,0,0,0.6)] backdrop-blur-sm rounded-2xl"
     >
-      <div class="container relative flex flex-wrap justify-between">
-        <div class="w-2/3">
+      <div class="container relative flex flex-col md:flex-row md:justify-between gap-6">
+        <div class="w-full md:w-2/3">
           <Breadcrumb
             :crumbs="breadcrumbCrumbs"
             class="block mb-6"
@@ -102,7 +102,7 @@
             </div>
           </div>
         </div>
-        <div class="w-1/3 space-y-10 absolute -bottom-[44rem] right-0">
+        <div class="w-full md:w-1/3 space-y-10 absolute -bottom-[44rem] right-0">
           <div class="rounded-2xl bg-dark-gray border border-gray-700">
             <div class="relative overflow-hidden">
               <img
@@ -211,6 +211,7 @@
                 <div>
                   <button
                     class="w-full font-antonio px-6 py-3 font-semibold text-white bg-gradient-to-r from-primary to-primary/90 group overflow-hidden relative"
+                    aria-label="Enroll in this course"
                   >
                     <span
                       class="absolute inset-0 w-0 bg-white/10 group-hover:w-full transition-all duration-500"
@@ -305,9 +306,9 @@
                 Tags
               </h3>
               <div class="flex flex-wrap gap-2 pt-4 tags-wrapper">
-                <template v-if="course?.tags">
+                <template v-if="courseTags.length > 0">
                   <NuxtLink
-                    v-for="tag in course.tags.split(',').map((t) => t.trim())"
+                    v-for="tag in courseTags"
                     :key="tag"
                     :to="`/courses?tag=${encodeURIComponent(tag)}`"
                     class="px-3 py-1 bg-gray-700 text-white text-sm rounded-full hover:bg-primary transition-colors duration-300"
@@ -326,7 +327,7 @@
       </div>
     </header>
     <div class="py-10 container">
-      <div class="w-2/3">
+      <div class="w-full lg:w-2/3">
         <Tabs
           v-if="course"
           :tabs="[
@@ -335,31 +336,47 @@
           ]"
         >
           <template #course-info>
-            <div class="space-y-6">
+            <div class="space-y-10">
               <div class="space-y-4">
-                <h2 class="text-base font-bold text-primary font-antonio">
+                <h2 class="text-xl font-bold text-primary font-antonio">
                   About Course
                 </h2>
-                <p class="text-gray-300">
+                <p class="text-white/90">
                   "{{ course.description }}"
                 </p>
               </div>
               <div class="space-y-4">
-                <h3 class="text-base font-bold text-primary font-antonio">
+                <h3 class="text-xl font-bold text-primary font-antonio">
                   What Will You Learn?
                 </h3>
-                <ul class="list-disc pl-5 text-gray-600 space-y-2">
+                <ul class="list-none text-white/90 space-y-2">
                   <li
                     v-for="(learningItem, index) in course.learningObjectives"
                     :key="index"
-                    class="ml-4"
+                    class="relative"
                   >
+                    <span class="text-primary">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 inline-block"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="3"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </span>
                     {{ learningItem }}
                   </li>
                 </ul>
               </div>
-              <div class="space-y-4">
-                <h3 class="text-base font-bold text-primary font-antonio">
+              <div class="space-y-4 pt-4">
+                <h3 class="text-xl font-bold text-primary font-antonio">
                   Course Content
                 </h3>
                 <div v-if="course?.courseContent">
@@ -368,21 +385,21 @@
                       courseAccordionItems.map((item) => ({
                         title: item.title,
                         description: item.description,
-                        content: item.lessons, // Map to the content property expected by AccordionItem
+                        content: item.lessons,
                       }))
                     "
                   >
                     <template #default="{ item }">
-                      <div class="p-4 space-y-2">
+                      <div class="p-4 space-y-2 divide-y divide-dark-divider">
                         <div
                           v-for="(lesson, lessonIndex) in (item.content as CourseContentLesson[])"
                           :key="lessonIndex"
-                          class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer"
+                          class="flex items-center p-2 group hover:rounded hover:bg-primary/85 duration-200 transition-all cursor-pointer"
                           @click="goToLessonPage(lesson)"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5 text-primary mr-2"
+                            class="h-5 w-5 text-primary group-hover:text-white/70 duration-200 transition-color mr-2"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -400,8 +417,8 @@
                               d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
-                          <span>{{ lesson.title }}</span>
-                          <span class="ml-auto text-sm text-gray-500">{{ lesson.duration }}</span>
+                          <span class="text-white/90">{{ lesson.title }}</span>
+                          <span class="ml-auto text-sm text-white/70">{{ lesson.duration }}</span>
                         </div>
                       </div>
                     </template>
@@ -411,75 +428,15 @@
                   v-else
                   class="text-center py-10"
                 >
-                  <p class="text-gray-500">
+                  <p class="text-white/70">
                     Course content is not available yet.
                   </p>
                 </div>
               </div>
             </div>
           </template>
-
           <template #reviews>
-            <div>
-              <h3 class="text-base font-bold text-primary font-antonio">
-                Student Ratings & Reviews
-              </h3>
-
-              <div
-                v-if="
-                  course.reviews
-                    && course.reviews.length > 0
-                "
-                class="space-y-6"
-              >
-                <div
-                  v-for="(review, index) in course.reviews"
-                  :key="index"
-                  class="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-0 last:pb-0"
-                >
-                  <div class="flex items-center mb-2">
-                    <div class="flex items-center">
-                      <div
-                        v-for="starIndex in 5"
-                        :key="starIndex"
-                        class="mr-1"
-                      >
-                        <svg
-                          :class="starIndex <= review.rating ? 'text-yellow-400' : 'text-gray-300'"
-                          class="w-5 h-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <span class="ml-2 text-gray-600">{{ review.rating }} out of 5</span>
-                  </div>
-
-                  <h4 class="font-semibold text-gray-800">
-                    {{ review.reviewerName }}
-                  </h4>
-                  <p class="text-gray-600 text-sm mt-1">
-                    {{ formatDate(review.date) }}
-                  </p>
-                  <p class="text-gray-700 mt-3">
-                    {{ review.comment }}
-                  </p>
-                </div>
-              </div>
-
-              <div
-                v-else
-                class="text-center py-10"
-              >
-                <p class="text-gray-500">
-                  No reviews yet for this course.
-                </p>
-              </div>
-            </div>
+            <CourseReviews :reviews="course?.reviews" />
           </template>
         </Tabs>
       </div>
@@ -488,6 +445,11 @@
 </template>
 
 <script setup lang="ts">
+import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
+import Breadcrumb from '~/components/ui/Breadcrumb.vue'
+import Tabs from '~/components/ui/Tabs.vue'
+import Accordion from '~/components/ui/Accordion.vue'
+import CourseReviews from '~/components/course/CourseReviews.vue'
 import type { CourseContentLesson } from '~/types/shared/courses'
 
 const route = useRoute()
@@ -505,13 +467,12 @@ if (!courseSlug.value) {
 // Use the new composable
 const { course, isLoading, error } = useCourse(courseSlug.value)
 
-useHead({
-  title: computed(
-    () => `${course.value?.title || 'Course'} - Online Learning Platform`,
-  ),
-  meta: computed(() => [
-    { name: 'description', content: course.value?.description || '' },
-  ]),
+useSeoMeta({
+  title: () => `${course.value?.title || 'Course'} - Online Learning Platform`,
+  description: () => course.value?.description || '',
+  ogTitle: () => course.value?.title || 'Course',
+  ogDescription: () => course.value?.description || '',
+  ogImage: () => course.value?.image || '/default-og.jpg',
 })
 
 const breadcrumbCrumbs = computed(() => [
@@ -523,12 +484,6 @@ const breadcrumbCrumbs = computed(() => [
       : `/courses/${courseSlug.value}`,
   },
 ])
-
-const formatDate = (dateString: string): string => {
-  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' }
-  return new Date(dateString).toLocaleDateString(undefined, options)
-}
-
 // Create properly typed Accordion items for course content sections
 const courseAccordionItems = computed(() => {
   if (!course.value?.courseContent) return []
@@ -536,19 +491,34 @@ const courseAccordionItems = computed(() => {
   return course.value.courseContent.map(section => ({
     title: section.title,
     description: section.description || undefined,
-    lessons: section.content || [], // Using a more specific property name for lessons
+    lessons: section.content || [],
   }))
 })
 
-const goToLessonPage = (lesson: CourseContentLesson) => {
-  if (lesson.slug && courseSlug.value) {
+const goToLessonPage = async (lesson: CourseContentLesson) => {
+  if (!lesson.slug || !courseSlug.value) {
+    console.warn('Invalid lesson or course slug')
+    return
+  }
+
+  try {
     const lessonUrl = `/courses/${courseSlug.value}/lessons/${lesson.slug}`
-    navigateTo(lessonUrl)
+    await navigateTo(lessonUrl)
+  }
+  catch (navigationError) {
+    console.error('Navigation failed:', navigationError)
   }
 }
 
+const courseTags = computed(() => {
+  if (!course.value?.tags) return []
+  return course.value.tags.split(',').map(t => t.trim())
+})
+
+const PLACEHOLDER_IMAGE = '/images/placeholder-course.svg'
+
 const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement
-  img.src = '/images/placeholder-course.svg'
+  img.src = PLACEHOLDER_IMAGE
 }
 </script>
