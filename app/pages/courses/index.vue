@@ -46,6 +46,8 @@
 
 <script setup lang="ts">
 import CourseSidebarFilters from '~/components/courses/CourseSidebarFilters.vue'
+import CoursesHero from '~/components/courses/CoursesHero.vue'
+import CoursesGrid from '~/components/courses/CoursesGrid.vue'
 import { useCourseFilters } from '~/composables/useCourseFilters'
 
 const coursesStore = useCoursesStore()

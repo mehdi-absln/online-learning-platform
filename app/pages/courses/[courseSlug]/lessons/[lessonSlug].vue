@@ -75,6 +75,7 @@
 </template>
 
 <script setup lang="ts">
+import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 import type { DetailedLesson, CourseContentLesson } from '~/types/shared/courses'
 
 const route = useRoute()

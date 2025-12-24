@@ -46,6 +46,8 @@
 
 <script setup lang="ts">
 import CourseCard from '~/components/courses/CourseCard.vue'
+import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
+import Pagination from '~/components/ui/Pagination.vue'
 import type { Course } from '~/types/shared/courses'
 
 interface CoursesGridProps {

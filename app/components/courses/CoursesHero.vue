@@ -10,6 +10,8 @@
 </template>
 
 <script setup lang="ts">
+import Breadcrumb from '~/components/ui/Breadcrumb.vue'
+
 interface CoursesHeroProps {
   breadcrumbCrumbs: { name: string, path: string }[]
 }

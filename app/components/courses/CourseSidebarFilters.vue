@@ -166,6 +166,7 @@
 import { useCourseFilters } from '~/composables/useCourseFilters'
 import FilterRadioGroup from '~/components/courses/FilterRadioGroup.vue'
 import FilterCheckboxGroup from '~/components/courses/FilterCheckboxGroup.vue'
+import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 
 const {
   filter,
