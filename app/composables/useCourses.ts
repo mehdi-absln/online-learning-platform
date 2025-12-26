@@ -51,12 +51,20 @@ export const useCourses = () => {
     return params
   })
 
-  /** Auto-refetch whenever filter or page changes */
-  const { data, pending, error } = useFetch<CourseListResponse>('/api/courses', {
-    query: queryParams,
-    watch: [queryParams],
+  // ✅ اضافه کردن key برای جلوگیری از دوبار fetch
+  const cacheKey = computed(() => {
+    return `courses-${JSON.stringify(queryParams.value)}`
+  })
 
-    /** Update store on successful response */
+  const { data, pending, error } = useFetch<CourseListResponse>('/api/courses', {
+    // ✅ key منحصر به فرد بر اساس query params
+    key: cacheKey,
+
+    query: queryParams,
+
+    // ❌ حذف شد - نیازی نیست چون query خودش reactive هست
+    // watch: [queryParams],
+
     onResponse: ({ response }) => {
       if (response._data?.success && response._data.data) {
         coursesStore.setCourses(response._data.data)
@@ -70,7 +78,6 @@ export const useCourses = () => {
       })
     },
 
-    /** Log error and finalize loading state */
     onResponseError: ({ response, error: fetchError }) => {
       console.error('Error loading courses:', {
         status: response?.status,

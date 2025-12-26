@@ -326,7 +326,7 @@
         </div>
       </div>
     </header>
-    <div class="py-10 container">
+    <section class="py-10 container">
       <div class="w-full lg:w-2/3">
         <Tabs
           v-if="course"
@@ -440,7 +440,14 @@
           </template>
         </Tabs>
       </div>
-    </div>
+    </section>
+
+    <!-- Related Courses Section -->
+    <RelatedCourses
+      v-if="course?.id"
+      :course-id="course.id.toString()"
+      title="Similar Courses"
+    />
   </div>
 </template>
 
@@ -449,7 +456,8 @@ import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 import Breadcrumb from '~/components/ui/Breadcrumb.vue'
 import Tabs from '~/components/ui/Tabs.vue'
 import Accordion from '~/components/ui/Accordion.vue'
-import CourseReviews from '~/components/course/CourseReviews.vue'
+import CourseReviews from '~/components/courses/CourseReviews.vue'
+import RelatedCourses from '~/components/courses/RelatedCourses.vue'
 import type { CourseContentLesson } from '~/types/shared/courses'
 
 const route = useRoute()
