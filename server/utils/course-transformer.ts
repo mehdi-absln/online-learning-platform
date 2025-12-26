@@ -22,8 +22,8 @@ interface RawCourse {
   createdAt: Date
   updatedAt: Date
   instructor?: {
-    name: string
-    avatar?: string
+    id: number
+    username: string
   }
 }
 
@@ -77,6 +77,8 @@ interface RawLesson {
   updatedAt: Date
 }
 
+import { formatInstructorName } from './format-utils'
+
 export function transformCourseForClient(course: RawCourse): CourseType {
   // Convert price from cents to dollars and add instructor information
   return {
@@ -94,10 +96,10 @@ export function transformCourseForClient(course: RawCourse): CourseType {
     createdAt: course.createdAt,
     updatedAt: course.updatedAt,
     instructor: {
-      name: course.instructor?.name || 'Instructor Name',
+      name: course.instructor?.username ? formatInstructorName(course.instructor.username) : 'Unknown Instructor',
       avatar: processInstructorAvatar(
-        course.instructor?.avatar,
-        course.instructor?.name || 'Instructor Name',
+        undefined, // جدول users فیلد avatar ندارد
+        course.instructor?.username || 'Unknown Instructor',
       ),
     },
     stats: {

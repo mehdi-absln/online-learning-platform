@@ -22,6 +22,40 @@ export interface Course {
   instructorId: number
 }
 
+// Define Course API Response interface for related courses
+export interface CourseApiResponse {
+  id: string
+  title: string
+  slug: string
+  description?: string
+  image?: string
+  price: number
+  discountPrice?: number
+  duration?: number
+  level?: 'beginner' | 'intermediate' | 'advanced'
+  rating?: number
+  studentsCount?: number
+  isPublished?: boolean
+  categoryId?: string
+  instructorId?: string
+  createdAt?: string
+  updatedAt?: string
+  category?: {
+    id: string
+    name: string
+    slug: string
+  }
+  instructor?: {
+    id: string
+    name: string
+    avatar?: string
+  }
+  tags?: {
+    id: string
+    name: string
+  }[]
+}
+
 // Interfaces for course data operations that can be shared between client and server
 
 export interface CreateCourseData {

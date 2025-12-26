@@ -56,6 +56,7 @@
           :alt="course.instructor.name"
           loading="lazy"
           class="w-10 h-10 rounded-full border-2 border-solid border-white"
+          @error="handleImageError"
         >
         <span class="font-medium text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
           {{ course.instructor.name }}
@@ -132,6 +133,14 @@ const courseLink = computed(() => {
 
 const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement
-  img.src = '/images/placeholder-course.svg'
+  if (img.src.includes('placeholder-course')) {
+    return
+  }
+  if (img.alt === props.course.instructor.name) {
+    img.src = '/images/placeholder-avatar.svg'
+  }
+  else {
+    img.src = '/images/placeholder-course.svg'
+  }
 }
 </script>

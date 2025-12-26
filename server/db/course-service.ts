@@ -4,11 +4,70 @@ import {
   courseLearningObjectives,
   courseContentSections,
   reviews,
+  users,
 } from './schema'
 import { db } from './index'
 import { eq, desc, asc, and, gte, lte, like, inArray, or } from 'drizzle-orm'
 import type { InferSelectModel } from 'drizzle-orm'
 import type { CreateCourseData, UpdateCourseData } from '~/types/shared/courses'
+
+// Type for course with instructor
+type CourseWithInstructor = CourseType & {
+  instructor?: {
+    id: number
+    username: string
+  }
+}
+
+/**
+ * Enrich courses array with instructor information
+ * Uses a single query to get all instructors at once (efficient)
+ */
+async function enrichCoursesWithInstructors(
+  coursesData: CourseType[]
+): Promise<CourseWithInstructor[]> {
+  // Return early if no courses
+  if (!coursesData.length) return []
+
+  // Get unique instructor IDs
+  const instructorIds = [
+    ...new Set(
+      coursesData
+        .map(c => c.instructorId)
+        .filter((id): id is number => id !== null && id !== undefined)
+    )
+  ]
+
+  // Return courses without instructor if no IDs
+  if (!instructorIds.length) {
+    return coursesData.map(course => ({
+      ...course,
+      instructor: undefined,
+    }))
+  }
+
+  // Fetch all instructors in one query
+  const instructors = await db
+    .select({
+      id: users.id,
+      username: users.username,
+    })
+    .from(users)
+    .where(inArray(users.id, instructorIds))
+
+  // Create lookup map
+  const instructorMap = new Map(
+    instructors.map(instructor => [instructor.id, instructor])
+  )
+
+  // Enrich each course with instructor data
+  return coursesData.map(course => ({
+    ...course,
+    instructor: course.instructorId
+      ? instructorMap.get(course.instructorId)
+      : undefined,
+  }))
+}
 
 // Using the schema types
 type CourseType = InferSelectModel<typeof courses>
@@ -39,7 +98,7 @@ export async function getAllCourses(
   } = {},
   limit?: number,
   offset?: number,
-): Promise<Course[]> {
+): Promise<CourseWithInstructor[]> {
   try {
     // Build where conditions array
     const whereConditions = []
@@ -125,8 +184,11 @@ export async function getAllCourses(
     }
 
     // Type assertion to fix Drizzle type errors
-    const result: Course[] = await query as Course[]
-    return result
+    const result: CourseType[] = await query as CourseType[]
+
+    // Enrich courses with instructor information
+    const enrichedCourses = await enrichCoursesWithInstructors(result)
+    return enrichedCourses
   }
   catch (error) {
     console.error('Error fetching courses:', error)
