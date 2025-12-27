@@ -1,7 +1,7 @@
 # Project Summary
 
 ## Overall Goal
-Implement and enhance the "Related Courses" feature on the course detail page using API endpoint and composable approach with proper TypeScript typing, responsive design, and full accessibility support, while fixing import path issues and ensuring proper image display.
+Implement and enhance the "Related Courses" feature on the course detail page using API endpoint and composable approach with proper TypeScript typing, responsive design, and full accessibility support, while fixing import path issues and ensuring proper image display. Additionally, standardize instructor data processing across all API endpoints to ensure consistency in avatar generation and name formatting.
 
 ## Key Knowledge
 - Project uses Nuxt 4 + Vue 3 + TypeScript + Tailwind CSS
@@ -21,6 +21,7 @@ Implement and enhance the "Related Courses" feature on the course detail page us
 - CourseCard component expects `course.image` and `course.instructor.avatar` fields
 - Price is stored in cents in database and needs to be converted to dollars for display
 - Instructor names are stored as usernames in snake_case format and need to be formatted as Title Case for display
+- New instructor-service.ts provides a single source of truth for instructor data processing
 
 ## Recent Actions
 - [DONE] Created `CourseApiResponse` interface in `app/types/shared/courses.ts` for API response typing
@@ -48,6 +49,13 @@ Implement and enhance the "Related Courses" feature on the course detail page us
 - [DONE] Fixed image display issues by standardizing field names to 'image' across the system
 - [DONE] Fixed price display inconsistency by ensuring all prices are converted from cents to dollars in business logic
 - [DONE] Standardized instructor name formatting from snake_case to Title Case using a shared utility function
+- [DONE] Identified inconsistency in instructor avatar generation between CoursesGrid and RelatedCourses components
+- [DONE] Created new `instructor-service.ts` to provide a single source of truth for instructor data processing
+- [DONE] Updated `course-transformer.ts` to use the new instructor service
+- [DONE] Updated `course-service.ts` to use the new instructor service
+- [DONE] Updated `related-courses.ts` to use the new instructor service and transformer
+- [DONE] Updated `useRelatedCourses.ts` to remove redundant data mapping
+- [DONE] Updated API endpoint `/api/courses/[courseId]/related` to use the new standardized response format
 
 ## Current Plan
 - [DONE] Implement related courses API endpoint
@@ -71,8 +79,12 @@ Implement and enhance the "Related Courses" feature on the course detail page us
 - [DONE] Standardize field names across the system to use 'image' consistently
 - [DONE] Fix price display inconsistency between different course components
 - [DONE] Format instructor names from snake_case to Title Case for better display
+- [DONE] Identify inconsistency in instructor avatar generation between different components
+- [DONE] Create a single source of truth for instructor data processing
+- [DONE] Update all course-related services to use the new instructor service
+- [DONE] Standardize instructor avatar generation across all components
 
 ---
 
 ## Summary Metadata
-**Update time**: 2025-12-25T23:39:34.829Z 
+**Update time**: 2025-12-26T16:12:28.197Z 

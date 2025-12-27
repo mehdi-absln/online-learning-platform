@@ -1,17 +1,18 @@
-import type {
-  Course as CourseType,
-  DetailedCourse,
-  Review,
-} from '~/types/shared/courses'
-import { processInstructorAvatar, processCourseImage } from './image-processor'
+// server/utils/course-transformer.ts
 
-// Define type for raw course data from database
-interface RawCourse {
+import type { Course as CourseType, DetailedCourse, Review } from '~/types/shared/courses'
+import { processCourseImage } from './image-processor'
+import type { InstructorInfo } from './instructor-service'
+
+/**
+ * Raw course data from database (with instructor already enriched)
+ */
+export interface RawCourse {
   id: number
   title: string
   description: string
   category: string
-  instructorId: number
+  instructorId: number | null
   studentCount: number | null
   rating: number | null
   price: number
@@ -21,10 +22,44 @@ interface RawCourse {
   slug: string
   createdAt: Date
   updatedAt: Date
-  instructor?: {
-    id: number
-    username: string
+  instructor?: InstructorInfo | null
+}
+
+/**
+ * Transform a single course to client format
+ * This is the SINGLE source of truth for course transformation
+ */
+export function transformCourseForClient(course: RawCourse): CourseType {
+  return {
+    id: course.id,
+    title: course.title,
+    description: course.description,
+    category: course.category,
+    instructorId: course.instructorId || 0,
+    rating: course.rating || 0,
+    price: course.price / 100, // Convert from cents to dollars
+    level: course.level,
+    tags: course.tags || undefined,
+    image: processCourseImage(course.image) ?? undefined,
+    slug: course.slug,
+    createdAt: course.createdAt,
+    updatedAt: course.updatedAt,
+    instructor: course.instructor || {
+      id: 0,
+      name: 'Unknown Instructor',
+      avatar: '/images/placeholder-avatar.svg',
+    },
+    stats: {
+      students: course.studentCount || 0,
+    },
   }
+}
+
+/**
+ * Transform multiple courses to client format
+ */
+export function transformCoursesForClient(courses: RawCourse[]): CourseType[] {
+  return courses.map(course => transformCourseForClient(course))
 }
 
 // Define type for raw course learning objectives from database
@@ -75,37 +110,6 @@ interface RawLesson {
   orderVal: number
   createdAt: Date
   updatedAt: Date
-}
-
-import { formatInstructorName } from './format-utils'
-
-export function transformCourseForClient(course: RawCourse): CourseType {
-  // Convert price from cents to dollars and add instructor information
-  return {
-    id: course.id,
-    title: course.title,
-    description: course.description,
-    category: course.category,
-    instructorId: course.instructorId,
-    rating: course.rating || 0, // Handle possible null value
-    price: course.price / 100, // Convert from cents to dollars
-    level: course.level,
-    tags: course.tags || undefined,
-    image: processCourseImage(course.image) ?? undefined,
-    slug: course.slug, // Include the slug field
-    createdAt: course.createdAt,
-    updatedAt: course.updatedAt,
-    instructor: {
-      name: course.instructor?.username ? formatInstructorName(course.instructor.username) : 'Unknown Instructor',
-      avatar: processInstructorAvatar(
-        undefined, // جدول users فیلد avatar ندارد
-        course.instructor?.username || 'Unknown Instructor',
-      ),
-    },
-    stats: {
-      students: course.studentCount || 0, // Handle possible null value
-    },
-  }
 }
 
 export function transformCourseForClientWithDetails(
@@ -179,8 +183,4 @@ export function transformCourseForClientWithDetails(
     courseContent: orderedContentSections,
     reviews: transformedReviews,
   }
-}
-
-export function transformCoursesForClient(courses: RawCourse[]): CourseType[] {
-  return courses.map(course => transformCourseForClient(course))
 }
