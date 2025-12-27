@@ -1,5 +1,5 @@
 <template>
-  <div
+  <article
     class="w-full h-full rounded-3xl overflow-hidden transition-all duration-500 ease-in-out group flex flex-col"
   >
     <!-- Image Section -->
@@ -107,7 +107,7 @@
         </span>
       </div>
     </div>
-  </div>
+  </article>
 </template>
 
 <script setup lang="ts">

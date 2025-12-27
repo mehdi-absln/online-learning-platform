@@ -1,4 +1,5 @@
 import { getRelatedCourses } from '~~/server/utils/related-courses'
+import { transformCourseForClient } from '~~/server/utils/course-transformer'
 
 export default cachedEventHandler(
   async (event) => {
@@ -39,22 +40,13 @@ export default cachedEventHandler(
         level: course.level.toLowerCase(),
         rating: course.rating,
         studentsCount: course.studentCount,
-        category: {
-          id: course.category,
-          name: course.category,
-          slug: course.category.toLowerCase()
-        },
-        instructor: course.instructor ? {
+        category: course.category,
+        instructor: {
           name: course.instructor.name,
-          avatar: course.instructor.avatar
-        } : {
-          name: 'Unknown Instructor',
-          avatar: '/images/placeholder-avatar.svg'
+          avatar: course.instructor.avatar,
+          id: course.instructor.id
         },
-        tags: course.tags ? course.tags.split(',').map(tag => ({
-          id: tag.trim(),
-          name: tag.trim()
-        })) : []
+        tags: course.tags || '',
       }))
 
       return {

@@ -1,9 +1,8 @@
-import type { Course, CourseApiResponse } from '~/types/shared/courses'
-import { processInstructorAvatar } from '~~/server/utils/image-processor'
+import type { Course } from '~/types/shared/courses'
 
 interface RelatedCoursesResponse {
   success: boolean
-  data: CourseApiResponse[]
+  data: Course[]
   meta: {
     total: number
     basedOn: {
@@ -17,49 +16,29 @@ interface UseRelatedCoursesOptions {
   immediate?: boolean
 }
 
-// تابع تبدیل از CourseApiResponse به Course
-const mapApiResponseToCourse = (apiCourse: CourseApiResponse): Course => {
-  return {
-    id: parseInt(apiCourse.id),
-    title: apiCourse.title,
-    description: apiCourse.description || '',
-    category: apiCourse.category?.name || '',
-    instructor: {
-      name: apiCourse.instructor?.name || 'Unknown Instructor',
-      avatar: processInstructorAvatar(
-        apiCourse.instructor?.avatar || null,
-        apiCourse.instructor?.name || 'Unknown Instructor'
-      )
-    },
-    stats: {
-      students: apiCourse.studentsCount || 0
-    },
-    rating: apiCourse.rating || 0,
-    price: apiCourse.price, // Price should already be in dollars from API
-    level: apiCourse.level || 'Beginner',
-    tags: apiCourse.tags?.map(tag => tag.name).join(', '),
-    image: apiCourse.image || '/images/placeholder-course.svg',
-    slug: apiCourse.slug,
-    createdAt: new Date(apiCourse.createdAt || new Date()),
-    updatedAt: new Date(apiCourse.updatedAt || new Date()),
-    instructorId: parseInt(apiCourse.instructorId || '0')
-  }
-}
-
+/**
+ * Composable for fetching and managing related courses data
+ * Provides reactive state for related courses, loading status, and error handling
+ *
+ * @param courseId - The ID of the current course to find related courses for
+ * @param options - Configuration options for the composable
+ * @returns Reactive properties and actions for related courses management
+ */
 export const useRelatedCourses = (
   courseId: MaybeRef<string | null | undefined>,
-  options: UseRelatedCoursesOptions = {}
+  options: UseRelatedCoursesOptions = {},
 ) => {
   const { immediate = true } = options
 
+  // Resolve the courseId ref to a raw value
   const resolvedCourseId = computed(() => toValue(courseId))
 
+  // Fetch related courses from API with caching
   const {
     data,
-    pending: loading,
+    pending,
     error,
-    refresh,
-    status
+    status,
   } = useFetch<RelatedCoursesResponse>(
     () => `/api/courses/${resolvedCourseId.value}/related`,
     {
@@ -69,42 +48,44 @@ export const useRelatedCourses = (
       default: () => ({
         success: false,
         data: [],
-        meta: { total: 0, basedOn: { categoryId: null, tagIds: [] } }
-      })
-    }
+        meta: { total: 0, basedOn: { categoryId: null, tagIds: [] } },
+      }),
+    },
   )
 
-  // استخراج دوره‌های مرتبط از response و تبدیل آن‌ها به نوع Course
+  // Rename pending to loading for public API to maintain consistent naming
+  const loading = pending
+
+  // Computed property to extract related courses from the API response
   const relatedCourses = computed(() =>
-    data.value?.data.map(course => mapApiResponseToCourse(course)) || []
+    data.value?.data || [],
   )
 
-  // تعداد دوره‌های مرتبط
+  // Computed property to get the total count of related courses
   const totalRelated = computed(() => data.value?.meta?.total || 0)
 
-  // آیا دوره‌های مرتبط وجود دارد؟
+  // Computed property to check if there are any related courses
   const hasRelatedCourses = computed(() => relatedCourses.value.length > 0)
 
-  // وضعیت خطا
-  const hasError = computed(() => !!error.value)
-  const errorMessage = computed(() => error.value?.message || null)
+  // Computed property to determine if there's an error using the standardized error composable
+  const hasError = useApiError(data, pending, error)
+
+  // Computed property to get the error message from either fetch error or API response error
+  const errorMessage = computed(() => error.value?.message || hasError.value?.message || null)
 
   return {
-    // Data
+    // Data properties
     relatedCourses,
     totalRelated,
     hasRelatedCourses,
 
-    // State
+    // State properties
     loading,
     status,
 
-    // Error
+    // Error properties
     error,
     hasError,
     errorMessage,
-
-    // Actions
-    refresh
   }
 }
