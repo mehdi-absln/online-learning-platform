@@ -2,7 +2,7 @@
 
 import { eq, inArray } from 'drizzle-orm'
 import { db } from '../db'
-import { users } from '../db/schema'
+import { instructors } from '../db/schema'
 import { formatInstructorName } from './format-utils'
 import { processInstructorAvatar } from './image-processor'
 
@@ -20,7 +20,8 @@ export interface InstructorInfo {
  */
 interface RawInstructor {
   id: number
-  username: string
+  name: string
+  avatar?: string | null
 }
 
 /**
@@ -33,14 +34,14 @@ export function transformInstructor(
 ): InstructorInfo | null {
   if (!instructorId) return null
 
-  const name = rawInstructor?.username
-    ? formatInstructorName(rawInstructor.username)
+  const name = rawInstructor?.name
+    ? formatInstructorName(rawInstructor.name)
     : 'Unknown Instructor'
 
   return {
     id: instructorId,
     name,
-    avatar: processInstructorAvatar(undefined, name),
+    avatar: rawInstructor?.avatar || processInstructorAvatar(undefined, name),  // ✅ اول DB بعد generate
   }
 }
 
@@ -54,11 +55,11 @@ export async function getInstructorById(
 
   const result = await db
     .select({
-      id: users.id,
-      username: users.username,
+      id: instructors.id,
+      name: instructors.name,
     })
-    .from(users)
-    .where(eq(users.id, instructorId))
+    .from(instructors)
+    .where(eq(instructors.id, instructorId))
     .limit(1)
 
   return result[0] || null
@@ -74,15 +75,16 @@ export async function getInstructorsByIds(
 
   const uniqueIds = [...new Set(instructorIds)]
 
-  const instructors = await db
+  const instructorsResult = await db
     .select({
-      id: users.id,
-      username: users.username,
+      id: instructors.id,
+      name: instructors.name,
+      avatar: instructors.avatar,  // ✅ اضافه شد
     })
-    .from(users)
-    .where(inArray(users.id, uniqueIds))
+    .from(instructors)
+    .where(inArray(instructors.id, uniqueIds))
 
-  return new Map(instructors.map(i => [i.id, i]))
+  return new Map(instructorsResult.map(i => [i.id, i]))
 }
 
 /**
