@@ -14,7 +14,7 @@
           loading="lazy"
           class="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
           @error="handleImageError"
-        >
+        >ه
       </div>
 
       <!-- Top Bar: Category & Bookmark -->

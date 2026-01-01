@@ -1,62 +1,49 @@
-import type { H3Event } from 'h3'
-import { getRouterParam, setResponseStatus } from 'h3'
 import { getDetailedCourseBySlug } from '../../../db/course-service'
-import { transformCourseForClientWithDetails } from '../../../utils/course-transformer'
 
-export default defineEventHandler(async (event: H3Event) => {
+export default defineEventHandler(async (event) => {
+  const slug = getRouterParam(event, 'slug')
+
+  if (!slug) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Slug is required',
+    })
+  }
+
   try {
-    console.log('Fetching detailed course by slug...')
-    const slug = getRouterParam(event, 'slug')
-    console.log('Course slug:', slug)
+    console.log('\n========================================')
+    console.log('🌐 API Request: /api/courses/slug/' + slug)
+    console.log('========================================')
 
-    if (!slug) {
-      setResponseStatus(event, 400)
-      return {
-        success: false,
-        message: 'Invalid course slug',
-      }
+    const course = await getDetailedCourseBySlug(slug)
+
+    if (!course) {
+      console.log('❌ Course not found for slug:', slug)
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Course not found',
+      })
     }
 
-    const detailedCourseData = await getDetailedCourseBySlug(slug)
-
-    if (!detailedCourseData) {
-      setResponseStatus(event, 404)
-      return {
-        success: false,
-        message: 'Course not found',
-      }
-    }
-
-    const { course, learningObjectives, contentSections, reviews, lessons } = detailedCourseData
-
-    // Transform the course with all additional data
-    const transformedCourse = transformCourseForClientWithDetails(
-      course,
-      learningObjectives,
-      contentSections,
-      reviews,
-      lessons,
-    )
+    console.log('✅ Returning course:', course.title)
+    console.log('📊 courseContent sections:', course.courseContent?.length || 0)
+    console.log('📊 Total lessons:', course.courseContent?.reduce((acc, s) => acc + s.content.length, 0) || 0)
+    console.log('========================================\n')
 
     return {
       success: true,
-      data: {
-        ...transformedCourse,
-      },
-      courseId: course.id,
+      data: course,
     }
-  }
-  catch (error: unknown) {
-    console.error(`Detailed error in GET /api/courses/slug/[slug]:`, error)
-    console.error('Error name:', (error as Error).name)
-    console.error('Error message:', (error as Error).message)
-    console.error('Error stack:', (error as Error).stack)
+  } catch (error: any) {
+    console.error('❌ Error fetching course:', error.message)
 
-    setResponseStatus(event, 500)
-    return {
-      success: false,
-      message: 'Failed to fetch course',
-      error: (error as Error).message || 'Unknown error occurred',
+    if (error.statusCode) {
+      throw error
     }
+
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Failed to fetch course',
+    })
   }
 })

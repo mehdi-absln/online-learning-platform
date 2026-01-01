@@ -1,8 +1,8 @@
 import { eq, and, ne, or, like } from 'drizzle-orm'
 import { db } from '../db'
-import { courses, reviews } from '../db/schema'
+import { courses, reviews, categories } from '../db/schema'
 import { enrichCoursesWithInstructors } from './instructor-service'
-import { transformCourseForClient, type RawCourse } from './course-transformer'
+import { processCourseImage } from './image-processor'
 
 // Types
 export interface RelatedCourseResult {
@@ -14,7 +14,7 @@ export interface RelatedCourseResult {
   price: number
   rating: number
   studentCount: number
-  image: string | undefined
+  image: string
   level: string
   instructorId: number
   instructor: {
@@ -22,7 +22,12 @@ export interface RelatedCourseResult {
     name: string
     avatar: string
   }
+  stats: {
+    students: number
+  }
   tags: string | undefined
+  createdAt: Date
+  updatedAt: Date
   popularityScore: number
   tagMatchScore: number
   categoryMatch: boolean
@@ -39,7 +44,7 @@ export interface GetRelatedCoursesResult {
   meta: {
     total: number
     basedOn: {
-      category: string
+      category: string | null
       tags: string[]
     }
   }
@@ -80,7 +85,7 @@ export function calculateTagMatchScore(
 }
 
 /**
- * Get related courses - uses shared transformer for consistency
+ * Get related courses
  */
 export async function getRelatedCourses(
   options: GetRelatedCoursesOptions
@@ -91,7 +96,7 @@ export async function getRelatedCourses(
   const currentCourseResult = await db
     .select({
       id: courses.id,
-      category: courses.category,
+      categoryId: courses.categoryId,
       tags: courses.tags,
     })
     .from(courses)
@@ -103,7 +108,7 @@ export async function getRelatedCourses(
   }
 
   const currentCourse = currentCourseResult[0]
-  const category = currentCourse.category
+  const categoryId = currentCourse.categoryId
   const currentTags = parseTags(currentCourse.tags)
 
   // 2. Build search conditions
@@ -114,21 +119,38 @@ export async function getRelatedCourses(
   const searchCondition = and(
     ne(courses.id, courseId),
     tagConditions.length > 0
-      ? or(eq(courses.category, category), ...tagConditions)
-      : eq(courses.category, category)
+      ? or(eq(courses.categoryId, categoryId), ...tagConditions)
+      : eq(courses.categoryId, categoryId)
   )
 
-  // 3. Fetch potential related courses
+  // 3. Fetch potential related courses with category names
   const potentialCourses = await db
-    .select()
+    .select({
+      id: courses.id,
+      title: courses.title,
+      slug: courses.slug,
+      description: courses.description,
+      categoryId: courses.categoryId,
+      category: categories.name,
+      instructorId: courses.instructorId,
+      studentCount: courses.studentsCount,
+      rating: courses.rating,
+      price: courses.price,
+      level: courses.level,
+      tags: courses.tags,
+      thumbnail: courses.thumbnail,
+      createdAt: courses.createdAt,
+      updatedAt: courses.updatedAt,
+    })
     .from(courses)
+    .leftJoin(categories, eq(courses.categoryId, categories.id))
     .where(searchCondition)
     .limit(10)
 
-  // 4. ✅ استفاده از instructor-service (همان که CoursesGrid استفاده می‌کنه)
+  // 4. Enrich with instructors
   const enrichedCourses = await enrichCoursesWithInstructors(potentialCourses)
 
-  // 5. Calculate scores
+  // 5. Calculate scores and transform
   const scoredCourses = await Promise.all(
     enrichedCourses.map(async (course) => {
       // Get average rating from reviews
@@ -143,22 +165,36 @@ export async function getRelatedCourses(
 
       const courseTags = parseTags(course.tags)
 
-      // ✅ استفاده از transformCourseForClient برای یکسان‌سازی
-      const transformed = transformCourseForClient({
-        ...course,
-        rating: avgRating,
-      } as RawCourse)
-
       return {
-        ...transformed,
+        id: course.id,
+        title: course.title,
+        slug: course.slug,
+        description: course.description,
+        category: course.category || 'Uncategorized',
+        price: course.price / 100,
+        rating: avgRating,
         studentCount: course.studentCount || 0,
+        image: processCourseImage(course.thumbnail),
+        level: course.level,
+        instructorId: course.instructorId || 0,
+        instructor: course.instructor || {
+          id: 0,
+          name: 'Unknown',
+          avatar: '/images/placeholder-avatar.svg',
+        },
+        stats: {
+          students: course.studentCount || 0,
+        },
+        tags: course.tags || undefined,
+        createdAt: course.createdAt,
+        updatedAt: course.updatedAt,
         popularityScore: calculatePopularityScore(
           course.studentCount || 0,
           avgRating,
           course.createdAt
         ),
         tagMatchScore: calculateTagMatchScore(courseTags, currentTags),
-        categoryMatch: course.category === category,
+        categoryMatch: course.categoryId === categoryId,
       }
     })
   )
@@ -180,7 +216,7 @@ export async function getRelatedCourses(
     data: sortedCourses.slice(0, limit) as RelatedCourseResult[],
     meta: {
       total: Math.min(sortedCourses.length, limit),
-      basedOn: { category, tags: currentTags },
+      basedOn: { category: categoryId?.toString() || null, tags: currentTags },
     },
   }
 }

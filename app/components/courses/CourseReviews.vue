@@ -57,19 +57,19 @@
       <div class="divide-y divide-dark-divider">
         <article
           v-for="review in reviews"
-          :key="review.date"
+          :key="review.id"
           class="flex flex-col md:flex-row md:items-start gap-4 py-8"
         >
           <!-- Reviewer Info -->
           <div class="flex-shrink-0 md:w-40">
             <h4 class="font-semibold text-white">
-              {{ review.reviewerName }}
+              {{ review.user?.name || 'Anonymous' }}
             </h4>
             <time
-              :datetime="review.date"
+              :datetime="review.createdAt"
               class="text-white/70 text-sm mt-1 block"
             >
-              {{ formatDate(review.date) }}
+              {{ formatDate(review.createdAt) }}
             </time>
           </div>
 
@@ -156,12 +156,20 @@ const getStarPercentage = (star: number): string => {
   return ((count / props.reviews.length) * 100).toFixed(1)
 }
 
-const formatDate = (dateString: string): string => {
+const formatDate = (date: string | number | Date): string => {
+  if (!date) return 'Unknown date'
+
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   }
-  return new Date(dateString).toLocaleDateString(undefined, options)
+
+  // Handle timestamp (number)
+  if (typeof date === 'number') {
+    return new Date(date * 1000).toLocaleDateString(undefined, options)
+  }
+
+  return new Date(date).toLocaleDateString(undefined, options)
 }
 </script>

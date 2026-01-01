@@ -80,7 +80,7 @@
           <FilterCheckboxGroup
             :model-value="filter.categories || []"
             name="category"
-            :options="categories?.map(c => ({ label: c, value: c })) || []"
+            :options="categories?.map(c => ({ label: c.name, value: String(c.id) })) || []"
             @update:model-value="handleCategoryChange"
           />
         </div>

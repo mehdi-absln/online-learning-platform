@@ -1,212 +1,148 @@
 import { db } from './index'
-import {
-  courses,
-  users,
+import { 
+  courses, 
+  courseContentSections, 
+  lessons, 
   courseLearningObjectives,
-  courseContentSections,
-  reviews,
-  lessons,
+  instructors 
 } from './schema'
-import { hash } from 'bcrypt'
 
-async function seedDatabase() {
-  console.log('Seeding database...')
+export async function seedDatabase() {
+  console.log('🌱 Starting database seed...')
 
-  // Create an instructor user
-  const instructorEmail = 'instructor@example.com'
-  const instructorPassword = await hash('password123', 10)
-  const [instructor] = await db
-    .insert(users)
-    .values({
-      username: 'John Instructor',
-      email: instructorEmail,
-      passwordHash: instructorPassword,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })
-    .returning()
+  const now = new Date()
 
-  // Create a regular user for reviews
-  const studentEmail = 'student@example.com'
-  const studentPassword = await hash('password123', 10)
-  const [student] = await db
-    .insert(users)
-    .values({
-      username: 'Jane Student',
-      email: studentEmail,
-      passwordHash: studentPassword,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })
-    .returning()
+  try {
+    // 1. ایجاد مدرس
+    console.log('👨‍🏫 Creating instructor...')
+    const [instructor] = await db.insert(instructors).values({
+      name: 'علی احمدی',
+      title: 'Senior Developer',
+      bio: 'توسعه‌دهنده ارشد با بیش از ۱۰ سال تجربه',
+      avatar: '/images/instructors/ali.jpg',
+      createdAt: now,
+    }).returning()
 
-  // Create a sample course
-  const [course] = await db
-    .insert(courses)
-    .values({
-      title: 'Advanced TypeScript',
-      description: 'Master advanced TypeScript concepts and techniques',
-      category: 'Programming',
+    // 2. ایجاد دوره
+    console.log('📚 Creating course...')
+    const [course] = await db.insert(courses).values({
+      title: 'آموزش جامع Vue.js 3',
+      slug: 'vue-js-3-complete',
+      description: 'در این دوره به صورت کامل Vue.js 3 رو یاد می‌گیرید',
+      price: 299000,
+      originalPrice: 499000,
+      thumbnail: '/images/courses/vue-course.jpg',
       instructorId: instructor.id,
-      studentCount: 120,
-      rating: 4.7,
-      price: 9999, // $99.99 in cents
-      level: 'Advanced',
-      tags: 'typescript,javascript,programming',
-      image: '/images/typescript-course.jpg',
-      slug: 'advanced-typescript',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })
-    .returning()
+      level: 'intermediate',
+      language: 'fa',
+      duration: '12 ساعت',
+      lessonsCount: 45,
+      studentsCount: 1250,
+      rating: 4.8,
+      reviewsCount: 89,
+      isFeatured: true,
+      isPublished: true,
+      createdAt: now,
+      updatedAt: now,
+    }).returning()
 
-  // Add learning objectives for the course
-  const learningObjectivesData = [
-    {
-      courseId: course.id,
-      objective: 'Understand advanced TypeScript features like generics and decorators',
-      orderVal: 1,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      courseId: course.id,
-      objective: 'Learn to write type-safe code with complex type systems',
-      orderVal: 2,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      courseId: course.id,
-      objective: 'Implement design patterns using TypeScript',
-      orderVal: 3,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      courseId: course.id,
-      objective: 'Create scalable applications with TypeScript',
-      orderVal: 4,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]
+    console.log('✅ Course created with ID:', course.id)
 
-  await db.insert(courseLearningObjectives).values(learningObjectivesData)
+    // 3. ایجاد بخش‌ها
+    console.log('📂 Creating sections...')
+    const sectionsData = [
+      { title: 'مقدمه و آشنایی', description: 'آشنایی با Vue.js و نصب', orderVal: 1 },
+      { title: 'مفاهیم پایه', description: 'کامپوننت‌ها، props، events', orderVal: 2 },
+      { title: 'Composition API', description: 'ref, reactive, computed', orderVal: 3 },
+      { title: 'پروژه عملی', description: 'ساخت یک اپلیکیشن کامل', orderVal: 4 },
+    ]
 
-  // Add content sections for the course
-  const contentSectionsData = [
-    {
-      courseId: course.id,
-      title: 'Advanced Types',
-      description: 'Deep dive into TypeScript\'s type system',
-      lessonsCount: 5,
-      orderVal: 1,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      courseId: course.id,
-      title: 'Generics and Decorators',
-      description: 'Learn to use generics and decorators effectively',
-      lessonsCount: 4,
-      orderVal: 2,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      courseId: course.id,
-      title: 'Type-Safe Design Patterns',
-      description: 'Implementing design patterns with TypeScript',
-      lessonsCount: 6,
-      orderVal: 3,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      courseId: course.id,
-      title: 'Testing and Performance',
-      description: 'Advanced testing and performance optimization',
-      lessonsCount: 3,
-      orderVal: 4,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]
+    const createdSections = []
+    for (const sectionData of sectionsData) {
+      const [section] = await db.insert(courseContentSections).values({
+        courseId: course.id,
+        title: sectionData.title,
+        description: sectionData.description,
+        orderVal: sectionData.orderVal,
+        createdAt: now,
+        updatedAt: now,
+      }).returning()
+      createdSections.push(section)
+    }
 
-  await db.insert(courseContentSections).values(contentSectionsData)
+    console.log('✅ Sections created:', createdSections.length)
 
-  // Add some lessons to the course
-  const lessonsData = [
-    {
-      courseId: course.id,
-      title: 'Introduction to Advanced Types',
-      content: 'In this lesson, we cover union types, intersection types, and conditional types.',
-      orderVal: 1,
-      slug: 'introduction-to-advanced-types',
-      videoUrl: 'https://example.com/video1',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      courseId: course.id,
-      title: 'Working with Generics',
-      content: 'Learn how to create reusable and type-safe components using generics.',
-      orderVal: 2,
-      slug: 'working-with-generics',
-      videoUrl: 'https://example.com/video2',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      courseId: course.id,
-      title: 'Understanding Decorators',
-      content: 'Exploring TypeScript decorators and how to create custom decorators.',
-      orderVal: 3,
-      slug: 'understanding-decorators',
-      videoUrl: 'https://example.com/video3',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]
+    // 4. ایجاد درس‌ها
+    console.log('📝 Creating lessons...')
+    const lessonsData = [
+      // بخش 1
+      { sectionId: createdSections[0].id, title: 'Vue.js چیست؟', slug: 'what-is-vue', duration: '08:30', orderVal: 1 },
+      { sectionId: createdSections[0].id, title: 'نصب و راه‌اندازی', slug: 'installation', duration: '12:45', orderVal: 2 },
+      { sectionId: createdSections[0].id, title: 'ساختار پروژه', slug: 'project-structure', duration: '10:20', orderVal: 3 },
+      
+      // بخش 2
+      { sectionId: createdSections[1].id, title: 'کامپوننت‌ها', slug: 'components', duration: '15:00', orderVal: 1 },
+      { sectionId: createdSections[1].id, title: 'Props و Events', slug: 'props-events', duration: '18:30', orderVal: 2 },
+      { sectionId: createdSections[1].id, title: 'Slots', slug: 'slots', duration: '14:15', orderVal: 3 },
+      
+      // بخش 3
+      { sectionId: createdSections[2].id, title: 'ref و reactive', slug: 'ref-reactive', duration: '20:00', orderVal: 1 },
+      { sectionId: createdSections[2].id, title: 'computed و watch', slug: 'computed-watch', duration: '16:45', orderVal: 2 },
+      { sectionId: createdSections[2].id, title: 'Composables', slug: 'composables', duration: '22:30', orderVal: 3 },
+      
+      // بخش 4
+      { sectionId: createdSections[3].id, title: 'طراحی UI', slug: 'ui-design', duration: '25:00', orderVal: 1 },
+      { sectionId: createdSections[3].id, title: 'اتصال به API', slug: 'api-connection', duration: '28:15', orderVal: 2 },
+      { sectionId: createdSections[3].id, title: 'دیپلوی پروژه', slug: 'deployment', duration: '18:00', orderVal: 3 },
+    ]
 
-  await db.insert(lessons).values(lessonsData)
+    for (const lessonData of lessonsData) {
+      await db.insert(lessons).values({
+        courseId: course.id,
+        sectionId: lessonData.sectionId,
+        title: lessonData.title,
+        slug: lessonData.slug,
+        duration: lessonData.duration,
+        videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', // نمونه
+        description: `توضیحات درس ${lessonData.title}`,
+        content: `محتوای کامل درس ${lessonData.title} اینجا قرار می‌گیرد...`,
+        orderVal: lessonData.orderVal,
+        isFree: lessonData.orderVal === 1, // اولین درس هر بخش رایگان
+        createdAt: now,
+        updatedAt: now,
+      })
+    }
 
-  // Add reviews for the course
-  const reviewsData = [
-    {
-      courseId: course.id,
-      reviewerName: 'Alice Johnson',
-      reviewerId: student.id,
-      rating: 5,
-      comment: 'Excellent course! The instructor explains complex concepts very well.',
-      date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // A week ago
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      courseId: course.id,
-      reviewerName: 'Bob Smith',
-      rating: 4,
-      comment: 'Good content but some examples could be more practical.',
-      date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      courseId: course.id,
-      reviewerName: 'Carol Davis',
-      rating: 5,
-      comment: 'One of the best TypeScript courses I have taken. Highly recommended!',
-      date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]
+    console.log('✅ Lessons created:', lessonsData.length)
 
-  await db.insert(reviews).values(reviewsData)
+    // 5. اهداف یادگیری
+    console.log('🎯 Creating learning objectives...')
+    const objectives = [
+      'آشنایی کامل با Vue.js 3 و Composition API',
+      'ساخت کامپوننت‌های قابل استفاده مجدد',
+      'مدیریت state با Pinia',
+      'کار با Vue Router',
+      'اتصال به API و مدیریت داده‌ها',
+    ]
 
-  console.log('Database seeded successfully!')
+    for (let i = 0; i < objectives.length; i++) {
+      await db.insert(courseLearningObjectives).values({
+        courseId: course.id,
+        objective: objectives[i],
+        orderVal: i + 1,
+      })
+    }
+
+    console.log('✅ Learning objectives created:', objectives.length)
+
+    console.log('🎉 Database seeded successfully!')
+    
+    return { success: true, courseId: course.id, courseSlug: course.slug }
+  } catch (error) {
+    console.error('❌ Seed error:', error)
+    throw error
+  }
 }
 
-seedDatabase().catch(console.error)
+// اجرای مستقیم
+// seedDatabase().then(console.log).catch(console.error)

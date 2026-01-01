@@ -11,14 +11,16 @@ export interface RawCourse {
   id: number
   title: string
   description: string
-  category: string
+  categoryId: number | null
+  category: string | null
   instructorId: number | null
   studentCount: number | null
   rating: number | null
   price: number
   level: string
   tags: string | null
-  image: string | null
+  thumbnail?: string | null  // ✅ از DB مستقیم
+  image?: string | null      // ✅ از course-service
   slug: string
   createdAt: Date
   updatedAt: Date
@@ -34,13 +36,13 @@ export function transformCourseForClient(course: RawCourse): CourseType {
     id: course.id,
     title: course.title,
     description: course.description,
-    category: course.category,
+    category: course.category || (course.categoryId ? String(course.categoryId) : null),
     instructorId: course.instructorId || 0,
     rating: course.rating || 0,
     price: course.price / 100, // Convert from cents to dollars
     level: course.level,
     tags: course.tags || undefined,
-    image: processCourseImage(course.image) ?? undefined,
+    image: processCourseImage(course.thumbnail ?? course.image) ?? undefined,
     slug: course.slug,
     createdAt: course.createdAt,
     updatedAt: course.updatedAt,

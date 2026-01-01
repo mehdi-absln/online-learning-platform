@@ -130,7 +130,7 @@
             <figure class="relative overflow-hidden">
               <img
                 class="rounded-t-2xl w-full h-full object-cover"
-                :src="course?.image"
+                :src="course?.thumbnail || '/images/placeholder-course.svg'"
                 :alt="course?.title"
                 @error="handleImageError"
               >
@@ -213,7 +213,7 @@
                     <span class="text-gray-300">Students</span>
                   </dt>
                   <dd class="text-white font-medium">
-                    {{ course?.stats?.students }}
+                    {{ course?.studentsCount || 0 }}
                   </dd>
                 </div>
 
@@ -238,7 +238,7 @@
                     <span class="text-gray-300">Category</span>
                   </dt>
                   <dd class="text-white font-medium">
-                    {{ course?.category }}
+                    {{ course?.categoryName || 'N/A' }}
                   </dd>
                 </div>
               </dl>

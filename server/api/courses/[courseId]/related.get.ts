@@ -1,9 +1,7 @@
 import { getRelatedCourses } from '~~/server/utils/related-courses'
-import { transformCourseForClient } from '~~/server/utils/course-transformer'
 
 export default cachedEventHandler(
   async (event) => {
-    // Get courseId from URL params
     const courseId = getRouterParam(event, 'courseId')
 
     if (!courseId) {
@@ -23,42 +21,16 @@ export default cachedEventHandler(
     }
 
     try {
-      // Call the business logic function
       const result = await getRelatedCourses({
         courseId: numericCourseId,
         limit: 4,
       })
 
-      // Transform the result to match the expected API response format
-      const formattedData = result.data.map(course => ({
-        id: course.id.toString(),
-        title: course.title,
-        slug: course.slug,
-        description: course.description,
-        image: course.image || '/images/placeholder-course.svg', // Ensure image is provided
-        price: course.price, // Price is already converted in business logic
-        level: course.level.toLowerCase(),
-        rating: course.rating,
-        studentsCount: course.studentCount,
-        category: course.category,
-        instructor: {
-          name: course.instructor.name,
-          avatar: course.instructor.avatar,
-          id: course.instructor.id
-        },
-        tags: course.tags || '',
-      }))
-
+      // Data is already formatted correctly from related-courses.ts
       return {
-        ...result,
-        data: formattedData,
-        meta: {
-          ...result.meta,
-          basedOn: {
-            categoryId: result.meta.basedOn.category,
-            tagIds: result.meta.basedOn.tags
-          }
-        }
+        success: result.success,
+        data: result.data,
+        meta: result.meta,
       }
     } catch (error: any) {
       if (error.message === 'Course not found') {
@@ -76,7 +48,7 @@ export default cachedEventHandler(
     }
   },
   {
-    maxAge: 60 * 15, // Cache for 15 minutes
+    maxAge: 60 * 15,
     getKey: (event) => {
       const courseId = getRouterParam(event, 'courseId')
       return `related-courses-${courseId}`

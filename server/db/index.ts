@@ -1,32 +1,15 @@
 import Database from 'better-sqlite3'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
+import { join } from 'path'
 import * as schema from './schema'
-// import { seedCourses } from '../utils/seed-courses'  // Commenting out automatic seeding since DB is already seeded
 
-// Determine the correct database path
-const dbPath = process.env.DATABASE_URL?.replace('file:', '') || './server/data/db.sqlite' // Using the db.sqlite file in server/data
-console.log(`Using database path: ${dbPath}`)
+// Get database path - works in both dev and production
+// Directly reference the db file in the project root
+const DB_PATH = join(process.cwd(), 'db.sqlite')
 
-const sqlite = new Database(dbPath)
+console.log('Database path:', DB_PATH)
+
+const sqlite = new Database(DB_PATH)
 export const db = drizzle(sqlite, { schema })
 
-// Only run migrations if needed
-try {
-  // Run migrations
-  console.log('Starting database migrations...')
-  migrate(db, { migrationsFolder: '../drizzle/migrations' })
-  console.log('Database migrations completed successfully')
-
-  // Automatic seeding is commented out since DB is already populated
-  // Uncomment the following lines if you need to re-seed the database:
-  /*
-  console.log('Starting to seed courses...')
-  seedCourses().catch(console.error)
-  */
-}
-catch (error) {
-  // If migration fails because meta files are missing, tables already exist, or other issues, log and continue
-  const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred during migration'
-  console.log('Migration issue (this may be normal):', errorMessage)
-}
+export { sqlite }

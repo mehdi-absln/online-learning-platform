@@ -27,7 +27,7 @@
       "idx": 3,
       "version": "6",
       "when": 1764452393000,
-      "tag": "0003_add_slug_to_lessons",
+      "tag": "0003_update_schema",
       "breakpoints": true
     }
   ]
