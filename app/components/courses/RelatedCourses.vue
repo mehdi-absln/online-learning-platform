@@ -6,6 +6,7 @@
   >
     <LoadingSpinner message="Loading course related..." />
   </div>
+  <!-- Error State -->
   <div
     v-else-if="hasError"
     class="py-36 flex flex-col items-center justify-center"
@@ -14,42 +15,20 @@
       {{ errorMessage }}
     </p>
   </div>
+  <!-- Content -->
   <section
     v-if="hasRelatedCourses"
     aria-labelledby="related-heading"
     class="mt-16"
   >
     <!-- Header -->
-    <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center mb-8">
       <h2
         id="related-heading"
         class="text-xl font-bold text-primary font-antonio"
       >
         {{ title }}
       </h2>
-
-      <NuxtLink
-        v-if="showViewAll && hasRelatedCourses"
-        to="/courses"
-        class="text-primary hover:text-primary/90 text-sm font-medium
-               flex items-center gap-1 transition-colors"
-      >
-        View All
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M14 5l7 7m0 0l-7 7m7-7H3"
-          />
-        </svg>
-      </NuxtLink>
     </div>
 
     <!-- Courses Grid -->

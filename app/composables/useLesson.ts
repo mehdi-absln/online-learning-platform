@@ -1,152 +1,174 @@
-import type { Lesson, LessonProgress } from '~/types/shared/lessons'
+import type { DetailedLesson } from '~/types/shared/courses'
 
-/**
- * Composable for managing lesson-related state and operations
- */
-export const useLesson = () => {
-  // State for tracking lesson progress
-  const lessonProgress = useState<Record<number, LessonProgress>>('lesson-progress', () => ({}))
+export const useLesson = (
+  courseSlug: MaybeRef<string>,
+  lessonSlug: MaybeRef<string>,
+) => {
+  const router = useRouter()
 
-  // State for user notes
-  const userNotes = useState<Record<number, string>>('user-notes', () => ({}))
+  // ───── Reactive Values ─────
+  const courseSlugValue = computed(() => toValue(courseSlug))
+  const lessonSlugValue = computed(() => toValue(lessonSlug))
 
-  // State for bookmarks
-  const bookmarks = useState<number[]>('lesson-bookmarks', () => [])
+  // ───── Stores ─────
+  const coursesStore = useCoursesStore()
+  const progressStore = useLessonProgressStore()
 
-  /**
-   * Mark a lesson as completed
-   */
-  const markLessonComplete = async (lessonId: number) => {
-    // Update local state
-    lessonProgress.value = {
-      ...lessonProgress.value,
-      [lessonId]: {
-        ...lessonProgress.value[lessonId],
-        lessonId,
-        isCompleted: true,
-        completedAt: new Date(),
-      },
+  // ───── Course Data ─────
+  const { course, isLoading, error: courseError } = useCourse(courseSlugValue.value)
+
+  // ───── Current Lesson ─────
+  const currentIndex = computed(() =>
+    coursesStore.findLessonIndex(lessonSlugValue.value),
+  )
+
+  const lesson = computed((): DetailedLesson | null => {
+    const found = coursesStore.findLessonBySlug(lessonSlugValue.value)
+    if (!found) return null
+
+    const section = coursesStore.findLessonSection(lessonSlugValue.value)
+
+    return {
+      ...found,
+      id: found.id || 0,
+      courseId: course.value?.id || 0,
+      content: found.description || '',
+      sectionId: section?.id || 0,
+      order: currentIndex.value || 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as DetailedLesson
+  })
+
+  // ───── Navigation ─────
+  const totalLessons = computed(() => coursesStore.totalLessons)
+
+  const prevLesson = computed(() =>
+    currentIndex.value > 0
+      ? coursesStore.allLessons[currentIndex.value - 1]
+      : null,
+  )
+
+  const nextLesson = computed(() =>
+    currentIndex.value < totalLessons.value - 1
+      ? coursesStore.allLessons[currentIndex.value + 1]
+      : null,
+  )
+
+  const progressPercentage = computed(() =>
+    totalLessons.value > 0
+      ? ((currentIndex.value + 1) / totalLessons.value) * 100
+      : 0,
+  )
+
+  // ───── Error ─────
+  const error = computed(() => {
+    if (courseError.value) return String(courseError.value)
+    if (!isLoading.value && !lesson.value) return 'Lesson not found'
+    return null
+  })
+
+  // ───── Progress ─────
+  const isLessonCompleted = computed(() =>
+    lesson.value ? progressStore.isCompleted(lesson.value.id) : false,
+  )
+
+  const isLessonBookmarked = computed(() =>
+    lesson.value ? progressStore.isBookmarked(lesson.value.id) : false,
+  )
+
+  const lessonNotes = computed(() =>
+    lesson.value ? progressStore.getNote(lesson.value.id) : '',
+  )
+
+  const courseProgress = computed(() =>
+    progressStore.getProgressForCourse(coursesStore.allLessonIds),
+  )
+
+  // ───── Breadcrumbs ─────
+  const breadcrumbs = computed(() => [
+    { name: 'Courses', path: '/courses' },
+    { name: course.value?.title || '...', path: `/courses/${courseSlugValue.value}` },
+    { name: lesson.value?.title || '...', path: '#' },
+  ])
+
+  // ───── Actions ─────
+  const goToPrev = () => {
+    if (prevLesson.value) {
+      router.push(`/courses/${courseSlugValue.value}/lessons/${prevLesson.value.slug}`)
     }
-
-    // TODO: API call to save progress
-    console.log(`Lesson ${lessonId} marked as completed`)
   }
 
-  /**
-   * Mark a lesson as incomplete
-   */
-  const markLessonIncomplete = async (lessonId: number) => {
-    // Update local state
-    lessonProgress.value = {
-      ...lessonProgress.value,
-      [lessonId]: {
-        ...lessonProgress.value[lessonId],
-        lessonId,
-        isCompleted: false,
-        completedAt: undefined,
-      },
+  const goToNext = () => {
+    if (nextLesson.value) {
+      router.push(`/courses/${courseSlugValue.value}/lessons/${nextLesson.value.slug}`)
     }
-
-    // TODO: API call to save progress
-    console.log(`Lesson ${lessonId} marked as incomplete`)
   }
 
-  /**
-   * Toggle lesson bookmark
-   */
-  const toggleBookmark = async (lessonId: number) => {
-    const isBookmarked = bookmarks.value.includes(lessonId)
+  const toggleComplete = async () => {
+    if (lesson.value) {
+      await progressStore.toggleComplete(lesson.value.id)
+    }
+  }
 
-    if (isBookmarked) {
-      bookmarks.value = bookmarks.value.filter(id => id !== lessonId)
+  const toggleBookmark = async () => {
+    if (lesson.value) {
+      await progressStore.toggleBookmark(lesson.value.id)
+    }
+  }
+
+  const saveNotes = async (content: string) => {
+    if (lesson.value) {
+      await progressStore.saveNote(lesson.value.id, content)
+    }
+  }
+
+  const shareLesson = async () => {
+    const url = window.location.href
+    const title = lesson.value?.title || 'Lesson'
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, url })
+      }
+      catch {
+        // cancelled
+      }
     }
     else {
-      bookmarks.value = [...bookmarks.value, lessonId]
+      await navigator.clipboard.writeText(url)
     }
-
-    // Update progress state as well
-    lessonProgress.value = {
-      ...lessonProgress.value,
-      [lessonId]: {
-        ...lessonProgress.value[lessonId],
-        lessonId,
-        isBookmarked: !isBookmarked,
-      },
-    }
-
-    // TODO: API call to save bookmark
-    console.log(`Bookmark ${isBookmarked ? 'removed from' : 'added to'} lesson ${lessonId}`)
-  }
-
-  /**
-   * Save user notes for a lesson
-   */
-  const saveNotes = async (lessonId: number, notes: string) => {
-    userNotes.value = {
-      ...userNotes.value,
-      [lessonId]: notes,
-    }
-
-    // Update progress state as well
-    lessonProgress.value = {
-      ...lessonProgress.value,
-      [lessonId]: {
-        ...lessonProgress.value[lessonId],
-        lessonId,
-        notes,
-      },
-    }
-
-    // TODO: API call to save notes
-    console.log(`Notes saved for lesson ${lessonId}`)
-  }
-
-  /**
-   * Get progress for a specific lesson
-   */
-  const getLessonProgress = (lessonId: number) => {
-    return lessonProgress.value[lessonId] || {
-      lessonId,
-      isCompleted: false,
-      isBookmarked: bookmarks.value.includes(lessonId),
-      notes: userNotes.value[lessonId] || '',
-    }
-  }
-
-  /**
-   * Get completion status for a lesson
-   */
-  const isLessonCompleted = (lessonId: number) => {
-    return lessonProgress.value[lessonId]?.isCompleted || false
-  }
-
-  /**
-   * Get bookmark status for a lesson
-   */
-  const isLessonBookmarked = (lessonId: number) => {
-    return bookmarks.value.includes(lessonId)
-      || lessonProgress.value[lessonId]?.isBookmarked || false
-  }
-
-  /**
-   * Get notes for a lesson
-   */
-  const getLessonNotes = (lessonId: number) => {
-    return userNotes.value[lessonId]
-      || lessonProgress.value[lessonId]?.notes || ''
   }
 
   return {
-    lessonProgress,
-    userNotes,
-    bookmarks,
-    markLessonComplete,
-    markLessonIncomplete,
-    toggleBookmark,
-    saveNotes,
-    getLessonProgress,
+    // Data
+    course,
+    lesson,
+
+    // Loading & Error
+    isLoading,
+    error,
+
+    // Navigation
+    currentIndex,
+    totalLessons,
+    prevLesson,
+    nextLesson,
+    progressPercentage,
+    breadcrumbs,
+    goToPrev,
+    goToNext,
+
+    // Progress
     isLessonCompleted,
     isLessonBookmarked,
-    getLessonNotes,
+    lessonNotes,
+    courseProgress,
+
+    // Actions
+    toggleComplete,
+    toggleBookmark,
+    saveNotes,
+    shareLesson,
   }
 }
