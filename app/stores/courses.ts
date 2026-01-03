@@ -1,6 +1,6 @@
 import type { CoursesFilter } from '~/types/courses-filter'
 import type { Course } from '~/types/shared/auth'
-import type { DetailedCourse } from '~/types/shared/courses'
+import type { DetailedCourse, CourseContentLesson } from '~/types/shared/courses'
 
 export const useCoursesStore = defineStore('courses', () => {
   // ───── State ─────
@@ -52,6 +52,43 @@ export const useCoursesStore = defineStore('courses', () => {
     return cleaned
   }
 
+  // ───── 🆕 Lesson Helpers ─────
+
+  /** All lessons flattened */
+  const allLessons = computed((): CourseContentLesson[] => {
+    if (!detailedCourse.value?.courseContent) return []
+    return detailedCourse.value.courseContent.flatMap(
+      section => section.content || [],
+    )
+  })
+
+  /** Total number of lessons */
+  const totalLessons = computed(() => allLessons.value.length)
+
+  /** IDs of all lessons */
+  const allLessonIds = computed(() =>
+    allLessons.value
+      .map(l => l.id || 0)
+      .filter(id => id > 0),
+  )
+
+  /** Find lesson by slug */
+  const findLessonBySlug = (slug: string): CourseContentLesson | null => {
+    return allLessons.value.find(l => l.slug === slug) || null
+  }
+
+  /** Find lesson index */
+  const findLessonIndex = (slug: string): number => {
+    return allLessons.value.findIndex(l => l.slug === slug)
+  }
+
+  /** Find section of a lesson */
+  const findLessonSection = (slug: string) => {
+    return detailedCourse.value?.courseContent?.find(s =>
+      s.content?.some(l => l.slug === slug),
+    ) || null
+  }
+
   // ───── Actions ─────
   const resetFilter = () => {
     loading.value = true
@@ -100,6 +137,10 @@ export const useCoursesStore = defineStore('courses', () => {
 
     // Getters
     hasActiveFilters, isEmpty, hasMorePages, paginationInfo,
+
+    // 🆕 Lesson Helpers
+    allLessons, totalLessons, allLessonIds,
+    findLessonBySlug, findLessonIndex, findLessonSection,
 
     // Actions
     resetFilter, setFilter, setPage, changePage,
