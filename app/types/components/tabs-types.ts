@@ -8,7 +8,14 @@ export interface TabItem {
 export interface TabsProps {
   modelValue?: number
   ariaLabel?: string
-  tabs: { title: string, name: string, disabled?: boolean }[]
+  tabs?: Array<{ name: string; title: string; disabled?: boolean }>
+  // 🆕 Customization props
+  tabListClass?: string
+  tabClass?: string
+  activeTabClass?: string
+  inactiveTabClass?: string
+  disabledTabClass?: string
+  panelClass?: string
 }
 
 export interface TabsEmits {

@@ -1,111 +1,199 @@
 import type { LessonProgress } from '~/types/shared/lessons'
 
+// ───── API Response Types ─────
+interface ProgressResponse {
+  success: boolean
+  data?: {
+    progress: LessonProgress[]
+  }
+}
+
+interface SingleProgressResponse {
+  success: boolean
+  data?: {
+    progress: LessonProgress
+  }
+}
+
+interface ProgressState {
+  lessonId: number
+  isCompleted: boolean
+  isBookmarked: boolean
+  completedAt?: Date
+  notes?: string
+  progressPercentage: number
+}
+
 export const useLessonProgressStore = defineStore('lesson-progress', () => {
   // ───── State ─────
   const progress = ref<Record<number, LessonProgress>>({})
-  const bookmarks = ref<Set<number>>(new Set())
-  const notes = ref<Record<number, string>>({})
+  const isLoading = ref(false)
+  const isInitialized = ref(false)
 
   // ───── Getters ─────
-  const isCompleted = computed(() => (lessonId: number) => {
-    return progress.value[lessonId]?.isCompleted ?? false
-  })
+  const isCompleted = (lessonId: number) => progress.value[lessonId]?.isCompleted ?? false
+  const isBookmarked = (lessonId: number) => progress.value[lessonId]?.isBookmarked ?? false
+  const getNote = (lessonId: number) => progress.value[lessonId]?.notes ?? ''
 
-  const isBookmarked = computed(() => (lessonId: number) => {
-    return bookmarks.value.has(lessonId)
-  })
-
-  const getNote = computed(() => (lessonId: number) => {
-    return notes.value[lessonId] ?? ''
-  })
-
-  const completedLessonIds = computed(() => {
-    return Object.entries(progress.value)
+  const completedLessonIds = computed(() =>
+    Object.entries(progress.value)
       .filter(([_, p]) => p.isCompleted)
-      .map(([id]) => Number(id))
-  })
+      .map(([id]) => Number(id)),
+  )
 
   const completedCount = computed(() => completedLessonIds.value.length)
 
-  // ───── Actions ─────
-  const markComplete = async (lessonId: number) => {
-    progress.value[lessonId] = {
-      lessonId,
-      isCompleted: true,
-      isBookmarked: progress.value[lessonId]?.isBookmarked ?? false,
-      completedAt: new Date(),
-      notes: progress.value[lessonId]?.notes,
-      progressPercentage: 100,
-    }
-    // TODO: API call
+  // ───── Helpers ─────
+  const getDefaultProgress = (lessonId: number): ProgressState => ({
+    lessonId,
+    isCompleted: false,
+    isBookmarked: false,
+    progressPercentage: 0,
+  })
+
+  const updateLocal = (lessonId: number, updates: Partial<ProgressState>) => {
+    const current = progress.value[lessonId] ?? getDefaultProgress(lessonId)
+    progress.value[lessonId] = { ...current, ...updates }
   }
 
-  const markIncomplete = async (lessonId: number) => {
-    progress.value[lessonId] = {
-      lessonId,
-      isCompleted: false,
-      isBookmarked: progress.value[lessonId]?.isBookmarked ?? false,
-      completedAt: undefined,
-      notes: progress.value[lessonId]?.notes,
-      progressPercentage: 0,
+  const removeLocal = (lessonId: number) => {
+    const { [lessonId]: _, ...rest } = progress.value
+    progress.value = rest
+  }
+
+  const revertLocal = (lessonId: number, previous?: LessonProgress) => {
+    if (previous) {
+      progress.value[lessonId] = previous
     }
-    // TODO: API call
+    else {
+      removeLocal(lessonId)
+    }
+  }
+
+  // ───── Actions ─────
+  const fetchProgress = async () => {
+    if (isInitialized.value) return
+
+    isLoading.value = true
+
+    try {
+      const res = await $fetch<ProgressResponse>('/api/progress')
+
+      if (res?.success && res.data?.progress) {
+        progress.value = res.data.progress.reduce(
+          (acc, p) => {
+            acc[p.lessonId] = p
+            return acc
+          },
+          {} as Record<number, LessonProgress>,
+        )
+      }
+
+      isInitialized.value = true
+    }
+    catch (error) {
+      console.error('Failed to fetch progress:', error)
+    }
+    finally {
+      isLoading.value = false
+    }
   }
 
   const toggleComplete = async (lessonId: number) => {
-    if (isCompleted.value(lessonId)) {
-      await markIncomplete(lessonId)
+    const current = progress.value[lessonId]
+    const newValue = !current?.isCompleted
+
+    updateLocal(lessonId, {
+      isCompleted: newValue,
+      completedAt: newValue ? new Date() : undefined,
+      progressPercentage: newValue ? 100 : 0,
+    })
+
+    try {
+      const res = await $fetch<SingleProgressResponse>('/api/progress/complete', {
+        method: 'POST',
+        body: { lessonId },
+      })
+
+      if (res.success && res.data?.progress) {
+        progress.value[lessonId] = res.data.progress
+      }
     }
-    else {
-      await markComplete(lessonId)
+    catch {
+      revertLocal(lessonId, current)
     }
   }
 
   const toggleBookmark = async (lessonId: number) => {
-    const newBookmarks = new Set(bookmarks.value)
-    if (newBookmarks.has(lessonId)) {
-      newBookmarks.delete(lessonId)
+    const current = progress.value[lessonId]
+
+    updateLocal(lessonId, { isBookmarked: !current?.isBookmarked })
+
+    try {
+      const res = await $fetch<SingleProgressResponse>('/api/progress/bookmark', {
+        method: 'POST',
+        body: { lessonId },
+      })
+
+      if (res.success && res.data?.progress) {
+        progress.value[lessonId] = res.data.progress
+      }
     }
-    else {
-      newBookmarks.add(lessonId)
+    catch {
+      revertLocal(lessonId, current)
     }
-    bookmarks.value = newBookmarks
-    // TODO: API call
   }
 
-  const saveNote = async (lessonId: number, content: string) => {
-    notes.value[lessonId] = content
-    // TODO: API call
+  const saveNote = async (lessonId: number, notes: string) => {
+    const current = progress.value[lessonId]
+
+    updateLocal(lessonId, { notes })
+
+    try {
+      const res = await $fetch<SingleProgressResponse>('/api/progress/notes', {
+        method: 'POST',
+        body: { lessonId, notes },
+      })
+
+      if (res.success && res.data?.progress) {
+        progress.value[lessonId] = res.data.progress
+      }
+    }
+    catch {
+      revertLocal(lessonId, current)
+    }
   }
 
   const getProgressForCourse = (lessonIds: number[]) => {
-    const completed = lessonIds.filter(id => isCompleted.value(id)).length
+    const completed = lessonIds.filter(id => isCompleted(id)).length
+    const total = lessonIds.length
+
     return {
       completed,
-      total: lessonIds.length,
-      percentage: lessonIds.length > 0 ? (completed / lessonIds.length) * 100 : 0,
+      total,
+      percentage: total > 0 ? (completed / total) * 100 : 0,
     }
   }
 
-  return {
-    // State
-    progress,
-    bookmarks,
-    notes,
+  const reset = () => {
+    progress.value = {}
+    isInitialized.value = false
+  }
 
-    // Getters
+  return {
+    progress,
+    isLoading,
+    isInitialized,
     isCompleted,
     isBookmarked,
     getNote,
     completedLessonIds,
     completedCount,
-
-    // Actions
-    markComplete,
-    markIncomplete,
+    fetchProgress,
     toggleComplete,
     toggleBookmark,
     saveNote,
     getProgressForCourse,
+    reset,
   }
 })

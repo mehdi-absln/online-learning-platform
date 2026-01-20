@@ -2,7 +2,7 @@
   <div class="w-full">
     <div
       role="tablist"
-      class="flex border-b border-gray-700"
+      :class="['flex', tabListClass || 'border-b border-gray-700']"
       :aria-label="ariaLabel"
     >
       <button
@@ -17,12 +17,12 @@
         :tabindex="activeIndex === index ? 0 : -1"
         :disabled="tab.disabled"
         :class="[
-          'px-4 py-2 font-medium text-base focus:outline-none transition-colors duration-200',
+          tabClass || 'px-4 py-2 font-medium text-base focus:outline-none transition-colors duration-200',
           activeIndex === index
-            ? 'text-primary border-b-2 border-primary'
+            ? activeTabClass || 'text-primary border-b-2 border-primary'
             : tab.disabled
-              ? 'text-gray-500 cursor-not-allowed'
-              : 'text-gray-400 hover:text-primary',
+              ? disabledTabClass || 'text-gray-500 cursor-not-allowed'
+              : inactiveTabClass || 'text-gray-400 hover:text-primary',
         ]"
         @click="changeTab(index)"
         @keydown="handleKeydown($event, index)"
@@ -37,7 +37,7 @@
       role="tabpanel"
       :aria-labelledby="`tab-${tab.id}`"
       :hidden="activeIndex !== index"
-      :class="['pt-12', activeIndex === index ? 'block' : 'hidden']"
+      :class="[panelClass || 'pt-12', activeIndex === index ? 'block' : 'hidden']"
     >
       <slot
         v-if="activeIndex === index"
@@ -48,10 +48,23 @@
 </template>
 
 <script setup lang="ts">
-import type { TabItem, TabsProps, TabsEmits } from '~/types/components/tabs-types'
+import type { TabItem, TabsEmits } from '~/types/components/tabs-types'
 import { useKeyboardFocus } from '~/composables/useKeyboardFocus'
 
-const props = withDefaults(defineProps<TabsProps>(), {
+interface Props {
+  modelValue?: number
+  ariaLabel?: string
+  tabs?: Array<{ name: string, title: string, disabled?: boolean }>
+  // 🆕 Customization props
+  tabListClass?: string
+  tabClass?: string
+  activeTabClass?: string
+  inactiveTabClass?: string
+  disabledTabClass?: string
+  panelClass?: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
   modelValue: 0,
   ariaLabel: 'Tabs',
   tabs: () => [],

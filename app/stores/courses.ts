@@ -62,27 +62,19 @@ export const useCoursesStore = defineStore('courses', () => {
     )
   })
 
-  /** Total number of lessons */
   const totalLessons = computed(() => allLessons.value.length)
 
-  /** IDs of all lessons */
   const allLessonIds = computed(() =>
     allLessons.value
       .map(l => l.id || 0)
       .filter(id => id > 0),
   )
-
-  /** Find lesson by slug */
   const findLessonBySlug = (slug: string): CourseContentLesson | null => {
     return allLessons.value.find(l => l.slug === slug) || null
   }
-
-  /** Find lesson index */
   const findLessonIndex = (slug: string): number => {
     return allLessons.value.findIndex(l => l.slug === slug)
   }
-
-  /** Find section of a lesson */
   const findLessonSection = (slug: string) => {
     return detailedCourse.value?.courseContent?.find(s =>
       s.content?.some(l => l.slug === slug),
@@ -138,7 +130,7 @@ export const useCoursesStore = defineStore('courses', () => {
     // Getters
     hasActiveFilters, isEmpty, hasMorePages, paginationInfo,
 
-    // 🆕 Lesson Helpers
+    // Lesson Helpers
     allLessons, totalLessons, allLessonIds,
     findLessonBySlug, findLessonIndex, findLessonSection,
 

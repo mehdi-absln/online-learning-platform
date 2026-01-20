@@ -7,6 +7,7 @@ export interface Course {
   instructor: {
     name: string
     avatar: string
+    title: string
   }
   stats: {
     students: number
@@ -49,6 +50,7 @@ export interface CourseApiResponse {
     id: string
     name: string
     avatar?: string
+    title: string
   }
   tags?: {
     id: string
@@ -129,6 +131,7 @@ export interface CourseContentLesson {
   duration: string // Duration in format like "5:30" or "10 min"
   videoUrl?: string // Optional YouTube video URL
   description?: string // Optional description field
+  isFree?: boolean // Optional field to indicate if lesson is free
 }
 
 // Review interface
