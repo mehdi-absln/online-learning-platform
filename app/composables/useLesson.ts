@@ -131,8 +131,8 @@ export const useLesson = (
       try {
         await navigator.share({ title, url })
       }
-      catch {
-        // cancelled
+      catch (err: unknown) {
+        if (err instanceof DOMException && err.name === 'AbortError') return
       }
     }
     else {

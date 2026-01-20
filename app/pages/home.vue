@@ -650,7 +650,7 @@ const testimonials = [
           <div
             v-for="(item, index) in latestNews"
             :key="index"
-            class="group cursor-pointer relative overflow-hidden rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)]"
+            class="group cursor-pointer relative overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-1 w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)]"
           >
             <div class="relative h-48 overflow-hidden">
               <img
@@ -675,7 +675,7 @@ const testimonials = [
                   {{ formatDate(item.date) }}
                 </span>
               </div>
-              <h4 class="text-[22px] font-semibold text-white mt-4 font-antonio">
+              <h4 class="text-[22px] font-semibold text-white mt-4 font-antonio hover:text-primary transition-colors duration-300">
                 {{ item.title }}
               </h4>
             </div>

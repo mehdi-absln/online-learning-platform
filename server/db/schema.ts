@@ -136,6 +136,26 @@ export const reviews = sqliteTable('reviews', {
 })
 
 // =====================
+// Lesson Progress Table
+// =====================
+export const lessonProgress = sqliteTable('lesson_progress', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  lessonId: integer('lesson_id').notNull().references(() => lessons.id, { onDelete: 'cascade' }),
+  isCompleted: integer('is_completed', { mode: 'boolean' }).default(false),
+  isBookmarked: integer('is_bookmarked', { mode: 'boolean' }).default(false),
+  notes: text('notes'),
+  completedAt: integer('completed_at', { mode: 'timestamp' }),
+  progressPercentage: integer('progress_percentage').default(0),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+}, (table) => ({
+  userIdIdx: index('progress_user_id_idx').on(table.userId),
+  lessonIdIdx: index('progress_lesson_id_idx').on(table.lessonId),
+  uniqueUserLesson: index('progress_user_lesson_idx').on(table.userId, table.lessonId),
+}))
+
+// =====================
 // Relations
 // =====================
 export const coursesRelations = relations(courses, ({ one, many }) => ({
@@ -168,6 +188,17 @@ export const lessonsRelations = relations(lessons, ({ one }) => ({
   }),
 }))
 
+export const lessonProgressRelations = relations(lessonProgress, ({ one }) => ({
+  user: one(users, {
+    fields: [lessonProgress.userId],
+    references: [users.id],
+  }),
+  lesson: one(lessons, {
+    fields: [lessonProgress.lessonId],
+    references: [lessons.id],
+  }),
+}))
+
 // =====================
 // Types
 // =====================
@@ -180,3 +211,5 @@ export type CourseContentSection = typeof courseContentSections.$inferSelect
 export type Lesson = typeof lessons.$inferSelect
 export type NewLesson = typeof lessons.$inferInsert
 export type Review = typeof reviews.$inferSelect
+export type LessonProgress = typeof lessonProgress.$inferSelect
+export type NewLessonProgress = typeof lessonProgress.$inferInsert
