@@ -1,249 +1,3 @@
-<script setup lang="ts">
-import { Carousel, Slide, Pagination } from 'vue3-carousel'
-import 'vue3-carousel/dist/carousel.css'
-import CourseCard from '~/components/courses/CourseCard.vue'
-
-useSeoMeta({
-  title: 'Home - Online Learning Platform',
-  ogTitle: 'Home - Online Learning Platform',
-  description:
-    'Start your learning journey with our comprehensive online courses taught by expert instructors.',
-  ogDescription:
-    'Start your learning journey with our comprehensive online courses taught by expert instructors.',
-  ogImage: '/images/banner.jpg',
-})
-
-const trainers = [
-
-  {
-    id: 1,
-    name: 'Jonathan Bean',
-    role: 'Lead Instructor',
-    image:
-      'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&auto=format&fit=crop&q=80',
-    social: [
-      { name: 'Facebook', url: '#' },
-      { name: 'Twitter', url: '#' },
-      { name: 'LinkedIn', url: '#' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Sarah Johnson',
-    role: 'UI/UX Expert',
-    image:
-      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=80',
-    social: [
-      { name: 'Twitter', url: '#' },
-      { name: 'LinkedIn', url: '#' },
-      { name: 'Instagram', url: '#' },
-    ],
-  },
-  {
-    id: 3,
-    name: 'Michael Chen',
-    role: 'Full Stack Developer',
-    image:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80',
-    social: [
-      { name: 'GitHub', url: '#' },
-      { name: 'LinkedIn', url: '#' },
-      { name: 'Twitter', url: '#' },
-    ],
-  },
-  {
-    id: 4,
-    name: 'Emma Wilson',
-    role: 'DevOps Engineer',
-    image:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=80',
-    social: [
-      { name: 'Facebook', url: '#' },
-      { name: 'Twitter', url: '#' },
-      { name: 'LinkedIn', url: '#' },
-    ],
-  },
-]
-
-const slides = [
-  {
-    id: 1,
-    title: 'Mastering the Art of Cooking',
-    description: 'Learn the fundamental techniques of cooking from scratch',
-    category: 'COOKING',
-    instructor: {
-      name: 'Chef Maria Garcia',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    },
-    stats: {
-      students: 42,
-    },
-    rating: 4.8,
-    price: 89.99,
-    level: 'Intermediate',
-    image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&auto=format&fit=crop&q=70',
-    slug: 'mastering-the-art-of-cooking',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    instructorId: 1,
-  },
-  {
-    id: 2,
-    title: 'Web Development Bootcamp',
-    description: 'Master modern web development technologies',
-    category: 'PROGRAMMING',
-    instructor: {
-      name: 'Alex Johnson',
-      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-    },
-    stats: {
-      students: 156,
-    },
-    rating: 4.9,
-    price: 129.99,
-    level: 'Beginner',
-    image: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&auto=format&fit=crop&q=60',
-    slug: 'web-development-bootcamp',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    instructorId: 2,
-  },
-  {
-    id: 3,
-    title: 'Digital Marketing Mastery',
-    description: 'Become an expert in digital marketing strategies',
-    category: 'MARKETING',
-    instructor: {
-      name: 'Sarah Williams',
-      avatar: 'https://randomuser.me/api/portraits/women/28.jpg',
-    },
-    stats: {
-      students: 87,
-    },
-    rating: 4.7,
-    price: 79.99,
-    level: 'All Levels',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60',
-    slug: 'digital-marketing-mastery',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    instructorId: 3,
-  },
-  {
-    id: 4,
-    title: 'Photography Fundamentals',
-    description: 'Learn the fundamentals of photography',
-    category: 'PHOTOGRAPHY',
-    instructor: {
-      name: 'James Wilson',
-      avatar: 'https://randomuser.me/api/portraits/men/45.jpg',
-    },
-    stats: {
-      students: 63,
-    },
-    rating: 4.6,
-    price: 69.99,
-    level: 'Beginner',
-    image: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&auto=format&fit=crop&q=60',
-    slug: 'photography-fundamentals',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    instructorId: 4,
-  },
-  {
-    id: 5,
-    title: 'Data Science Essentials',
-    description: 'Essential concepts and techniques in data science',
-    category: 'DATA SCIENCE',
-    instructor: {
-      name: 'Dr. Emily Chen',
-      avatar: 'https://randomuser.me/api/portraits/women/52.jpg',
-    },
-    stats: {
-      students: 94,
-    },
-    rating: 4.9,
-    price: 149.99,
-    level: 'Advanced',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60',
-    slug: 'data-science-essentials',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    instructorId: 5,
-  },
-]
-
-const latestNews = [
-  {
-    id: 1,
-    title: 'New Web Development Course Launched',
-    author: 'Alex Johnson',
-    date: '2025-08-15',
-    image:
-      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=60',
-    excerpt: 'Learn the latest web development technologies in our new comprehensive course.',
-  },
-  {
-    id: 2,
-    title: 'Top 10 Tips for Learning Programming',
-    author: 'Sarah Williams',
-    date: '2025-08-20',
-    image:
-      'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&auto=format&fit=crop&q=60',
-    excerpt: 'Discover the most effective strategies to accelerate your programming journey.',
-  },
-  {
-    id: 3,
-    title: 'The Future of Online Education',
-    author: 'Michael Chen',
-    date: '2025-08-25',
-    image:
-      'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80',
-    excerpt: 'Exploring how technology is transforming the way we learn and acquire new skills.',
-  },
-]
-
-const formatDate = (dateString: string) => {
-  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' }
-  return new Date(dateString).toLocaleDateString('en-US', options)
-}
-
-const testimonials = [
-  {
-    id: 1,
-    name: 'Sarah Johnson',
-    role: 'Web Development Student',
-    content:
-      'The courses here completely transformed my career. The instructors are knowledgeable and the curriculum is well-structured. Highly recommended!',
-    avatar: 'https://randomuser.me/api/portraits/women/32.jpg',
-  },
-  {
-    id: 2,
-    name: 'Michael Chen',
-    role: 'UI/UX Designer',
-    content:
-      'I was able to upgrade my skills significantly through their design courses. The practical projects were especially valuable for my portfolio.',
-    avatar: 'https://randomuser.me/api/portraits/men/42.jpg',
-  },
-  {
-    id: 3,
-    name: 'Emma Rodriguez',
-    role: 'Data Science Enthusiast',
-    content:
-      'The quality of instruction and course materials exceeded my expectations. The community support is also fantastic!',
-    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-  },
-  {
-    id: 4,
-    name: 'David Kim',
-    role: 'Full-stack Developer',
-    content:
-      'The hands-on approach helped me understand complex concepts easily. The certificate I earned helped me land a great job!',
-    avatar: 'https://randomuser.me/api/portraits/men/36.jpg',
-  },
-]
-</script>
-
 <template>
   <div>
     <!-- Hero Section -->
@@ -273,7 +27,7 @@ const testimonials = [
           </div>
         </div>
         <div class="relative h-full flex items-center container">
-          <div class="w-[60%] space-y-10">
+          <div class="md:w-[60%] w-full space-y-10 text-center md:text-start">
             <h1
               id="main-heading"
               class="text-4xl font-antonio md:text-6xl lg:text-8xl font-bold text-white"
@@ -685,6 +439,252 @@ const testimonials = [
     </section>
   </div>
 </template>
+
+<script setup lang="ts">
+import { Carousel, Slide, Pagination } from 'vue3-carousel'
+import 'vue3-carousel/dist/carousel.css'
+import CourseCard from '~/components/courses/CourseCard.vue'
+
+useSeoMeta({
+  title: 'Home - Online Learning Platform',
+  ogTitle: 'Home - Online Learning Platform',
+  description:
+    'Start your learning journey with our comprehensive online courses taught by expert instructors.',
+  ogDescription:
+    'Start your learning journey with our comprehensive online courses taught by expert instructors.',
+  ogImage: '/images/banner.jpg',
+})
+
+const trainers = [
+
+  {
+    id: 1,
+    name: 'Jonathan Bean',
+    role: 'Lead Instructor',
+    image:
+      'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&auto=format&fit=crop&q=80',
+    social: [
+      { name: 'Facebook', url: '#' },
+      { name: 'Twitter', url: '#' },
+      { name: 'LinkedIn', url: '#' },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Sarah Johnson',
+    role: 'UI/UX Expert',
+    image:
+      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=80',
+    social: [
+      { name: 'Twitter', url: '#' },
+      { name: 'LinkedIn', url: '#' },
+      { name: 'Instagram', url: '#' },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Michael Chen',
+    role: 'Full Stack Developer',
+    image:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80',
+    social: [
+      { name: 'GitHub', url: '#' },
+      { name: 'LinkedIn', url: '#' },
+      { name: 'Twitter', url: '#' },
+    ],
+  },
+  {
+    id: 4,
+    name: 'Emma Wilson',
+    role: 'DevOps Engineer',
+    image:
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=80',
+    social: [
+      { name: 'Facebook', url: '#' },
+      { name: 'Twitter', url: '#' },
+      { name: 'LinkedIn', url: '#' },
+    ],
+  },
+]
+
+const slides = [
+  {
+    id: 1,
+    title: 'Mastering the Art of Cooking',
+    description: 'Learn the fundamental techniques of cooking from scratch',
+    category: 'COOKING',
+    instructor: {
+      name: 'Chef Maria Garcia',
+      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+    },
+    stats: {
+      students: 42,
+    },
+    rating: 4.8,
+    price: 89.99,
+    level: 'Intermediate',
+    image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&auto=format&fit=crop&q=70',
+    slug: 'mastering-the-art-of-cooking',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    instructorId: 1,
+  },
+  {
+    id: 2,
+    title: 'Web Development Bootcamp',
+    description: 'Master modern web development technologies',
+    category: 'PROGRAMMING',
+    instructor: {
+      name: 'Alex Johnson',
+      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+    },
+    stats: {
+      students: 156,
+    },
+    rating: 4.9,
+    price: 129.99,
+    level: 'Beginner',
+    image: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&auto=format&fit=crop&q=60',
+    slug: 'web-development-bootcamp',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    instructorId: 2,
+  },
+  {
+    id: 3,
+    title: 'Digital Marketing Mastery',
+    description: 'Become an expert in digital marketing strategies',
+    category: 'MARKETING',
+    instructor: {
+      name: 'Sarah Williams',
+      avatar: 'https://randomuser.me/api/portraits/women/28.jpg',
+    },
+    stats: {
+      students: 87,
+    },
+    rating: 4.7,
+    price: 79.99,
+    level: 'All Levels',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60',
+    slug: 'digital-marketing-mastery',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    instructorId: 3,
+  },
+  {
+    id: 4,
+    title: 'Photography Fundamentals',
+    description: 'Learn the fundamentals of photography',
+    category: 'PHOTOGRAPHY',
+    instructor: {
+      name: 'James Wilson',
+      avatar: 'https://randomuser.me/api/portraits/men/45.jpg',
+    },
+    stats: {
+      students: 63,
+    },
+    rating: 4.6,
+    price: 69.99,
+    level: 'Beginner',
+    image: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&auto=format&fit=crop&q=60',
+    slug: 'photography-fundamentals',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    instructorId: 4,
+  },
+  {
+    id: 5,
+    title: 'Data Science Essentials',
+    description: 'Essential concepts and techniques in data science',
+    category: 'DATA SCIENCE',
+    instructor: {
+      name: 'Dr. Emily Chen',
+      avatar: 'https://randomuser.me/api/portraits/women/52.jpg',
+    },
+    stats: {
+      students: 94,
+    },
+    rating: 4.9,
+    price: 149.99,
+    level: 'Advanced',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60',
+    slug: 'data-science-essentials',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    instructorId: 5,
+  },
+]
+
+const latestNews = [
+  {
+    id: 1,
+    title: 'New Web Development Course Launched',
+    author: 'Alex Johnson',
+    date: '2025-08-15',
+    image:
+      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=60',
+    excerpt: 'Learn the latest web development technologies in our new comprehensive course.',
+  },
+  {
+    id: 2,
+    title: 'Top 10 Tips for Learning Programming',
+    author: 'Sarah Williams',
+    date: '2025-08-20',
+    image:
+      'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&auto=format&fit=crop&q=60',
+    excerpt: 'Discover the most effective strategies to accelerate your programming journey.',
+  },
+  {
+    id: 3,
+    title: 'The Future of Online Education',
+    author: 'Michael Chen',
+    date: '2025-08-25',
+    image:
+      'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80',
+    excerpt: 'Exploring how technology is transforming the way we learn and acquire new skills.',
+  },
+]
+
+const formatDate = (dateString: string) => {
+  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' }
+  return new Date(dateString).toLocaleDateString('en-US', options)
+}
+
+const testimonials = [
+  {
+    id: 1,
+    name: 'Sarah Johnson',
+    role: 'Web Development Student',
+    content:
+      'The courses here completely transformed my career. The instructors are knowledgeable and the curriculum is well-structured. Highly recommended!',
+    avatar: 'https://randomuser.me/api/portraits/women/32.jpg',
+  },
+  {
+    id: 2,
+    name: 'Michael Chen',
+    role: 'UI/UX Designer',
+    content:
+      'I was able to upgrade my skills significantly through their design courses. The practical projects were especially valuable for my portfolio.',
+    avatar: 'https://randomuser.me/api/portraits/men/42.jpg',
+  },
+  {
+    id: 3,
+    name: 'Emma Rodriguez',
+    role: 'Data Science Enthusiast',
+    content:
+      'The quality of instruction and course materials exceeded my expectations. The community support is also fantastic!',
+    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+  },
+  {
+    id: 4,
+    name: 'David Kim',
+    role: 'Full-stack Developer',
+    content:
+      'The hands-on approach helped me understand complex concepts easily. The certificate I earned helped me land a great job!',
+    avatar: 'https://randomuser.me/api/portraits/men/36.jpg',
+  },
+]
+</script>
 
 <style scoped>
 :deep(.carousel__pagination) {

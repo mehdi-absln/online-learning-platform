@@ -11,7 +11,7 @@ export const categories = sqliteTable('categories', {
   description: text('description'),
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),
-}, (table) => ({
+}, table => ({
   slugIdx: index('categories_slug_idx').on(table.slug),
 }))
 
@@ -27,7 +27,7 @@ export const users = sqliteTable('users', {
   role: text('role').default('student'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
-}, (table) => ({
+}, table => ({
   slugIdx: index('users_email_idx').on(table.email),
 }))
 
@@ -42,7 +42,7 @@ export const instructors = sqliteTable('instructors', {
   bio: text('bio'),
   avatar: text('avatar'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-}, (table) => ({
+}, table => ({
   userIdIdx: index('instructors_user_id_idx').on(table.userId),
 }))
 
@@ -72,7 +72,7 @@ export const courses = sqliteTable('courses', {
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
   tags: text('tags'),
-}, (table) => ({
+}, table => ({
   slugIdx: index('courses_slug_idx').on(table.slug),
 }))
 
@@ -87,7 +87,7 @@ export const courseContentSections = sqliteTable('course_content_sections', {
   orderVal: integer('order_val').notNull().default(0),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
-}, (table) => ({
+}, table => ({
   courseIdIdx: index('sections_course_id_idx').on(table.courseId),
 }))
 
@@ -108,7 +108,7 @@ export const lessons = sqliteTable('lessons', {
   isFree: integer('is_free', { mode: 'boolean' }).default(false),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
-}, (table) => ({
+}, table => ({
   courseIdIdx: index('lessons_course_id_idx').on(table.courseId),
   sectionIdIdx: index('lessons_section_id_idx').on(table.sectionId),
 }))
@@ -149,10 +149,39 @@ export const lessonProgress = sqliteTable('lesson_progress', {
   progressPercentage: integer('progress_percentage').default(0),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
-}, (table) => ({
+}, table => ({
   userIdIdx: index('progress_user_id_idx').on(table.userId),
   lessonIdIdx: index('progress_lesson_id_idx').on(table.lessonId),
   uniqueUserLesson: index('progress_user_lesson_idx').on(table.userId, table.lessonId),
+}))
+// =====================
+// Blogs Table
+// =====================
+export const blogs = sqliteTable('blogs', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+
+  title: text('title').notNull(),
+  slug: text('slug').notNull().unique(),
+
+  content: text('content').notNull(),
+  excerpt: text('excerpt'),
+
+  coverImage: text('cover_image'),
+
+  status: text('status').notNull().default('draft'),
+
+  authorId: integer('author_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+
+  publishedAt: integer('published_at', { mode: 'timestamp' }),
+
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+}, table => ({
+  slugIdx: index('blogs_slug_idx').on(table.slug),
+  authorIdx: index('blogs_author_id_idx').on(table.authorId),
+  statusIdx: index('blogs_status_idx').on(table.status),
 }))
 
 // =====================
@@ -199,6 +228,13 @@ export const lessonProgressRelations = relations(lessonProgress, ({ one }) => ({
   }),
 }))
 
+export const blogsRelations = relations(blogs, ({ one }) => ({
+  author: one(users, {
+    fields: [blogs.authorId],
+    references: [users.id],
+  }),
+}))
+
 // =====================
 // Types
 // =====================
@@ -213,3 +249,5 @@ export type NewLesson = typeof lessons.$inferInsert
 export type Review = typeof reviews.$inferSelect
 export type LessonProgress = typeof lessonProgress.$inferSelect
 export type NewLessonProgress = typeof lessonProgress.$inferInsert
+export type Blog = typeof blogs.$inferSelect
+export type NewBlog = typeof blogs.$inferInsert

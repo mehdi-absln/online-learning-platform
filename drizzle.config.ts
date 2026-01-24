@@ -1,4 +1,3 @@
-// drizzle.config.ts
 import { config } from 'dotenv'
 
 config()
