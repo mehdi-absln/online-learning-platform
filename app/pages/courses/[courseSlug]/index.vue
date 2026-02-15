@@ -31,7 +31,7 @@
     <!-- Hero Section -->
     <section
       aria-labelledby="course-title"
-      class="min-h-[28rem] py-5 bg-gradient-to-r from-dark-surface via-dark-bg to-primary/60 shadow-[inset_0_0_40px_rgba(255,255,255,0.05),_0_10px_30px_rgba(0,0,0,0.6)] backdrop-blur-sm rounded-2xl"
+      class="min-h-[28rem] py-5 bg-hero-shimmer"
     >
       <div class="container relative flex flex-col md:flex-row md:justify-between gap-6">
         <!-- Course Header Info -->

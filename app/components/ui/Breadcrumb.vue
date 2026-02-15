@@ -1,38 +1,42 @@
 <template>
   <nav
-    class="flex px-4 py-2 text-sm"
+    class="flex px-4 py-2 text-sm justify-center"
     aria-label="Breadcrumb"
   >
     <ol class="inline-flex items-center space-x-1 md:space-x-3">
+      <!-- Home Link -->
       <li class="inline-flex items-center">
         <NuxtLink
-          to="/app/public"
-          class="inline-flex items-center text-sm font-medium text-gray-300 hover:text-primary transition-colors duration-300"
+          to="/home"
+          class="inline-flex items-center text-sm font-medium text-gray-300 hover:text-primary transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary rounded"
         >
           <svg
             class="w-4 h-4 mr-2"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
           >
-            <path
-              d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
-            />
+            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
           </svg>
           Home
         </NuxtLink>
       </li>
+
+      <!-- Dynamic Crumbs -->
       <li
         v-for="(crumb, index) in crumbs"
-        :key="index"
+        :key="crumb.path"
         class="inline-flex items-center"
       >
         <div class="flex items-center">
+          <!-- Separator Icon -->
           <svg
-            class="w-5 h-5 text-gray-400"
+            class="w-5 h-5 text-gray-400 mx-1"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
           >
             <path
               fill-rule="evenodd"
@@ -40,10 +44,17 @@
               clip-rule="evenodd"
             />
           </svg>
+
+          <!-- Link/Text for Crumb -->
           <NuxtLink
             :to="crumb.path"
-            class="ml-2 text-sm font-medium text-gray-300 hover:text-primary transition-colors duration-300"
-            :class="{ 'text-primary': index === crumbs.length - 1 }"
+            class="ml-1 text-sm font-medium transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary rounded px-1"
+            :class="[
+              index === crumbs.length - 1
+                ? 'text-primary pointer-events-none'
+                : 'text-gray-300 hover:text-primary',
+            ]"
+            :aria-current="index === crumbs.length - 1 ? 'page' : undefined"
           >
             {{ crumb.name }}
           </NuxtLink>

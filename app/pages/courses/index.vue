@@ -9,7 +9,6 @@
         Error loading courses
       </p>
       <p
-        v-if="error"
         class="text-red-400 text-sm mt-2"
       >
         {{ error.message || error }}
@@ -18,7 +17,10 @@
     <div v-else>
       <!-- Hero -->
       <header>
-        <CoursesHero :breadcrumb-crumbs="breadcrumbCrumbs" />
+        <UiPageHero
+          title="Courses"
+          :breadcrumb-crumbs="breadcrumbCrumbs"
+        />
       </header>
 
       <section class="container py-8">
@@ -32,10 +34,10 @@
           <div class="lg:w-3/4">
             <CoursesGrid
               :courses="courses"
-              :loading="isLoading || coursesStore.loading"
-              :current-page="pagination.currentPage"
-              :total-pages="pagination.totalPages"
-              :on-page-change="coursesStore.changePage"
+              :loading="isLoading"
+              :current-page="currentPage"
+              :total-pages="totalPages"
+              :on-page-change="changePage"
             />
           </div>
         </div>
@@ -46,13 +48,12 @@
 
 <script setup lang="ts">
 import CourseSidebarFilters from '~/components/courses/CourseSidebarFilters.vue'
-import CoursesHero from '~/components/courses/CoursesHero.vue'
 import CoursesGrid from '~/components/courses/CoursesGrid.vue'
-import { useCourseFilters } from '~/composables/useCourseFilters'
 
 const coursesStore = useCoursesStore()
 
-const { courses, isLoading, error, pagination } = useCourses()
+const { courses, isLoading, error } = useCourses()
+const { currentPage, totalPages, changePage } = useCourseFilters()
 
 useHead({
   title: 'Courses - Online Learning Platform',

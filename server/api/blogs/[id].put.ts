@@ -1,6 +1,8 @@
 // server/api/blogs/[id].put.ts
 import { z } from 'zod'
 import { getBlogById, updateBlog, isSlugExists } from '../../db/blog-service'
+import { requireInstructor } from '../../utils/auth-helpers'
+import { calculateReadingTime } from '../../utils/blog-helpers' // ✨ جدید
 
 const updateBlogSchema = z.object({
   title: z
@@ -36,22 +38,23 @@ const updateBlogSchema = z.object({
     .datetime()
     .nullable()
     .optional()
-    .transform((val) => val ? new Date(val) : null),
+    .transform(val => val ? new Date(val) : null),
 })
 
 export default defineEventHandler(async (event) => {
   try {
+    const user = await requireInstructor(event)
+
     const idParam = getRouterParam(event, 'id')
     const blogId = parseInt(idParam || '', 10)
-    
+
     if (isNaN(blogId)) {
       throw createError({
         statusCode: 400,
         statusMessage: 'Invalid blog ID',
       })
     }
-    
-    // بررسی وجود بلاگ
+
     const existingBlog = await getBlogById(blogId)
     if (!existingBlog) {
       throw createError({
@@ -59,12 +62,18 @@ export default defineEventHandler(async (event) => {
         statusMessage: 'Blog not found',
       })
     }
-    
+
+    if (existingBlog.authorId !== user.id && user.role !== 'admin') {
+      throw createError({
+        statusCode: 403,
+        statusMessage: 'You can only edit your own blogs',
+      })
+    }
+
     const body = await readBody(event)
-    
-    // Validation
+
     const result = updateBlogSchema.safeParse(body)
-    
+
     if (!result.success) {
       throw createError({
         statusCode: 400,
@@ -74,10 +83,9 @@ export default defineEventHandler(async (event) => {
         },
       })
     }
-    
+
     const data = result.data
-    
-    // اگر slug تغییر کرده، بررسی تکراری نبودن
+
     if (data.slug && data.slug !== existingBlog.slug) {
       const slugExists = await isSlugExists(data.slug, blogId)
       if (slugExists) {
@@ -88,35 +96,40 @@ export default defineEventHandler(async (event) => {
         })
       }
     }
-    
-    // اگر status به published تغییر کرد و publishedAt نداریم
+
     if (
-      data.status === 'published' && 
-      existingBlog.status !== 'published' && 
-      !data.publishedAt && 
-      !existingBlog.publishedAt
+      data.status === 'published'
+      && existingBlog.status !== 'published'
+      && !data.publishedAt
+      && !existingBlog.publishedAt
     ) {
       data.publishedAt = new Date()
     }
-    
-    // آپدیت بلاگ
-    const updatedBlog = await updateBlog(blogId, data)
-    
+
+    // ✨ اگر content تغییر کرد، readingTime رو دوباره محاسبه کن
+    const updateData: any = { ...data }
+    if (data.content) {
+      updateData.readingTime = calculateReadingTime(data.content)
+    }
+
+    const updatedBlog = await updateBlog(blogId, updateData)
+
     return {
       success: true,
       data: updatedBlog,
       message: 'Blog updated successfully',
     }
-  } 
-  catch (error: any) {
-    if (error.statusCode) {
+  }
+  catch (error: unknown) {
+    if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }
-    
+
+    const message = error instanceof Error ? error.message : 'Unknown error'
     throw createError({
       statusCode: 500,
       statusMessage: 'Failed to update blog',
-      data: { message: error.message },
+      data: { message },
     })
   }
 })

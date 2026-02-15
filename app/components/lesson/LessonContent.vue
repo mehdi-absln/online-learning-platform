@@ -16,7 +16,7 @@
       <template #content>
         <div
           v-if="lesson?.content"
-          class="prose prose-invert prose-lg max-w-none"
+          class="prose prose-invert prose-lg max-w-none text-white"
           v-html="renderedContent"
         />
         <p

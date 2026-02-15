@@ -122,19 +122,3 @@ export const buildQueryParams = (filter: CoursesFilter, page: number, limit: num
   return queryParams
 }
 
-/** Update browser URL without triggering full navigation or history spam */
-export const updateUrl = (filter: CoursesFilter, page: number, itemsPerPage: number): void => {
-  if (!import.meta.client) return
-
-  const queryParams = buildQueryParams(filter, page, itemsPerPage)
-  const queryString = queryParams.toString()
-  const newRoute = queryString ? `/courses?${queryString}` : '/courses'
-
-  const router = useRouter()
-  try {
-    router.replace(newRoute)
-  }
-  catch (error) {
-    console.error('Failed to update URL:', error)
-  }
-}

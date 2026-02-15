@@ -12,6 +12,7 @@ export interface CreateBlogInput {
   coverImage?: string
   status?: string
   authorId: number
+  readingTime?: number // ✅ اضافه شد
   publishedAt?: Date
 }
 
@@ -23,6 +24,7 @@ export interface UpdateBlogInput {
   excerpt?: string
   coverImage?: string
   status?: string
+  readingTime?: number // ✅ اضافه شد
   publishedAt?: Date
 }
 
@@ -38,6 +40,7 @@ export async function getAllBlogs() {
       coverImage: blogs.coverImage,
       status: blogs.status,
       authorId: blogs.authorId,
+      readingTime: blogs.readingTime, // ✅ اضافه شد
       publishedAt: blogs.publishedAt,
       createdAt: blogs.createdAt,
       updatedAt: blogs.updatedAt,
@@ -46,6 +49,7 @@ export async function getAllBlogs() {
         id: users.id,
         name: users.name,
         email: users.email,
+        avatar: users.avatar,  // ✅ اضافه شد
       },
     })
     .from(blogs)
@@ -60,12 +64,19 @@ export async function getPublishedBlogs() {
       id: blogs.id,
       title: blogs.title,
       slug: blogs.slug,
+      content: blogs.content, // ✅ اضافه شد - برای محاسبه excerpt در کلاینت
       excerpt: blogs.excerpt,
       coverImage: blogs.coverImage,
+      status: blogs.status, // ✅ اضافه شد
+      authorId: blogs.authorId, // ✅ اضافه شد
+      readingTime: blogs.readingTime, // ✅ اضافه شد
       publishedAt: blogs.publishedAt,
+      createdAt: blogs.createdAt, // ✅ اضافه شد
+      updatedAt: blogs.updatedAt, // ✅ اضافه شد
       author: {
         id: users.id,
         name: users.name,
+        avatar: users.avatar,
       },
     })
     .from(blogs)
@@ -97,6 +108,7 @@ export async function getBlogBySlug(slug: string) {
       coverImage: blogs.coverImage,
       status: blogs.status,
       authorId: blogs.authorId,
+      readingTime: blogs.readingTime, // ✅ اضافه شد
       publishedAt: blogs.publishedAt,
       createdAt: blogs.createdAt,
       updatedAt: blogs.updatedAt,
@@ -104,6 +116,7 @@ export async function getBlogBySlug(slug: string) {
         id: users.id,
         name: users.name,
         email: users.email,
+        avatar: users.avatar,
       },
     })
     .from(blogs)
@@ -128,6 +141,7 @@ export async function createBlog(data: CreateBlogInput): Promise<Blog> {
       coverImage: data.coverImage || null,
       status: data.status || 'draft',
       authorId: data.authorId,
+      readingTime: data.readingTime || 1, // ✅ اضافه شد
       publishedAt: data.publishedAt || null,
       createdAt: now,
       updatedAt: now,
@@ -140,7 +154,7 @@ export async function createBlog(data: CreateBlogInput): Promise<Blog> {
 // آپدیت بلاگ
 export async function updateBlog(
   id: number,
-  data: UpdateBlogInput
+  data: UpdateBlogInput,
 ): Promise<Blog | null> {
   const result = await db
     .update(blogs)

@@ -83,8 +83,8 @@ describe('Course Filters - Integration Tests', () => {
       expect(coursesStore.loading).toBe(true)
     })
 
-    it('setPage باید صفحه را تغییر دهد', () => {
-      coursesStore.setPage(3)
+    it('goToPage باید صفحه را تغییر دهد', () => {
+      coursesStore.goToPage(3)
 
       expect(coursesStore.currentPage).toBe(3)
       expect(coursesStore.loading).toBe(true)
@@ -111,7 +111,7 @@ describe('Course Filters - Integration Tests', () => {
         categories: ['Design'],
         levels: ['Advanced'],
       })
-      coursesStore.setPage(3)
+      coursesStore.goToPage(3)
 
       coursesStore.resetFilter()
 
