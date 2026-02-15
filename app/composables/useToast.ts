@@ -29,6 +29,22 @@ export const useToast = () => {
     toastState.isVisible = false
   }
 
+  const success = (message: string, duration?: number) => {
+    show({ message, type: 'success', duration })
+  }
+
+  const error = (message: string, duration?: number) => {
+    show({ message, type: 'error', duration })
+  }
+
+  const warning = (message: string, duration?: number) => {
+    show({ message, type: 'warning', duration })
+  }
+
+  const info = (message: string, duration?: number) => {
+    show({ message, type: 'info', duration })
+  }
+
   const showLoginRequired = (action: string = 'continue') => {
     show({
       message: `Please sign in to ${action}`,
@@ -43,6 +59,10 @@ export const useToast = () => {
     state: readonly(toastState),
     show,
     hide,
+    success,
+    error,
+    warning,
+    info,
     showLoginRequired,
   }
 }

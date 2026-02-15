@@ -5,16 +5,44 @@ export default defineEventHandler(async (event) => {
   try {
     const query = getQuery(event)
     const showAll = query.all === 'true'
+    const searchQuery = query.q as string || ''
+    const page = parseInt(query.page as string) || 1
+    const limit = parseInt(query.limit as string) || 9 // Accept from query, default to 9
 
-    // اگر all=true باشد همه بلاگ‌ها، وگرنه فقط منتشر شده‌ها
-    const blogs = showAll
+    // Get all blogs based on permissions
+    const allBlogs = showAll
       ? await getAllBlogs()
       : await getPublishedBlogs()
 
+    // Apply search filter if query exists
+    let filteredBlogs = allBlogs
+    if (searchQuery) {
+      const searchTerm = searchQuery.toLowerCase()
+      filteredBlogs = allBlogs.filter(blog => 
+        blog.title.toLowerCase().includes(searchTerm) ||
+        blog.content?.toLowerCase().includes(searchTerm) ||
+        blog.excerpt?.toLowerCase().includes(searchTerm)
+      )
+    }
+
+    // Calculate pagination
+    const startIndex = (page - 1) * limit
+    const endIndex = startIndex + limit
+    const paginatedBlogs = filteredBlogs.slice(startIndex, endIndex)
+    const totalPages = Math.ceil(filteredBlogs.length / limit)
+
     return {
       success: true,
-      data: blogs,
-      count: blogs.length,
+      data: paginatedBlogs,
+      total: filteredBlogs.length, // Total after filtering
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: filteredBlogs.length,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+        limit,
+      },
     }
   }
   catch (error: any) {

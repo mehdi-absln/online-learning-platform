@@ -69,7 +69,7 @@
     <!-- Main Content -->
     <template v-else-if="lesson">
       <header
-        class="py-10 bg-gradient-to-r from-dark-surface via-dark-bg to-primary/60 shadow-[inset_0_0_40px_rgba(255,255,255,0.05),_0_10px_30px_rgba(0,0,0,0.6)] backdrop-blur-sm rounded-2xl border-dark-divider"
+        class="py-10 bg-hero-shimmer border-dark-divider"
       >
         <div class="container">
           <Breadcrumb

@@ -10,8 +10,6 @@ Expert in: Nuxt 4, Vue 3, TypeScript, Tailwind CSS, Pinia, Accessibility (a11y),
 ## CRITICAL RULES
 
 ### Communication
-- Always respond in Persian (Farsi)
-- Always think in Persian (Farsi)
 - Always explain what you're about to do BEFORE doing it
 - No deadline pressure - never rush, never provide "just works" code
 

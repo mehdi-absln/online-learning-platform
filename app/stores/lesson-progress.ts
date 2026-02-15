@@ -1,3 +1,4 @@
+import { getErrorMessage } from '~/utils/error-helpers'
 import type { LessonProgress } from '~/types/shared/lessons'
 
 // ───── API Response Types ─────
@@ -29,6 +30,7 @@ export const useLessonProgressStore = defineStore('lesson-progress', () => {
   const progress = ref<Record<number, LessonProgress>>({})
   const isLoading = ref(false)
   const isInitialized = ref(false)
+  const error = ref<string | null>(null)
 
   // ───── Getters ─────
   const isCompleted = (lessonId: number) => progress.value[lessonId]?.isCompleted ?? false
@@ -42,6 +44,8 @@ export const useLessonProgressStore = defineStore('lesson-progress', () => {
   )
 
   const completedCount = computed(() => completedLessonIds.value.length)
+
+  const hasError = computed(() => error.value !== null)
 
   // ───── Helpers ─────
   const getDefaultProgress = (lessonId: number): ProgressState => ({
@@ -70,11 +74,16 @@ export const useLessonProgressStore = defineStore('lesson-progress', () => {
     }
   }
 
+  const clearError = () => {
+    error.value = null
+  }
+
   // ───── Actions ─────
   const fetchProgress = async () => {
     if (isInitialized.value) return
 
     isLoading.value = true
+    error.value = null
 
     try {
       const res = await $fetch<ProgressResponse>('/api/progress')
@@ -91,8 +100,9 @@ export const useLessonProgressStore = defineStore('lesson-progress', () => {
 
       isInitialized.value = true
     }
-    catch (error) {
-      console.error('Failed to fetch progress:', error)
+    catch (err: unknown) {
+      error.value = getErrorMessage(err)
+      console.error('Failed to fetch progress:', err)
     }
     finally {
       isLoading.value = false
@@ -119,7 +129,8 @@ export const useLessonProgressStore = defineStore('lesson-progress', () => {
         progress.value[lessonId] = res.data.progress
       }
     }
-    catch {
+    catch (err: unknown) {
+      error.value = getErrorMessage(err)
       revertLocal(lessonId, current)
     }
   }
@@ -139,7 +150,8 @@ export const useLessonProgressStore = defineStore('lesson-progress', () => {
         progress.value[lessonId] = res.data.progress
       }
     }
-    catch {
+    catch (err: unknown) {
+      error.value = getErrorMessage(err)
       revertLocal(lessonId, current)
     }
   }
@@ -159,7 +171,8 @@ export const useLessonProgressStore = defineStore('lesson-progress', () => {
         progress.value[lessonId] = res.data.progress
       }
     }
-    catch {
+    catch (err: unknown) {
+      error.value = getErrorMessage(err)
       revertLocal(lessonId, current)
     }
   }
@@ -167,33 +180,43 @@ export const useLessonProgressStore = defineStore('lesson-progress', () => {
   const getProgressForCourse = (lessonIds: number[]) => {
     const completed = lessonIds.filter(id => isCompleted(id)).length
     const total = lessonIds.length
+    const percentage = total > 0 ? (completed / total) * 100 : 0
 
     return {
       completed,
       total,
-      percentage: total > 0 ? (completed / total) * 100 : 0,
+      percentage,
     }
   }
 
   const reset = () => {
     progress.value = {}
     isInitialized.value = false
+    error.value = null
   }
 
   return {
+    // State
     progress,
     isLoading,
     isInitialized,
+    error,
+
+    // Getters
     isCompleted,
     isBookmarked,
     getNote,
     completedLessonIds,
     completedCount,
+    hasError,
+
+    // Actions
     fetchProgress,
     toggleComplete,
     toggleBookmark,
     saveNote,
     getProgressForCourse,
+    clearError,
     reset,
   }
 })

@@ -33,7 +33,16 @@ export default defineNuxtConfig({
       },
       watch: {
         usePolling: false,
+        ignored: [
+          '**/node_modules/**',
+          '**/.git/**',
+          '**/.nuxt/**',
+          '**/dist/**',
+        ],
       },
+    },
+    optimizeDeps: {
+      exclude: ['fsevents'],
     },
   },
 

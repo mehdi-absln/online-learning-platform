@@ -21,25 +21,30 @@
         v-else
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 [grid-auto-rows:1fr]"
       >
-        <div
+        <article
           v-for="course in courses"
           :key="course.id"
-          class="h-full"
+          role="listitem"
+          class="flex"
         >
           <CourseCard
             :course="course"
-            class="h-full"
+            class="w-full h-full"
           />
-        </div>
+        </article>
       </div>
 
-      <Pagination
+      <nav
         v-if="courses.length > 0 && totalPages > 1"
-        :current-page="currentPage"
-        :total-pages="totalPages"
-        :on-page-change="onPageChange"
+        aria-label="Courses pagination"
         class="mt-12"
-      />
+      >
+        <Pagination
+          :current-page="currentPage"
+          :total-pages="totalPages"
+          :on-page-change="onPageChange"
+        />
+      </nav>
     </div>
   </div>
 </template>

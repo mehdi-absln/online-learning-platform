@@ -36,10 +36,12 @@ This document provides a detailed breakdown of the project structure for the Onl
 │   └── useZodValidation.test.ts
 ├── app/                          # Nuxt application files
 │   ├── assets/                   # Static assets (CSS, fonts, etc.)
+│   │   ├── .gitkeep
 │   │   └── css/
 │   │       ├── app.css           # Main application styles
 │   │       └── fonts.css         # Font imports and configurations
 │   ├── components/               # Reusable Vue components
+│   │   ├── .gitkeep
 │   │   ├── courses/              # Course-specific components
 │   │   │   ├── CourseCard.vue
 │   │   │   ├── CourseReviews.vue
@@ -59,19 +61,30 @@ This document provides a detailed breakdown of the project structure for the Onl
 │   │       ├── FormCheckbox.vue
 │   │       ├── FormInput.vue
 │   │       ├── LoadingSpinner.vue
+│   │       ├── MainFooter.vue
+│   │       ├── MainNav.vue
+│   │       ├── PageHero.vue
 │   │       ├── Pagination.vue
+│   │       ├── SearchInput.vue
 │   │       ├── StarRating.vue
 │   │       ├── SubmitButton.vue
 │   │       ├── Tabs.vue
 │   │       └── Toast.vue
+│   ├── blogs/                    # Blog-specific components
+│   │   ├── BlogCard.vue
+│   │   └── BlogsGrid.vue
 │   ├── composables/              # Vue composables for reusable logic
 │   │   ├── useAccordion.ts
 │   │   ├── useApiError.ts
+│   │   ├── useBlog.ts
+│   │   ├── useBlogFilters.ts
+│   │   ├── useBlogs.ts
 │   │   ├── useCourse.ts
 │   │   ├── useCourseFilters.ts
 │   │   ├── useCourses.ts
 │   │   ├── useKeyboardFocus.ts
 │   │   ├── useLesson.ts
+│   │   ├── usePagination.ts
 │   │   ├── useRelatedCourses.ts
 │   │   ├── useToast.ts
 │   │   └── useZodValidation.ts
@@ -94,6 +107,9 @@ This document provides a detailed breakdown of the project structure for the Onl
 │   │   │   │   │   └── [lessonSlug].vue
 │   │   │   │   └── index.vue
 │   │   │   └── index.vue
+│   │   ├── blogs/                # Blog pages
+│   │   │   ├── [slug].vue
+│   │   │   └── index.vue
 │   │   ├── dashboard.vue
 │   │   ├── home.vue
 │   │   └── .gitkeep
@@ -112,6 +128,7 @@ This document provides a detailed breakdown of the project structure for the Onl
 │   ├── schemas/                  # Zod validation schemas
 │   │   └── auth.ts
 │   ├── stores/                   # Pinia stores
+│   │   ├── blogs.ts
 │   │   ├── courses.ts
 │   │   ├── lesson-progress.ts
 │   │   └── user.ts
@@ -122,6 +139,7 @@ This document provides a detailed breakdown of the project structure for the Onl
 │   │   ├── shared/
 │   │   │   ├── api.ts
 │   │   │   ├── auth.ts
+│   │   │   ├── blogs.ts
 │   │   │   ├── courses.ts
 │   │   │   ├── lessons.ts
 │   │   │   └── users.ts
@@ -130,17 +148,27 @@ This document provides a detailed breakdown of the project structure for the Onl
 │   │   └── types.ts
 │   ├── utils/                    # Utility functions
 │   │   ├── auth-error-handler-helpers.ts
-│   │   └── course-helpers.ts
+│   │   ├── text-helpers.ts
+│   │   ├── course-helpers.ts
+│   │   └── error-helpers.ts
 │   └── app.vue                   # Main application component
 ├── scripts/                      # Utility scripts
 │   ├── add-instructors.ts
 │   ├── add-lesson-progress-table.ts
 │   ├── add-tags-to-existing-courses.ts
+│   ├── calculate-reading-times.ts
+│   ├── check-blogs.ts
+│   ├── check-reading-time.ts
 │   ├── check-tables.ts
+│   ├── seed-blogs.ts
 │   ├── setup-db.ts
 │   ├── show-lessons.ts
+│   ├── sync-instructors.ts
+│   ├── update-blogs-batch1.ts
+│   ├── update-blogs-batch2.ts
 │   └── verify-lesson-progress-table.ts
 ├── server/                       # Server-side code
+│   ├── .gitkeep
 │   ├── api/                      # API routes
 │   │   ├── admin/
 │   │   ├── auth/
@@ -188,12 +216,19 @@ This document provides a detailed breakdown of the project structure for the Onl
 │   ├── drizzle/                  # Database migration files
 │   │   └── migrations/
 │   │       ├── 0000_full_schema_update.sql
+│   │       ├── 0000_lean_preak.sql
 │   │       ├── 0001_seed_sample_data.sql
 │   │       ├── 0002_add_slug_to_courses.sql
 │   │       ├── 0003_update_schema.sql
 │   │       ├── 0004_add_lesson_progress.sql
-│   │       └── 0005_create_blogs.sql
+│   │       ├── 0005_create_blogs.sql
+│   │       ├── 0006_add_reading_time.sql
+│   │       └── meta/
+│   │           ├── 0000_snapshot.json
+│   │           └── _journal.json
 │   └── utils/                    # Server utility functions
+│       ├── auth-helpers.ts
+│       ├── text-helpers.ts
 │       ├── course-authorization.ts
 │       ├── course-transformer.ts
 │       ├── format-utils.ts
@@ -209,6 +244,7 @@ This document provides a detailed breakdown of the project structure for the Onl
 ├── .gitignore                    # Files to ignore for Git
 ├── .prettierignore               # Files to ignore for Prettier
 ├── PROJECT_STRUCTURE.md          # Current file documenting project structure
+├── -p/                           # Extra directory
 ├── drizzle.config.ts             # Drizzle ORM configuration
 ├── eslint.config.mjs             # ESLint configuration
 ├── nuxt.config.ts                # Nuxt configuration

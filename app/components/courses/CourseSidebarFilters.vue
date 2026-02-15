@@ -19,52 +19,15 @@
 
     <!-- Filters -->
     <div v-else>
-      <!-- Search Input -->
+      <!-- Search -->
       <div class="mb-6">
         <label class="block text-base font-antonio font-bold text-primary mb-4">Search</label>
-        <div class="relative">
-          <input
-            v-model="searchInput"
-            type="text"
-            placeholder="Search courses..."
-            class="w-full pl-10 pr-10 py-3 rounded-lg bg-dark-surface border border-dark-divider text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-          >
-          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <svg
-              class="w-5 h-5 text-gray-400 fill-none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-          <button
-            v-if="searchInput"
-            type="button"
-            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white"
-            @click="clearSearch"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
+        <UiSearchInput
+          v-model="searchQuery"
+          placeholder="Search courses..."
+          :debounce="400"
+          @search="handleSearch" @clear="handleClear"
+        />
       </div>
 
       <div class="space-y-6">
@@ -179,7 +142,7 @@ const {
   error,
 } = useCourseFilters()
 
-const searchInput = ref(filter.value.searchQuery || '')
+const searchQuery = ref(filter.value.searchQuery || '')
 
 const priceOptions = [
   { label: 'All', value: 'all' },
@@ -216,26 +179,26 @@ const handlePriceChange = (newPrice: string) => {
   })
 }
 
-// Debounced search using applyFilters
-const { applyFilters } = useCourseFilters()
+// Search handlers
+function handleSearch(query: string) {
+  applyFiltersImmediate({
+    ...filter.value,
+    searchQuery: query || undefined,
+  })
+}
 
-watch(
-  searchInput,
-  (val) => {
-    applyFilters({
-      ...filter.value,
-      searchQuery: val,
-    })
-  },
-)
+function handleClear() {
+  applyFiltersImmediate({
+    ...filter.value,
+    searchQuery: undefined,
+  })
+}
 
 // Watch for external changes to filter.searchQuery
 watch(
   () => filter.value.searchQuery,
-  (val) => {
-    if (val !== searchInput.value) {
-      searchInput.value = val || ''
-    }
+  (newQuery) => {
+    searchQuery.value = newQuery || ''
   },
 )
 
@@ -249,13 +212,4 @@ const hasActiveFilters = computed(() => {
     || !!filter.value.searchQuery
   )
 })
-
-// Clear search input
-const clearSearch = () => {
-  searchInput.value = ''
-  applyFiltersImmediate({
-    ...filter.value,
-    searchQuery: '',
-  })
-}
 </script>

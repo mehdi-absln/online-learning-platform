@@ -1,6 +1,8 @@
 // server/api/blogs/index.post.ts
 import { z } from 'zod'
 import { createBlog, isSlugExists } from '../../db/blog-service'
+import { requireInstructor } from '../../utils/auth-helpers'
+import { calculateReadingTime } from '../../utils/blog-helpers' // ✨ جدید
 
 const createBlogSchema = z.object({
   title: z
@@ -27,24 +29,20 @@ const createBlogSchema = z.object({
     .enum(['draft', 'published', 'archived'])
     .optional()
     .default('draft'),
-  authorId: z
-    .number()
-    .int()
-    .positive('Invalid author ID'),
   publishedAt: z
     .string()
     .datetime()
     .optional()
-    .transform((val) => val ? new Date(val) : undefined),
+    .transform(val => val ? new Date(val) : undefined),
 })
 
 export default defineEventHandler(async (event) => {
   try {
+    const user = await requireInstructor(event)
     const body = await readBody(event)
-    
-    // Validation
+
     const result = createBlogSchema.safeParse(body)
-    
+
     if (!result.success) {
       throw createError({
         statusCode: 400,
@@ -54,10 +52,9 @@ export default defineEventHandler(async (event) => {
         },
       })
     }
-    
+
     const data = result.data
-    
-    // بررسی تکراری نبودن slug
+
     const slugExists = await isSlugExists(data.slug)
     if (slugExists) {
       throw createError({
@@ -66,32 +63,37 @@ export default defineEventHandler(async (event) => {
         data: { field: 'slug' },
       })
     }
-    
-    // اگر status = published و publishedAt نداریم
+
     if (data.status === 'published' && !data.publishedAt) {
       data.publishedAt = new Date()
     }
-    
-    // ایجاد بلاگ
-    const blog = await createBlog(data)
-    
+
+    // ✨ محاسبه زمان مطالعه
+    const readingTime = calculateReadingTime(data.content)
+
+    const blog = await createBlog({
+      ...data,
+      authorId: user.id,
+      readingTime, // ✨ جدید
+    })
+
     setResponseStatus(event, 201)
     return {
       success: true,
       data: blog,
       message: 'Blog created successfully',
     }
-  } 
-  catch (error: any) {
-    // اگر خطا از نوع H3Error باشد، دوباره throw کن
-    if (error.statusCode) {
+  }
+  catch (error: unknown) {
+    if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }
-    
+
+    const message = error instanceof Error ? error.message : 'Unknown error'
     throw createError({
       statusCode: 500,
       statusMessage: 'Failed to create blog',
-      data: { message: error.message },
+      data: { message },
     })
   }
 })

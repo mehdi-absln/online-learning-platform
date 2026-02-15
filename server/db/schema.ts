@@ -174,6 +174,8 @@ export const blogs = sqliteTable('blogs', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
 
+  readingTime: integer('reading_time').notNull().default(1),
+
   publishedAt: integer('published_at', { mode: 'timestamp' }),
 
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
