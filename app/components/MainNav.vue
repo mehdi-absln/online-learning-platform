@@ -169,23 +169,22 @@
         </button>
       </div>
     </div>
+
+    <!-- Cart Drawer Component -->
+    <CartDrawer />
   </nav>
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
+import { useCart } from '~/composables/useCart'
+import CartDrawer from '~/components/ui/CartDrawer.vue'
 
-// Cart items count (replace with your actual state management)
-const cartItemsCount = ref(0)
+const route = useRoute()
+const { itemsCount: cartItemsCount, openCart } = useCart()
 
 // Functions for button actions
 const openSearch = () => {
   // Implement search modal/dropdown logic
   console.log('Opening search...')
-}
-
-const openCart = () => {
-  // Implement cart modal/dropdown logic
-  console.log('Opening cart...')
 }
 </script>

@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+
   modules: [
     '@nuxt/image',
     '@nuxt/icon',
@@ -6,6 +7,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
   ],
+  ssr: true,
 
   devtools: { enabled: false },
 

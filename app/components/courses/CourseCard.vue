@@ -88,29 +88,66 @@
       <hr class="my-6 border-gray-700">
 
       <!-- Footer -->
-      <div class="flex items-center justify-between pb-6 mt-auto">
+      <div class="flex items-center justify-between pb-6 mt-auto gap-4">
         <span class="text-base font-semibold text-primary-alt">
           ${{ course.price }}
         </span>
-        <NuxtLink
-          v-if="courseLink"
-          :to="courseLink"
-          class="font-medium text-white transition-all duration-300 hover:text-primary"
-        >
-          Explore Now
-        </NuxtLink>
-        <span
-          v-else
-          class="font-medium text-gray-500"
-        >
-          Explore Now
-        </span>
+
+        <div class="flex items-center gap-2">
+          <button
+            v-if="!isInCart(course.id)"
+            class="p-2.5 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-xl transition-all duration-300 group/cart focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark-bg"
+            aria-label="Add to cart"
+            @click.prevent="handleAddToCart"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+          </button>
+
+          <button
+            v-else
+            class="p-2.5 bg-primary text-white rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark-bg"
+            aria-label="View in cart"
+            @click.prevent="openCart"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+            </svg>
+          </button>
+
+          <NuxtLink
+            v-if="courseLink"
+            :to="courseLink"
+            class="font-medium text-white transition-all duration-300 hover:text-primary whitespace-nowrap"
+          >
+            Explore Now
+          </NuxtLink>
+        </div>
       </div>
     </div>
   </article>
 </template>
 
 <script setup lang="ts">
+import { useCart } from '~/composables/useCart'
+import type { Course as AuthCourse } from '~/types/shared/auth'
 import type { Course } from '~/types/shared/courses'
 
 interface Props {
@@ -118,10 +155,17 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { addItem, isInCart, openCart } = useCart()
 
 defineEmits<{
   bookmark: [courseId: number]
 }>()
+
+const handleAddToCart = () => {
+  // Convert course to the format expected by the store if necessary
+  addItem(props.course as unknown as AuthCourse)
+  openCart()
+}
 
 const courseLink = computed(() => {
   if (!props.course.slug) {
