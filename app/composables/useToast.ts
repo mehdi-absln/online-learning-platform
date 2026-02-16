@@ -56,7 +56,7 @@ export const useToast = () => {
   }
 
   return {
-    state: readonly(toastState),
+    state: toastState,
     show,
     hide,
     success,

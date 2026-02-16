@@ -187,6 +187,60 @@ export const blogs = sqliteTable('blogs', {
 }))
 
 // =====================
+// Cart Items Table
+// =====================
+export const cartItems = sqliteTable('cart_items', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  courseId: integer('course_id').notNull().references(() => courses.id, { onDelete: 'cascade' }),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+}, table => ({
+  userIdIdx: index('cart_user_id_idx').on(table.userId),
+  uniqueUserCourse: index('cart_user_course_idx').on(table.userId, table.courseId),
+}))
+
+// =====================
+// Orders Table
+// =====================
+export const orders = sqliteTable('orders', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  totalAmount: real('total_amount').notNull(),
+  status: text('status').notNull().default('pending'), // pending, completed, failed
+  paymentRef: text('payment_ref'),
+  completedAt: integer('completed_at', { mode: 'timestamp' }),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+}, table => ({
+  userIdIdx: index('orders_user_id_idx').on(table.userId),
+}))
+
+// =====================
+// Order Items Table
+// =====================
+export const orderItems = sqliteTable('order_items', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  orderId: integer('order_id').notNull().references(() => orders.id, { onDelete: 'cascade' }),
+  courseId: integer('course_id').notNull().references(() => courses.id, { onDelete: 'cascade' }),
+  price: real('price').notNull(),
+}, table => ({
+  orderIdIdx: index('order_items_order_id_idx').on(table.orderId),
+}))
+
+// =====================
+// Enrollments Table
+// =====================
+export const enrollments = sqliteTable('enrollments', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  courseId: integer('course_id').notNull().references(() => courses.id, { onDelete: 'cascade' }),
+  orderId: integer('order_id').references(() => orders.id, { onDelete: 'set null' }),
+  enrolledAt: integer('enrolled_at', { mode: 'timestamp' }).notNull(),
+}, table => ({
+  userIdIdx: index('enrollments_user_id_idx').on(table.userId),
+  uniqueUserCourse: index('enrollments_user_course_idx').on(table.userId, table.courseId),
+}))
+
+// =====================
 // Relations
 // =====================
 export const coursesRelations = relations(courses, ({ one, many }) => ({
@@ -237,6 +291,52 @@ export const blogsRelations = relations(blogs, ({ one }) => ({
   }),
 }))
 
+export const cartItemsRelations = relations(cartItems, ({ one }) => ({
+  user: one(users, {
+    fields: [cartItems.userId],
+    references: [users.id],
+  }),
+  course: one(courses, {
+    fields: [cartItems.courseId],
+    references: [courses.id],
+  }),
+}))
+
+export const ordersRelations = relations(orders, ({ one, many }) => ({
+  user: one(users, {
+    fields: [orders.userId],
+    references: [users.id],
+  }),
+  items: many(orderItems),
+  enrollments: many(enrollments),
+}))
+
+export const orderItemsRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
+  }),
+  course: one(courses, {
+    fields: [orderItems.courseId],
+    references: [courses.id],
+  }),
+}))
+
+export const enrollmentsRelations = relations(enrollments, ({ one }) => ({
+  user: one(users, {
+    fields: [enrollments.userId],
+    references: [users.id],
+  }),
+  course: one(courses, {
+    fields: [enrollments.courseId],
+    references: [courses.id],
+  }),
+  order: one(orders, {
+    fields: [enrollments.orderId],
+    references: [orders.id],
+  }),
+}))
+
 // =====================
 // Types
 // =====================
@@ -253,3 +353,11 @@ export type LessonProgress = typeof lessonProgress.$inferSelect
 export type NewLessonProgress = typeof lessonProgress.$inferInsert
 export type Blog = typeof blogs.$inferSelect
 export type NewBlog = typeof blogs.$inferInsert
+export type CartItem = typeof cartItems.$inferSelect
+export type NewCartItem = typeof cartItems.$inferInsert
+export type Order = typeof orders.$inferSelect
+export type NewOrder = typeof orders.$inferInsert
+export type OrderItem = typeof orderItems.$inferSelect
+export type NewOrderItem = typeof orderItems.$inferInsert
+export type Enrollment = typeof enrollments.$inferSelect
+export type NewEnrollment = typeof enrollments.$inferInsert

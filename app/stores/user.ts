@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { getErrorMessage } from '~/utils/error-helpers'
+import { useCartStore } from './cart'
 import type { SignInFormData, SignUpFormData } from '~/schemas/auth'
 import type { User } from '~/types/shared/auth'
 import type { ApiResponse, AuthResponse, AuthResponse as AuthResponseType } from '~/types/shared/api'
@@ -44,7 +45,8 @@ export const useUserStore = defineStore('user', () => {
     clearError()
 
     try {
-      const response = await $fetch<ApiResponse<{ user: User }>>('/api/auth/me')
+      const headers = useRequestHeaders(['cookie'])
+      const response = await $fetch<ApiResponse<{ user: User }>>('/api/auth/me', { headers })
       if (response?.success && response?.data?.user) {
         setUser(response.data.user)
       }
@@ -74,6 +76,9 @@ export const useUserStore = defineStore('user', () => {
 
       if (response?.success && response?.user) {
         setUser(response.user)
+        // Trigger cart merge
+        const cartStore = useCartStore()
+        await cartStore.mergeGuestCart()
         return { success: true, user: response.user }
       }
       else {
@@ -105,6 +110,9 @@ export const useUserStore = defineStore('user', () => {
 
       if (response?.success && response?.user) {
         setUser(response.user)
+        // Trigger cart merge
+        const cartStore = useCartStore()
+        await cartStore.mergeGuestCart()
         return { success: true, user: response.user }
       }
       else {
