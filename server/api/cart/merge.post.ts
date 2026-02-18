@@ -1,6 +1,6 @@
 import { requireAuth } from '../../utils/auth-helpers'
 import { bulkAddToCart } from '../../db/cart-service'
-import { successResponse, errorResponse } from '../../utils/response'
+import { successResponse } from '../../utils/response'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -17,9 +17,6 @@ export default defineEventHandler(async (event) => {
     return successResponse('Cart merged successfully', results)
   }
   catch (error: unknown) {
-    const err = error as { statusCode?: number, statusMessage?: string, message?: string }
-    console.error('Cart merge error:', err)
-    const message = err.statusMessage || 'Failed to merge cart'
-    return errorResponse(message, err.message)
+    throw createError(error as Error)
   }
 })

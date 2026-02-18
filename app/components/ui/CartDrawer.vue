@@ -29,6 +29,7 @@
       >
         <div
           v-if="isCartDrawerOpen"
+          ref="drawerRef"
           class="fixed inset-y-0 right-0 z-[60] w-full max-w-md shadow-2xl flex flex-col bg-dark-gray border-l border-dark-divider"
           role="dialog"
           aria-modal="true"
@@ -55,9 +56,10 @@
                 />
               </svg>
               Shopping Cart
-              <span class="text-sm font-normal text-white/50">({{ itemsCount }} items)</span>
+              <span class="text-sm font-normal text-white/70">({{ itemsCount }} items)</span>
             </h2>
             <button
+              ref="closeBtnRef"
               class="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
               aria-label="Close cart"
               @click="closeCart"
@@ -105,23 +107,24 @@
                 <p class="text-white font-medium">
                   Your cart is empty
                 </p>
-                <p class="text-white/50 text-sm mt-1">
+                <p class="text-white/70 text-sm mt-1">
                   Looks like you haven't added anything yet.
                 </p>
               </div>
               <button
-                class="mt-4 px-6 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark-gray"
+                class="btn-primary mt-4"
                 @click="closeCart"
               >
                 Start Learning
               </button>
             </div>
 
-            <div
+            <ul
               v-else
               class="space-y-4"
+              role="list"
             >
-              <div
+              <li
                 v-for="item in items"
                 :key="item.id"
                 class="flex gap-4 p-4 bg-dark-bg rounded-xl border border-dark-divider group"
@@ -138,7 +141,7 @@
                     <h3 class="text-white font-medium truncate group-hover:text-primary transition-colors text-sm">
                       {{ item.title }}
                     </h3>
-                    <p class="text-white/50 text-xs mt-1 truncate">
+                    <p class="text-white/70 text-xs mt-1 truncate">
                       By {{ item.instructor?.name || 'Instructor' }}
                     </p>
                   </div>
@@ -146,6 +149,7 @@
                     <span class="text-primary font-bold">${{ item.price }}</span>
                     <button
                       class="text-xs text-red-500 hover:text-red-400 transition-colors flex items-center gap-1 focus:outline-none"
+                      :aria-label="`Remove ${item.title}`"
                       @click="removeItem(item.id)"
                     >
                       <svg
@@ -154,6 +158,7 @@
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
+                        aria-hidden="true"
                       >
                         <path
                           stroke-linecap="round"
@@ -166,8 +171,8 @@
                     </button>
                   </div>
                 </div>
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
 
           <!-- Footer Section: Summary & Checkout -->
@@ -180,7 +185,7 @@
               <span class="text-2xl font-bold text-white">${{ totalPrice.toFixed(2) }}</span>
             </div>
             <button
-              class="w-full py-4 bg-primary hover:bg-primary/90 text-white rounded-xl transition-all duration-300 font-bold text-lg shadow-lg shadow-primary/20 flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed"
+              class="btn-primary w-full py-4 text-lg gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
               :disabled="isLoading"
               @click="handleCheckout"
             >
@@ -237,6 +242,9 @@
 
 <script setup lang="ts">
 import { useCart } from '~/composables/useCart'
+import { onKeyStroke } from '@vueuse/core'
+
+const drawerRef = ref<HTMLElement | null>(null)
 
 const {
   isCartDrawerOpen,
@@ -245,22 +253,32 @@ const {
   itemsCount,
   totalPrice,
   removeItem,
-  checkout,
   isLoading,
 } = useCart()
 
-const handleCheckout = async () => {
-  const result = await checkout()
-  if (result.success) {
-    closeCart()
-    navigateTo('/dashboard')
-  }
+const handleCheckout = () => {
+  closeCart()
+  navigateTo('/checkout')
 }
 
-// Prevent body scroll when drawer is open to improve UX
-watch(isCartDrawerOpen, (isOpen) => {
+// Prevent body scroll and manage focus
+watch(isCartDrawerOpen, async (isOpen) => {
   if (import.meta.client) {
     document.body.style.overflow = isOpen ? 'hidden' : ''
+    if (isOpen) {
+      await nextTick()
+      // Simple focus management: focus the close button or container
+      const focusable = drawerRef.value?.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') as HTMLElement
+      if (focusable) focusable.focus()
+    }
+  }
+})
+
+// Close on Escape
+onKeyStroke('Escape', (e) => {
+  if (isCartDrawerOpen.value) {
+    e.preventDefault()
+    closeCart()
   }
 })
 </script>

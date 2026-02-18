@@ -7,9 +7,16 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
   ],
-  ssr: true,
 
   devtools: { enabled: false },
+
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: 'en',
+      },
+    },
+  },
 
   css: [
     '~/assets/css/fonts.css',
@@ -45,6 +52,11 @@ export default defineNuxtConfig({
     },
     optimizeDeps: {
       exclude: ['fsevents'],
+    },
+    // Fix for Windows path handling with virtual modules
+    // https://github.com/nuxt/nuxt/issues/25941
+    resolve: {
+      preserveSymlinks: true,
     },
   },
 

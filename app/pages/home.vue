@@ -44,7 +44,7 @@
               class="inline-block"
             >
               <button
-                class="relative font-antonio px-6 py-3 font-semibold text-white bg-gradient-to-r from-primary to-primary/90 group overflow-hidden"
+                class="btn-primary relative font-antonio group overflow-hidden"
               >
                 <span
                   class="absolute inset-0 w-0 bg-white/10 group-hover:w-full transition-all duration-500"
@@ -516,6 +516,7 @@ const slides = [
     instructor: {
       name: 'Chef Maria Garcia',
       avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+      title: 'Senior Chef',
     },
     stats: {
       students: 42,
@@ -537,6 +538,7 @@ const slides = [
     instructor: {
       name: 'Alex Johnson',
       avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+      title: 'Senior Developer',
     },
     stats: {
       students: 156,
@@ -558,6 +560,7 @@ const slides = [
     instructor: {
       name: 'Sarah Williams',
       avatar: 'https://randomuser.me/api/portraits/women/28.jpg',
+      title: 'Marketing Expert',
     },
     stats: {
       students: 87,
@@ -579,6 +582,7 @@ const slides = [
     instructor: {
       name: 'James Wilson',
       avatar: 'https://randomuser.me/api/portraits/men/45.jpg',
+      title: 'Professional Photographer',
     },
     stats: {
       students: 63,
@@ -600,6 +604,7 @@ const slides = [
     instructor: {
       name: 'Dr. Emily Chen',
       avatar: 'https://randomuser.me/api/portraits/women/52.jpg',
+      title: 'Data Scientist',
     },
     stats: {
       students: 94,
@@ -686,7 +691,7 @@ const testimonials = [
 ]
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 :deep(.carousel__pagination) {
   @apply flex justify-center absolute -bottom-11;
 }

@@ -20,7 +20,7 @@
     </p>
     <NuxtLink
       to="/courses"
-      class="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+      class="btn-primary mt-4"
     >
       Back to Courses
     </NuxtLink>
@@ -246,7 +246,7 @@
               <div class="mt-6">
                 <button
                   type="button"
-                  class="w-full font-antonio px-6 py-3 font-semibold text-white bg-gradient-to-r from-primary to-primary/90 group overflow-hidden relative"
+                  class="btn-primary w-full font-antonio group overflow-hidden"
                   aria-label="Enroll in this course"
                 >
                   <span

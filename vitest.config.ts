@@ -7,7 +7,11 @@ export default defineVitestConfig({
       nuxt: {
         rootDir: './',
         overrides: {
-          // any overrides for the Nuxt config during testing
+          vite: {
+            ssr: {
+              noExternal: ['@vueuse/core'],
+            },
+          },
         },
       },
     },

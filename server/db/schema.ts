@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, real, index } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, text, integer, real, index, uniqueIndex } from 'drizzle-orm/sqlite-core'
 import { relations } from 'drizzle-orm'
 
 // =====================
@@ -196,7 +196,7 @@ export const cartItems = sqliteTable('cart_items', {
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 }, table => ({
   userIdIdx: index('cart_user_id_idx').on(table.userId),
-  uniqueUserCourse: index('cart_user_course_idx').on(table.userId, table.courseId),
+  uniqueUserCourse: uniqueIndex('cart_user_course_idx').on(table.userId, table.courseId),
 }))
 
 // =====================
@@ -237,7 +237,7 @@ export const enrollments = sqliteTable('enrollments', {
   enrolledAt: integer('enrolled_at', { mode: 'timestamp' }).notNull(),
 }, table => ({
   userIdIdx: index('enrollments_user_id_idx').on(table.userId),
-  uniqueUserCourse: index('enrollments_user_course_idx').on(table.userId, table.courseId),
+  uniqueUserCourse: uniqueIndex('enrollments_user_course_idx').on(table.userId, table.courseId),
 }))
 
 // =====================
