@@ -13,6 +13,7 @@
         class="fixed top-24 right-6 z-[100] max-w-sm w-full shadow-2xl overflow-hidden rounded-2xl border border-dark-divider bg-dark-surface/90 backdrop-blur-md"
         role="alert"
         aria-live="polite"
+        aria-atomic="true"
       >
         <!-- Progress Bar -->
         <div
@@ -38,6 +39,7 @@
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 stroke-linecap="round"
@@ -53,6 +55,7 @@
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 stroke-linecap="round"
@@ -68,6 +71,7 @@
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 stroke-linecap="round"
@@ -83,6 +87,7 @@
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 stroke-linecap="round"
@@ -115,6 +120,7 @@
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                aria-hidden="true"
               >
                 <path
                   stroke-linecap="round"
@@ -137,6 +143,7 @@
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 stroke-linecap="round"

@@ -1,10 +1,7 @@
 <template>
   <button
     type="submit"
-    class="bg-primary w-full flex justify-center py-3 px-4 border
-           border-transparent text-sm font-medium rounded-md text-white
-           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary
-           disabled:opacity-50 disabled:cursor-not-allowed"
+    class="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
     :disabled="disabled || loading"
     :aria-busy="loading"
   >

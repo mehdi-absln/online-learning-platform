@@ -1,0 +1,50 @@
+import { getOrderDetails } from '../../db/order-service'
+
+export default defineEventHandler(async (event) => {
+  const user = event.context.user
+  if (!user) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized',
+    })
+  }
+
+  const id = getRouterParam(event, 'id')
+  if (!id) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Order ID is required',
+    })
+  }
+
+  const orderId = parseInt(id)
+  if (isNaN(orderId)) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Invalid Order ID',
+    })
+  }
+
+  try {
+    const order = await getOrderDetails(orderId, user.id)
+
+    if (!order) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Order not found',
+      })
+    }
+
+    return {
+      success: true,
+      order,
+    }
+  }
+  catch (error: unknown) {
+    const err = error as { statusCode?: number, statusMessage?: string }
+    throw createError({
+      statusCode: err.statusCode || 500,
+      statusMessage: err.statusMessage || 'Internal Server Error',
+    })
+  }
+})

@@ -19,10 +19,6 @@ export default defineEventHandler(async (event) => {
     return successResponse('Course added to cart', result)
   }
   catch (error: unknown) {
-    const err = error as { statusCode?: number, statusMessage?: string, message?: string }
-    // If it's a known error from addToCart (throw createError), use its status
-    const statusMessage = err.statusMessage || 'Internal server error'
-
-    return errorResponse(statusMessage, err.message)
+    throw createError(error as Error)
   }
 })

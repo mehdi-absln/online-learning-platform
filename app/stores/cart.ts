@@ -181,7 +181,7 @@ export const useCartStore = defineStore('cart', () => {
     // Note: server-side clear usually happens after checkout
   }
 
-  const checkout = async () => {
+  const checkout = async (simulationType: 'success' | 'fail' = 'success') => {
     if (!userStore.isAuthenticated) {
       toast.showLoginRequired('checkout')
       return { success: false, message: 'Please login to checkout' }
@@ -194,22 +194,26 @@ export const useCartStore = defineStore('cart', () => {
 
     isLoading.value = true
     try {
-      const response = await $fetch<ApiResponse>('/api/checkout', {
+      const response = await $fetch<{ success: boolean, message: string, orderId: number }>('/api/checkout', {
         method: 'POST',
+        body: { simulationType },
       })
+
       if (response?.success) {
         await clearCart()
-        toast.success('Congratulations! Your purchase was successful.')
-        return { success: true, message: response.message }
+        // Success toast is optional here as we redirect to success page
+        return { success: true, message: response.message, orderId: response.orderId }
       }
-      toast.error(response?.message || 'Checkout failed')
-      return { success: false, message: response?.message || 'Checkout failed' }
+
+      return { success: false, message: response?.message || 'Checkout failed', orderId: response?.orderId }
     }
     catch (error: unknown) {
-      const err = error as { statusMessage?: string }
+      const err = error as { statusMessage?: string, data?: { message?: string, orderId?: number } }
       console.error('Checkout error:', error)
-      toast.error(err.statusMessage || 'Payment processing failed')
-      return { success: false, message: err.statusMessage || 'Checkout failed' }
+      const message = err.statusMessage || err.data?.message || 'Payment processing failed'
+      // Only show error toast if it's a real unexpected failure, not a simulated one
+      if (simulationType === 'success') toast.error(message)
+      return { success: false, message, orderId: err.data?.orderId }
     }
     finally {
       isLoading.value = false
