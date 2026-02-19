@@ -1,24 +1,41 @@
 <template>
-  <div class="max-w-3xl mx-auto">
+  <main
+    id="success-main"
+    class="max-w-3xl mx-auto py-16 px-4"
+    role="main"
+    aria-labelledby="success-heading"
+  >
+    <!-- Loading State -->
     <div
       v-if="pending"
       class="text-center py-20"
       role="status"
       aria-live="polite"
+      aria-busy="true"
     >
       <div
         class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"
+        aria-hidden="true"
       />
       <p class="mt-4 text-white/60">
         Verifying order details...
       </p>
+      <span class="sr-only">Loading order information, please wait</span>
     </div>
 
+    <!-- Error State -->
     <div
       v-else-if="error || !data?.success"
       class="text-center py-20 bg-dark-surface rounded-3xl border border-dark-divider"
+      role="alert"
+      aria-live="assertive"
+      aria-labelledby="error-heading"
+      aria-describedby="error-description"
     >
-      <div class="text-red-500 mb-6">
+      <div
+        class="text-red-500 mb-6"
+        aria-hidden="true"
+      >
         <svg
           class="w-20 h-20 mx-auto"
           fill="none"
@@ -33,10 +50,16 @@
           />
         </svg>
       </div>
-      <h1 class="text-2xl font-bold text-white mb-4">
+      <h1
+        id="error-heading"
+        class="text-2xl font-bold text-white mb-4"
+      >
         Order Verification Error
       </h1>
-      <p class="text-white/60 mb-8">
+      <p
+        id="error-description"
+        class="text-white/60 mb-8"
+      >
         We couldn't retrieve the details for this order. Please check your dashboard.
       </p>
       <NuxtLink
@@ -47,27 +70,31 @@
       </NuxtLink>
     </div>
 
+    <!-- Success State -->
     <div
       v-else
       class="space-y-8 animate-fade-in"
     >
-      <!-- Success Header -->
-      <div
+      <!-- Success Header Card -->
+      <section
         class="text-center bg-dark-surface p-10 rounded-3xl border border-dark-divider shadow-2xl relative overflow-hidden"
+        aria-labelledby="success-heading"
       >
         <div
           class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500"
+          aria-hidden="true"
         />
 
+        <!-- Success Icon -->
         <div
           class="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-green-500"
+          aria-hidden="true"
         >
           <svg
             class="w-12 h-12"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            aria-hidden="true"
           >
             <path
               stroke-linecap="round"
@@ -78,14 +105,27 @@
           </svg>
         </div>
 
-        <h1 class="text-3xl font-bold text-white mb-2">
+        <!-- Success Message -->
+        <h1
+          id="success-heading"
+          ref="successHeadingRef"
+          class="text-3xl font-bold text-white mb-2"
+          tabindex="-1"
+        >
           Purchase Successful!
         </h1>
-        <p class="text-white/60">
+        <p
+          id="success-description"
+          class="text-white/60"
+        >
           Thank you for your order. You now have full access to your courses.
         </p>
 
-        <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <!-- Action Buttons -->
+        <nav
+          class="mt-8 flex flex-wrap justify-center gap-4"
+          aria-label="Next steps"
+        >
           <NuxtLink
             to="/dashboard"
             class="btn-primary"
@@ -98,100 +138,156 @@
           >
             View More Courses
           </NuxtLink>
-        </div>
-      </div>
+        </nav>
+      </section>
 
-      <!-- Order Details Card -->
-      <div class="bg-dark-surface rounded-3xl border border-dark-divider overflow-hidden">
+      <!-- Order Details Section -->
+      <section
+        class="bg-dark-surface rounded-3xl border border-dark-divider overflow-hidden"
+        aria-labelledby="order-details-heading"
+      >
+        <!-- Section Header -->
         <div
           class="px-8 py-6 border-b border-dark-divider flex justify-between items-center bg-white/5"
         >
-          <h2 class="text-lg font-bold text-white">
+          <h2
+            id="order-details-heading"
+            class="text-lg font-bold text-white"
+          >
             Order Details
           </h2>
           <span
             class="text-xs font-mono text-white/70 uppercase tracking-widest"
-          >#{{ data.order.id }}</span>
+            aria-label="Order number: {{ data.order.id }}"
+          >
+            #{{ data.order.id }}
+          </span>
         </div>
 
+        <!-- Order Items List -->
         <div class="p-8">
-          <div class="divide-y divide-dark-divider">
-            <div
+          <ul
+            class="divide-y divide-dark-divider"
+            role="list"
+            aria-label="Purchased courses"
+          >
+            <li
               v-for="item in data.order.items"
               :key="item.id"
-              class="py-6 flex gap-6 first:pt-0"
+              class="py-6 flex gap-6 first:pt-0 last:pb-0"
+              role="listitem"
             >
               <img
                 :src="item.thumbnail"
-                :alt="item.title"
+                :alt="`Thumbnail for ${item.title} course`"
                 class="w-24 h-16 object-cover rounded-xl border border-white/5 shadow-lg"
+                loading="lazy"
               >
-              <div class="flex-1">
+              <div class="flex-1 min-w-0">
                 <h3 class="text-white font-bold text-lg mb-1 leading-tight">
                   {{ item.title }}
                 </h3>
-                <p class="text-green-500 font-bold text-sm">
-                  ✓ Lifetime Access
+                <p
+                  class="text-green-500 font-bold text-sm"
+                  aria-label="Lifetime access included"
+                >
+                  <span
+                    aria-hidden="true"
+                  >✓</span>
+                  <span class="sr-only">Included:</span>
+                  Lifetime Access
                 </p>
               </div>
-              <div class="text-white font-black text-xl">
+              <div
+                class="text-white font-black text-xl whitespace-nowrap"
+                aria-label="Price: ${{ item.price }}"
+              >
                 ${{ item.price }}
               </div>
-            </div>
-          </div>
+            </li>
+          </ul>
 
-          <div class="mt-10 pt-6 border-t border-dark-divider">
+          <!-- Payment Summary -->
+          <dl class="mt-10 pt-6 border-t border-dark-divider">
             <div class="flex justify-between items-end">
               <div class="space-y-1">
-                <p class="text-white/60 text-xs uppercase tracking-wider font-bold">
+                <dt class="text-white/60 text-xs uppercase tracking-wider font-bold">
                   Payment Method
-                </p>
-                <p class="text-white font-medium">
+                </dt>
+                <dd class="text-white font-medium">
                   Portfolio Simulation
-                </p>
+                </dd>
               </div>
               <div class="text-right">
-                <p class="text-white/60 text-xs uppercase tracking-wider font-bold mb-1">
+                <dt class="text-white/60 text-xs uppercase tracking-wider font-bold mb-1">
                   Total Paid
-                </p>
-                <p class="text-3xl font-black text-primary">
+                </dt>
+                <dd
+                  class="text-3xl font-black text-primary"
+                  aria-label="Total amount paid: ${{ data.order.totalAmount.toFixed(2) }}"
+                >
                   ${{ data.order.totalAmount.toFixed(2) }}
-                </p>
+                </dd>
               </div>
             </div>
-          </div>
+          </dl>
         </div>
-      </div>
+      </section>
 
-      <p class="text-center text-white/20 text-xs uppercase tracking-widest">
+      <!-- Email Notification Note -->
+      <p
+        class="text-center text-white/20 text-xs uppercase tracking-widest"
+        role="note"
+        aria-label="Email notification note"
+      >
         A confirmation email would normally be sent here.
       </p>
+
+      <!-- Live Region for Screen Readers -->
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        class="sr-only"
+        role="status"
+      >
+        Order {{ data.order.id }} confirmed. Total amount: ${{ data.order.totalAmount.toFixed(2) }}.
+        {{ data.order.items.length }} {{ data.order.items.length === 1 ? 'course' : 'courses' }} purchased.
+      </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <script setup lang="ts">
+// Page metadata and SEO
 definePageMeta({
   layout: 'minimal',
   middleware: 'auth',
+  title: 'Order Confirmed',
+})
+
+useSeoMeta({
+  title: 'Order Confirmed - Purchase Successful | Online Learning Platform',
+  description: 'Your order has been confirmed. Start learning now with full access to your purchased courses.',
+  robots: 'noindex, nofollow',
+  ogTitle: 'Order Confirmed - Online Learning Platform',
+  ogDescription: 'Your order has been confirmed. Start learning now with full access to your purchased courses.',
+  ogType: 'website',
+  ogUrl: 'https://learning-platform.com/checkout/success',
+  twitterCard: 'summary',
+  canonical: 'https://learning-platform.com/checkout/success',
 })
 
 useHead({
-  title: 'Order Confirmed - Online Learning Platform',
-  meta: [
-    { name: 'robots', content: 'noindex, nofollow' },
-    { property: 'og:title', content: 'Order Confirmed - Online Learning Platform' },
-    { property: 'og:description', content: 'Order confirmation page.' },
-    { name: 'twitter:card', content: 'summary' },
-  ],
-  link: [
-    { rel: 'canonical', href: 'https://learning-platform.com/checkout/success' },
-  ],
+  htmlAttrs: {
+    lang: 'en',
+  },
 })
 
+// Route and order fetching
 const route = useRoute()
-const orderId = route.query.id
+const orderId = computed(() => route.query.id as string)
 
+// Order detail response type
 interface OrderDetailResponse {
   success: boolean
   order: {
@@ -208,7 +304,24 @@ interface OrderDetailResponse {
   }
 }
 
-const { data, pending, error } = await useFetch<OrderDetailResponse>(`/api/orders/${orderId}`, {
-  key: `order-${orderId}`,
+// Fetch order details
+const { data, pending, error } = await useFetch<OrderDetailResponse>(
+  () => `/api/orders/${orderId.value}`,
+  {
+    key: () => `order-${orderId.value}`,
+    immediate: !!orderId.value,
+  },
+)
+
+// Focus management - focus success heading when page loads
+const successHeadingRef = ref<HTMLElement | null>(null)
+
+onMounted(() => {
+  if (!pending.value && !error.value && data.value?.success && successHeadingRef.value) {
+    // Wait for next tick to ensure DOM is ready
+    nextTick(() => {
+      successHeadingRef.value?.focus()
+    })
+  }
 })
 </script>
