@@ -3,33 +3,27 @@ import { getErrorMessage } from '~/utils/error-helpers'
 import { useCartStore } from './cart'
 import type { SignInFormData, SignUpFormData } from '~/schemas/auth'
 import type { User } from '~/types/shared/auth'
-import type { ApiResponse, AuthResponse, AuthResponse as AuthResponseType } from '~/types/shared/api'
+import type { ApiResponse, AuthResponse as AuthResponseType } from '~/types/shared/api'
 
 export const useUserStore = defineStore('user', () => {
   // State
   const user = ref<User | null>(null)
-  const isAuthenticated = ref<boolean>(false)
   const loading = ref<boolean>(false)
   const error = ref<string | null>(null)
 
-  // Getters
+  // Computed state (readonly from outside)
+  const isAuthenticated = computed(() => user.value !== null)
   const hasError = computed(() => error.value !== null)
 
-  // Actions
+  // Private actions (not exposed)
   const setUser = (userData: User) => {
     user.value = userData
-    isAuthenticated.value = true
     error.value = null
   }
 
   const clearUser = () => {
     user.value = null
-    isAuthenticated.value = false
     error.value = null
-  }
-
-  const setLoading = (isLoading: boolean) => {
-    loading.value = isLoading
   }
 
   const setError = (errorMessage: string | null) => {
@@ -40,8 +34,9 @@ export const useUserStore = defineStore('user', () => {
     error.value = null
   }
 
+  // Public actions
   const fetchUser = async () => {
-    setLoading(true)
+    loading.value = true
     clearError()
 
     try {
@@ -60,12 +55,12 @@ export const useUserStore = defineStore('user', () => {
       clearUser()
     }
     finally {
-      setLoading(false)
+      loading.value = false
     }
   }
 
   const signIn = async (credentials: SignInFormData) => {
-    setLoading(true)
+    loading.value = true
     clearError()
 
     try {
@@ -94,16 +89,16 @@ export const useUserStore = defineStore('user', () => {
       return { success: false, error: errorMsg }
     }
     finally {
-      setLoading(false)
+      loading.value = false
     }
   }
 
   const signUp = async (userData: SignUpFormData) => {
-    setLoading(true)
+    loading.value = true
     clearError()
 
     try {
-      const response = await $fetch<AuthResponse>('/api/auth/signup', {
+      const response = await $fetch<AuthResponseType>('/api/auth/signup', {
         method: 'POST',
         body: userData,
       })
@@ -128,11 +123,12 @@ export const useUserStore = defineStore('user', () => {
       return { success: false, error: errorMsg }
     }
     finally {
-      setLoading(false)
+      loading.value = false
     }
   }
 
   const logout = async () => {
+    loading.value = true
     try {
       const response = await $fetch<ApiResponse>('/api/auth/logout', { method: 'POST' })
       if (response?.success) {
@@ -147,27 +143,27 @@ export const useUserStore = defineStore('user', () => {
       console.error('Logout failed:', err)
       setError(getErrorMessage(err))
     }
+    finally {
+      loading.value = false
+    }
   }
 
+  // Expose public API with readonly state
   return {
-    // State
-    user,
+    // State (readonly)
+    user: readonly(user),
     isAuthenticated,
-    loading,
-    error,
+    loading: readonly(loading),
+    error: readonly(error),
 
     // Getters
     hasError,
 
     // Actions
-    setUser,
-    clearUser,
-    setLoading,
-    setError,
-    clearError,
     fetchUser,
     signIn,
     signUp,
     logout,
+    clearError,
   }
 })
