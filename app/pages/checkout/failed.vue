@@ -133,9 +133,7 @@ useSeoMeta({
   ogTitle: 'Payment Declined - Online Learning Platform',
   ogDescription: 'Your payment was declined. Try again or browse more courses.',
   ogType: 'website',
-  ogUrl: 'https://learning-platform.com/checkout/failed',
   twitterCard: 'summary',
-  canonical: 'https://learning-platform.com/checkout/failed',
 })
 
 useHead({
