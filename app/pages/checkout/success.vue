@@ -25,7 +25,7 @@
 
     <!-- Error State -->
     <div
-      v-else-if="error || !data?.success"
+      v-else-if="hasError"
       class="text-center py-20 bg-dark-surface rounded-3xl border border-dark-divider"
       role="alert"
       aria-live="assertive"
@@ -72,7 +72,7 @@
 
     <!-- Success State -->
     <div
-      v-else
+      v-else-if="orderData"
       class="space-y-8 animate-fade-in"
     >
       <!-- Success Header Card -->
@@ -158,9 +158,9 @@
           </h2>
           <span
             class="text-xs font-mono text-white/70 uppercase tracking-widest"
-            aria-label="Order number: {{ data.order.id }}"
+            aria-label="Order number: {{ orderData.order.id }}"
           >
-            #{{ data.order.id }}
+            #{{ orderData.order.id }}
           </span>
         </div>
 
@@ -172,7 +172,7 @@
             aria-label="Purchased courses"
           >
             <li
-              v-for="item in data.order.items"
+              v-for="item in orderData.order.items"
               :key="item.id"
               class="py-6 flex gap-6 first:pt-0 last:pb-0"
               role="listitem"
@@ -224,9 +224,9 @@
                 </dt>
                 <dd
                   class="text-3xl font-black text-primary"
-                  aria-label="Total amount paid: ${{ data.order.totalAmount.toFixed(2) }}"
+                  aria-label="Total amount paid: ${{ orderData.order.totalAmount.toFixed(2) }}"
                 >
-                  ${{ data.order.totalAmount.toFixed(2) }}
+                  ${{ orderData.order.totalAmount.toFixed(2) }}
                 </dd>
               </div>
             </div>
@@ -250,14 +250,16 @@
         class="sr-only"
         role="status"
       >
-        Order {{ data.order.id }} confirmed. Total amount: ${{ data.order.totalAmount.toFixed(2) }}.
-        {{ data.order.items.length }} {{ data.order.items.length === 1 ? 'course' : 'courses' }} purchased.
+        Order {{ orderData.order.id }} confirmed. Total amount: ${{ orderData.order.totalAmount.toFixed(2) }}.
+        {{ orderData.order.items.length }} {{ orderData.order.items.length === 1 ? 'course' : 'courses' }} purchased.
       </div>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
+import { useApiError } from '~/composables/useApiError'
+
 // Page metadata and SEO
 definePageMeta({
   layout: 'minimal',
@@ -274,7 +276,6 @@ useSeoMeta({
   ogType: 'website',
   ogUrl: 'https://learning-platform.com/checkout/success',
   twitterCard: 'summary',
-  canonical: 'https://learning-platform.com/checkout/success',
 })
 
 useHead({
@@ -313,11 +314,17 @@ const { data, pending, error } = await useFetch<OrderDetailResponse>(
   },
 )
 
+// Unified error handling (network + API response errors)
+const hasError = useApiError(data, pending, error)
+
+// Computed property for successful order data (type-safe)
+const orderData = computed(() => data.value?.success ? data.value : null)
+
 // Focus management - focus success heading when page loads
 const successHeadingRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-  if (!pending.value && !error.value && data.value?.success && successHeadingRef.value) {
+  if (!pending.value && !hasError.value && orderData.value && successHeadingRef.value) {
     // Wait for next tick to ensure DOM is ready
     nextTick(() => {
       successHeadingRef.value?.focus()
