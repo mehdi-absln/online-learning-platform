@@ -286,9 +286,7 @@ useSeoMeta({
   ogTitle: 'Checkout - Online Learning Platform',
   ogDescription: 'Secure checkout page for course enrollment. Review your order and complete your purchase.',
   ogType: 'website',
-  ogUrl: 'https://learning-platform.com/checkout',
   twitterCard: 'summary',
-  canonical: 'https://learning-platform.com/checkout',
 })
 
 useHead({
