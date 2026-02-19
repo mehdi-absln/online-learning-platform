@@ -8,19 +8,12 @@
     <!-- Loading State -->
     <div
       v-if="pending"
-      class="text-center py-20"
+      class="py-20 flex flex-col items-center justify-center"
       role="status"
+      aria-label="Loading order information"
       aria-live="polite"
-      aria-busy="true"
     >
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"
-        aria-hidden="true"
-      />
-      <p class="mt-4 text-white/60">
-        Verifying order details...
-      </p>
-      <span class="sr-only">Loading order information, please wait</span>
+      <LoadingSpinner message="Verifying order details..." />
     </div>
 
     <!-- Error State -->
@@ -259,6 +252,7 @@
 
 <script setup lang="ts">
 import { useApiError } from '~/composables/useApiError'
+import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 
 // Page metadata and SEO
 definePageMeta({
