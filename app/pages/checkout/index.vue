@@ -1,15 +1,24 @@
 <template>
   <div class="min-h-screen bg-dark-bg py-16 px-4">
-    <div class="max-w-4xl mx-auto">
+    <main
+      id="checkout-main"
+      class="max-w-4xl mx-auto"
+      role="main"
+      aria-labelledby="checkout-heading"
+    >
       <h1
+        id="checkout-heading"
         class="text-3xl font-bold text-white mb-8 border-r-4 border-primary pr-4"
       >
-        Checkout
+        Complete Your Purchase
       </h1>
 
+      <!-- Empty Cart State -->
       <div
         v-if="items.length === 0"
         class="text-center py-12 bg-dark-surface rounded-2xl border border-dark-divider"
+        role="status"
+        aria-live="polite"
       >
         <div class="mb-4 text-white/70">
           <svg
@@ -26,6 +35,7 @@
               d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
             />
           </svg>
+          <span class="sr-only">Shopping cart icon</span>
         </div>
         <p class="text-lg text-white mb-6">
           Your cart is empty.
@@ -38,28 +48,42 @@
         </NuxtLink>
       </div>
 
+      <!-- Checkout Content -->
       <div
         v-else
         class="grid grid-cols-1 lg:grid-cols-3 gap-8"
       >
-        <!-- Order Summary -->
-        <div class="lg:col-span-2 space-y-6">
+        <!-- Order Summary Section -->
+        <section
+          class="lg:col-span-2 space-y-6"
+          aria-labelledby="order-items-heading"
+        >
           <div class="bg-dark-surface rounded-2xl border border-dark-divider p-6">
-            <h2 class="text-xl font-bold text-white mb-4">
-              Order Items
+            <h2
+              id="order-items-heading"
+              class="text-xl font-bold text-white mb-4"
+            >
+              Order Items ({{ itemsCount }})
             </h2>
-            <div class="divide-y divide-dark-divider">
-              <div
+
+            <ul
+              class="divide-y divide-dark-divider"
+              role="list"
+              aria-label="Courses in your cart"
+            >
+              <li
                 v-for="item in items"
                 :key="item.id"
                 class="py-4 flex gap-4"
+                role="listitem"
               >
                 <img
                   :src="item.image"
-                  :alt="item.title"
+                  :alt="`Thumbnail for ${item.title} course`"
                   class="w-20 h-14 object-cover rounded-lg border border-white/5"
+                  loading="lazy"
                 >
-                <div class="flex-1">
+                <div class="flex-1 min-w-0">
                   <h3 class="text-white font-medium line-clamp-1">
                     {{ item.title }}
                   </h3>
@@ -67,55 +91,83 @@
                     Instructor: {{ item.instructor.name }}
                   </p>
                 </div>
-                <div class="text-white font-bold">
+                <div
+                  class="text-white font-bold whitespace-nowrap"
+                  aria-label="Price: ${{ item.price }}"
+                >
                   ${{ item.price }}
                 </div>
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
-        </div>
+        </section>
 
-        <!-- Payment Simulation -->
-        <div class="space-y-6">
-          <div class="bg-dark-surface rounded-2xl border border-dark-divider p-6 sticky top-24">
-            <h2 class="text-xl font-bold text-white mb-6">
-              Summary
+        <!-- Payment Section -->
+        <aside
+          class="space-y-6"
+          aria-labelledby="payment-summary-heading"
+        >
+          <div
+            class="bg-dark-surface rounded-2xl border border-dark-divider p-6 sticky top-24"
+          >
+            <h2
+              id="payment-summary-heading"
+              class="text-xl font-bold text-white mb-6"
+            >
+              Order Summary
             </h2>
 
-            <div class="space-y-3 mb-6">
+            <!-- Price Breakdown -->
+            <dl class="space-y-3 mb-6">
               <div class="flex justify-between text-white/70">
-                <span>Subtotal</span>
-                <span>${{ totalPrice.toFixed(2) }}</span>
+                <dt>Subtotal</dt>
+                <dd>${{ totalPrice.toFixed(2) }}</dd>
               </div>
               <div class="flex justify-between text-white/70">
-                <span>Tax</span>
-                <span>$0.00</span>
+                <dt>Tax</dt>
+                <dd aria-label="Tax: $0.00">
+                  $0.00
+                </dd>
               </div>
               <div
                 class="pt-3 border-t border-dark-divider flex justify-between text-lg font-bold text-white"
               >
-                <span>Total</span>
-                <span class="text-primary">${{ totalPrice.toFixed(2) }}</span>
+                <dt>Total</dt>
+                <dd
+                  class="text-primary"
+                  aria-label="Total: ${{ totalPrice.toFixed(2) }}"
+                >
+                  ${{ totalPrice.toFixed(2) }}
+                </dd>
               </div>
-            </div>
+            </dl>
 
-            <div class="space-y-4">
+            <!-- Payment Simulation Buttons -->
+            <div
+              class="space-y-4"
+              role="group"
+              aria-labelledby="payment-actions-label"
+            >
               <p
+                id="payment-actions-label"
                 class="text-xs text-white/60 text-center uppercase tracking-widest font-bold"
               >
                 Payment Simulation
               </p>
 
               <button
-                class="w-full py-4 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold transition-all shadow-lg shadow-green-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                type="button"
+                class="w-full py-4 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold transition-all shadow-lg shadow-green-500/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 :disabled="isLoading"
                 :aria-busy="isLoading"
+                aria-label="Complete purchase with successful payment simulation"
                 @click="handleCheckout('success')"
               >
                 <svg
                   v-if="isLoading"
                   class="animate-spin h-5 w-5"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <circle
                     class="opacity-25"
@@ -132,21 +184,30 @@
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                <template v-else>
-                  <span aria-hidden="true">✓</span> Complete Purchase
-                </template>
+                <span
+                  v-else
+                  aria-hidden="true"
+                >✓</span>
+                <span v-if="!isLoading">Complete Purchase</span>
+                <span
+                  v-else
+                  class="sr-only"
+                >Processing payment...</span>
               </button>
 
               <button
-                class="w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold transition-all shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                type="button"
+                class="w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold transition-all shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 :disabled="isLoading"
                 :aria-busy="isLoading"
+                aria-label="Simulate failed payment for testing purposes"
                 @click="handleCheckout('fail')"
               >
                 <svg
                   v-if="isLoading"
                   class="animate-spin h-5 w-5"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <circle
                     class="opacity-25"
@@ -163,63 +224,99 @@
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                <template v-else>
-                  <span aria-hidden="true">✗</span> Simulate Failure
-                </template>
+                <span
+                  v-else
+                  aria-hidden="true"
+                >✗</span>
+                <span v-if="!isLoading">Simulate Failure</span>
+                <span
+                  v-else
+                  class="sr-only"
+                >Processing payment...</span>
               </button>
             </div>
 
-            <p class="mt-6 text-[10px] text-center text-white/20 uppercase tracking-tighter">
+            <!-- Simulation Disclaimer -->
+            <p
+              class="mt-6 text-[10px] text-center text-white/20 uppercase tracking-tighter"
+              role="note"
+              aria-label="Simulation disclaimer"
+            >
               This is a portfolio simulation. No real funds are exchanged.
             </p>
           </div>
-        </div>
+        </aside>
       </div>
-    </div>
+
+      <!-- Live Region for Status Updates -->
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        class="sr-only"
+        role="status"
+      >
+        <template v-if="isLoading">
+          Processing your payment, please wait...
+        </template>
+        <template v-else-if="items.length === 0">
+          Your cart is empty
+        </template>
+        <template v-else>
+          Ready to checkout with {{ itemsCount }} {{ itemsCount === 1 ? 'item' : 'items' }}, total ${{ totalPrice.toFixed(2) }}
+        </template>
+      </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useCart } from '~/composables/useCart'
 
+// Page metadata and SEO
 definePageMeta({
   middleware: 'auth',
   layout: 'minimal',
   title: 'Checkout',
 })
 
-useHead({
-  title: 'Checkout - Online Learning Platform',
-  meta: [
-    { name: 'robots', content: 'noindex, nofollow' },
-    { name: 'description', content: 'Secure checkout page for course enrollment.' },
-    { property: 'og:title', content: 'Checkout - Online Learning Platform' },
-    { property: 'og:description', content: 'Secure checkout page for course enrollment.' },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:url', content: 'https://learning-platform.com/checkout' },
-    { name: 'twitter:card', content: 'summary' },
-  ],
-  link: [
-    { rel: 'canonical', href: 'https://learning-platform.com/checkout' },
-  ],
+useSeoMeta({
+  title: 'Checkout - Complete Your Purchase | Online Learning Platform',
+  description: 'Secure checkout page for course enrollment. Review your order and complete your purchase to start learning.',
+  robots: 'noindex, nofollow',
+  ogTitle: 'Checkout - Online Learning Platform',
+  ogDescription: 'Secure checkout page for course enrollment. Review your order and complete your purchase.',
+  ogType: 'website',
+  ogUrl: 'https://learning-platform.com/checkout',
+  twitterCard: 'summary',
+  canonical: 'https://learning-platform.com/checkout',
 })
 
+useHead({
+  htmlAttrs: {
+    lang: 'en',
+  },
+})
+
+// Cart state and actions
 const { items, totalPrice, isLoading, checkout } = useCart()
 
+// Computed values
+const itemsCount = computed(() => items.value.length)
+
+// Checkout handler
 const handleCheckout = async (type: 'success' | 'fail') => {
   const result = await checkout(type)
-  if (result.success) {
-    navigateTo(`/checkout/success?id=${result.orderId}`)
+
+  if (result.success && result.orderId) {
+    await navigateTo(`/checkout/success?id=${result.orderId}`)
+  }
+  else if (result.orderId) {
+    // Simulated failure with order ID
+    await navigateTo(`/checkout/failed?id=${result.orderId}`)
   }
   else {
-    // If it was a simulated failure, or real error
-    if (result.orderId) {
-      navigateTo(`/checkout/failed?id=${result.orderId}`)
-    }
-    else {
-      // Something went wrong before order creation
-      console.error('Checkout failed:', result.message)
-    }
+    // Unexpected error before order creation
+    console.error('Checkout failed:', result.message)
   }
 }
 </script>
