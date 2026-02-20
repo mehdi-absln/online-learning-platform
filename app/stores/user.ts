@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia'
 import { getErrorMessage } from '~/utils/error-helpers'
 import { useCartStore } from './cart'
+import { useToast } from '~/composables/useToast'
 import type { SignInFormData, SignUpFormData } from '~/schemas/auth'
 import type { User } from '~/types/shared/auth'
 import type { ApiResponse, AuthResponse as AuthResponseType } from '~/types/shared/api'
 
 export const useUserStore = defineStore('user', () => {
+  const toast = useToast()
+
   // State
   const user = ref<User | null>(null)
   const loading = ref<boolean>(false)
@@ -53,6 +56,7 @@ export const useUserStore = defineStore('user', () => {
       console.error('Failed to fetch user:', err)
       setError(getErrorMessage(err))
       clearUser()
+      // Silent fail for fetchUser - don't show toast on initial load
     }
     finally {
       loading.value = false
@@ -69,16 +73,22 @@ export const useUserStore = defineStore('user', () => {
         body: credentials,
       })
 
-      if (response?.success && response?.user) {
-        setUser(response.user)
-        // Trigger cart merge
+      if (response?.success && response?.data?.user) {
+        setUser(response.data.user)
+
+        // Trigger cart merge (don't await - let it happen in background)
         const cartStore = useCartStore()
-        await cartStore.mergeGuestCart()
-        return { success: true, user: response.user }
+        cartStore.mergeGuestCart().catch(() => {
+          // Silently ignore merge errors on sign in
+        })
+
+        toast.success(response.message || 'Signed in successfully')
+        return { success: true, user: response.data.user }
       }
       else {
         const errorMsg = response?.message || 'Sign in failed'
         setError(errorMsg)
+        toast.error(errorMsg)
         return { success: false, error: errorMsg }
       }
     }
@@ -86,6 +96,7 @@ export const useUserStore = defineStore('user', () => {
       console.error('Sign in error:', err)
       const errorMsg = getErrorMessage(err)
       setError(errorMsg)
+      toast.error(errorMsg)
       return { success: false, error: errorMsg }
     }
     finally {
@@ -103,16 +114,22 @@ export const useUserStore = defineStore('user', () => {
         body: userData,
       })
 
-      if (response?.success && response?.user) {
-        setUser(response.user)
-        // Trigger cart merge
+      if (response?.success && response?.data?.user) {
+        setUser(response.data.user)
+
+        // Trigger cart merge (don't await - let it happen in background)
         const cartStore = useCartStore()
-        await cartStore.mergeGuestCart()
-        return { success: true, user: response.user }
+        cartStore.mergeGuestCart().catch(() => {
+          // Silently ignore merge errors on sign up
+        })
+
+        toast.success(response.message || 'Account created successfully! Welcome aboard')
+        return { success: true, user: response.data.user }
       }
       else {
         const errorMsg = response?.message || 'Sign up failed'
         setError(errorMsg)
+        toast.error(errorMsg)
         return { success: false, error: errorMsg }
       }
     }
@@ -120,6 +137,7 @@ export const useUserStore = defineStore('user', () => {
       console.error('Sign up error:', err)
       const errorMsg = getErrorMessage(err)
       setError(errorMsg)
+      toast.error(errorMsg)
       return { success: false, error: errorMsg }
     }
     finally {
@@ -133,15 +151,20 @@ export const useUserStore = defineStore('user', () => {
       const response = await $fetch<ApiResponse>('/api/auth/logout', { method: 'POST' })
       if (response?.success) {
         clearUser()
+        toast.success('Logged out successfully. See you soon!')
         await navigateTo('/home')
       }
       else {
-        setError(response?.message || 'Logout failed')
+        const errorMsg = response?.message || 'Logout failed'
+        setError(errorMsg)
+        toast.error(errorMsg)
       }
     }
     catch (err: unknown) {
       console.error('Logout failed:', err)
-      setError(getErrorMessage(err))
+      const errorMsg = getErrorMessage(err)
+      setError(errorMsg)
+      toast.error(errorMsg)
     }
     finally {
       loading.value = false

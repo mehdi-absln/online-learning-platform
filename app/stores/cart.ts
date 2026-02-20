@@ -153,7 +153,9 @@ export const useCartStore = defineStore('cart', () => {
 
   const mergeGuestCart = async () => {
     const ids = guestCartCookie.value || []
-    if (ids.length === 0) return
+    if (ids.length === 0) {
+      return
+    }
 
     try {
       const response = await $fetch<ApiResponse>('/api/cart/merge', {
@@ -164,12 +166,17 @@ export const useCartStore = defineStore('cart', () => {
         // Clear guest cookie after successful merge
         guestCartCookie.value = null
         await fetchUserCart()
-        toast.success('Guest cart items merged to your account')
+        // Don't show toast - it's distracting during login flow
       }
     }
     catch (error: unknown) {
-      console.error('Failed to merge guest cart:', error)
-      toast.error('Failed to sync guest cart')
+      console.warn('Cart merge failed silently:', error)
+      // Don't show error toast - merge is not critical and user is already logged in
+      // This can happen if:
+      // - Course no longer exists
+      // - User already enrolled
+      // - Network issue
+      // None of these should block the login flow
     }
   }
 
