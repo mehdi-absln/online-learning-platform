@@ -9,7 +9,7 @@ export interface DatabaseUser {
   id: number
   username: string
   email: string
-  passwordHash: string
+  password: string  // Match schema field name
   createdAt: Date
   updatedAt: Date
 }
@@ -22,7 +22,7 @@ export async function createUser(data: CreateUserRequest): Promise<DatabaseUser>
     .values({
       username: data.username,
       email: data.email,
-      passwordHash,
+      password: passwordHash,  // Use schema field name
       createdAt: new Date(),
       updatedAt: new Date(),
     })

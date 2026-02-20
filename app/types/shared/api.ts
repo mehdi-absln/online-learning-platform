@@ -17,7 +17,9 @@ export interface ApiResponse<T = unknown> {
 // Type for authentication responses
 export interface AuthResponse {
   success: boolean
-  user?: import('~/types/shared/auth').User
+  data?: {
+    user?: import('~/types/shared/auth').User
+  }
   message?: string
   error?: string
 }

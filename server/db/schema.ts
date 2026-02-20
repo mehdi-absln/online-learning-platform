@@ -20,15 +20,17 @@ export const categories = sqliteTable('categories', {
 // =====================
 export const users = sqliteTable('users', {
   id: integer('id').primaryKey({ autoIncrement: true }),
+  username: text('username').notNull().unique(),
   email: text('email').notNull().unique(),
   password: text('password').notNull(),
-  name: text('name').notNull(),
+  name: text('name'),
   avatar: text('avatar'),
   role: text('role').default('student'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 }, table => ({
-  slugIdx: index('users_email_idx').on(table.email),
+  usernameIdx: index('users_username_idx').on(table.username),
+  emailIdx: index('users_email_idx').on(table.email),
 }))
 
 // =====================
