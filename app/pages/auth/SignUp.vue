@@ -21,7 +21,7 @@
         <h1
           id="signup-heading"
           tabindex="-1"
-          class="text-2xl font-bold text-white mb-2"
+          class="text-2xl font-bold text-white mb-2 mt-4"
         >
           Sign Up
         </h1>
@@ -157,11 +157,6 @@ useHead({
 
 // Get user store instance to manage authentication state
 const userStore = useUserStore()
-
-// Redirect authenticated users to home page
-onMounted(() => {
-  if (userStore.isAuthenticated) navigateTo('/home')
-})
 
 // Announcement for screen readers (ARIA live region)
 const announcement = ref('')

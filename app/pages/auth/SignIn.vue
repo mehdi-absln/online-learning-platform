@@ -21,7 +21,7 @@
         <h1
           id="signin-heading"
           tabindex="-1"
-          class="text-2xl font-bold text-white mb-2"
+          class="text-2xl font-bold text-white mb-2 mt-4"
         >
           Sign In
         </h1>
