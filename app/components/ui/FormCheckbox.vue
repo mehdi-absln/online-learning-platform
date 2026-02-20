@@ -12,7 +12,7 @@
                focus:ring-primary checked:bg-primary checked:border-primary"
         :class="{ 'border-red-500': error }"
         :aria-invalid="!!error"
-        :aria-describedby="error ? `${id}-error` : undefined"
+        :aria-describedby="getAriaDescribedBy()"
         @change="$emit('update:modelValue', ($event.target as HTMLInputElement).checked)"
         @blur="$emit('blur')"
       >
@@ -32,6 +32,13 @@
     >
       {{ error }}
     </p>
+    <p
+      v-else-if="hint"
+      :id="`${id}-hint`"
+      class="text-gray-400 text-sm mt-1"
+    >
+      {{ hint }}
+    </p>
   </div>
 </template>
 
@@ -44,9 +51,10 @@ interface Props {
   disabled?: boolean
   error?: string
   labelClass?: string
+  hint?: string
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   required: false,
   disabled: false,
   labelClass: 'ml-2 block text-sm text-gray-200',
@@ -56,4 +64,14 @@ defineEmits<{
   'update:modelValue': [value: boolean]
   'blur': []
 }>()
+
+/**
+ * Get the aria-describedby value based on current state
+ * Priority: error > hint > undefined
+ */
+function getAriaDescribedBy() {
+  if (props.error) return `${props.id}-error`
+  if (props.hint) return `${props.id}-hint`
+  return undefined
+}
 </script>

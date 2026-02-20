@@ -1,73 +1,107 @@
 <template>
-  <form
-    class="mt-8 space-y-6"
-    @submit.prevent="handleSubmit"
+  <main
+    role="main"
+    aria-labelledby="signin-heading"
   >
-    <div class="text-center">
-      <h3 class="text-2xl font-bold text-white mb-2">
-        Sign In
-      </h3>
-      <p class="text-white">
-        Don't have an account?
+    <!-- ARIA live region for announcements -->
+    <div
+      aria-live="polite"
+      aria-atomic="true"
+      class="sr-only"
+    >
+      {{ announcement }}
+    </div>
+
+    <form
+      class="space-y-6"
+      aria-label="Sign in form"
+      @submit.prevent="handleSubmit"
+    >
+      <div class="text-center">
+        <h1
+          id="signin-heading"
+          tabindex="-1"
+          class="text-2xl font-bold text-white mb-2"
+        >
+          Sign In
+        </h1>
+        <p class="text-white">
+          Don't have an account?
+          <NuxtLink
+            to="/auth/signup"
+            class="text-primary hover:underline"
+          >Sign up</NuxtLink>
+        </p>
+      </div>
+
+      <div class="rounded-md shadow-sm space-y-6 pt-4">
+        <FormInput
+          id="username"
+          v-model="form.username"
+          label="Email or username"
+          name="username"
+          autocomplete="username"
+          placeholder="Email or username"
+          required
+          :error="getError('username')"
+          hint="Enter your email address or username"
+          @blur="handleBlur('username')"
+        />
+
+        <FormInput
+          id="password"
+          v-model="form.password"
+          type="password"
+          label="Password"
+          name="password"
+          autocomplete="current-password"
+          placeholder="Password"
+          required
+          :error="getError('password')"
+          hint="Password must be at least 6 characters"
+          @blur="handleBlur('password')"
+        />
+      </div>
+
+      <div class="flex items-center justify-between">
+        <FormCheckbox
+          id="remember-me"
+          v-model="form.rememberMe"
+          name="remember-me"
+          :label-class="'ml-2 block text-sm text-gray-200'"
+        >
+          Remember me
+        </FormCheckbox>
         <NuxtLink
-          to="/auth/signup"
+          to="/auth/forgot-password"
+          class="text-sm font-medium text-primary"
+        >
+          Forgot your password?
+        </NuxtLink>
+      </div>
+
+      <SubmitButton
+        :loading="isLoading"
+        :disabled="!isFormValid || isLoading"
+        text="Sign in"
+        loading-text="Signing in..."
+      />
+    </form>
+
+    <nav
+      aria-label="Authentication navigation"
+      class="mt-6 text-center"
+    >
+      <p class="text-sm text-gray-400">
+        <NuxtLink
+          to="/home"
           class="text-primary hover:underline"
-        >Sign up</NuxtLink>
+        >
+          Browse courses without signing in
+        </NuxtLink>
       </p>
-    </div>
-
-    <div class="rounded-md shadow-sm space-y-6 pt-4">
-      <FormInput
-        id="username"
-        v-model="form.username"
-        label="Email or username"
-        name="username"
-        autocomplete="username"
-        placeholder="Email or username"
-        required
-        :error="getError('username')"
-        @blur="handleBlur('username')"
-      />
-
-      <FormInput
-        id="password"
-        v-model="form.password"
-        type="password"
-        label="Password"
-        name="password"
-        autocomplete="current-password"
-        placeholder="Password"
-        required
-        :error="getError('password')"
-        hint="Password must be at least 6 characters"
-        @blur="handleBlur('password')"
-      />
-    </div>
-
-    <div class="flex items-center justify-between">
-      <FormCheckbox
-        id="remember-me"
-        v-model="form.rememberMe"
-        name="remember-me"
-        :label-class="'ml-2 block text-sm text-gray-200'"
-      >
-        Remember me
-      </FormCheckbox>
-      <NuxtLink
-        to="/auth/forgot-password"
-        class="text-sm font-medium text-primary"
-      >
-        Forgot your password?
-      </NuxtLink>
-    </div>
-
-    <SubmitButton
-      :loading="isLoading"
-      :disabled="!isFormValid || isLoading"
-      text="Sign in"
-      loading-text="Signing in..."
-    />
-  </form>
+    </nav>
+  </main>
 </template>
 
 <script setup lang="ts">
@@ -84,13 +118,23 @@ import SubmitButton from '~/components/ui/SubmitButton.vue'
 // Define page metadata
 definePageMeta({ layout: 'auth', title: 'Sign In' })
 
+// SEO metadata
+useHead({
+  title: 'Sign In - Online Learning Platform',
+  meta: [
+    { name: 'description', content: 'Sign in to access your courses, track progress, and continue learning on our online learning platform.' },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://onlinelearningplatform.com/auth/signin' },
+  ],
+})
+
 // Get user store instance to manage authentication state
 const userStore = useUserStore()
 
-// Redirect authenticated users to home page
-onMounted(() => {
-  if (userStore.isAuthenticated) navigateTo('/home')
-})
+// Announcement for screen readers (ARIA live region)
+const announcement = ref('')
 
 // Initialize form state and validation functions using Zod schema
 const { form, isFormValid, validateAll, getError, handleBlur, setFieldError, clearErrors }
@@ -116,6 +160,7 @@ const handleSubmit = async () => {
   // Clear previous errors and set loading state
   clearErrors()
   isLoading.value = true
+  announcement.value = 'Signing in, please wait...'
 
   try {
     // Attempt to authenticate user with provided credentials
@@ -129,9 +174,11 @@ const handleSubmit = async () => {
     if (!result.success) {
       // Display specific error messages for each field
       handleSignInError(result.error, setFieldError)
+      announcement.value = 'Sign in failed. Please check your credentials.'
     }
     else {
-      // Navigate to home page on successful sign in
+      // Announce success and navigate to home page
+      announcement.value = 'Sign in successful. Redirecting to home page.'
       await navigateTo('/home')
     }
   }
@@ -142,6 +189,7 @@ const handleSubmit = async () => {
     }
     // Set generic error message on password field
     setFieldError('password', 'An unexpected error occurred.')
+    announcement.value = 'An unexpected error occurred. Please try again.'
   }
   finally {
     // Reset loading state
