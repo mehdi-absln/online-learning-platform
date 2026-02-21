@@ -9,6 +9,11 @@ import type { ApiResponse, AuthResponse as AuthResponseType } from '~/types/shar
 export const useUserStore = defineStore('user', () => {
   const toast = useToast()
 
+  // Get headers at store initialization (inside Vue setup context)
+  const requestHeaders = import.meta.server
+    ? useRequestHeaders(['cookie'])
+    : {}
+
   // State
   const user = ref<User | null>(null)
   const loading = ref<boolean>(false)
@@ -43,8 +48,10 @@ export const useUserStore = defineStore('user', () => {
     clearError()
 
     try {
-      const headers = useRequestHeaders(['cookie'])
-      const response = await $fetch<ApiResponse<{ user: User }>>('/api/auth/me', { headers })
+      const response = await $fetch<ApiResponse<{ user: User }>>('/api/auth/me', {
+        headers: requestHeaders,
+        credentials: 'include',
+      })
       if (response?.success && response?.data?.user) {
         setUser(response.data.user)
       }

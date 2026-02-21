@@ -248,4 +248,135 @@ SignIn/SignUp → userStore.signIn/signUp() →
 ---
 
 ## Summary Metadata
-**Update time**: 2026-02-20T21:21:46.148Z 
+**Update time**: 2026-02-21T00:00:00.000Z
+
+---
+
+## Latest Session Summary (2026-02-21)
+
+### ✅ SignIn/SignUp Pages - Accessibility & SEO (COMMIT: `efeca04`)
+
+**Files Changed:** 7 files (SignIn.vue, SignUp.vue, FormInput.vue, FormCheckbox.vue, auth.vue, auth.ts, PROJECT_STRUCTURE.md)
+
+**Accessibility Improvements (WCAG 2.1 AA):**
+- Added semantic HTML landmarks (`<main role="main">`, `<nav>`, `<form>`)
+- Implemented ARIA live regions for screen reader announcements (loading, success, error states)
+- Changed form labels from `sr-only` to visible labels (`block text-sm font-medium`)
+- Added password visibility toggle with proper ARIA labels ("Show password"/"Hide password")
+- Implemented dynamic `aria-describedby` for error messages and hints
+- Fixed heading hierarchy (`<h1>` for page titles with `tabindex="-1"` for focus management)
+- Added authentication navigation links ("Browse courses without signing in/up")
+
+**SEO Improvements:**
+- Unique descriptive titles: "Sign In - Online Learning Platform", "Sign Up - Online Learning Platform"
+- Detailed meta descriptions for each page
+- `noindex, nofollow` robots tags (auth pages)
+- Canonical URLs via `useHead`
+- Proper heading hierarchy maintained
+
+**Form Component Updates:**
+- **FormInput.vue:** Visible labels, password visibility toggle (eye icon), `getAriaDescribedBy()` function
+- **FormCheckbox.vue:** Dynamic `aria-describedby`, optional hint prop support
+
+**Layout Fixes:**
+- Removed duplicate wrapper divs that conflicted with auth layout styling
+- Added `py-8` to auth layout for top/bottom breathing room
+- Both pages now correctly slot into auth layout's card (`bg-[#1F1F1F]`, `rounded-2xl`, `p-8`)
+
+### ✅ Auth Middleware - Global Execution Fix (COMMIT: `6524e14` + pending)
+
+**Root Cause:** Middleware file was named `auth.ts` instead of `auth.global.ts`
+- `auth.ts` → Only runs when explicitly declared on pages
+- `auth.global.ts` → Runs automatically on EVERY route
+
+**Fix Applied:**
+- Renamed `app/middleware/auth.ts` → `app/middleware/auth.global.ts`
+- Removed invalid `middleware: ['auth']` from nuxt.config.ts
+- Fixed middleware logic order (check `/auth` routes BEFORE early return)
+
+**Middleware Logic:**
+```typescript
+// 1. Fetch user if not authenticated
+if (!userStore.isAuthenticated) {
+  await userStore.fetchUser()
+}
+
+// 2. Redirect authenticated users away from /auth pages
+if (to.path.startsWith('/auth') && userStore.isAuthenticated) {
+  return navigateTo('/home')
+}
+
+// 3. Redirect unauthenticated users from protected routes
+if (to.meta.requiresAuth && !userStore.isAuthenticated) {
+  return navigateTo('/auth')
+}
+```
+
+### ✅ Cart Store - Race Condition Fix (PENDING COMMIT)
+
+**Problem:** "Fetch cart error: Authentication required" on signin
+- Cart was fetching BEFORE auth cookie was ready
+- `watch(..., { immediate: true })` fired before user store initialized
+
+**Fix Applied:**
+- Removed `{ immediate: true }` from auth state watch
+- Added `initializeCart()` function that waits for `nextTick()`
+- Added `credentials: 'include'` to `fetchUserCart()` for client-side cookie sending
+
+**Before (broken):**
+```typescript
+watch(() => userStore.isAuthenticated, async (isAuth) => {
+  if (isAuth) await fetchUserCart()
+  else await fetchGuestCartDetails()
+}, { immediate: true })  // ❌ Fires before auth known
+```
+
+**After (fixed):**
+```typescript
+const initializeCart = async () => {
+  await nextTick()  // Wait for user store to initialize
+  if (userStore.isAuthenticated) await fetchUserCart()
+  else await fetchGuestCartDetails()
+}
+
+watch(() => userStore.isAuthenticated, async (isAuth, oldIsAuth) => {
+  if (isAuth === oldIsAuth) return  // Skip if no change
+  if (isAuth) await fetchUserCart()
+  else await fetchGuestCartDetails()
+})
+
+initializeCart()  // Call after auth state is known
+```
+
+### 📊 Updated Project Statistics
+
+**Total Commits:** 15+ ahead of `origin/main`
+
+**New Key Commits:**
+- `efeca04` - feat(auth): add accessibility and SEO improvements to signin/signup pages
+- `6524e14` - fix(auth): add top margin to headings and cleanup unused code
+- (pending) - fix(middleware): rename to auth.global.ts for global execution
+- (pending) - fix(cart): prevent race condition when fetching cart on app init
+
+### 🔧 Important Technical Notes
+
+**Nuxt Middleware Types:**
+| File Name | Execution | Use Case |
+|-----------|-----------|----------|
+| `middleware/auth.ts` | Manual (per-page) | Page-specific logic |
+| `middleware/auth.global.ts` | Automatic (all routes) | Auth checks, analytics |
+
+**Cart Initialization Flow:**
+```
+App Mount → Cart Store Created → initializeCart() →
+nextTick() (wait for user store) → Check isAuthenticated →
+Fetch User Cart OR Guest Cart
+```
+
+**API Calls Requiring Auth:**
+```typescript
+// Always include credentials for client-side requests
+await $fetch('/api/protected', {
+  credentials: 'include',  // Required for cookies
+})
+``` 

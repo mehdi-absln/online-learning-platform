@@ -9,6 +9,11 @@ export const useCartStore = defineStore('cart', () => {
   const userStore = useUserStore()
   const toast = useToast()
 
+  // Get headers at store initialization (inside Vue setup context)
+  const requestHeaders = import.meta.server
+    ? useRequestHeaders(['cookie'])
+    : {}
+
   // ───── State ─────
   const items = ref<Course[]>([])
   const isLoading = ref(false)
@@ -74,8 +79,10 @@ export const useCartStore = defineStore('cart', () => {
   const fetchUserCart = async () => {
     isLoading.value = true
     try {
-      const headers = useRequestHeaders(['cookie'])
-      const response = await $fetch<ApiResponse<{ items: Course[], totalPrice: number }>>('/api/cart', { headers })
+      const response = await $fetch<ApiResponse<{ items: Course[], totalPrice: number }>>('/api/cart', {
+        headers: requestHeaders,
+        credentials: 'include',
+      })
       if (response?.success && response?.data) {
         items.value = response.data.items
         serverTotalPrice.value = response.data.totalPrice
@@ -229,15 +236,37 @@ export const useCartStore = defineStore('cart', () => {
 
   // ───── Initialization ─────
 
+  /**
+   * Initialize cart - called once on app mount after auth state is known
+   */
+  const initializeCart = async () => {
+    // Wait a tick to ensure user store has initialized
+    await nextTick()
+    
+    if (userStore.isAuthenticated) {
+      await fetchUserCart()
+    }
+    else {
+      await fetchGuestCartDetails()
+    }
+  }
+
   // Watch for auth changes to fetch appropriate data
-  watch(() => userStore.isAuthenticated, async (isAuth) => {
+  // Note: No { immediate: true } - we fetch once user auth state is known
+  watch(() => userStore.isAuthenticated, async (isAuth, oldIsAuth) => {
+    // Skip if auth state hasn't actually changed (prevents double fetch on init)
+    if (isAuth === oldIsAuth) return
+    
     if (isAuth) {
       await fetchUserCart()
     }
     else {
       await fetchGuestCartDetails()
     }
-  }, { immediate: true })
+  })
+
+  // Initialize cart on store creation (after auth state is known)
+  initializeCart()
 
   return {
     items,
