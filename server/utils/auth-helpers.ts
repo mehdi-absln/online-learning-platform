@@ -6,7 +6,7 @@ import { users } from '../db/schema'
 import { eq } from 'drizzle-orm'
 
 export async function requireInstructor(event: H3Event) {
-  const token = getCookie(event, 'auth_token')
+  const token = getCookie(event, 'accessToken')
 
   if (!token) {
     throw createError({
@@ -49,7 +49,7 @@ export async function requireInstructor(event: H3Event) {
 }
 
 export async function requireAuth(event: H3Event) {
-  const token = getCookie(event, 'auth_token')
+  const token = getCookie(event, 'accessToken')
 
   if (!token) {
     throw createError({
