@@ -3,7 +3,8 @@
 ## Overview
 Comprehensive documentation of the project structure for the Online Learning Platform built with **Nuxt 4**, **Vue 3**, **TypeScript**, **Tailwind CSS**, **Pinia**, **SQLite** with **Drizzle ORM**, and **Vitest** for testing.
 
-**Last Updated:** February 18, 2026
+**Last Updated:** February 22, 2026  
+**Version:** 2.0.0
 
 ---
 
@@ -78,8 +79,14 @@ online-learning-platform/
 │   │   │   ├── Accordion.vue
 │   │   │   ├── Breadcrumb.vue
 │   │   │   ├── CartDrawer.vue             # Shopping cart drawer [NEW ⭐]
-│   │   │   ├── FormCheckbox.vue
-│   │   │   ├── FormInput.vue
+│   │   │   │                                  # - Slide-out right sidebar
+│   │   │   │                                  # - Guest + user cart support
+│   │   │   │                                  # - Focus trap + Escape key
+│   │   │   │                                  # - WCAG 2.1 AA compliant
+│   │   │   ├── FormCheckbox.vue           # Accessible checkbox
+│   │   │   ├── FormInput.vue              # Input with label + validation
+│   │   │   │                                  # - Password visibility toggle
+│   │   │   │                                  # - aria-describedby support
 │   │   │   ├── LoadingSpinner.vue
 │   │   │   ├── PageHero.vue
 │   │   │   ├── Pagination.vue
@@ -88,8 +95,12 @@ online-learning-platform/
 │   │   │   ├── SubmitButton.vue
 │   │   │   ├── Tabs.vue
 │   │   │   └── Toast.vue                  # Enhanced toast notifications [UPDATED ⭐]
-│   │   ├── MainFooter.vue
-│   │   ├── MainNav.vue
+│   │   ├── MainFooter.vue                 # Site-wide footer
+│   │   ├── MainNav.vue                    # Main navigation [UPDATED ⭐]
+│   │   │                                      # - User dropdown menu
+│   │   │                                      # - Avatar with initials
+│   │   │                                      # - Keyboard navigation
+│   │   │                                      # - Cart button with count
 │   │   └── .gitkeep
 │   │
 │   ├── 📂 composables/                    # Vue composables (reusable logic)
@@ -120,20 +131,39 @@ online-learning-platform/
 │   │   └── .gitkeep
 │   │
 │   ├── 📂 middleware/                     # Route middleware
-│   │   ├── auth.ts                        # Authentication guard
+│   │   ├── auth.global.ts                 # Global authentication [UPDATED ⭐]
+│   │   │                                      # - Runs on ALL routes automatically
+│   │   │                                      # - Fetches user session
+│   │   │                                      # - Redirects based on auth state
+│   │   │                                      # - requiresAuth meta support
 │   │   └── .gitkeep
 │   │
 │   ├── 📂 pages/                          # Route pages (file-based routing)
-│   │   ├── 📂 auth/                       # Authentication pages
-│   │   │   ├── SignIn.vue
-│   │   │   └── SignUp.vue
+│   │   ├── 📂 auth/                       # Authentication pages [UPDATED ⭐]
+│   │   │   ├── SignIn.vue                 # Sign in form [UPDATED ⭐]
+│   │   │   │                                  # - Username OR email login
+│   │   │   │                                  # - WCAG 2.1 AA compliant
+│   │   │   │                                  # - ARIA live regions
+│   │   │   │                                  # - Password visibility toggle
+│   │   │   └── SignUp.vue                 # Sign up form [UPDATED ⭐]
+│   │   │                                      # - Zod validation
+│   │   │                                      # - WCAG 2.1 AA compliant
+│   │   │                                      # - ARIA live regions
 │   │   ├── 📂 blogs/                      # Blog pages
 │   │   │   ├── [slug].vue                 # Dynamic blog post
 │   │   │   └── index.vue                  # Blog listing
 │   │   ├── 📂 checkout/                   # Checkout flow [NEW ⭐]
-│   │   │   ├── index.vue                  # Checkout page with payment simulation
-│   │   │   ├── success.vue                # Order success confirmation
-│   │   │   └── failed.vue                 # Payment failure page
+│   │   │   ├── index.vue                  # Checkout page [UPDATED ⭐]
+│   │   │   │                                  # - Payment simulation
+│   │   │   │                                  # - Order summary
+│   │   │   │                                  # - WCAG 2.1 AA + SEO
+│   │   │   ├── success.vue                # Order success [UPDATED ⭐]
+│   │   │   │                                  # - Order details display
+│   │   │   │                                  # - LoadingSpinner component
+│   │   │   │                                  # - aria-live announcements
+│   │   │   └── failed.vue                 # Payment failure [UPDATED ⭐]
+│   │   │                                      # - Error recovery options
+│   │   │                                      # - WCAG 2.1 AA + SEO
 │   │   ├── 📂 courses/                    # Course pages
 │   │   │   ├── [courseSlug]/              # Dynamic course routes
 │   │   │   │   ├── lessons/
@@ -141,7 +171,11 @@ online-learning-platform/
 │   │   │   │   └── index.vue              # Course detail page
 │   │   │   └── index.vue                  # Course listing with filters
 │   │   ├── dashboard.vue                  # User dashboard
-│   │   ├── home.vue                       # Homepage
+│   │   ├── home.vue                       # Homepage [UPDATED ⭐]
+│   │   │                                      # - Hero section
+│   │   │                                      # - Proper heading hierarchy (h1→h2→h3)
+│   │   │                                      # - ARIA landmarks
+│   │   │                                      # - Skip link (fixed positioning)
 │   │   └── .gitkeep
 │   │
 │   ├── 📂 plugins/                        # Nuxt plugins
@@ -163,10 +197,19 @@ online-learning-platform/
 │   │
 │   ├── 📂 stores/                         # Pinia state management
 │   │   ├── blogs.ts                       # Blog state
-│   │   ├── cart.ts                        # Shopping cart state [NEW ⭐]
+│   │   ├── cart.ts                        # Shopping cart [NEW ⭐]
+│   │   │                                      # - Guest cart (cookie-based)
+│   │   │                                      # - User cart (DB-based)
+│   │   │                                      # - Cart merge on login
+│   │   │                                      # - Silent merge failures
 │   │   ├── courses.ts                     # Course state
-│   │   ├── lesson-progress.ts             # Lesson progress tracking [NEW ⭐]
-│   │   └── user.ts                        # User authentication state
+│   │   ├── lesson-progress.ts             # Lesson progress [NEW ⭐]
+│   │   └── user.ts                        # User authentication [UPDATED ⭐]
+│   │       │                                  # - signIn/signUp/logout
+│   │       │                                  # - fetchUser session
+│   │       │                                  # - Toast notifications
+│   │       │                                  # - readonly() exposed state
+│   │       │                                  # - computed isAuthenticated
 │   │
 │   ├── 📂 types/                          # TypeScript type definitions
 │   │   ├── 📂 components/
@@ -211,10 +254,16 @@ online-learning-platform/
 │   ├── 📂 api/                            # API routes (endpoints)
 │   │   ├── 📂 admin/                      # Admin endpoints [TODO - Empty]
 │   │   ├── 📂 auth/                       # Authentication endpoints
-│   │   │   ├── logout.post.ts
-│   │   │   ├── me.get.ts
-│   │   │   ├── signin.post.ts
-│   │   │   └── signup.post.ts
+│   │   │   ├── logout.post.ts             # POST /api/auth/logout
+│   │   │   ├── me.get.ts                  # GET /api/auth/me
+│   │   │   ├── signin.post.ts             # POST /api/auth/signin [UPDATED ⭐]
+│   │   │   │                                  # - Username OR email login
+│   │   │   │                                  # - JWT tokens in cookies
+│   │   │   │                                  # - Remember Me (7/30 days)
+│   │   │   └── signup.post.ts             # POST /api/auth/signup [UPDATED ⭐]
+│   │   │                                      # - User registration
+│   │   │                                      # - Password hashing
+│   │   │                                      # - Auto sign-in
 │   │   ├── 📂 blogs/                      # Blog CRUD endpoints
 │   │   │   ├── slug/
 │   │   │   │   └── [slug].get.ts
@@ -224,12 +273,17 @@ online-learning-platform/
 │   │   │   ├── index.get.ts
 │   │   │   └── index.post.ts
 │   │   ├── 📂 cart/                       # Shopping cart endpoints [NEW ⭐]
-│   │   │   ├── [courseId].delete.ts       # Remove from cart
-│   │   │   ├── index.get.ts               # Get cart items
-│   │   │   ├── index.post.ts              # Add to cart
-│   │   │   └── merge.post.ts              # Merge guest cart on login
+│   │   │   ├── [courseId].delete.ts       # DELETE /api/cart/:courseId
+│   │   │   ├── index.get.ts               # GET /api/cart
+│   │   │   ├── index.post.ts              # POST /api/cart
+│   │   │   └── merge.post.ts              # POST /api/cart/merge [UPDATED ⭐]
+│   │   │                                      # - Merge guest cart on login
+│   │   │                                      # - Silent failures
 │   │   ├── 📂 checkout/                   # Checkout endpoint [NEW ⭐]
-│   │   │   └── index.post.ts              # Process checkout with simulation
+│   │   │   └── index.post.ts              # POST /api/checkout [UPDATED ⭐]
+│   │   │                                      # - Payment simulation
+│   │   │                                      # - Creates order + enrollments
+│   │   │                                      # - Server-side validation
 │   │   ├── 📂 courses/                    # Course endpoints
 │   │   │   ├── [courseId]/
 │   │   │   │   └── related.get.ts
@@ -245,13 +299,20 @@ online-learning-platform/
 │   │   │   ├── filter-options.get.ts
 │   │   │   └── index.get.ts
 │   │   ├── 📂 orders/                     # Order endpoints [NEW ⭐]
-│   │   │   ├── [id].get.ts                # Get order details
-│   │   │   └── index.get.ts               # Get user orders
+│   │   │   ├── [id].get.ts                # GET /api/orders/:id [UPDATED ⭐]
+│   │   │   │                                  # - Order details
+│   │   │   │                                  # - Authorization check
+│   │   │   └── index.get.ts               # GET /api/orders [UPDATED ⭐]
+│   │   │                                      # - User order history
 │   │   ├── 📂 progress/                   # Lesson progress endpoints [NEW ⭐]
-│   │   │   ├── bookmark.post.ts           # Toggle bookmark
-│   │   │   ├── complete.post.ts           # Mark lesson complete
-│   │   │   ├── index.get.ts               # Get user progress
-│   │   │   └── notes.post.ts              # Save lesson notes
+│   │   │   ├── bookmark.post.ts           # POST /api/progress/bookmark [UPDATED ⭐]
+│   │   │   │                                  # - Toggle lesson bookmark
+│   │   │   ├── complete.post.ts           # POST /api/progress/complete [UPDATED ⭐]
+│   │   │   │                                  # - Mark lesson complete
+│   │   │   ├── index.get.ts               # GET /api/progress [UPDATED ⭐]
+│   │   │   │                                  # - User's lesson progress
+│   │   │   └── notes.post.ts              # POST /api/progress/notes [UPDATED ⭐]
+│   │   │                                      # - Save lesson notes
 │   │   └── 📂 users/                      # User endpoints
 │   │       └── [id].get.ts
 │   │
@@ -261,12 +322,23 @@ online-learning-platform/
 │   ├── 📂 db/                             # Database layer
 │   │   ├── blog-service.ts                # Blog database operations
 │   │   ├── cart-service.ts                # Cart database operations [NEW ⭐]
+│   │   │                                      # - addToCart, getCart
+│   │   │                                      # - removeFromCart, mergeCarts
 │   │   ├── course-service.ts              # Course database operations
 │   │   ├── index.ts                       # Database connection
 │   │   ├── migrate.ts                     # Migration utilities
 │   │   ├── order-service.ts               # Order processing [NEW ⭐]
+│   │   │                                      # - createOrder, getOrderById
+│   │   │                                      # - getUserOrders, enrollUserInCourses
 │   │   ├── progress-service.ts            # Progress tracking [NEW ⭐]
-│   │   ├── schema.ts                      # Drizzle schema definitions
+│   │   │                                      # - getProgress, markComplete
+│   │   │                                      # - toggleBookmark, saveNotes
+│   │   ├── schema.ts                      # Drizzle schema definitions [UPDATED ⭐]
+│   │   │                                      # - 14 tables total
+│   │   │                                      # - users (with username)
+│   │   │                                      # - courses, lessons, cart_items
+│   │   │                                      # - orders, enrollments, lesson_progress
+│   │   │                                      # - blogs, categories, instructors
 │   │   └── user-service.ts                # User database operations
 │   │
 │   ├── 📂 drizzle/                        # Database migrations
@@ -275,27 +347,37 @@ online-learning-platform/
 │   │       │   ├── _journal.json
 │   │       │   ├── 0000_snapshot.json
 │   │       │   ├── 0001_snapshot.json
-│   │       │   └── 0002_snapshot.json
+│   │       │   ├── 0002_snapshot.json
+│   │       │   └── 0003_snapshot.json
 │   │       ├── 0000_full_schema_update.sql
 │   │       ├── 0000_lean_preak.sql
 │   │       ├── 0001_seed_sample_data.sql
 │   │       ├── 0001_sync_schema.sql       # Schema sync [NEW ⭐]
 │   │       ├── 0002_add_slug_to_courses.sql
 │   │       ├── 0002_unique_cart_enrollments_fixed.sql  # Unique constraints [NEW ⭐]
+│   │       ├── 0003_mean_ezekiel_stane.sql # Username column [NEW ⭐]
+│   │       │                                  # - Adds username to users
+│   │       │                                  # - Makes name optional
+│   │       │                                  # - Updates existing users
 │   │       ├── 0003_update_schema.sql
 │   │       ├── 0004_add_lesson_progress.sql
 │   │       ├── 0005_create_blogs.sql
 │   │       └── 0006_add_reading_time.sql
 │   │
 │   ├── 📂 utils/                          # Server utilities
-│   │   ├── auth-helpers.ts                # Authentication helpers
+│   │   ├── auth-helpers.ts                # Authentication helpers [UPDATED ⭐]
+│   │   │                                      # - requireAuth (checks accessToken)
+│   │   │                                      # - requireInstructor
 │   │   ├── blog-helpers.ts
 │   │   ├── course-authorization.ts
 │   │   ├── course-transformer.ts
 │   │   ├── format-utils.ts
 │   │   ├── image-processor.ts
 │   │   ├── instructor-service.ts
-│   │   ├── jwt.ts                         # JWT token utilities
+│   │   ├── jwt.ts                         # JWT token utilities [UPDATED ⭐]
+│   │   │                                      # - Sign tokens (7/30 days)
+│   │   │                                      # - Verify tokens
+│   │   │                                      # - Cookie configuration
 │   │   ├── related-courses.ts
 │   │   ├── response.ts                    # Response helpers
 │   │   ├── safe-parse.ts
@@ -341,15 +423,104 @@ online-learning-platform/
 | **Type Definitions** | 11 | TypeScript types |
 | **Utility Functions** | 4 | Client-side utils |
 | **API Routes** | 35 | Server endpoints |
-| **DB Services** | 8 | Database operations |
+| **DB Services** | 6 | Database operations |
 | **Server Utils** | 11 | Server-side helpers |
-| **DB Migrations** | 14 | Schema migrations |
+| **DB Migrations** | 14 | Schema migrations (14 tables) |
 | **Scripts** | 14 | Database utilities |
-| **Test Files** | 37 | Vitest test suite |
+| **Test Files** | 35 | Vitest test suite |
 
 ---
 
-## 🆕 Recent Additions (Since Initial Setup)
+## 🆕 Recent Additions & Updates
+
+### User Dropdown Menu in MainNav ⭐ [NEW]
+**File:** `app/components/MainNav.vue`
+```
+✅ Avatar button with user initials
+✅ Glassmorphism dropdown design
+✅ Full keyboard navigation (Arrow, Enter, Space, Escape)
+✅ Focus management with roving tabindex
+✅ Click outside to close
+✅ Menu items: Profile, My Courses, Settings, Logout
+✅ ARIA attributes (role="menu", aria-expanded, etc.)
+```
+
+### Authentication Pages Accessibility ⭐ [UPDATED]
+**Files:** `app/pages/auth/SignIn.vue`, `app/pages/auth/SignUp.vue`
+```
+✅ Visible form labels (not sr-only)
+✅ Password visibility toggle with ARIA labels
+✅ ARIA live regions for dynamic content
+✅ aria-describedby for error messages and hints
+✅ Proper heading hierarchy
+✅ Authentication navigation links
+✅ Semantic HTML landmarks
+```
+
+### Global Middleware Consolidation ⭐ [UPDATED]
+**File:** `app/middleware/auth.global.ts`
+```
+✅ Renamed from auth.ts → auth.global.ts
+✅ Runs automatically on ALL routes
+✅ Removed redundant middleware/auth.ts
+✅ Uses requiresAuth: true meta for protected pages
+✅ fetchUser() runs ONCE per page load (not twice)
+```
+
+### CartDrawer Focus Management ⭐ [UPDATED]
+**File:** `app/components/ui/CartDrawer.vue`
+```
+✅ Focus trap (Tab key cycles within drawer)
+✅ Escape key closes drawer
+✅ focus-visible styles on interactive elements
+✅ focus-within styles on cart items
+✅ Auto-focus on open
+✅ Body scroll prevention
+```
+
+### Home Page Accessibility ⭐ [UPDATED]
+**File:** `app/pages/home.vue`
+```
+✅ Skip link (fixed positioning, visible on focus)
+✅ Proper heading hierarchy (h1 → h2 → h3)
+✅ ARIA landmarks with aria-labelledby
+✅ Section semantics (About, Classes, Trainers, etc.)
+✅ Removed h1 → h5 skip violation
+```
+
+### Checkout Pages Accessibility & SEO ⭐ [UPDATED]
+**Files:** `app/pages/checkout/*`
+```
+✅ Semantic HTML (main, section, aside, nav, ul/li)
+✅ ARIA roles (list, alert, status)
+✅ aria-live regions for dynamic content
+✅ Focus management (auto-focus success/error headings)
+✅ Unique titles and meta descriptions
+✅ Open Graph tags
+✅ Canonical URLs via useHead
+✅ noindex, nofollow robots tags
+```
+
+### User Store Improvements ⭐ [UPDATED]
+**File:** `app/stores/user.ts`
+```
+✅ isAuthenticated: computed (not ref)
+✅ readonly() on exposed state
+✅ Private setUser/clearUser actions
+✅ Toast notifications for signIn/signUp/logout
+✅ Loading state on logout
+✅ Background cart merge (silent)
+```
+
+### Cart Store Improvements ⭐ [UPDATED]
+**File:** `app/stores/cart.ts`
+```
+✅ Silent mergeGuestCart() failures
+✅ No toast on merge (only console.warn)
+✅ initializeCart() with nextTick()
+✅ Removed { immediate: true } from watch
+✅ Request headers captured at store level
+```
 
 ### Shopping Cart System ⭐
 ```
@@ -405,7 +576,10 @@ online-learning-platform/
 ```
 ✅ server/drizzle/migrations/0001_sync_schema.sql
 ✅ server/drizzle/migrations/0002_unique_cart_enrollments_fixed.sql
+✅ server/drizzle/migrations/0003_mean_ezekiel_stane.sql (username column)
 ✅ Unique constraints on cart_items and enrollments tables
+✅ Added username column to users (UNIQUE NOT NULL)
+✅ Made name field optional
 ```
 
 ---
@@ -460,6 +634,7 @@ online-learning-platform/
 | Feature | Status | Files |
 |---------|--------|-------|
 | **Authentication** | ✅ Complete | `/api/auth/*`, `useUserStore` |
+| **Username Login** | ✅ Complete | Username OR email sign-in |
 | **Course Browsing** | ✅ Complete | `/courses`, course filters |
 | **Course Details** | ✅ Complete | `/courses/[slug]` |
 | **Lesson Viewer** | ✅ Complete | Video player, progress tracking |
@@ -468,18 +643,102 @@ online-learning-platform/
 | **Orders** | ✅ Complete | Order history API |
 | **Lesson Progress** | ✅ Complete | Complete, bookmark, notes |
 | **Blog System** | ✅ Complete | Full CRUD with SEO |
-| **Reviews Display** | ✅ Partial | Display only (no submit) |
+| **Reviews Display** | ⚠️ Partial | Display only (no submit) |
+| **Accessibility** | ✅ WCAG 2.1 AA | All major pages |
+| **SEO** | ✅ Optimized | Meta tags, Open Graph, canonical URLs |
+
+---
+
+## 🗑️ Removed/Deleted Files
+
+### Removed Files:
+```
+❌ middleware/auth.ts                    # Merged into auth.global.ts (redundant)
+```
+
+### Reason for Removal:
+- **middleware/auth.ts:** Redundant with `auth.global.ts`, was causing duplicate `fetchUser()` calls (2 API calls → 1 API call)
+
 ---
 
 ## 🔄 Data Flow
 
-1. **User Action** → Component/Composable
-2. **State Update** → Pinia Store
-3. **API Call** → `$fetch()` → Server API Route
-4. **Business Logic** → Service Layer
-5. **Database** → Drizzle ORM → SQLite
-6. **Response** → Transform → Update Store
-7. **UI Update** → Component re-renders
+### Authentication Flow
+```
+SignIn/SignUp → userStore.signIn/signUp() →
+  → API call → Set user in store →
+  → Toast success → Cart merge (silent) →
+  → Navigate to /home
+```
+
+### Cart Initialization Flow
+```
+App Mount → Cart Store Created → initializeCart() →
+nextTick() (wait for user store) → Check isAuthenticated →
+Fetch User Cart OR Guest Cart
+```
+
+### Checkout Flow
+```
+Cart → Checkout Page → Payment Simulation →
+  → POST /api/checkout → Create Order →
+  → Create Enrollments → Clear Cart →
+  → Redirect to /checkout/success
+```
+
+### Cart Merge Flow (Background)
+```
+Login/Signup → mergeGuestCart() →
+  → POST /api/cart/merge → Clear guest cookie →
+  → Fetch user cart → Silent failure (no toast)
+```
+
+---
+
+## 🔧 Important Technical Notes
+
+### Nuxt Middleware Types
+| File Name | Execution | Use Case |
+|-----------|-----------|----------|
+| `auth.global.ts` | Automatic (all routes) | ✅ Auth checks, session fetch |
+| `requiresAuth: true` | Meta property | ✅ Protect specific pages |
+
+### Composable Context Rule
+```typescript
+// ❌ Wrong - composable called inside async function
+const fetchData = async () => {
+  const headers = useRequestHeaders(['cookie'])  // Error!
+}
+
+// ✅ Correct - composable called at store level
+const requestHeaders = import.meta.server
+  ? useRequestHeaders(['cookie'])
+  : {}
+
+const fetchData = async () => {
+  const response = await $fetch('/api/...', { headers: requestHeaders })
+}
+```
+
+### Template Refs for Component Arrays
+```typescript
+// ✅ Correct - Use function approach for NuxtLink components
+const menuItemElements = ref<(HTMLElement | null)[]>([])
+const setMenuItemRef = (el: ComponentPublicInstance | HTMLElement | null, index: number) => {
+  if (el) {
+    menuItemElements.value[index] = '$el' in el ? (el.$el as HTMLElement) : el
+  }
+}
+```
+
+### API Calls Requiring Auth
+```typescript
+// Always include credentials for client-side requests
+await $fetch('/api/protected', {
+  headers: import.meta.server ? useRequestHeaders(['cookie']) : {},
+  credentials: 'include',  // Required for client-side cookie sending
+})
+```
 
 ---
 
@@ -512,21 +771,72 @@ __tests__/
 
 ## 📝 Database Schema
 
-### Core Tables
-- `users` - User accounts
-- `instructors` - Instructor profiles
-- `courses` - Course catalog
-- `course_content_sections` - Course structure
-- `lessons` - Lesson content
-- `course_learning_objectives` - Learning goals
-- `categories` - Course categories
-- `blogs` - Blog posts
-- `reviews` - Course reviews
-- `cart_items` - Shopping cart
-- `orders` - Order records
-- `order_items` - Order details
-- `enrollments` - User enrollments
-- `lesson_progress` - Progress tracking
+### Core Tables (14 total)
 
-**Last Updated:** February 18, 2026  
-**Version:** 1.2.0
+| Table | Description |
+|-------|-------------|
+| `users` | User accounts (username, email, password, role) |
+| `instructors` | Instructor profiles |
+| `courses` | Course catalog (slug, price, thumbnail) |
+| `course_content_sections` | Course structure (sections) |
+| `lessons` | Lesson content (video, content, slug) |
+| `course_learning_objectives` | Learning goals |
+| `categories` | Course categories |
+| `blogs` | Blog posts (with reading time) |
+| `reviews` | Course reviews |
+| `cart_items` | Shopping cart (unique constraints) |
+| `orders` | Order records |
+| `order_items` | Order details |
+| `enrollments` | User enrollments (unique constraints) |
+| `lesson_progress` | Progress tracking (complete, bookmark, notes) |
+
+### Recent Schema Changes
+- **0003_mean_ezekiel_stane.sql:** Added `username` column to users (UNIQUE NOT NULL), made `name` optional
+- **0002_unique_cart_enrollments_fixed.sql:** Added unique constraints to cart_items and enrollments
+- **0004_add_lesson_progress.sql:** Added lesson_progress table
+
+---
+
+## ♿ Accessibility Checklist (COMPLETED)
+
+- [x] SignIn/SignUp pages - WCAG 2.1 AA compliant
+- [x] Checkout pages - WCAG 2.1 AA compliant
+- [x] MainNav user dropdown - Full keyboard navigation
+- [x] CartDrawer - Focus trap + focus-visible states
+- [x] Home page - Proper heading hierarchy + ARIA landmarks
+- [x] Skip link - Visible on focus, fixed positioning
+- [x] All interactive elements - focus-visible states
+- [x] Form inputs - Visible labels + aria-describedby
+- [x] Password fields - Show/hide toggle with ARIA
+- [x] LoadingSpinner - aria-live announcements
+- [x] Semantic HTML - main, nav, section, article, aside
+
+---
+
+## 📋 TODO (User Identified Priorities)
+
+1. [ ] Complete User Dashboard
+   - [ ] My Learning page (enrolled courses)
+   - [ ] Order history page
+   - [ ] Profile management
+2. [ ] Review Submission System
+   - [ ] API endpoints for reviews
+   - [ ] Review form component
+   - [ ] Display in course details
+3. [ ] Admin Panel
+   - [ ] Course management
+   - [ ] User management
+   - [ ] Order management
+4. [ ] Quiz/Assessment System
+   - [ ] Quiz schema
+   - [ ] Quiz components
+   - [ ] Progress tracking
+5. [ ] Certificate Generation
+   - [ ] PDF generation
+   - [ ] Download on completion
+
+---
+
+**Last Updated:** February 22, 2026  
+**Version:** 2.0.0  
+**Total Commits:** 19+ ahead of `origin/main`

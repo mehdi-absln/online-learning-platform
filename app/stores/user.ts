@@ -155,7 +155,11 @@ export const useUserStore = defineStore('user', () => {
   const logout = async () => {
     loading.value = true
     try {
-      const response = await $fetch<ApiResponse>('/api/auth/logout', { method: 'POST' })
+      const response = await $fetch<ApiResponse>('/api/auth/logout', {
+        method: 'POST',
+        headers: requestHeaders,
+        credentials: 'include',
+      })
       if (response?.success) {
         clearUser()
         toast.success('Logged out successfully. See you soon!')

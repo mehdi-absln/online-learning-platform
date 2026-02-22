@@ -1,31 +1,27 @@
+import { requireAuth } from '../../utils/auth-helpers'
 import { getOrderDetails } from '../../db/order-service'
 
 export default defineEventHandler(async (event) => {
-  const user = event.context.user
-  if (!user) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Unauthorized',
-    })
-  }
-
-  const id = getRouterParam(event, 'id')
-  if (!id) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Order ID is required',
-    })
-  }
-
-  const orderId = parseInt(id)
-  if (isNaN(orderId)) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Invalid Order ID',
-    })
-  }
-
   try {
+    // Authenticate user - this checks the accessToken cookie
+    const user = await requireAuth(event)
+
+    const id = getRouterParam(event, 'id')
+    if (!id) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Order ID is required',
+      })
+    }
+
+    const orderId = parseInt(id)
+    if (isNaN(orderId)) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Invalid Order ID',
+      })
+    }
+
     const order = await getOrderDetails(orderId, user.id)
 
     if (!order) {
