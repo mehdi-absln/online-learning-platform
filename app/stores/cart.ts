@@ -114,6 +114,8 @@ export const useCartStore = defineStore('cart', () => {
         const response = await $fetch<ApiResponse>('/api/cart', {
           method: 'POST',
           body: { courseId: course.id },
+          headers: requestHeaders,
+          credentials: 'include',
         })
         if (response?.success) {
           await fetchUserCart()
@@ -139,6 +141,8 @@ export const useCartStore = defineStore('cart', () => {
       try {
         const response = await $fetch<ApiResponse>(`/api/cart/${courseId}`, {
           method: 'DELETE',
+          headers: requestHeaders,
+          credentials: 'include',
         })
         if (response?.success) {
           await fetchUserCart()
@@ -168,6 +172,8 @@ export const useCartStore = defineStore('cart', () => {
       const response = await $fetch<ApiResponse>('/api/cart/merge', {
         method: 'POST',
         body: { courseIds: ids },
+        headers: requestHeaders,
+        credentials: 'include',
       })
       if (response?.success) {
         // Clear guest cookie after successful merge
@@ -211,6 +217,8 @@ export const useCartStore = defineStore('cart', () => {
       const response = await $fetch<{ success: boolean, message: string, orderId: number }>('/api/checkout', {
         method: 'POST',
         body: { simulationType },
+        headers: requestHeaders,
+        credentials: 'include',
       })
 
       if (response?.success) {
