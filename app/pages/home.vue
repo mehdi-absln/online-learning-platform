@@ -60,7 +60,10 @@
       </div>
     </section>
     <!-- About Section -->
-    <section class="py-32">
+    <section
+      class="py-32"
+      aria-labelledby="about-heading"
+    >
       <div class="container flex justify-between items-center flex-wrap md:flex-nowrap gap-x-6">
         <div class="w-[45%] relative">
           <img
@@ -73,16 +76,16 @@
           />
         </div>
         <div class="w-[45%]">
-          <h5 class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
-            WE LOVE GUIDING YOUR LEARNING JOURNEY
-          </h5>
-          <h2 class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]">
+          <h2
+            id="about-heading"
+            class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]"
+          >
             Empowering learners with knowledge and tools
             <span class="text-primary">for success</span>
           </h2>
           <p class="text-[#C2C2C2] text-base py-6">
             The first thing to remember about success is that it is a process – nothing more,
-            nothing less. There is really no magic to it and it’s not reserved only for a select few
+            nothing less. There is really no magic to it and it's not reserved only for a select few
             people.
           </p>
           <div class="flex flex-wrap justify-between gap-y-6">
@@ -95,9 +98,9 @@
                 >
               </div>
               <div>
-                <h5 class="font-antonio font-bold text-white text-base">
+                <p class="font-antonio font-bold text-white text-base">
                   Supportive and inspiring learning
-                </h5>
+                </p>
               </div>
             </div>
             <div class="bg-dark-bg py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
@@ -109,9 +112,9 @@
                 >
               </div>
               <div>
-                <h5 class="font-antonio font-bold text-white text-base">
+                <p class="font-antonio font-bold text-white text-base">
                   Learning experience that is rewarding and meaningful
-                </h5>
+                </p>
               </div>
             </div>
             <div class="bg-dark-bg py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
@@ -123,9 +126,9 @@
                 >
               </div>
               <div>
-                <h5 class="font-antonio font-bold text-white text-base">
+                <p class="font-antonio font-bold text-white text-base">
                   Bringing together knowledge, skills, and growth
-                </h5>
+                </p>
               </div>
             </div>
             <div class="bg-dark-bg py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
@@ -137,9 +140,9 @@
                 >
               </div>
               <div>
-                <h5 class="font-antonio font-bold text-white text-base">
+                <p class="font-antonio font-bold text-white text-base">
                   We help you achieve your learning goals
-                </h5>
+                </p>
               </div>
             </div>
           </div>
@@ -147,7 +150,10 @@
       </div>
     </section>
     <!-- Online Classes Section -->
-    <section class="bg-dark-surface py-32 relative z-0">
+    <section
+      class="bg-dark-surface py-32 relative z-0"
+      aria-labelledby="classes-heading"
+    >
       <div
         class="absolute inset-0 flex justify-center gap-[50%] pointer-events-none items-end -z-10"
       >
@@ -156,10 +162,13 @@
       </div>
       <div class="container relative z-20">
         <div class="text-center pb-14">
-          <h5 class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
+          <p class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
             ONLINE CLASSES
-          </h5>
-          <h2 class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]">
+          </p>
+          <h2
+            id="classes-heading"
+            class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]"
+          >
             OUR POPULAR CLASSES
           </h2>
         </div>
@@ -186,7 +195,10 @@
       </div>
     </section>
     <!-- Stats Section -->
-    <section class="py-20">
+    <section
+      class="py-20"
+      aria-label="Platform statistics"
+    >
       <div class="container">
         <div class="flex flex-wrap justify-center gap-8 text-center">
           <div class="flex-1 min-w-[200px] max-w-[300px] p-6">
@@ -228,13 +240,19 @@
       </div>
     </section>
     <!-- Trainers Section -->
-    <section class="py-32">
+    <section
+      class="py-32"
+      aria-labelledby="trainers-heading"
+    >
       <div class="container">
         <div class="text-center pb-14">
-          <h5 class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
+          <p class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
             Trainers
-          </h5>
-          <h2 class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]">
+          </p>
+          <h2
+            id="trainers-heading"
+            class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]"
+          >
             Meet our top trainers
           </h2>
         </div>
@@ -337,13 +355,19 @@
       </div>
     </section>
     <!-- Testimonials Section -->
-    <section class="pt-16 pb-24">
+    <section
+      class="pt-16 pb-24"
+      aria-labelledby="testimonials-heading"
+    >
       <div class="container">
         <div class="text-center pb-14">
-          <h5 class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
+          <p class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
             Testimonials
-          </h5>
-          <h2 class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]">
+          </p>
+          <h2
+            id="testimonials-heading"
+            class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]"
+          >
             What they say about us
           </h2>
         </div>
@@ -390,13 +414,19 @@
       </div>
     </section>
     <!-- Blog Section -->
-    <section class="py-16">
+    <section
+      class="py-16"
+      aria-labelledby="blog-heading"
+    >
       <div class="container">
         <div class="text-center pb-14">
-          <h5 class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
+          <p class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
             Latest tips & news
-          </h5>
-          <h2 class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]">
+          </p>
+          <h2
+            id="blog-heading"
+            class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]"
+          >
             Have a look at our news
           </h2>
         </div>

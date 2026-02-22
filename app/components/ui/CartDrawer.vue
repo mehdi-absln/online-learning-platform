@@ -287,7 +287,7 @@ onKeyStroke('Tab', (e) => {
   if (!isCartDrawerOpen.value || !drawerRef.value) return
 
   const focusableElements = drawerRef.value.querySelectorAll(
-    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
   )
   const first = focusableElements[0] as HTMLElement
   const last = focusableElements[focusableElements.length - 1] as HTMLElement
@@ -295,7 +295,8 @@ onKeyStroke('Tab', (e) => {
   if (e.shiftKey && document.activeElement === first) {
     e.preventDefault()
     last.focus()
-  } else if (!e.shiftKey && document.activeElement === last) {
+  }
+  else if (!e.shiftKey && document.activeElement === last) {
     e.preventDefault()
     first.focus()
   }
