@@ -223,6 +223,10 @@ export const useCartStore = defineStore('cart', () => {
 
       if (response?.success) {
         await clearCart()
+        
+        // Fetch updated enrollments (user now owns these courses)
+        await userStore.fetchEnrollments()
+        
         // Success toast is optional here as we redirect to success page
         return { success: true, message: response.message, orderId: response.orderId }
       }
