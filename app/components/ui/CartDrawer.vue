@@ -112,7 +112,7 @@
                 </p>
               </div>
               <button
-                class="btn-primary mt-4"
+                class="btn-primary mt-4 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg focus:outline-none"
                 @click="closeCart"
               >
                 Start Learning
@@ -127,7 +127,7 @@
               <li
                 v-for="item in items"
                 :key="item.id"
-                class="flex gap-4 p-4 bg-dark-bg rounded-xl border border-dark-divider group"
+                class="flex gap-4 p-4 bg-dark-bg rounded-xl border border-dark-divider group focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/30"
               >
                 <div class="relative w-20 h-20 flex-shrink-0 bg-dark-surface rounded-lg overflow-hidden border border-dark-divider">
                   <img
@@ -138,7 +138,7 @@
                 </div>
                 <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                   <div>
-                    <h3 class="text-white font-medium truncate group-hover:text-primary transition-colors text-sm">
+                    <h3 class="text-white font-medium truncate group-hover:text-primary group-focus-within:text-primary transition-colors text-sm">
                       {{ item.title }}
                     </h3>
                     <p class="text-white/70 text-xs mt-1 truncate">
@@ -148,7 +148,7 @@
                   <div class="flex items-center justify-between mt-2">
                     <span class="text-primary font-bold">${{ item.price }}</span>
                     <button
-                      class="text-xs text-red-500 hover:text-red-400 transition-colors flex items-center gap-1 focus:outline-none"
+                      class="text-xs text-red-500 hover:text-red-400 focus-visible:text-red-400 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:rounded transition-colors flex items-center gap-1 focus:outline-none"
                       :aria-label="`Remove ${item.title}`"
                       @click="removeItem(item.id)"
                     >
@@ -185,7 +185,7 @@
               <span class="text-2xl font-bold text-white">${{ totalPrice.toFixed(2) }}</span>
             </div>
             <button
-              class="btn-primary w-full py-4 text-lg gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="btn-primary w-full py-4 text-lg gap-3 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-surface focus:outline-none"
               :disabled="isLoading"
               @click="handleCheckout"
             >
@@ -279,6 +279,25 @@ onKeyStroke('Escape', (e) => {
   if (isCartDrawerOpen.value) {
     e.preventDefault()
     closeCart()
+  }
+})
+
+// Focus trap for Tab key
+onKeyStroke('Tab', (e) => {
+  if (!isCartDrawerOpen.value || !drawerRef.value) return
+
+  const focusableElements = drawerRef.value.querySelectorAll(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+  )
+  const first = focusableElements[0] as HTMLElement
+  const last = focusableElements[focusableElements.length - 1] as HTMLElement
+
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault()
+    last.focus()
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault()
+    first.focus()
   }
 })
 </script>
