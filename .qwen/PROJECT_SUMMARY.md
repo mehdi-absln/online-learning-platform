@@ -199,14 +199,22 @@ export interface AuthResponse {
 
 ## Project Statistics
 
-**Total Commits:** 12 ahead of `origin/main`
+**Total Commits:** 20 ahead of `origin/main`
 
 **Key Commits:**
+- `7d0be3b` - fix(checkout): resolve unauthorized error by using requireAuth in API endpoints
 - `6ae95aa` - feat(auth): complete authentication system overhaul
 - `7bddc7a` - fix: move canonical URLs from useSeoMeta to useHead
 - `5c89a57` - refactor(user-store): improve store architecture
 - `3094e89` - feat(a11y): use LoadingSpinner component in success page
 - `b658056` - feat(a11y,seo): enhance checkout pages
+- `efeca04` - feat(auth): add accessibility and SEO improvements to signin/signup pages
+- `6524e14` - fix(auth): add top margin to headings and cleanup unused code
+- `af4060e` - fix(auth): resolve cookie authentication and composable context errors
+- `de00f34` - feat(a11y): add fully accessible user dropdown menu with keyboard navigation
+- `ebdc725` - a11y(cart): add focus-visible styles and focus trap to CartDrawer
+- `acbf116` - a11y(home): fix heading hierarchy and add ARIA landmarks
+- `04a8d5d` - refactor(middleware): use single global middleware with requiresAuth meta
 
 **Files:** 35+ test files, 22 components, 13 composables, 12 pages, 5 stores, 35 API routes
 
@@ -248,11 +256,13 @@ SignIn/SignUp → userStore.signIn/signUp() →
 ---
 
 ## Summary Metadata
-**Update time**: 2026-02-21T18:35:00.000Z
+**Update time**: 2026-02-22T00:00:00.000Z
+**Latest Commit**: `7d0be3b` - fix(checkout): resolve unauthorized error
+**Status**: ✅ All critical authentication issues resolved
 
 ---
 
-## Latest Session Summary (2026-02-21)
+## Previous Sessions Summary (2026-02-21)
 
 ### ✅ SignIn/SignUp Pages - Accessibility & SEO (COMMIT: `efeca04`)
 
@@ -559,4 +569,126 @@ const setMenuItemRef = (el: any, index: number) => {
 - [x] Skip link - Visible on focus, fixed positioning
 - [x] All interactive elements - focus-visible states
 - [x] Form inputs - Visible labels + aria-describedby
-- [x] Password fields - Show/hide toggle with ARIA 
+- [x] Password fields - Show/hide toggle with ARIA
+
+---
+
+## Latest Session Summary (2026-02-22) - Checkout Authentication Fix
+
+### ✅ Checkout "Unauthorized" Error Fix (COMMIT: `7d0be3b`)
+
+**Problem:** Clicking "Complete Purchase" button returned "Unauthorized" error even when logged in
+
+**Root Cause Analysis:**
+```typescript
+// ❌ WRONG - event.context.user was never populated
+server/api/checkout/index.post.ts:
+const user = event.context.user  // Always undefined!
+if (!user) {
+  throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+}
+```
+
+**Why it failed:**
+- `event.context.user` requires server-side middleware to populate it
+- `auth.global.ts` is a **Nuxt client-side route middleware**, not server middleware
+- No server middleware was setting `event.context.user`
+- Authentication check always failed
+
+**Files Changed:** 6 files, 527 insertions, 112 deletions
+
+**Fixes Applied:**
+
+1. **server/api/checkout/index.post.ts** - Use requireAuth helper
+```typescript
+// ✅ CORRECT - Properly reads and verifies accessToken cookie
+import { requireAuth } from '../../utils/auth-helpers'
+const user = await requireAuth(event)
+```
+
+2. **server/api/orders/[id].get.ts** - Same fix
+```typescript
+// Fixed same issue in order details endpoint
+const user = await requireAuth(event)
+```
+
+3. **app/stores/cart.ts** - Add credentials: 'include'
+```typescript
+// checkout() function
+await $fetch('/api/checkout', {
+  method: 'POST',
+  body: { simulationType },
+  headers: requestHeaders,      // SSR cookie forwarding
+  credentials: 'include',       // Send cookies client-side
+})
+
+// Also fixed: addItem(), removeItem(), mergeGuestCart()
+```
+
+4. **app/stores/user.ts** - Add credentials: 'include' to logout
+```typescript
+await $fetch('/api/auth/logout', {
+  method: 'POST',
+  headers: requestHeaders,
+  credentials: 'include',
+})
+```
+
+5. **.qwen/PROJECT_STRUCTURE.md** - Comprehensive update
+- Updated middleware documentation (auth.global.ts)
+- Added detailed annotations for all recent features
+- Added "Removed/Deleted Files" section
+- Added "Important Technical Notes" section
+- Updated database schema documentation
+- Added accessibility checklist
+- Updated TODO priorities
+
+6. **.qwen/PROJECT_SUMMARY.md** - Session documentation
+
+**Authentication Flow (Corrected):**
+```
+Client Browser
+    ↓ $fetch('/api/checkout', { credentials: 'include' })
+    ↓ Sends cookie: accessToken=xxx
+Server API
+    ↓ await requireAuth(event)
+    ↓ getCookie(event, 'accessToken') ← Reads HTTP-only cookie
+    ↓ verifyToken(token) ← Verify JWT signature
+    ↓ Query user from database by userId
+    ↓ Returns authenticated user object
+API continues with user.id ✅
+```
+
+**Key Learnings:**
+- Nuxt route middleware (`auth.global.ts`) runs on client, not server
+- Server-side auth requires explicit `requireAuth(event)` calls in each endpoint
+- `event.context.user` pattern requires custom server middleware (not used here)
+- Always use `credentials: 'include'` for client-side API calls that need cookies
+- Use `headers: requestHeaders` for SSR API calls (captured at store level)
+
+**Consistent Pattern Across All Auth Endpoints:**
+```typescript
+// ✅ All authenticated endpoints now use this pattern:
+import { requireAuth } from '../../utils/auth-helpers'
+
+export default defineEventHandler(async (event) => {
+  try {
+    const user = await requireAuth(event)  // ← Consistent auth check
+    // ... use user.id for database operations
+  }
+  catch (error: unknown) {
+    console.error('Endpoint error:', error)
+    throw createError(error as Error)
+  }
+})
+```
+
+**Endpoints Using Consistent Auth Pattern:**
+- ✅ `/api/auth/me.get.ts` - uses requireAuth
+- ✅ `/api/cart/index.get.ts` - uses requireAuth
+- ✅ `/api/cart/index.post.ts` - uses requireAuth
+- ✅ `/api/cart/[courseId].delete.ts` - uses requireAuth
+- ✅ `/api/cart/merge.post.ts` - uses requireAuth
+- ✅ `/api/checkout/index.post.ts` - **FIXED** - uses requireAuth
+- ✅ `/api/orders/index.get.ts` - uses requireAuth
+- ✅ `/api/orders/[id].get.ts` - **FIXED** - uses requireAuth 
