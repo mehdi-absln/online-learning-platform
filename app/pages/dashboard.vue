@@ -20,7 +20,6 @@
 
 <script setup lang="ts">
 definePageMeta({
-  middleware: ['auth'],
-  meta: { requiresAuth: true },
+  requiresAuth: true,
 })
 </script>
