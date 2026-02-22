@@ -3,8 +3,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   console.log('🔵 Going to:', to.path)
 
   const userStore = useUserStore()
-  console.log('🔵 isAuthenticated BEFORE fetch:', userStore.isAuthenticated)
-  console.log('🔵 user BEFORE fetch:', userStore.user)
 
   if (!userStore.isAuthenticated) {
     console.log('🔵 Fetching user...')

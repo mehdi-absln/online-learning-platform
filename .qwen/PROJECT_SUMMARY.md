@@ -248,7 +248,7 @@ SignIn/SignUp → userStore.signIn/signUp() →
 ---
 
 ## Summary Metadata
-**Update time**: 2026-02-21T00:00:00.000Z
+**Update time**: 2026-02-21T12:00:00.000Z
 
 ---
 
@@ -283,7 +283,7 @@ SignIn/SignUp → userStore.signIn/signUp() →
 - Added `py-8` to auth layout for top/bottom breathing room
 - Both pages now correctly slot into auth layout's card (`bg-[#1F1F1F]`, `rounded-2xl`, `p-8`)
 
-### ✅ Auth Middleware - Global Execution Fix (COMMIT: `6524e14` + pending)
+### ✅ Auth Middleware - Global Execution Fix (COMMIT: `6524e14`)
 
 **Root Cause:** Middleware file was named `auth.ts` instead of `auth.global.ts`
 - `auth.ts` → Only runs when explicitly declared on pages
@@ -312,51 +312,78 @@ if (to.meta.requiresAuth && !userStore.isAuthenticated) {
 }
 ```
 
-### ✅ Cart Store - Race Condition Fix (PENDING COMMIT)
+### ✅ Authentication Cookie & Store Fixes (COMMIT: `af4060e`)
 
-**Problem:** "Fetch cart error: Authentication required" on signin
-- Cart was fetching BEFORE auth cookie was ready
-- `watch(..., { immediate: true })` fired before user store initialized
+**Problem 1: Cookie Name Mismatch**
+- Server expected: `auth_token`
+- Client received: `accessToken` and `refreshToken`
+- **Fix:** Changed `requireAuth()` and `requireInstructor()` to check for `accessToken`
 
-**Fix Applied:**
-- Removed `{ immediate: true }` from auth state watch
-- Added `initializeCart()` function that waits for `nextTick()`
-- Added `credentials: 'include'` to `fetchUserCart()` for client-side cookie sending
+**Problem 2: useRequestHeaders Called Outside Vue Context**
+- `useRequestHeaders()` was called inside async functions (outside setup context)
+- **Fix:** Captured headers at store initialization level
 
-**Before (broken):**
-```typescript
-watch(() => userStore.isAuthenticated, async (isAuth) => {
-  if (isAuth) await fetchUserCart()
-  else await fetchGuestCartDetails()
-}, { immediate: true })  // ❌ Fires before auth known
-```
+**Files Changed:**
+- `server/utils/auth-helpers.ts`: `auth_token` → `accessToken` (2 places)
+- `app/stores/cart.ts`: Move `useRequestHeaders` to store level, use `requestHeaders` variable
+- `app/stores/user.ts`: Move `useRequestHeaders` to store level, use `requestHeaders` variable
 
-**After (fixed):**
-```typescript
-const initializeCart = async () => {
-  await nextTick()  // Wait for user store to initialize
-  if (userStore.isAuthenticated) await fetchUserCart()
-  else await fetchGuestCartDetails()
-}
+**Problem 3: Cart Race Condition**
+- Cart was fetching before auth state was known
+- **Fix:** Removed `{ immediate: true }` from watch, added `initializeCart()` with `nextTick()`
 
-watch(() => userStore.isAuthenticated, async (isAuth, oldIsAuth) => {
-  if (isAuth === oldIsAuth) return  // Skip if no change
-  if (isAuth) await fetchUserCart()
-  else await fetchGuestCartDetails()
-})
+### ✅ MainNav - User Avatar Dropdown Menu (NEW FEATURE)
 
-initializeCart()  // Call after auth state is known
-```
+**Feature:** Replaced login button with user avatar dropdown when authenticated
+
+**Avatar Button:**
+- Transparent background with `border-2 border-white/30`
+- Displays user's initials (first letter of username)
+- Hover: Primary border + glow effect + scale-105
+- Active (dropdown open): Primary bg/20 + stronger glow + ring
+- Arrow indicator appears when dropdown is open (connects to menu)
+
+**Dropdown Menu Design:**
+- Glassmorphism effect: `bg-dark-surface/95` + `backdrop-blur-xl`
+- Primary accent border: `border-primary/30`
+- Subtle gradient overlay: `from-primary/5 to-transparent`
+- Rounded corners: `rounded-2xl` with `shadow-2xl`
+- Width: `w-64` for comfortable content display
+
+**Dropdown Content:**
+- User info header with avatar + name + email
+- Menu items: Profile, My Courses, Settings (placeholders)
+- Gradient divider: `from-primary/50 via-dark-divider`
+- Logout button with icon animation
+
+**Menu Items:**
+- Hover: `bg-dark-bg` + `text-primary`
+- Icons change color on hover (gray-400 → primary)
+- Smooth `transition-all duration-200`
+
+**Accessibility:**
+- Full ARIA attributes (`role="menu"`, `aria-haspopup`, `aria-expanded`)
+- Keyboard navigation (Enter, Space, Arrow keys, ESC)
+- Click outside to close
+- Focus management
+
+**Unified Button System:**
+All navbar action buttons now share the same style:
+- Search, Cart, Login, User Avatar
+- Same size: `w-10 h-10`
+- Same border: `border-2 border-white/30`
+- Same hover: Primary border + glow + scale
+- Same transition: `duration-300`
 
 ### 📊 Updated Project Statistics
 
-**Total Commits:** 15+ ahead of `origin/main`
+**Total Commits:** 16+ ahead of `origin/main`
 
 **New Key Commits:**
 - `efeca04` - feat(auth): add accessibility and SEO improvements to signin/signup pages
 - `6524e14` - fix(auth): add top margin to headings and cleanup unused code
-- (pending) - fix(middleware): rename to auth.global.ts for global execution
-- (pending) - fix(cart): prevent race condition when fetching cart on app init
+- `af4060e` - fix(auth): resolve cookie authentication and composable context errors
+- (pending) - feat(nav): add user avatar dropdown menu with unified button system
 
 ### 🔧 Important Technical Notes
 
@@ -377,6 +404,59 @@ Fetch User Cart OR Guest Cart
 ```typescript
 // Always include credentials for client-side requests
 await $fetch('/api/protected', {
-  credentials: 'include',  // Required for cookies
+  headers: import.meta.server ? useRequestHeaders(['cookie']) : {},
+  credentials: 'include',  // Required for client-side cookie sending
 })
-``` 
+```
+
+**Composable Context Rule:**
+```typescript
+// ❌ Wrong - composable called inside async function
+const fetchData = async () => {
+  const headers = useRequestHeaders(['cookie'])  // Error!
+}
+
+// ✅ Correct - composable called at store level
+const requestHeaders = import.meta.server
+  ? useRequestHeaders(['cookie'])
+  : {}
+
+const fetchData = async () => {
+  const response = await $fetch('/api/...', { headers: requestHeaders })
+}
+```
+
+### 🎨 Design System - Unified Buttons
+
+**Transparent Button Style:**
+```css
+.base {
+  w-10 h-10;
+  rounded-full;
+  border-2 border-white/30;
+  bg-transparent;
+  transition-all duration-300;
+}
+
+.hover {
+  border-primary;
+  shadow-[0_0_20px_rgba(236,82,82,0.4)];
+  scale-105;
+  text-primary;
+}
+
+.active (dropdown open) {
+  border-primary;
+  bg-primary/20;
+  shadow-[0_0_20px_rgba(236,82,82,0.5)];
+  scale-105;
+}
+```
+
+**Color Palette:**
+- `primary`: #EC5252 (brand color, buttons, links)
+- `primary-alt`: #ff4830 (alternative accent)
+- `dark-gray`: #191918 (main background)
+- `dark-divider`: #474746 (borders, dividers)
+- `dark-surface`: #1F1F1E (secondary backgrounds, cards)
+- `dark-bg`: #282828 (card backgrounds) 
