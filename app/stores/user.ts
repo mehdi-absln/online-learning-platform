@@ -18,10 +18,16 @@ export const useUserStore = defineStore('user', () => {
   const user = ref<User | null>(null)
   const loading = ref<boolean>(false)
   const error = ref<string | null>(null)
+  const enrolledCourseIds = ref<number[]>([])
 
   // Computed state (readonly from outside)
   const isAuthenticated = computed(() => user.value !== null)
   const hasError = computed(() => error.value !== null)
+
+  // Check if user is enrolled in a course (O(1) lookup)
+  const isEnrolled = (courseId: number) => {
+    return enrolledCourseIds.value.includes(courseId)
+  }
 
   // Private actions (not exposed)
   const setUser = (userData: User) => {
@@ -40,6 +46,37 @@ export const useUserStore = defineStore('user', () => {
 
   const clearError = () => {
     error.value = null
+  }
+
+  /**
+   * Fetch user's enrolled course IDs (bulk check for UI)
+   */
+  const fetchEnrollments = async () => {
+    if (!user.value) {
+      enrolledCourseIds.value = []
+      return
+    }
+
+    try {
+      const response = await $fetch<ApiResponse<{ courseIds: number[] }>>('/api/enrollments/my', {
+        headers: requestHeaders,
+        credentials: 'include',
+      })
+      if (response?.success && response?.data?.courseIds) {
+        enrolledCourseIds.value = response.data.courseIds
+      }
+    }
+    catch (err: unknown) {
+      console.error('Failed to fetch enrollments:', err)
+      // Silent fail - don't block UI
+    }
+  }
+
+  /**
+   * Clear enrollments (on logout)
+   */
+  const clearEnrollments = () => {
+    enrolledCourseIds.value = []
   }
 
   // Public actions
@@ -89,6 +126,11 @@ export const useUserStore = defineStore('user', () => {
           // Silently ignore merge errors on sign in
         })
 
+        // Fetch enrollments in background (don't block sign-in)
+        fetchEnrollments().catch(() => {
+          // Silently ignore enrollment fetch errors on sign in
+        })
+
         toast.success(response.message || 'Signed in successfully')
         return { success: true, user: response.data.user }
       }
@@ -130,6 +172,11 @@ export const useUserStore = defineStore('user', () => {
           // Silently ignore merge errors on sign up
         })
 
+        // Fetch enrollments in background (don't block sign-up)
+        fetchEnrollments().catch(() => {
+          // Silently ignore enrollment fetch errors on sign up
+        })
+
         toast.success(response.message || 'Account created successfully! Welcome aboard')
         return { success: true, user: response.data.user }
       }
@@ -162,6 +209,7 @@ export const useUserStore = defineStore('user', () => {
       })
       if (response?.success) {
         clearUser()
+        clearEnrollments()
         toast.success('Logged out successfully. See you soon!')
         await navigateTo('/home')
       }
@@ -182,6 +230,18 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  // Watch for auth changes to fetch enrollments
+  watch(() => isAuthenticated.value, async (isAuth) => {
+    if (isAuth) {
+      // Fetch enrollments when user becomes authenticated
+      await fetchEnrollments()
+    }
+    else {
+      // Clear enrollments when user logs out
+      clearEnrollments()
+    }
+  })
+
   // Expose public API with readonly state
   return {
     // State (readonly)
@@ -189,9 +249,11 @@ export const useUserStore = defineStore('user', () => {
     isAuthenticated,
     loading: readonly(loading),
     error: readonly(error),
+    enrolledCourseIds: readonly(enrolledCourseIds),
 
     // Getters
     hasError,
+    isEnrolled,
 
     // Actions
     fetchUser,
@@ -199,5 +261,7 @@ export const useUserStore = defineStore('user', () => {
     signUp,
     logout,
     clearError,
+    fetchEnrollments,
+    clearEnrollments,
   }
 })
