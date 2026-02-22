@@ -298,7 +298,7 @@
         <NuxtLink
           v-else
           to="/auth"
-          class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(236,82,82,0.4)] hover:scale-105 focus:outline-none"
+          class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(236,82,82,0.4)] hover:scale-105  focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
           aria-label="Login to your account"
         >
           <svg
@@ -326,7 +326,7 @@
         <!-- Cart Button -->
         <button
           type="button"
-          class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(236,82,82,0.4)] hover:scale-105 focus:outline-none"
+          class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(236,82,82,0.4)] hover:scale-105  focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
           aria-label="Shopping cart with {{ cartItemsCount }} items"
           @click="openCart"
         >

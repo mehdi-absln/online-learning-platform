@@ -257,7 +257,7 @@ import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 // Page metadata and SEO
 definePageMeta({
   layout: 'minimal',
-  middleware: 'auth',
+  requiresAuth: true,
   title: 'Order Confirmed',
 })
 

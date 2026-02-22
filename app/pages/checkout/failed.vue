@@ -122,7 +122,7 @@
 // Page metadata and SEO
 definePageMeta({
   layout: 'minimal',
-  middleware: 'auth',
+  requiresAuth: true,
   title: 'Payment Failed',
 })
 

@@ -274,7 +274,7 @@ import { useCart } from '~/composables/useCart'
 
 // Page metadata and SEO
 definePageMeta({
-  middleware: 'auth',
+  requiresAuth: true,
   layout: 'minimal',
   title: 'Checkout',
 })
