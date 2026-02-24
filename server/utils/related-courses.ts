@@ -14,7 +14,7 @@ export interface RelatedCourseResult {
   price: number
   rating: number
   studentCount: number
-  image: string
+  thumbnail: string
   level: string
   instructorId: number
   instructor: {
@@ -174,7 +174,7 @@ export async function getRelatedCourses(
         price: course.price / 100,
         rating: avgRating,
         studentCount: course.studentCount || 0,
-        image: processCourseImage(course.thumbnail),
+        thumbnail: processCourseImage(course.thumbnail),
         level: course.level,
         instructorId: course.instructorId || 0,
         instructor: course.instructor || {

@@ -199,9 +199,12 @@ export interface AuthResponse {
 
 ## Project Statistics
 
-**Total Commits:** 20 ahead of `origin/main`
+**Total Commits:** 22 ahead of `origin/main`
 
 **Key Commits:**
+- `pending` - feat(lesson-access): UX improvements + SSR hydration fix + code cleanup
+- `pending` - feat(lesson-access): add server-side lesson content protection
+- `03da96b` - feat(enrollments): add bulk enrollment check and purchased course UI
 - `7d0be3b` - fix(checkout): resolve unauthorized error by using requireAuth in API endpoints
 - `6ae95aa` - feat(auth): complete authentication system overhaul
 - `7bddc7a` - fix: move canonical URLs from useSeoMeta to useHead
@@ -216,7 +219,7 @@ export interface AuthResponse {
 - `acbf116` - a11y(home): fix heading hierarchy and add ARIA landmarks
 - `04a8d5d` - refactor(middleware): use single global middleware with requiresAuth meta
 
-**Files:** 35+ test files, 22 components, 13 composables, 12 pages, 5 stores, 35 API routes
+**Files:** 35+ test files, 24 components, 15 composables, 12 pages, 5 stores, 36 API routes
 
 **Database:** 14 tables, 14 migrations
 
@@ -256,9 +259,279 @@ SignIn/SignUp → userStore.signIn/signUp() →
 ---
 
 ## Summary Metadata
-**Update time**: 2026-02-22T00:00:00.000Z
-**Latest Commit**: `7d0be3b` - fix(checkout): resolve unauthorized error
-**Status**: ✅ All critical authentication issues resolved
+**Update time**: 2026-02-22T00:00:00.000Z  
+**Latest Commits**: 
+- `pending` - feat(lesson-access): UX improvements + SSR hydration fix + code cleanup
+- `pending` - feat(lesson-access): add server-side lesson content protection
+- `03da96b` - feat(enrollments): bulk enrollment check + purchased course UI
+- `7d0be3b` - fix(checkout): resolve unauthorized error
+**Status**: ✅ Authentication + Enrollment + Lesson Access all secured + UX optimized
+
+---
+
+## Latest Session Summary (2026-02-22) - Lesson Access Protection
+
+### ✅ Paid Lesson Content Protection (COMMIT: Pending)
+
+**Problem:** Users could access paid lessons without purchasing - major security vulnerability!
+
+**Solution Implemented:** Server-side access control + beautiful locked UX
+
+**Files Created:**
+1. `server/utils/lesson-access.ts` - Access control helpers
+   - `getOptionalUser(event)` - Get user from cookie (doesn't throw if not logged in)
+   - `checkEnrollment(userId, courseId)` - Check if user enrolled
+   - `hasLessonAccess(userId, courseId, isFree)` - Check: isFree OR isEnrolled
+
+2. `app/composables/useLessonAccess.ts` - Fetch lesson access status
+   - Returns `lessonData` with `isLocked` field
+   - `isLoading` starts as `true` to prevent race conditions
+   - Uses `{ immediate: true }` on watch for instant fetch
+
+**Files Updated:**
+1. `server/api/courses/slug/[slug]/lessons/[lessonSlug].get.ts`
+   ```typescript
+   // Check access before returning videoUrl
+   const hasAccess = await hasLessonAccess(user?.id, course.id, lesson.isFree)
+   
+   // Strip videoUrl and content for locked lessons
+   return {
+     currentLesson: {
+       ...lesson,
+       isLocked: !hasAccess,
+       videoUrl: hasAccess ? lesson.videoUrl : null,  // Security!
+       content: hasAccess ? lesson.content : null,
+     }
+   }
+   ```
+
+2. `app/pages/courses/[courseSlug]/lessons/[lessonSlug].vue`
+   - Locked lesson overlay UI (when `lessonData.isLocked = true`)
+   - Shows: Lock icon, lesson title, price, "Purchase Course" CTA
+   - Features grid: Lifetime Access, All Lessons, Certificate
+   - Safety check: `lessonData?.isLocked ? null : lesson.videoUrl`
+   - Race condition fix: Wait for `lessonData` before showing video
+
+3. `app/components/lesson/LessonSidebar.vue`
+   - Lock icons on paid lessons (not enrolled)
+   - Free lesson badges (🆓 Free)
+   - Locked badges (🔒 Locked)
+   - Completed checkmarks (✅)
+   - Current lesson indicator (▶️)
+
+**Access Control Flow:**
+```
+User visits /courses/vue/lessons/advanced
+    ↓
+API: isFree OR isEnrolled?
+    ↓
+┌─────────────────────────────────────┐
+│ ❌ Not enrolled + Paid lesson       │
+│ → videoUrl: null (NEVER sent!)     │
+│ → content: null                    │
+│ → isLocked: true                   │
+├─────────────────────────────────────┤
+│ ✅ Enrolled OR Free lesson          │
+│ → videoUrl: "youtube.com/..."      │
+│ → content: "Lesson content..."     │
+│ → isLocked: false                  │
+└─────────────────────────────────────┘
+    ↓
+Frontend shows locked overlay OR video player
+```
+
+**Locked Lesson UI Features:**
+- Large lock icon (primary color, circular background)
+- Lesson title display
+- Price with strikethrough (if original price exists)
+- "Purchase Course" CTA button with shadow effect
+- 3-column feature grid:
+  - Lifetime Access (watch anytime)
+  - All Lessons (unlock all content)
+  - Certificate (earn on completion)
+- Back to course page link
+
+**Sidebar Indicators:**
+```
+🆓 Introduction (Preview)     ← Free lesson
+🔒 Advanced Topics - 10:15    ← Locked (not enrolled)
+✅ Quiz Section - 8:00        ← Completed (enrolled)
+▶️ Final Project - 15:20      ← Current lesson (enrolled)
+```
+
+**Race Condition Fix:**
+```typescript
+// ❌ Before: Video could show before access check completed
+const isLoading = ref(false)  // Wrong!
+onMounted(() => fetchLessonAccess())
+
+// ✅ After: Wait for access check
+const isLoading = ref(true)   // Start as true
+watch([courseSlug, lessonSlug], () => fetchLessonAccess(), { 
+  immediate: true  // Fetch immediately
+})
+
+// Template:
+<template v-if="lessonData === null && isLoading">
+  <LoadingSpinner message="Checking access..." />
+</template>
+<template v-else-if="lessonData?.isLocked">
+  <!-- Locked overlay -->
+</template>
+<template v-else-if="lessonData && !lessonData.isLocked">
+  <!-- Video player (safe!) -->
+</template>
+```
+
+**Security Notes:**
+- ✅ Server-side check is mandatory (UI locks can be bypassed)
+- ✅ `videoUrl` never sent for locked lessons (inspect element won't help)
+- ✅ Free lessons always accessible (no login required)
+- ✅ Enrolled users see full content (no restrictions)
+
+**Key Learnings:**
+- Server-side protection + UX protection = complete security
+- Race conditions can leak content (must wait for access check)
+- `isLoading = true` from start prevents flash of unprotected content
+- `{ immediate: true }` on watch ensures instant fetch (no waiting for mount)
+
+### ✅ Lesson Access UX Improvements (COMMIT: Pending)
+
+**Problem:** Users saw "locked" overlay briefly even when enrolled (SSR hydration issue on refresh)
+
+**Solution:** Three-layer protection with better UX
+
+**Layer 1: Sidebar UX** ✅
+- Locked lessons: `<div>` not `<NuxtLink>` (not clickable)
+- Grayed out with `opacity-50` and `cursor-not-allowed`
+- Lock icon + "🔒 Locked" badge
+- Tooltip on hover: "Purchase course to unlock"
+- Free lessons: "🆓 Free" badge, clickable
+
+**Layer 2: Course Page Curriculum** ✅
+- Same logic as sidebar
+- Locked lessons: gray, lock icon, non-clickable, tooltip
+- Free lessons: green badge, clickable
+- Enrolled users: all lessons clickable
+
+**Layer 3: Direct URL Redirect** ✅
+- If user types lesson URL directly
+- `watch(lessonData)` detects `isLocked: true`
+- Automatically redirects to `/courses/{slug}`
+- Only runs on client (`import.meta.client`)
+
+**Layer 4: API Security** ✅ (Already existed)
+- API returns `isLocked: true` but NO `videoUrl`
+- Even if bypasses UI, can't get video content
+
+**SSR Hydration Fix:** ✅
+```typescript
+// Composable - only fetch on client
+if (import.meta.client) {
+  watch([courseSlug, lessonSlug], () => {
+    fetchLessonAccess()
+  }, { immediate: true })
+}
+
+// Template - wrapped in ClientOnly
+<ClientOnly>
+  <template v-if="isLoading">
+    <LoadingSpinner />
+  </template>
+  <template v-else-if="error">
+    <!-- Error with Retry button -->
+  </template>
+  <template v-else>
+    <!-- Video player (locked users redirect via watch) -->
+  </template>
+  
+  <template #fallback>
+    <LoadingSpinner />
+  </template>
+</ClientOnly>
+```
+
+**Error Handling Improvements:** ✅
+```typescript
+const fetchLessonAccess = async () => {
+  isLoading.value = true
+  error.value = null
+
+  try {
+    const response = await $fetch(...)
+    lessonData.value = response.data.currentLesson
+  }
+  catch (err: unknown) {
+    error.value = err.statusMessage || 'Failed to load lesson details'
+  }
+  finally {
+    isLoading.value = false  // ✅ ALWAYS runs!
+  }
+}
+```
+
+**Template Priority Order:** ✅
+```vue
+<!-- 1. Loading (only when isLoading = true) -->
+<template v-if="isLoading">
+  <LoadingSpinner />
+</template>
+
+<!-- 2. Error (high priority!) -->
+<template v-else-if="error">
+  <!-- Error icon, message, Retry button, Back to Course -->
+</template>
+
+<!-- 3. Lesson Content (locked redirects via watch) -->
+<template v-else>
+  <!-- Video player -->
+</template>
+```
+
+**Code Cleanup (DRY Principle):** ✅
+- `isEnrolled` already in `stores/user.ts` ✅
+- Removed redundant local computed properties from:
+  - `LessonSidebar.vue`
+  - `courses/[courseSlug]/index.vue`
+- Now using `userStore.isEnrolled(courseId)` directly
+
+**Locked Overlay Removed:** ✅
+- Removed 100+ lines of locked overlay template
+- Simplified to: Loading → Error → Video (redirect if locked)
+- Cleaner UX, no flash of "locked" content
+
+**User Experience:**
+
+**Before (Bad UX):**
+```
+1. User clicks locked lesson in sidebar
+2. Page navigates to lesson URL
+3. Shows "This Lesson is Locked" overlay
+4. User has to click "Back to course"
+```
+
+**After (Good UX):**
+```
+1. User sees locked lesson is grayed out
+2. Hover shows "Purchase course to unlock" tooltip
+3. Click does nothing (cursor-not-allowed)
+4. Clear and immediate feedback - no wasted navigation
+```
+
+**Direct URL Access:**
+```
+1. User types /courses/docker/lessons/premium-lesson
+2. Page loads, checks access
+3. If locked → Redirects to course page
+4. No "locked" flash - just redirects
+```
+
+**Benefits:**
+- ✅ No wasted page loads
+- ✅ Clear UX - user knows immediately what's locked
+- ✅ No SSR hydration issues
+- ✅ Simpler code - no "locked overlay" template needed
+- ✅ Consistent across sidebar and course page
 
 ---
 

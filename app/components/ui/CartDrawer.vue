@@ -131,7 +131,7 @@
               >
                 <div class="relative w-20 h-20 flex-shrink-0 bg-dark-surface rounded-lg overflow-hidden border border-dark-divider">
                   <img
-                    :src="item.image || '/images/placeholder-course.svg'"
+                    :src="item.thumbnail || '/images/placeholder-course.svg'"
                     :alt="item.title"
                     class="w-full h-full object-cover"
                   >

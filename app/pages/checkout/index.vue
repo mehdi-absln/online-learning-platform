@@ -78,7 +78,7 @@
                 role="listitem"
               >
                 <img
-                  :src="item.image"
+                  :src="item.thumbnail"
                   :alt="`Thumbnail for ${item.title} course`"
                   class="w-20 h-14 object-cover rounded-lg border border-white/5"
                   loading="lazy"
