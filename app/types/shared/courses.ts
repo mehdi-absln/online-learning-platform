@@ -16,7 +16,7 @@ export interface Course {
   price: number
   level: string
   tags?: string
-  image: string
+  thumbnail: string | null
   slug: string // URL-friendly slug for the course
   createdAt: Date
   updatedAt: Date
@@ -29,7 +29,7 @@ export interface CourseApiResponse {
   title: string
   slug: string
   description?: string
-  image?: string
+  thumbnail?: string | null
   price: number
   discountPrice?: number
   duration?: number

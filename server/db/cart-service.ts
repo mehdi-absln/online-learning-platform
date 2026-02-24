@@ -8,7 +8,7 @@ export async function getCartItems(userId: number) {
       id: courses.id,
       title: courses.title,
       price: courses.price,
-      image: courses.thumbnail,
+      thumbnail: courses.thumbnail,
       slug: courses.slug,
       instructor: {
         name: instructors.name,

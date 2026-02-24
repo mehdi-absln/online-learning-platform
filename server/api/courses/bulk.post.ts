@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
         id: courses.id,
         title: courses.title,
         price: courses.price,
-        image: courses.thumbnail,
+        thumbnail: courses.thumbnail,
         slug: courses.slug,
         instructor: {
           name: instructors.name,

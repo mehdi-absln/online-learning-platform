@@ -34,7 +34,7 @@ export interface Course {
   price: number
   level: string // Add level property
   tags?: string // Comma-separated tags for the course
-  image: string
+  thumbnail: string | null
   createdAt: Date
   updatedAt: Date
   instructorId: number

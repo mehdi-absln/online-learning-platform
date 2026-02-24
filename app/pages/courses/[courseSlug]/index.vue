@@ -213,7 +213,7 @@
                     <span class="text-gray-300">Students</span>
                   </dt>
                   <dd class="text-white font-medium">
-                    {{ course?.studentsCount || 0 }}
+                    {{ course?.stats?.students || 0 }}
                   </dd>
                 </div>
 
@@ -238,7 +238,7 @@
                     <span class="text-gray-300">Category</span>
                   </dt>
                   <dd class="text-white font-medium">
-                    {{ course?.categoryName || 'N/A' }}
+                    {{ course?.category || 'N/A' }}
                   </dd>
                 </div>
               </dl>
@@ -475,41 +475,98 @@
                   >
                     <template #default="{ item }">
                       <ul class="p-4 space-y-2 divide-y divide-dark-divider">
-                        <li
+                        <template
                           v-for="(lesson, lessonIndex) in (item.content as CourseContentLesson[])"
                           :key="lessonIndex"
-                          class="flex items-center p-2 group hover:rounded hover:bg-primary/85 duration-200 transition-all cursor-pointer"
-                          tabindex="0"
-                          role="button"
-                          @click="goToLessonPage(lesson)"
-                          @keydown.enter="goToLessonPage(lesson)"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5 text-primary group-hover:text-white/70"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            aria-hidden="true"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                            />
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                          <span class="text-white/90 ml-2">{{ lesson.title }}</span>
-                          <span class="ml-auto text-sm text-white/70">
-                            <time>{{ lesson.duration }}</time>
-                          </span>
-                        </li>
+                          <!-- Accessible/Clickable Lesson -->
+                          <template v-if="lesson.isFree || userStore.isEnrolled(course?.id || 0)">
+                            <li
+                              class="flex items-center p-2 group hover:rounded hover:bg-primary/85 duration-200 transition-all cursor-pointer"
+                              tabindex="0"
+                              role="button"
+                              @click="goToLessonPage(lesson)"
+                              @keydown.enter="goToLessonPage(lesson)"
+                            >
+                              <!-- Play Icon -->
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-5 w-5 text-primary group-hover:text-white/70"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                                />
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                              <span class="text-white/90 ml-2">{{ lesson.title }}</span>
+                              <span class="ml-auto text-sm text-white/70">
+                                <time>{{ lesson.duration }}</time>
+                              </span>
+                              <!-- Free Badge -->
+                              <span
+                                v-if="lesson.isFree && !userStore.isEnrolled(course?.id || 0)"
+                                class="ml-3 text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded"
+                              >
+                                🆓 Free
+                              </span>
+                            </li>
+                          </template>
+
+                          <!-- Locked Lesson (Not Clickable) -->
+                          <template v-else>
+                            <li
+                              class="flex items-center p-2 opacity-50 cursor-not-allowed relative group"
+                              role="button"
+                              aria-disabled="true"
+                              :aria-label="`${lesson.title} - Purchase course to unlock`"
+                            >
+                              <!-- Lock Icon -->
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-5 w-5 text-gray-600"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                                />
+                              </svg>
+                              <span class="text-gray-500 ml-2">{{ lesson.title }}</span>
+                              <span class="ml-auto text-sm text-gray-600">
+                                <time>{{ lesson.duration }}</time>
+                              </span>
+                              <!-- Locked Badge -->
+                              <span class="ml-3 text-xs bg-gray-500/20 text-gray-400 px-2 py-0.5 rounded">
+                                🔒 Locked
+                              </span>
+
+                              <!-- Tooltip -->
+                              <div
+                                class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-dark-surface border border-dark-divider text-white text-xs px-3 py-2 rounded-lg shadow-xl z-50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+                                role="tooltip"
+                              >
+                                <p>Purchase course to unlock</p>
+                              </div>
+                            </li>
+                          </template>
+                        </template>
                       </ul>
                     </template>
                   </Accordion>
@@ -549,9 +606,11 @@ import Tabs from '~/components/ui/Tabs.vue'
 import Accordion from '~/components/ui/Accordion.vue'
 import CourseReviews from '~/components/courses/CourseReviews.vue'
 import RelatedCourses from '~/components/courses/RelatedCourses.vue'
+import { useUserStore } from '~/stores/user'
 import type { CourseContentLesson } from '~/types/shared/courses'
 
 const route = useRoute()
+const userStore = useUserStore()
 
 const courseSlug = computed(() => route.params.courseSlug as string)
 
@@ -571,7 +630,7 @@ useSeoMeta({
   description: () => course.value?.description || '',
   ogTitle: () => course.value?.title || 'Course',
   ogDescription: () => course.value?.description || '',
-  ogImage: () => course.value?.image || '/default-og.jpg',
+  ogImage: () => course.value?.thumbnail || '/default-og.jpg',
 })
 
 const breadcrumbCrumbs = computed(() => [
@@ -583,6 +642,7 @@ const breadcrumbCrumbs = computed(() => [
       : `/courses/${courseSlug.value}`,
   },
 ])
+
 // Create properly typed Accordion items for course content sections
 const courseAccordionItems = computed(() => {
   if (!course.value?.courseContent) return []

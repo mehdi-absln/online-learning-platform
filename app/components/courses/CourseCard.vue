@@ -9,12 +9,12 @@
           class="absolute inset-0 bg-black/40 z-10 transition-all duration-500 group-hover:bg-black/20"
         />
         <img
-          :src="course.image"
+          :src="course.thumbnail"
           :alt="course.title"
           loading="lazy"
           class="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
           @error="handleImageError"
-        >ه
+        >
       </div>
 
       <!-- Top Bar: Category & Bookmark -->

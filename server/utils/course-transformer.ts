@@ -19,8 +19,7 @@ export interface RawCourse {
   price: number
   level: string
   tags: string | null
-  thumbnail?: string | null  // ✅ از DB مستقیم
-  image?: string | null      // ✅ از course-service
+  thumbnail: string | null
   slug: string
   createdAt: Date
   updatedAt: Date
@@ -42,7 +41,7 @@ export function transformCourseForClient(course: RawCourse): CourseType {
     price: course.price / 100, // Convert from cents to dollars
     level: course.level,
     tags: course.tags || undefined,
-    image: processCourseImage(course.thumbnail ?? course.image) ?? undefined,
+    thumbnail: processCourseImage(course.thumbnail) ?? undefined,
     slug: course.slug,
     createdAt: course.createdAt,
     updatedAt: course.updatedAt,

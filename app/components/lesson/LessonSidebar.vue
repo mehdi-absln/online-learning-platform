@@ -106,79 +106,139 @@
 
               <template #default="{ item }">
                 <nav aria-label="Section lessons">
-                  <NuxtLink
-                    v-for="lesson in (item as SectionAccordionItem).lessons"
-                    :key="lesson.id || lesson.slug"
-                    :to="`/courses/${courseSlug}/lessons/${lesson.slug}`"
-                    class="flex items-center gap-3 px-4 py-3 hover:bg-dark-bg transition"
-                    :class="{
-                      'bg-primary/10 border-r-2 border-primary': lesson.slug === currentLessonSlug,
-                    }"
-                    :aria-current="lesson.slug === currentLessonSlug ? 'page' : undefined"
-                    :aria-label="getLessonAriaLabel(lesson)"
-                  >
-                    <!-- Status Icon - Completed -->
-                    <svg
-                      v-if="progressStore.isCompleted(lesson.id || 0)"
-                      class="w-5 h-5 text-green-500"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-
-                    <!-- Status Icon - Current -->
-                    <svg
-                      v-else-if="lesson.slug === currentLessonSlug"
-                      class="w-5 h-5 text-primary"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm14.024-.983a1.125 1.125 0 010 1.966l-5.603 3.113A1.125 1.125 0 019 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-
-                    <!-- Status Icon - Not started -->
-                    <div
-                      v-else
-                      class="w-5 h-5 rounded-full border-2 border-dark-divider"
-                      aria-hidden="true"
-                    />
-
-                    <div class="flex-1 min-w-0">
-                      <p
-                        class="text-sm truncate"
-                        :class="lesson.slug === currentLessonSlug
-                          ? 'font-medium text-primary'
-                          : 'text-gray-400'"
+                  <template v-for="lesson in (item as SectionAccordionItem).lessons" :key="lesson.id || lesson.slug">
+                    <!-- Accessible/Clickable Lesson -->
+                    <template v-if="lesson.isFree || userStore.isEnrolled(course.value?.id || 0)">
+                      <NuxtLink
+                        :to="`/courses/${courseSlug}/lessons/${lesson.slug}`"
+                        class="flex items-center gap-3 px-4 py-3 hover:bg-dark-bg transition"
+                        :class="{
+                          'bg-primary/10 border-r-2 border-primary': lesson.slug === currentLessonSlug,
+                        }"
+                        :aria-current="lesson.slug === currentLessonSlug ? 'page' : undefined"
+                        :aria-label="getLessonAriaLabel(lesson)"
                       >
-                        {{ lesson.title }}
-                      </p>
-                      <p
-                        v-if="lesson.duration"
-                        class="text-xs text-gray-500"
-                      >
-                        <span class="sr-only">Duration:</span>
-                        {{ lesson.duration }}
-                      </p>
-                    </div>
+                        <!-- Status Icon - Completed -->
+                        <svg
+                          v-if="progressStore.isCompleted(lesson.id || 0)"
+                          class="w-5 h-5 text-green-500"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
 
-                    <span
-                      v-if="lesson.isFree"
-                      class="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded"
-                    >
-                      Free
-                    </span>
-                  </NuxtLink>
+                        <!-- Status Icon - Current -->
+                        <svg
+                          v-else-if="lesson.slug === currentLessonSlug"
+                          class="w-5 h-5 text-primary"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm14.024-.983a1.125 1.125 0 010 1.966l-5.603 3.113A1.125 1.125 0 019 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+
+                        <!-- Status Icon - Not started (enrolled or free) -->
+                        <div
+                          v-else
+                          class="w-5 h-5 rounded-full border-2 border-dark-divider"
+                          aria-hidden="true"
+                        />
+
+                        <div class="flex-1 min-w-0">
+                          <p
+                            class="text-sm truncate"
+                            :class="lesson.slug === currentLessonSlug
+                              ? 'font-medium text-primary'
+                              : 'text-gray-400'"
+                          >
+                            {{ lesson.title }}
+                          </p>
+                          <p
+                            v-if="lesson.duration"
+                            class="text-xs text-gray-500"
+                          >
+                            <span class="sr-only">Duration:</span>
+                            {{ lesson.duration }}
+                          </p>
+                        </div>
+
+                        <!-- Badges -->
+                        <div class="flex items-center gap-1.5">
+                          <span
+                            v-if="lesson.isFree && !isEnrolled"
+                            class="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded"
+                          >
+                            🆓 Free
+                          </span>
+                        </div>
+                      </NuxtLink>
+                    </template>
+
+                    <!-- Locked Lesson (Not Clickable) -->
+                    <template v-else>
+                      <div
+                        class="flex items-center gap-3 px-4 py-3 opacity-50 cursor-not-allowed"
+                        role="button"
+                        :aria-label="`${lesson.title} - Purchase course to unlock`"
+                        aria-disabled="true"
+                      >
+                        <!-- Lock Icon -->
+                        <svg
+                          class="w-5 h-5 text-gray-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                          />
+                        </svg>
+
+                        <div class="flex-1 min-w-0">
+                          <p class="text-sm truncate text-gray-500">
+                            {{ lesson.title }}
+                          </p>
+                          <p
+                            v-if="lesson.duration"
+                            class="text-xs text-gray-600"
+                          >
+                            <span class="sr-only">Duration:</span>
+                            {{ lesson.duration }}
+                          </p>
+                        </div>
+
+                        <!-- Locked Badge -->
+                        <span class="text-xs bg-gray-500/20 text-gray-400 px-2 py-0.5 rounded">
+                          🔒 Locked
+                        </span>
+
+                        <!-- Tooltip -->
+                        <div
+                          class="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50"
+                          role="tooltip"
+                        >
+                          <div class="bg-dark-surface border border-dark-divider text-white text-xs px-3 py-2 rounded-lg shadow-xl whitespace-nowrap">
+                            Purchase course to unlock
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                  </template>
                 </nav>
               </template>
 
@@ -251,6 +311,7 @@
 
 <script setup lang="ts">
 import Accordion from '~/components/ui/Accordion.vue'
+import { useUserStore } from '~/stores/user'
 import type { CourseContentLesson } from '~/types/shared/courses'
 import type { AccordionItem } from '~/types/components/accordion'
 
@@ -271,6 +332,7 @@ const props = defineProps<Props>()
 // ───── Stores ─────
 const coursesStore = useCoursesStore()
 const progressStore = useLessonProgressStore()
+const userStore = useUserStore()
 
 // ───── Computed from Store ─────
 const course = computed(() => coursesStore.detailedCourse)
