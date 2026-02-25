@@ -259,17 +259,189 @@ SignIn/SignUp → userStore.signIn/signUp() →
 ---
 
 ## Summary Metadata
-**Update time**: 2026-02-22T00:00:00.000Z  
-**Latest Commits**: 
-- `pending` - feat(lesson-access): UX improvements + SSR hydration fix + code cleanup
-- `pending` - feat(lesson-access): add server-side lesson content protection
+**Update time**: 2026-02-24T00:00:00.000Z
+**Latest Commits**:
+- `30ad222` - fix(lesson-sidebar): pass courseId as prop to fix enrollment check
+- `pending` - fix(sidebar-positioning): separate container and relative for proper absolute positioning
+- `pending` - fix(enrollments): add enrollmentsFetched flag to middleware
+- `pending` - fix(lesson-nav): disable Next Lesson button for locked lessons
+- `pending` - fix(course-images): standardize thumbnail field naming
 - `03da96b` - feat(enrollments): bulk enrollment check + purchased course UI
 - `7d0be3b` - fix(checkout): resolve unauthorized error
-**Status**: ✅ Authentication + Enrollment + Lesson Access all secured + UX optimized
+**Status**: ✅ Authentication + Enrollment + Lesson Access + Sidebar Positioning all fixed
 
 ---
 
-## Latest Session Summary (2026-02-22) - Lesson Access Protection
+## Latest Session Summary (2026-02-24) - Multiple Bug Fixes
+
+### ✅ Course Image Field Standardization (COMMIT: `e750451`)
+
+**Problem:** Course images not displaying - field name mismatch between database (`thumbnail`) and frontend (`image`).
+
+**Solution:** Standardized on `thumbnail` everywhere (matching database schema).
+
+**Files Changed:** 11 files
+- `app/types/shared/courses.ts` - Changed `image` → `thumbnail`
+- `app/types/shared/auth.ts` - Changed `image` → `thumbnail`
+- `app/components/courses/CourseCard.vue` - Updated `:src` binding
+- `app/pages/courses/[courseSlug]/index.vue` - Updated image source
+- `app/components/ui/CartDrawer.vue` - Updated cart item image
+- `app/pages/checkout/index.vue` - Updated checkout item image
+- `app/pages/home.vue` - Updated featured courses image
+- `server/db/course-service.ts` - Removed duplicate field mapping
+- `server/db/cart-service.ts` - Changed to `thumbnail`
+- `server/api/courses/bulk.post.ts` - Changed to `thumbnail`
+- `server/utils/course-transformer.ts` - Changed to `thumbnail`
+- `server/utils/related-courses.ts` - Changed to `thumbnail`
+
+**Benefits:**
+- ✅ Single source of truth matching database
+- ✅ No field mapping/conversion needed
+- ✅ Cleaner, more maintainable code
+
+---
+
+### ✅ Next Lesson Button UX Fix (COMMIT: Pending)
+
+**Problem:** "Next Lesson" button was clickable for locked lessons, causing redirect back (bad UX).
+
+**Solution:** Disable button when next lesson requires purchase, show lock icon.
+
+**Files Changed:**
+1. `app/composables/useLesson.ts`
+   - Added `isLessonAccessible()` helper function
+   - Added `isNextLessonAccessible` computed property
+   - Updated `goToNext()` to check accessibility before navigating
+   - Fixed variable shadowing (`lesson` → `targetLesson`)
+
+2. `app/pages/courses/[courseSlug]/lessons/[lessonSlug].vue`
+   - Desktop nav button: `:disabled="!isNextLessonAccessible"`
+   - Mobile nav button: `:disabled="!isNextLessonAccessible"`
+   - Next Lesson card: Shows "Locked" state with lock icon
+   - Added lock icon SVG for locked state
+
+3. `app/composables/useLessonAccess.ts`
+   - Removed all debug console.log statements
+   - Added slug validation guard (early return if empty)
+
+4. `app/types/shared/courses.ts`
+   - Made `createdAt` and `updatedAt` optional in `DetailedLesson`
+
+**Visual States:**
+```
+Next lesson accessible:
+  → Normal button, clickable, arrow icon
+
+Next lesson locked:
+  → Disabled button, opacity-50, cursor-not-allowed
+  → Lock icon instead of arrow
+  → Tooltip: "Purchase course to unlock"
+```
+
+---
+
+### ✅ Enrollment Check Fix - Sidebar Lessons Still Locked (COMMIT: `30ad222`)
+
+**Problem:** Enrolled users saw paid lessons as locked in sidebar, even though they had purchased the course.
+
+**Root Cause:** 
+- Sidebar used `course.value?.id` from `coursesStore.detailedCourse`
+- This was `undefined` when sidebar rendered
+- `userStore.isEnrolled(undefined || 0)` → always `false`
+
+**Solution:** Pass `courseId` as prop from page level (reliable source).
+
+**Files Changed:**
+1. `app/composables/useLesson.ts` - Export `courseId` computed property
+2. `app/components/lesson/LessonSidebar.vue` - Accept `courseId` prop, use in `isEnrolled()` check
+3. `app/pages/courses/[courseSlug]/lessons/[lessonSlug].vue` - Pass `:course-id="courseId"` to sidebar
+
+**Result:**
+- ✅ Enrolled users see all lessons unlocked and clickable
+- ✅ Free lessons show 🆓 Free badge for non-enrolled users
+- ✅ Paid lessons show 🔒 Locked for non-enrolled users
+
+---
+
+### ✅ Enrollment Fetch Timing Fix (COMMIT: Pending)
+
+**Problem:** Sidebar rendered before enrollments were fetched, causing `isEnrolled()` to always return false.
+
+**Root Cause:** 
+- `fetchEnrollments()` was called in sidebar's `onMounted`
+- But sidebar mounted before middleware's `fetchUser` completed
+- Race condition: enrollment check ran before data was ready
+
+**Solution:** Fetch enrollments in middleware (runs before page renders).
+
+**Files Changed:**
+1. `app/stores/user.ts`
+   - Added `enrollmentsFetched` flag to track fetch state
+   - Set flag to `true` after fetch completes
+   - Reset flag to `false` on logout
+   - Exposed `enrollmentsFetched` in store return
+
+2. `app/middleware/auth.global.ts`
+   - Added condition: `if (userStore.isAuthenticated && !userStore.enrollmentsFetched)`
+   - Fetches enrollments before page renders
+
+3. `app/components/lesson/LessonSidebar.vue`
+   - Removed redundant `onMounted` fetch call
+
+**Flow:**
+```
+1. User visits lesson page → Middleware runs first
+2. Middleware checks auth → fetchUser() if needed
+3. Middleware checks enrollments → fetchEnrollments() if not fetched
+4. Page renders → Sidebar has enrollment data ready
+5. userStore.isEnrolled(courseId) works correctly ✅
+```
+
+---
+
+### ✅ Sidebar Positioning Fix (COMMIT: Pending)
+
+**Problem:** `<aside>` with `position: absolute` not positioning correctly relative to parent container.
+
+**Root Cause:** `container` and `relative` classes on same element caused `right-0` to align to padding-box edge instead of content area edge.
+
+**Solution:** Separate `container` and `relative` into two distinct elements.
+
+**Files Changed:**
+1. `app/pages/courses/[courseSlug]/index.vue`
+   - Added `overflow-visible` to `<section>`
+   - Split structure:
+     ```vue
+     <div class="container">                          <!-- Only container -->
+       <div class="relative flex ...">                <!-- Only layout -->
+         <header class="w-full md:w-2/3">...</header>
+         <div class="hidden md:block md:w-1/3"></div> <!-- Placeholder -->
+         <aside class="md:absolute md:right-0 md:top-5">...</aside>
+       </div>
+     </div>
+     ```
+
+**Why This Works:**
+```
+Before (broken):
+.container.relative → right-0 aligns to padding-box edge
+  <aside right-0> → Wrong position!
+
+After (correct):
+.container → Only handles max-width/padding
+  .relative → right-0 aligns to content area edge
+    <aside right-0> → Correct position!
+```
+
+**Benefits:**
+- ✅ No `calc()` values needed
+- ✅ No hardcoded `rem` offsets
+- ✅ No `translate-y` + `-mb` hacks
+- ✅ Clean separation of concerns
+
+---
+
+## Previous Sessions Summary (2026-02-22)
 
 ### ✅ Paid Lesson Content Protection (COMMIT: Pending)
 
