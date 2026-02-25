@@ -108,7 +108,7 @@
                 <nav aria-label="Section lessons">
                   <template v-for="lesson in (item as SectionAccordionItem).lessons" :key="lesson.id || lesson.slug">
                     <!-- Accessible/Clickable Lesson -->
-                    <template v-if="lesson.isFree || userStore.isEnrolled(course.value?.id || 0)">
+                    <template v-if="lesson.isFree || userStore.isEnrolled(props.courseId)">
                       <NuxtLink
                         :to="`/courses/${courseSlug}/lessons/${lesson.slug}`"
                         class="flex items-center gap-3 px-4 py-3 hover:bg-dark-bg transition"
@@ -176,7 +176,7 @@
                         <!-- Badges -->
                         <div class="flex items-center gap-1.5">
                           <span
-                            v-if="lesson.isFree && !isEnrolled"
+                            v-if="lesson.isFree && !userStore.isEnrolled(props.courseId)"
                             class="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded"
                           >
                             🆓 Free
@@ -325,6 +325,7 @@ interface SectionAccordionItem extends AccordionItem {
 interface Props {
   currentLessonSlug: string
   courseSlug: string
+  courseId: number
 }
 
 const props = defineProps<Props>()

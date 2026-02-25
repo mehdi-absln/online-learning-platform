@@ -50,8 +50,6 @@
 import CourseSidebarFilters from '~/components/courses/CourseSidebarFilters.vue'
 import CoursesGrid from '~/components/courses/CoursesGrid.vue'
 
-const coursesStore = useCoursesStore()
-
 const { courses, isLoading, error } = useCourses()
 const { currentPage, totalPages, changePage } = useCourseFilters()
 

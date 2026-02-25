@@ -1,4 +1,5 @@
-import type { DetailedLesson } from '~/types/shared/courses'
+import type { DetailedLesson, CourseContentLesson } from '~/types/shared/courses'
+import { useUserStore } from '~/stores/user'
 
 export const useLesson = (
   courseSlug: MaybeRef<string>,
@@ -35,8 +36,6 @@ export const useLesson = (
       content: found.description || '',
       sectionId: section?.id || 0,
       order: currentIndex.value || 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     } as DetailedLesson
   })
 
@@ -54,6 +53,16 @@ export const useLesson = (
       ? coursesStore.allLessons[currentIndex.value + 1]
       : null,
   )
+
+  // Helper to check if a lesson is accessible (free or user is enrolled)
+  const userStore = useUserStore()
+  const courseId = computed(() => course.value?.id || 0)
+  const isLessonAccessible = (targetLesson: CourseContentLesson | null) => {
+    if (!targetLesson) return false
+    return targetLesson.isFree || userStore.isEnrolled(courseId.value)
+  }
+
+  const isNextLessonAccessible = computed(() => isLessonAccessible(nextLesson.value ?? null))
 
   const progressPercentage = computed(() =>
     totalLessons.value > 0
@@ -100,7 +109,7 @@ export const useLesson = (
   }
 
   const goToNext = () => {
-    if (nextLesson.value) {
+    if (nextLesson.value && isNextLessonAccessible.value) {
       router.push(`/courses/${courseSlugValue.value}/lessons/${nextLesson.value.slug}`)
     }
   }
@@ -144,6 +153,7 @@ export const useLesson = (
     // Data
     course,
     lesson,
+    courseId,
 
     // Loading & Error
     isLoading,
@@ -154,6 +164,7 @@ export const useLesson = (
     totalLessons,
     prevLesson,
     nextLesson,
+    isNextLessonAccessible,
     progressPercentage,
     breadcrumbs,
     goToPrev,

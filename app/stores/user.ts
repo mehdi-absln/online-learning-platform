@@ -19,6 +19,7 @@ export const useUserStore = defineStore('user', () => {
   const loading = ref<boolean>(false)
   const error = ref<string | null>(null)
   const enrolledCourseIds = ref<number[]>([])
+  const enrollmentsFetched = ref(false)
 
   // Computed state (readonly from outside)
   const isAuthenticated = computed(() => user.value !== null)
@@ -54,6 +55,7 @@ export const useUserStore = defineStore('user', () => {
   const fetchEnrollments = async () => {
     if (!user.value) {
       enrolledCourseIds.value = []
+      enrollmentsFetched.value = true
       return
     }
 
@@ -65,10 +67,12 @@ export const useUserStore = defineStore('user', () => {
       if (response?.success && response?.data?.courseIds) {
         enrolledCourseIds.value = response.data.courseIds
       }
+      enrollmentsFetched.value = true
     }
     catch (err: unknown) {
       console.error('Failed to fetch enrollments:', err)
       // Silent fail - don't block UI
+      enrollmentsFetched.value = true
     }
   }
 
@@ -77,6 +81,7 @@ export const useUserStore = defineStore('user', () => {
    */
   const clearEnrollments = () => {
     enrolledCourseIds.value = []
+    enrollmentsFetched.value = false
   }
 
   // Public actions
@@ -250,6 +255,7 @@ export const useUserStore = defineStore('user', () => {
     loading: readonly(loading),
     error: readonly(error),
     enrolledCourseIds: readonly(enrolledCourseIds),
+    enrollmentsFetched: readonly(enrollmentsFetched),
 
     // Getters
     hasError,

@@ -18,15 +18,19 @@ export const useLessonAccess = (courseSlug: Ref<string>, lessonSlug: Ref<string>
   const error = ref<string | null>(null)
 
   const fetchLessonAccess = async () => {
+    // Guard: Don't fetch if slugs are empty
+    if (!courseSlug.value || !lessonSlug.value) {
+      lessonData.value = null
+      isLoading.value = false
+      error.value = null
+      return
+    }
+
     isLoading.value = true
     error.value = null
 
     try {
       const url = `/api/courses/${courseSlug.value}/lessons/${lessonSlug.value}`
-      console.log('🔵 [useLessonAccess] Fetching:', url, {
-        courseSlug: courseSlug.value,
-        lessonSlug: lessonSlug.value,
-      })
 
       const response = await $fetch<{
         success: boolean
@@ -38,33 +42,16 @@ export const useLessonAccess = (courseSlug: Ref<string>, lessonSlug: Ref<string>
         credentials: 'include',
       })
 
-      console.log('🟢 [useLessonAccess] Response received:', {
-        success: response.success,
-        hasAccess: response.hasAccess,
-        isLocked: response.data?.currentLesson?.isLocked,
-        lessonTitle: response.data?.currentLesson?.title,
-      })
-
       if (response.success && response.data?.currentLesson) {
         lessonData.value = response.data.currentLesson
       }
     }
     catch (err: unknown) {
-      console.error('🔴 [useLessonAccess] Failed to fetch lesson access:', err)
-      console.error('🔴 Error details:', {
-        message: (err as Error)?.message,
-        statusCode: (err as any)?.statusCode,
-        statusMessage: (err as any)?.statusMessage,
-        data: (err as any)?.data,
-      })
-      error.value = (err as any)?.statusMessage || 'Failed to load lesson details'
+      const errorInfo = err as { statusCode?: number, statusMessage?: string, data?: unknown }
+      error.value = errorInfo?.statusMessage || 'Failed to load lesson details'
     }
     finally {
       isLoading.value = false
-      console.log('[useLessonAccess] Loading complete', {
-        lessonData: lessonData.value,
-        error: error.value,
-      })
     }
   }
 

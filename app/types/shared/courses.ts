@@ -110,8 +110,8 @@ export interface DetailedLesson extends CourseContentLesson {
   content: string
   order: number
   sectionId?: number
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 // Course content section interface

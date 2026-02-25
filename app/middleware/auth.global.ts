@@ -6,6 +6,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
     await userStore.fetchUser()
   }
 
+  // Fetch enrollments if authenticated and not already fetched (needed for lesson access checks)
+  if (userStore.isAuthenticated && !userStore.enrollmentsFetched) {
+    await userStore.fetchEnrollments()
+  }
+
   // FIRST: If going to /auth pages while authenticated, redirect to home
   if (to.path.startsWith('/auth') && userStore.isAuthenticated) {
     return navigateTo('/home')
