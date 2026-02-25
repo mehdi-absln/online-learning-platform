@@ -184,13 +184,29 @@
                   </button>
 
                   <button
-                    :disabled="!nextLesson"
+                    :disabled="!isNextLessonAccessible"
                     class="p-2 rounded-lg border border-dark-divider transition disabled:opacity-30 disabled:cursor-not-allowed hover:bg-dark-bg hover:border-gray-500"
-                    title="Next lesson (→)"
+                    :title="isNextLessonAccessible ? 'Next lesson (→)' : 'Purchase course to unlock'"
                     aria-label="Go to next lesson"
                     @click="goToNext"
                   >
                     <svg
+                      v-if="!isNextLessonAccessible"
+                      class="w-5 h-5 text-white/90"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                      />
+                    </svg>
+                    <svg
+                      v-else
                       class="w-5 h-5 text-white/90"
                       fill="none"
                       stroke="currentColor"
@@ -278,8 +294,8 @@
                         />
                       </svg>
                       <span class="sr-only">Published:</span>
-                      <time :datetime="lesson.createdAt.toISOString()">
-                        {{ formatDate(lesson.createdAt) }}
+                      <time :datetime="lesson.createdAt?.toISOString() || ''">
+                        {{ lesson.createdAt ? formatDate(lesson.createdAt) : 'N/A' }}
                       </time>
                     </span>
                   </div>
@@ -386,22 +402,54 @@
                 <!-- Next Lesson Card -->
                 <section
                   v-if="nextLesson"
-                  class="bg-gradient-to-l from-primary to-primary/80 rounded-xl p-6 text-white"
+                  class="rounded-xl p-6 border border-dark-divider"
+                  :class="isNextLessonAccessible
+                    ? 'bg-gradient-to-l from-primary to-primary/80'
+                    : 'bg-dark-surface opacity-75'"
                   aria-label="Next lesson"
                 >
-                  <p class="text-white/80 text-sm mb-2">
-                    Next Lesson
-                  </p>
-                  <h2 class="text-xl font-bold mb-4">
-                    {{ nextLesson.title }}
-                  </h2>
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <p class="text-white/80 text-sm mb-2">
+                        Next Lesson
+                      </p>
+                      <h2 class="text-xl font-bold mb-4 text-white">
+                        {{ nextLesson.title }}
+                      </h2>
+                    </div>
+                    <span
+                      v-if="!isNextLessonAccessible"
+                      class="text-gray-400 text-sm flex items-center gap-1"
+                    >
+                      <svg
+                        class="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                        />
+                      </svg>
+                      Locked
+                    </span>
+                  </div>
                   <button
-                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-primary rounded-lg font-medium hover:bg-gray-100 transition"
-                    aria-label="Go to next lesson: {{ nextLesson.title }}"
+                    :disabled="!isNextLessonAccessible"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    :class="isNextLessonAccessible
+                      ? 'bg-white text-primary hover:bg-gray-100'
+                      : 'bg-gray-700 text-gray-400'"
+                    aria-label="isNextLessonAccessible ? 'Go to next lesson: {{ nextLesson.title }}' : 'Purchase course to unlock'"
                     @click="goToNext"
                   >
-                    Go to next lesson
+                    <span>{{ isNextLessonAccessible ? 'Go to next lesson' : 'Locked' }}</span>
                     <svg
+                      v-if="isNextLessonAccessible"
                       class="w-4 h-4"
                       fill="none"
                       stroke="currentColor"
@@ -413,6 +461,21 @@
                         stroke-linejoin="round"
                         stroke-width="2"
                         d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                    <svg
+                      v-else
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                       />
                     </svg>
                   </button>
@@ -462,6 +525,7 @@
               <LessonSidebar
                 :current-lesson-slug="lessonSlug"
                 :course-slug="courseSlug"
+                :course-id="courseId"
               />
             </div>
           </div>
@@ -544,12 +608,28 @@
               </button>
 
               <button
-                :disabled="!nextLesson"
+                :disabled="!isNextLessonAccessible"
                 class="p-3 rounded-xl border border-dark-divider disabled:opacity-30 disabled:cursor-not-allowed hover:bg-dark-bg transition"
-                aria-label="Go to next lesson"
+                :aria-label="isNextLessonAccessible ? 'Go to next lesson' : 'Purchase course to unlock'"
                 @click="goToNext"
               >
                 <svg
+                  v-if="!isNextLessonAccessible"
+                  class="w-5 h-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+                <svg
+                  v-else
                   class="w-5 h-5 text-gray-400"
                   fill="none"
                   stroke="currentColor"
@@ -613,6 +693,7 @@ const {
   totalLessons,
   prevLesson,
   nextLesson,
+  isNextLessonAccessible,
   progressPercentage,
   breadcrumbs,
   goToPrev,
@@ -622,6 +703,7 @@ const {
   toggleComplete,
   toggleBookmark,
   shareLesson,
+  courseId,
 } = useLesson(courseSlug, lessonSlug)
 
 // ───── Redirect if lesson is locked (Layer 3: Direct URL protection) ─────
