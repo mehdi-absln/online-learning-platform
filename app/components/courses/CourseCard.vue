@@ -95,7 +95,7 @@
             ${{ course.price }}
           </span>
           <NuxtLink
-            :to="`${courseLink}/lessons`"
+            :to="`/courses/${course.slug}/lessons`"
             class="flex items-center gap-2 text-sm font-semibold text-primary
                    hover:text-white transition-all duration-300 group/learn"
           >
@@ -120,7 +120,7 @@
           </NuxtLink>
         </template>
 
-        <!-- ❌ NOT ENROLLED -->
+        <!-- ❌ NOT ENROLLED or loading enrollments -->
         <template v-else>
           <span class="text-base font-semibold text-primary-alt">
             ${{ course.price }}
