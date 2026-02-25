@@ -250,19 +250,52 @@
                   </div>
                 </dl>
 
-                <div class="mt-6">
-                  <button
-                    type="button"
-                    class="btn-primary w-full font-antonio group overflow-hidden"
-                    aria-label="Enroll in this course"
-                  >
-                    <span
-                      class="absolute inset-0 w-0 bg-white/10 group-hover:w-full transition-all duration-500"
-                    />
-                    <span class="relative z-10 flex items-center justify-center">
-                      ENROLL NOW
-                    </span>
-                  </button>
+                <div class="mt-6 space-y-3">
+                  <!-- State 1: Already Enrolled ✅ -->
+                  <template v-if="userStore.isAuthenticated && userStore.isEnrolled(course?.id || 0)">
+                    <NuxtLink
+                      :to="`/courses/${courseSlug}/lessons`"
+                      class="btn-primary w-full font-antonio text-center block"
+                    >
+                      CONTINUE LEARNING
+                    </NuxtLink>
+                  </template>
+
+                  <!-- State 2: Already in Cart 🛒 -->
+                  <template v-else-if="isInCart(course?.id || 0)">
+                    <button
+                      type="button"
+                      class="btn-secondary w-full font-antonio"
+                      @click="openCart"
+                    >
+                      VIEW CART
+                    </button>
+                    <NuxtLink
+                      to="/checkout"
+                      class="btn-primary w-full font-antonio text-center block"
+                    >
+                      GO TO CHECKOUT
+                    </NuxtLink>
+                  </template>
+
+                  <!-- State 3: Not enrolled, not in cart -->
+                  <template v-else>
+                    <button
+                      type="button"
+                      class="btn-secondary w-full font-antonio"
+                      @click="handleAddToCart"
+                    >
+                      ADD TO CART
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-primary w-full font-antonio group overflow-hidden relative"
+                      @click="handleEnrollNow"
+                    >
+                      <span class="absolute inset-0 w-0 bg-white/10 group-hover:w-full transition-all duration-500" />
+                      <span class="relative z-10">ENROLL NOW</span>
+                    </button>
+                  </template>
                 </div>
               </div>
 
@@ -615,10 +648,12 @@ import Accordion from '~/components/ui/Accordion.vue'
 import CourseReviews from '~/components/courses/CourseReviews.vue'
 import RelatedCourses from '~/components/courses/RelatedCourses.vue'
 import { useUserStore } from '~/stores/user'
+import { useCart } from '~/composables/useCart'
 import type { CourseContentLesson } from '~/types/shared/courses'
 
 const route = useRoute()
 const userStore = useUserStore()
+const { addItem, isInCart, openCart } = useCart()
 
 const courseSlug = computed(() => route.params.courseSlug as string)
 
@@ -687,5 +722,24 @@ const PLACEHOLDER_IMAGE = '/images/placeholder-course.svg'
 const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement
   img.src = PLACEHOLDER_IMAGE
+}
+
+const handleAddToCart = () => {
+  if (!course.value) return
+  addItem(course.value)
+  openCart()
+}
+
+const handleEnrollNow = async () => {
+  if (!course.value) return
+
+  if (!userStore.isAuthenticated) {
+    // Redirect to login if not authenticated
+    await navigateTo(`/auth/signin?redirect=${route.fullPath}`)
+    return
+  }
+
+  addItem(course.value)
+  await navigateTo('/checkout')
 }
 </script>
