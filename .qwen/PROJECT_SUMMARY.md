@@ -199,11 +199,14 @@ export interface AuthResponse {
 
 ## Project Statistics
 
-**Total Commits:** 22 ahead of `origin/main`
+**Total Commits:** 27 ahead of `origin/main`
 
 **Key Commits:**
-- `pending` - feat(lesson-access): UX improvements + SSR hydration fix + code cleanup
-- `pending` - feat(lesson-access): add server-side lesson content protection
+- `7386cfb` - fix(lesson-redirect): prevent stale course data causing wrong lesson redirect
+- `6fb2100` - feat(enroll-button): add dynamic multi-state enroll button with cart integration
+- `30ad222` - fix(lesson-sidebar): pass courseId as prop to fix enrollment check
+- `29bdb93` - fix(sidebar-positioning): separate container and relative for proper absolute positioning
+- `e750451` - fix(course-images): standardize thumbnail field naming across entire codebase
 - `03da96b` - feat(enrollments): add bulk enrollment check and purchased course UI
 - `7d0be3b` - fix(checkout): resolve unauthorized error by using requireAuth in API endpoints
 - `6ae95aa` - feat(auth): complete authentication system overhaul
@@ -219,9 +222,14 @@ export interface AuthResponse {
 - `acbf116` - a11y(home): fix heading hierarchy and add ARIA landmarks
 - `04a8d5d` - refactor(middleware): use single global middleware with requiresAuth meta
 
-**Files:** 35+ test files, 24 components, 15 composables, 12 pages, 5 stores, 36 API routes
+**Files:** 35+ test files, 25 components, 15 composables, 13 pages, 5 stores, 36 API routes
 
 **Database:** 14 tables, 14 migrations
+
+**Documentation:**
+- `enroll-summary.md` - Complete enrollment system documentation (1,800+ lines)
+- `.qwen/PROJECT_SUMMARY.md` - Project history and guidelines
+- `.qwen/PROJECT_STRUCTURE.md` - Complete directory structure
 
 ## Important Notes
 
@@ -259,20 +267,116 @@ SignIn/SignUp → userStore.signIn/signUp() →
 ---
 
 ## Summary Metadata
-**Update time**: 2026-02-24T00:00:00.000Z
+**Update time**: 2026-02-25T00:00:00.000Z
 **Latest Commits**:
+- `7386cfb` - fix(lesson-redirect): prevent stale course data causing wrong lesson redirect
+- `6fb2100` - feat(enroll-button): add dynamic multi-state enroll button with cart integration
 - `30ad222` - fix(lesson-sidebar): pass courseId as prop to fix enrollment check
-- `pending` - fix(sidebar-positioning): separate container and relative for proper absolute positioning
-- `pending` - fix(enrollments): add enrollmentsFetched flag to middleware
-- `pending` - fix(lesson-nav): disable Next Lesson button for locked lessons
-- `pending` - fix(course-images): standardize thumbnail field naming
+- `29bdb93` - fix(sidebar-positioning): separate container and relative for proper absolute positioning
+- `e750451` - fix(course-images): standardize thumbnail field naming across entire codebase
 - `03da96b` - feat(enrollments): bulk enrollment check + purchased course UI
 - `7d0be3b` - fix(checkout): resolve unauthorized error
-**Status**: ✅ Authentication + Enrollment + Lesson Access + Sidebar Positioning all fixed
+**Status**: ✅ Authentication + Enrollment + Lesson Access + Cart Integration + Lesson Redirect all fixed
+
+**Total Commits:** 27 ahead of `origin/main`
 
 ---
 
-## Latest Session Summary (2026-02-24) - Multiple Bug Fixes
+## Latest Session Summary (2026-02-25) - Enrollment & Lesson Redirect Fixes
+
+### ✅ Dynamic "Enroll Now" Button Implementation (COMMIT: `6fb2100`)
+
+**Problem:** Static "ENROLL NOW" button did nothing when clicked.
+
+**Solution:** Implemented multi-state button with full cart integration.
+
+**Files Changed:**
+1. `app/pages/courses/[courseSlug]/index.vue`
+   - Added `useCart` composable import
+   - Added `handleAddToCart()` - adds course and opens cart drawer
+   - Added `handleEnrollNow()` - adds course and navigates to checkout
+   - Guest users redirected to sign-in with return URL preserved
+
+**Three Button States:**
+
+| State | UI Display | Click Action |
+|-------|------------|--------------|
+| **Enrolled** | "Continue Learning" (primary) | Navigate to `/courses/{slug}/lessons` |
+| **In Cart** | "View Cart" + "Go to Checkout" | Open cart drawer / Go to checkout |
+| **Default** | "Add to Cart" + "Enroll Now" | Add to cart + open drawer / Add + go to checkout |
+
+**User Flow:**
+```
+Guest clicks "Enroll Now" → Redirect to /auth/signin?redirect=/courses/{slug}
+                             ↓
+                          Sign in → Cart merge (silent) → Redirect to checkout
+                             ↓
+                     Authenticated user → Add to cart → Navigate to checkout
+```
+
+---
+
+### ✅ Lesson Redirect - Stale Data Fix (COMMIT: `7386cfb`)
+
+**Problem:** Clicking "Continue Learning" from course list redirected to wrong lesson.
+- URL showed: `/courses/react-course/lessons/flutter-lesson` (course mismatch!)
+- First click failed, second click worked (after visiting course detail)
+
+**Root Cause:**
+- `useCourse` composable returns cached data immediately from `coursesStore.detailedCourse`
+- Watch with `{ immediate: true }` triggered before new course data loaded
+- Redirected with stale lesson slug from previously visited course
+
+**Timeline of Bug:**
+```
+1. Visit Flutter course → store has Flutter lessons
+2. Click "Continue Learning" on React course
+3. Navigate to /courses/react-complete-guide/lessons
+4. Watch triggers IMMEDIATELY with stale Flutter data
+5. Redirects to /react-complete-guide/lessons/flutter-intro ❌
+6. 404 error — flutter-intro doesn't exist in React course
+```
+
+**Solution:**
+- Added guard condition: `if (courseData.slug !== courseSlug) return`
+- Only redirect when course slug matches URL slug
+- Prevents using cached data from different course
+
+**Files Changed:**
+1. `app/pages/courses/[courseSlug]/lessons/index.vue`
+   - Watch `course.value` instead of `courseContent`
+   - Add slug validation guard before redirect
+   - Extract lessons from `courseContent.flatMap()`
+   - Remove debug console.log statements
+
+**Testing:**
+1. ✅ Visit Course A → Navigate to lessons → Works
+2. ✅ Go back to course list
+3. ✅ Click "Continue Learning" on Course B → Redirects to Course B's lessons (not Course A's)
+4. ✅ Verify URL matches: `/courses/course-b/lessons/lesson-1`
+
+---
+
+### ✅ Documentation - enroll-summary.md (COMMIT: `6fb2100`)
+
+**Created:** `enroll-summary.md` - Complete enrollment system documentation (1,800+ lines)
+
+**Sections:**
+1. Overview - System purpose, key features, architecture diagram
+2. User Flow & UX - Complete user journey, guest vs. authenticated flows
+3. Frontend Implementation - Components, stores, composables with code examples
+4. Backend/API Structure - All 8 API endpoints with request/response formats
+5. Database Schema - SQL schema, Drizzle ORM definitions, entity relationships
+6. Business Logic - Price calculation, enrollment validation, payment integration
+7. Security Considerations - Authentication, authorization, input validation
+8. Edge Cases & Error Handling - Duplicate prevention, failed payments, network errors
+9. Testing - Test coverage summary, how to run tests
+10. Missing Features & Recommendations - Priority-ordered list with implementation suggestions
+11. Quick Reference - Key files, common operations, API reference
+
+---
+
+## Previous Session Summary (2026-02-24) - Multiple Bug Fixes
 
 ### ✅ Course Image Field Standardization (COMMIT: `e750451`)
 

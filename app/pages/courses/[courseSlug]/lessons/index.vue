@@ -1,3 +1,39 @@
+<template>
+  <div class="py-36 flex flex-col items-center justify-center">
+    <!-- Error state -->
+    <template v-if="errorMessage">
+      <p class="text-red-500 text-lg mb-4">
+        {{ errorMessage }}
+      </p>
+      <NuxtLink
+        :to="`/courses/${courseSlug}`"
+        class="btn-primary"
+      >
+        Back to Course
+      </NuxtLink>
+    </template>
+
+    <!-- Empty state: only show when confirmed no lessons -->
+    <template v-else-if="hasNoLessons">
+      <p class="text-white text-lg mb-4">
+        No lessons available yet.
+      </p>
+      <NuxtLink
+        :to="`/courses/${courseSlug}`"
+        class="btn-primary"
+      >
+        Back to Course
+      </NuxtLink>
+    </template>
+
+    <!-- Default: show spinner for all other cases (loading or redirecting) -->
+    <LoadingSpinner
+      v-else
+      message="Loading lessons..."
+    />
+  </div>
+</template>
+
 <script setup lang="ts">
 import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 
@@ -44,39 +80,3 @@ const hasNoLessons = computed(() => {
   return !isLoading.value && !error.value && course.value?.courseContent?.length === 0
 })
 </script>
-
-<template>
-  <div class="py-36 flex flex-col items-center justify-center">
-    <!-- Error state -->
-    <template v-if="errorMessage">
-      <p class="text-red-500 text-lg mb-4">
-        {{ errorMessage }}
-      </p>
-      <NuxtLink
-        :to="`/courses/${courseSlug}`"
-        class="btn-primary"
-      >
-        Back to Course
-      </NuxtLink>
-    </template>
-
-    <!-- Empty state: only show when confirmed no lessons -->
-    <template v-else-if="hasNoLessons">
-      <p class="text-white text-lg mb-4">
-        No lessons available yet.
-      </p>
-      <NuxtLink
-        :to="`/courses/${courseSlug}`"
-        class="btn-primary"
-      >
-        Back to Course
-      </NuxtLink>
-    </template>
-
-    <!-- Default: show spinner for all other cases (loading or redirecting) -->
-    <LoadingSpinner
-      v-else
-      message="Loading lessons..."
-    />
-  </div>
-</template>
