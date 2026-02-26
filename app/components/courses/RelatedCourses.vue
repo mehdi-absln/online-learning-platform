@@ -11,9 +11,10 @@
     v-else-if="hasError"
     class="py-36 flex flex-col items-center justify-center"
   >
-    <p class="text-red-500 text-lg">
-      {{ errorMessage }}
-    </p>
+    <ErrorState
+      :message="errorMessage"
+      :hide-retry="true"
+    />
   </div>
   <!-- Content -->
   <section

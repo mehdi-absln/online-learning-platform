@@ -15,15 +15,18 @@
     class="py-36 flex flex-col items-center justify-center"
     role="alert"
   >
-    <p class="text-red-500 text-lg">
-      Error: Course not found
-    </p>
-    <NuxtLink
-      to="/courses"
-      class="btn-primary mt-4"
-    >
-      Back to Courses
-    </NuxtLink>
+    <ErrorState
+      message="Error: Course not found"
+      :hide-retry="true"
+    />
+    <div class="mt-6">
+      <NuxtLink
+        to="/courses"
+        class="btn-primary"
+      >
+        Back to Courses
+      </NuxtLink>
+    </div>
   </div>
 
   <!-- Course details -->
