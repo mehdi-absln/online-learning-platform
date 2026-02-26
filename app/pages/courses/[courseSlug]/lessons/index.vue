@@ -50,7 +50,7 @@ watch(
     // Guard 1: No data yet
     if (!courseData) return
 
-    // Guard 2: CRITICAL — Make sure course matches the URL!
+    // Defensive: ensure store hasn't returned stale data from another course
     if (courseData.slug !== courseSlug) return
 
     // Extract lessons from courseContent
@@ -69,14 +69,16 @@ watch(
 
 // Get error message for display
 const errorMessage = computed(() => {
-  const err = error.value
-  if (!err) return null
-  if (typeof err === 'string') return err
-  return err.message || 'Failed to load course'
+  if (!error.value) return null
+  return String(error.value)
 })
 
 // Check if there are no lessons (only after loading is complete and no error)
 const hasNoLessons = computed(() => {
-  return !isLoading.value && !error.value && course.value?.courseContent?.length === 0
+  if (isLoading.value || error.value) return false
+  if (!course.value?.courseContent) return true
+
+  const lessons = course.value.courseContent.flatMap(s => s.content || [])
+  return lessons.length === 0
 })
 </script>
