@@ -12,6 +12,7 @@ defineProps<{
   nextLessonAccessible: boolean
   isCompletingLesson: boolean
   isLessonCompleted: boolean
+  variant: 'desktop' | 'mobile'
 }>()
 
 const emit = defineEmits<{
@@ -24,7 +25,8 @@ const emit = defineEmits<{
 <template>
   <!-- Desktop Navigation -->
   <nav
-    class="hidden lg:flex items-center gap-2"
+    v-if="variant === 'desktop'"
+    class="flex items-center gap-2"
     aria-label="Lesson navigation"
   >
     <button
@@ -57,7 +59,8 @@ const emit = defineEmits<{
 
   <!-- Mobile Navigation (Fixed Bottom) -->
   <nav
-    class="lg:hidden fixed bottom-0 left-0 right-0 bg-dark-surface border-t border-dark-divider p-4 z-50"
+    v-else
+    class="fixed bottom-0 left-0 right-0 bg-dark-surface border-t border-dark-divider p-4 z-50"
     aria-label="Mobile lesson navigation"
   >
     <div class="flex items-center gap-3">
