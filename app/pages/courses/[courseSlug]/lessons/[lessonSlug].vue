@@ -1,15 +1,17 @@
 <template>
   <div class="min-h-screen bg-dark-gray">
     <!-- Combined Loading State -->
-    <div
-      v-if="combinedLoading"
-      class="py-36 flex flex-col items-center justify-center"
-      role="status"
-      aria-label="Loading Lesson"
-      aria-live="polite"
-    >
-      <LoadingSpinner :message="loadingMessage" />
-    </div>
+    <template v-if="combinedLoading">
+      <div
+
+        class="py-36 flex flex-col items-center justify-center"
+        role="status"
+        aria-label="Loading Lesson"
+        aria-live="polite"
+      >
+        <LoadingSpinner :message="loadingMessage" />
+      </div>
+    </template>
 
     <!-- Combined Error State -->
     <template v-else-if="combinedError">
@@ -75,17 +77,20 @@
               </div>
             </div>
 
-            <!-- Desktop Navigation -->
-            <LessonNav
-              :prev-lesson="prevLesson ?? null"
-              :next-lesson="nextLesson ?? null"
-              :next-lesson-accessible="isNextLessonAccessible"
-              :is-completing-lesson="isCompletingLesson"
-              :is-lesson-completed="isLessonCompleted"
-              @prev="goToPrev"
-              @next="goToNext"
-              @toggle-complete="handleToggleComplete"
-            />
+            <!-- Desktop Navigation (hidden on mobile) -->
+            <div class="hidden lg:block">
+              <LessonNav
+                variant="desktop"
+                :prev-lesson="prevLesson ?? null"
+                :next-lesson="nextLesson ?? null"
+                :next-lesson-accessible="isNextLessonAccessible"
+                :is-completing-lesson="isCompletingLesson"
+                :is-lesson-completed="isLessonCompleted"
+                @prev="goToPrev"
+                @next="goToNext"
+                @toggle-complete="handleToggleComplete"
+              />
+            </div>
           </div>
 
           <!-- Progress Bar -->
@@ -285,17 +290,20 @@
         </div>
       </div>
 
-      <!-- Mobile Navigation -->
-      <LessonNav
-        :prev-lesson="prevLesson ?? null"
-        :next-lesson="nextLesson ?? null"
-        :next-lesson-accessible="isNextLessonAccessible"
-        :is-completing-lesson="isCompletingLesson"
-        :is-lesson-completed="isLessonCompleted"
-        @prev="goToPrev"
-        @next="goToNext"
-        @toggle-complete="handleToggleComplete"
-      />
+      <!-- Mobile Navigation (hidden on desktop) -->
+      <div class="lg:hidden">
+        <LessonNav
+          variant="mobile"
+          :prev-lesson="prevLesson ?? null"
+          :next-lesson="nextLesson ?? null"
+          :next-lesson-accessible="isNextLessonAccessible"
+          :is-completing-lesson="isCompletingLesson"
+          :is-lesson-completed="isLessonCompleted"
+          @prev="goToPrev"
+          @next="goToNext"
+          @toggle-complete="handleToggleComplete"
+        />
+      </div>
 
       <template #fallback>
         <div
@@ -319,6 +327,13 @@ import LessonSidebar from '~/components/lesson/LessonSidebar.vue'
 import LessonNav from '~/components/lesson/LessonNav.vue'
 import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 import IconAlertCircle from '~/components/icons/IconAlertCircle.vue'
+import IconClock from '~/components/icons/IconClock.vue'
+import IconCalendar from '~/components/icons/IconCalendar.vue'
+import IconBookmark from '~/components/icons/IconBookmark.vue'
+import IconShare from '~/components/icons/IconShare.vue'
+import IconCheckCircle from '~/components/icons/IconCheckCircle.vue'
+import IconLock from '~/components/icons/IconLock.vue'
+import IconChevronRight from '~/components/icons/IconChevronRight.vue'
 
 const route = useRoute()
 
