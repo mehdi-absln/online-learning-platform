@@ -199,9 +199,13 @@ export interface AuthResponse {
 
 ## Project Statistics
 
-**Total Commits:** 27 ahead of `origin/main`
+**Total Commits:** 30 ahead of `origin/main`
 
 **Key Commits:**
+- `d3ed45d` - docs: update PROJECT_STRUCTURE.md with latest changes
+- `795c851` - fix(icons,lesson-nav): fix icon display and responsive navigation
+- `e6b58da` - fix(lessons-index): correct hasNoLessons check and error handling
+- `e2713b7` - refactor(lesson-page): extract navigation and icons, simplify loading states
 - `7386cfb` - fix(lesson-redirect): prevent stale course data causing wrong lesson redirect
 - `6fb2100` - feat(enroll-button): add dynamic multi-state enroll button with cart integration
 - `30ad222` - fix(lesson-sidebar): pass courseId as prop to fix enrollment check
@@ -222,7 +226,7 @@ export interface AuthResponse {
 - `acbf116` - a11y(home): fix heading hierarchy and add ARIA landmarks
 - `04a8d5d` - refactor(middleware): use single global middleware with requiresAuth meta
 
-**Files:** 35+ test files, 25 components, 15 composables, 13 pages, 5 stores, 36 API routes
+**Files:** 35+ test files, 36 components (+10 icons), 15 composables, 13 pages, 5 stores, 36 API routes
 
 **Database:** 14 tables, 14 migrations
 
@@ -267,22 +271,182 @@ SignIn/SignUp → userStore.signIn/signUp() →
 ---
 
 ## Summary Metadata
-**Update time**: 2026-02-25T00:00:00.000Z
+**Update time**: 2026-02-25T12:00:00.000Z
 **Latest Commits**:
+- `d3ed45d` - docs: update PROJECT_STRUCTURE.md with latest changes
+- `795c851` - fix(icons,lesson-nav): fix icon display and responsive navigation
+- `e6b58da` - fix(lessons-index): correct hasNoLessons check and error handling
+- `e2713b7` - refactor(lesson-page): extract navigation and icons, simplify loading states
 - `7386cfb` - fix(lesson-redirect): prevent stale course data causing wrong lesson redirect
 - `6fb2100` - feat(enroll-button): add dynamic multi-state enroll button with cart integration
-- `30ad222` - fix(lesson-sidebar): pass courseId as prop to fix enrollment check
-- `29bdb93` - fix(sidebar-positioning): separate container and relative for proper absolute positioning
-- `e750451` - fix(course-images): standardize thumbnail field naming across entire codebase
-- `03da96b` - feat(enrollments): bulk enrollment check + purchased course UI
-- `7d0be3b` - fix(checkout): resolve unauthorized error
-**Status**: ✅ Authentication + Enrollment + Lesson Access + Cart Integration + Lesson Redirect all fixed
+**Status**: ✅ Authentication + Enrollment + Lesson Access + Cart Integration + Lesson Redirect + Icon System all fixed
 
-**Total Commits:** 27 ahead of `origin/main`
+**Total Commits:** 30 ahead of `origin/main`
 
 ---
 
-## Latest Session Summary (2026-02-25) - Enrollment & Lesson Redirect Fixes
+## Latest Session Summary (2026-02-25) - Lesson Page Refactoring & Icon System
+
+### ✅ Lesson Page Major Refactoring (COMMIT: `e2713b7`)
+
+**Problem:** Lesson page was ~763 lines with inline SVGs, duplicated navigation, and complex two-layer loading states.
+
+**Solution:** Extracted components, created icon system, simplified state management.
+
+**Files Changed:**
+1. `app/pages/courses/[courseSlug]/lessons/[lessonSlug].vue` - Refactored from 763 to ~420 lines
+2. `app/components/lesson/LessonNav.vue` - NEW: Navigation component
+3. `app/components/icons/*` - 10 new icon components
+
+**Key Improvements:**
+
+| Improvement | Before | After | Reduction |
+|-------------|--------|-------|-----------|
+| **Total Lines** | 763 | ~420 | 45% |
+| **Icon SVGs** | Inline (repetitive) | Reusable components | 10 new files |
+| **Navigation** | Duplicated | Single component | DRY |
+| **Loading States** | Two-layer nested | Single combined | Simpler |
+
+**Three Main Refactors:**
+
+1. **Icon Components System**
+   - Created 10 reusable icons: Lock, ChevronLeft, ChevronRight, CheckCircle, Clock, Calendar, Share, Bookmark, Spinner, AlertCircle
+   - All use `w-6 h-6` Tailwind classes
+   - Proper SVG with `stroke="currentColor"` for color inheritance
+
+2. **LessonNav Component**
+   - Extracted desktop + mobile navigation
+   - Uses `variant` prop ('desktop' | 'mobile')
+   - Desktop: positioned at TOP of page
+   - Mobile: fixed bottom bar
+   - Emits: `prev`, `next`, `toggle-complete`
+
+3. **Combined Loading/Error States**
+   - Before: Nested `isLoading` → `isAccessLoading` (complex)
+   - After: `combinedLoading = isLoading || isAccessLoading`
+   - Single loading state, single error state
+   - Added `ClientOnly` wrapper for SSR compatibility
+
+---
+
+### ✅ Icon Display Fix (COMMIT: `795c851`)
+
+**Problem:** All 10 icon components were invisible after creation.
+
+**Root Cause:** Icons used `class="size-6"` which doesn't exist in Tailwind CSS.
+
+**Solution:** Changed all icons to use `class="w-6 h-6"` (standard Tailwind).
+
+**Files Fixed:**
+- `IconClock.vue`, `IconCalendar.vue`, `IconCheckCircle.vue`, `IconSpinner.vue`
+- `IconBookmark.vue`, `IconChevronLeft.vue`, `IconChevronRight.vue`
+- `IconLock.vue`, `IconShare.vue`, `IconAlertCircle.vue`
+
+**Also Fixed:**
+- `IconSpinner.vue`: Added complete path data for proper spin animation
+- Added manual imports in lesson page to ensure components register
+
+**Responsive Navigation Fix:**
+- Added `variant` prop to `LessonNav`
+- Two instances in page:
+  - Desktop: `<div class="hidden lg:block"><LessonNav variant="desktop" /></div>`
+  - Mobile: `<div class="lg:hidden"><LessonNav variant="mobile" /></div>`
+
+---
+
+### ✅ Lessons Index Bug Fixes (COMMIT: `e6b58da`)
+
+**Problem 1:** `hasNoLessons` missed empty sections (sections with no lessons inside).
+
+**Before (broken):**
+```javascript
+const hasNoLessons = computed(() => {
+  return !isLoading.value && !error.value && course.value?.courseContent?.length === 0
+})
+// Misses: [{ title: "Section 1", content: [] }] → hasNoLessons = false ❌
+```
+
+**After (fixed):**
+```javascript
+const hasNoLessons = computed(() => {
+  if (isLoading.value || error.value) return false
+  if (!course.value?.courseContent) return true
+
+  const lessons = course.value.courseContent.flatMap(s => s.content || [])
+  return lessons.length === 0
+})
+```
+
+**Problem 2:** Error type handling was incorrect.
+
+**Before:**
+```javascript
+const errorMessage = computed(() => {
+  const err = error.value
+  if (!err) return null
+  if (typeof err === 'string') return err
+  return err.message || 'Failed to load course'  // err.message may not exist
+})
+```
+
+**After:**
+```javascript
+const errorMessage = computed(() => {
+  if (!error.value) return null
+  return String(error.value)
+})
+```
+
+**Problem 3:** Unclear guard comment.
+
+**Before:** `// Guard 2: CRITICAL — Make sure course matches the URL!`
+
+**After:** `// Defensive: ensure store hasn't returned stale data from another course`
+
+---
+
+### ✅ Documentation Update (COMMIT: `d3ed45d`)
+
+**Updated:** `.qwen/PROJECT_STRUCTURE.md`
+
+**Changes:**
+- Added `icons/` directory (10 icon components)
+- Added `LessonNav.vue` component documentation
+- Added `useLessonAccess.ts` composable
+- Updated project statistics:
+  - Vue Components: 22 → 36 (+14)
+  - Composables: 13 → 15 (+2)
+  - Pages: 12 → 13 (+1)
+- Added "Latest Session Updates (February 25, 2026)" section
+- Updated version: 2.0.0 → 2.1.0
+- Updated last modified date
+
+---
+
+### ✅ CourseCard Type Fix (COMMIT: Included in `795c851`)
+
+**Problem:** TypeScript error in `CourseCard.vue` - `thumbnail` is `string | null` but `img src` expects `string | undefined`.
+
+**Error:**
+```
+Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+```
+
+**Fix:**
+```vue
+<!-- Before -->
+<img :src="course.thumbnail" />
+
+<!-- After -->
+<img :src="course.thumbnail ?? undefined" />
+```
+
+**Result:** Nullish coalescing operator converts `null` to `undefined`, satisfying Vue's type requirement.
+
+---
+
+## Previous Session Summary (2026-02-25) - Enrollment & Lesson Redirect Fixes
 
 ### ✅ Dynamic "Enroll Now" Button Implementation (COMMIT: `6fb2100`)
 
