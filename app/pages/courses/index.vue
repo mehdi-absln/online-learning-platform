@@ -1,19 +1,11 @@
 <template>
   <div>
     <!-- Error state -->
-    <div
+    <ErrorState
       v-if="error"
-      class="py-36 flex flex-col items-center justify-center"
-    >
-      <p class="text-red-500 text-lg">
-        Error loading courses
-      </p>
-      <p
-        class="text-red-400 text-sm mt-2"
-      >
-        {{ error.message || error }}
-      </p>
-    </div>
+      message="Error loading courses"
+      :hide-retry="true"
+    />
     <div v-else>
       <!-- Hero -->
       <header>

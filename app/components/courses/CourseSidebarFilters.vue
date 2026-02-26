@@ -8,14 +8,12 @@
     </div>
 
     <!-- Error message -->
-    <div
+    <ErrorState
       v-else-if="error"
-      class="text-center py-10"
-    >
-      <p class="text-red-500">
-        Error: {{ error }}
-      </p>
-    </div>
+      :message="`Error: ${error}`"
+      :hide-retry="true"
+      variant="minimal"
+    />
 
     <!-- Filters -->
     <div v-else>

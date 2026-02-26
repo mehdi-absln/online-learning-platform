@@ -2,12 +2,13 @@
   <div class="py-36 flex flex-col items-center justify-center">
     <!-- Error state -->
     <template v-if="errorMessage">
-      <p class="text-red-500 text-lg mb-4">
-        {{ errorMessage }}
-      </p>
+      <ErrorState
+        :message="errorMessage"
+        :hide-retry="true"
+      />
       <NuxtLink
         :to="`/courses/${courseSlug}`"
-        class="btn-primary"
+        class="btn-primary mt-4"
       >
         Back to Course
       </NuxtLink>

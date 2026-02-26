@@ -14,44 +14,11 @@
     </template>
 
     <!-- Combined Error State -->
-    <template v-else-if="combinedError">
-      <div
-        class="py-40 flex items-center justify-center"
-        role="alert"
-        aria-live="assertive"
-      >
-        <div class="text-center px-4">
-          <div
-            class="w-24 h-24 mx-auto mb-6 text-red-500"
-            aria-hidden="true"
-          >
-            <IconAlertCircle />
-          </div>
-          <h1 class="text-2xl font-bold text-white mb-2">
-            {{ errorTitle }}
-          </h1>
-          <p class="text-gray-400 mb-6">
-            {{ combinedError }}
-          </p>
-          <div class="flex gap-3 justify-center">
-            <button
-              v-if="showRetry"
-              type="button"
-              class="btn-primary"
-              @click="fetchLessonAccess"
-            >
-              Retry
-            </button>
-            <NuxtLink
-              :to="courseLink"
-              class="btn-secondary"
-            >
-              Back to Course
-            </NuxtLink>
-          </div>
-        </div>
-      </div>
-    </template>
+    <ErrorState
+      v-else-if="combinedError"
+      :message="combinedError"
+      @retry="fetchLessonAccess"
+    />
 
     <!-- Lesson Content -->
     <ClientOnly v-else-if="lesson">
@@ -326,7 +293,6 @@ import LessonContent from '~/components/lesson/LessonContent.vue'
 import LessonSidebar from '~/components/lesson/LessonSidebar.vue'
 import LessonNav from '~/components/lesson/LessonNav.vue'
 import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
-import IconAlertCircle from '~/components/icons/IconAlertCircle.vue'
 import IconClock from '~/components/icons/IconClock.vue'
 import IconCalendar from '~/components/icons/IconCalendar.vue'
 import IconBookmark from '~/components/icons/IconBookmark.vue'
@@ -375,9 +341,6 @@ const {
 const combinedLoading = computed(() => isLoading.value || isAccessLoading.value)
 const combinedError = computed(() => error.value || accessError.value)
 const loadingMessage = computed(() => isLoading.value ? 'Loading Lesson...' : 'Checking access...')
-const errorTitle = computed(() => error.value ? 'Lesson Not Found' : 'Failed to Load Lesson')
-const showRetry = computed(() => !!accessError.value)
-
 // ───── Redirect if lesson is locked ─────
 watch(lessonData, (newData) => {
   if (newData?.isLocked && import.meta.client) {
