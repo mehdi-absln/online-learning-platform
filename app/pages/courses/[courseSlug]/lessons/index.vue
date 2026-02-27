@@ -16,15 +16,12 @@
 
     <!-- Empty state: only show when confirmed no lessons -->
     <template v-else-if="hasNoLessons">
-      <p class="text-white text-lg mb-4">
-        No lessons available yet.
-      </p>
-      <NuxtLink
-        :to="`/courses/${courseSlug}`"
-        class="btn-primary"
-      >
-        Back to Course
-      </NuxtLink>
+      <EmptyState
+        title="No lessons available"
+        message="No lessons available yet."
+        action-to="`/courses/${courseSlug}`"
+        action-label="Back to Course"
+      />
     </template>
 
     <!-- Default: show spinner for all other cases (loading or redirecting) -->

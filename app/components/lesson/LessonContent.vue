@@ -19,13 +19,11 @@
           class="prose prose-invert prose-lg max-w-none text-white"
           v-html="renderedContent"
         />
-        <p
+        <EmptyState
           v-else
-          class="text-gray-400"
-          role="status"
-        >
-          Content for this lesson will be added soon...
-        </p>
+          title="No content yet"
+          message="Content for this lesson will be added soon..."
+        />
       </template>
 
       <template #resources>
@@ -86,26 +84,29 @@
         </ul>
         <div
           v-else
-          class="text-center py-12"
           role="status"
         >
-          <svg
-            class="w-12 h-12 mx-auto mb-3 text-dark-divider"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
+          <EmptyState
+            title="No resources available"
+            message="No resources available for this lesson"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
-            />
-          </svg>
-          <p class="text-gray-500">
-            No resources available for this lesson
-          </p>
+            <template #icon>
+              <svg
+                class="w-full h-full"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                />
+              </svg>
+            </template>
+          </EmptyState>
         </div>
       </template>
 

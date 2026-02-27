@@ -10,11 +10,11 @@
     <div v-else>
       <div
         v-if="courses.length === 0"
-        class="text-center py-10"
       >
-        <p class="text-white text-lg">
-          No courses found matching your filters.
-        </p>
+        <EmptyState
+          title="No courses found"
+          message="No courses found matching your filters."
+        />
       </div>
 
       <div

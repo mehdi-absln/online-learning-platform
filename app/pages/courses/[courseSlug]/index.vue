@@ -615,12 +615,11 @@
                     </template>
                   </Accordion>
                 </div>
-                <p
+                <EmptyState
                   v-else
-                  class="text-center py-10 text-white/70"
-                >
-                  Course content is not available yet.
-                </p>
+                  title="Course content not available"
+                  message="Course content is not available yet."
+                />
               </section>
             </div>
           </template>

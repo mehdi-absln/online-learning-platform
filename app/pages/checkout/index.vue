@@ -16,36 +16,32 @@
       <!-- Empty Cart State -->
       <div
         v-if="items.length === 0"
-        class="text-center py-12 bg-dark-surface rounded-2xl border border-dark-divider"
         role="status"
         aria-live="polite"
       >
-        <div class="mb-4 text-white/70">
-          <svg
-            class="w-16 h-16 mx-auto"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-            />
-          </svg>
-          <span class="sr-only">Shopping cart icon</span>
-        </div>
-        <p class="text-lg text-white mb-6">
-          Your cart is empty.
-        </p>
-        <NuxtLink
-          to="/courses"
-          class="btn-primary inline-block"
+        <EmptyState
+          title="Your cart is empty"
+          message="Add courses to your cart to begin checkout."
+          action-to="/courses"
+          action-label="Browse Courses"
         >
-          Browse Courses
-        </NuxtLink>
+          <template #icon>
+            <svg
+              class="w-full h-full"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+              />
+            </svg>
+          </template>
+        </EmptyState>
       </div>
 
       <!-- Checkout Content -->
