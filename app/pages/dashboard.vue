@@ -100,7 +100,10 @@
             id="continue-heading"
             class="text-xl font-bold text-white mb-4 flex items-center gap-2"
           >
-            <span class="text-primary" aria-hidden="true">▶</span> Continue Learning
+            <span
+              class="text-primary"
+              aria-hidden="true"
+            >▶</span> Continue Learning
           </h2>
           <ContinueLearningCard :course="continueLearnCourse" />
         </section>
@@ -143,7 +146,10 @@
               :to="`/courses/${bookmark.courseSlug}/lessons/${bookmark.lessonSlug}`"
               class="flex items-center gap-4 px-5 py-4 hover:bg-dark-bg/50 transition-colors group"
             >
-              <span class="w-8 h-8 bg-amber-500/15 rounded-lg flex items-center justify-center text-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform" aria-hidden="true">
+              <span
+                class="w-8 h-8 bg-amber-500/15 rounded-lg flex items-center justify-center text-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform"
+                aria-hidden="true"
+              >
                 📖
               </span>
               <div class="min-w-0 flex-1">
@@ -154,7 +160,10 @@
                   {{ bookmark.courseTitle }}
                 </p>
               </div>
-              <span class="text-gray-400 group-hover:text-primary transition-colors flex-shrink-0" aria-hidden="true">
+              <span
+                class="text-gray-400 group-hover:text-primary transition-colors flex-shrink-0"
+                aria-hidden="true"
+              >
                 →
               </span>
             </NuxtLink>
