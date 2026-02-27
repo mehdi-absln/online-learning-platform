@@ -3,8 +3,8 @@
 ## Overview
 Comprehensive documentation of the project structure for the Online Learning Platform built with **Nuxt 4**, **Vue 3**, **TypeScript**, **Tailwind CSS**, **Pinia**, **SQLite** with **Drizzle ORM**, and **Vitest** for testing.
 
-**Last Updated:** February 25, 2026
-**Version:** 2.1.0
+**Last Updated:** February 27, 2026
+**Version:** 2.2.0
 
 ---
 
@@ -230,6 +230,12 @@ online-learning-platform/
 │   │   │                                      # - Proper heading hierarchy (h1→h2→h3)
 │   │   │                                      # - ARIA landmarks
 │   │   │                                      # - Skip link (fixed positioning)
+│   │   ├── error.vue                      # Global error page [NEW ⭐]
+│   │   │                                      # - 404 and 500 error handling
+│   │   │                                      # - WCAG 2.1 AA compliant
+│   │   │                                      # - aria-labelledby landmark
+│   │   │                                      # - noindex, nofollow SEO
+│   │   │                                      # - Simplified, clean design
 │   │   └── .gitkeep
 │   │
 │   ├── 📂 plugins/                        # Nuxt plugins
@@ -472,7 +478,7 @@ online-learning-platform/
 | **Root Config Files** | 13 | Build, lint, type-check configs |
 | **Vue Components** | 38 | Reusable UI components (+2 icons +1 EmptyState) |
 | **Composables** | 16 | Reusable Vue logic (+useDashboard) |
-| **Pages** | 14 | Route pages (+dashboard.vue) |
+| **Pages** | 15 | Route pages (+dashboard.vue, error.vue) |
 | **Pinia Stores** | 5 | State management |
 | **Type Definitions** | 11 | TypeScript types |
 | **Utility Functions** | 4 | Client-side utils |
@@ -541,6 +547,20 @@ online-learning-platform/
 ✅ ARIA landmarks with aria-labelledby
 ✅ Section semantics (About, Classes, Trainers, etc.)
 ✅ Removed h1 → h5 skip violation
+```
+
+### Error Page Accessibility & SEO ⭐ [NEW]
+**File:** `app/error.vue`
+```
+✅ Global error handler (404, 500)
+✅ <main> landmark with aria-labelledby
+✅ Decorative error code (aria-hidden="true")
+✅ Proper h1 for screen readers
+✅ noindex, nofollow robots meta
+✅ Descriptive meta description
+✅ Focus-visible styles on buttons/links
+✅ Simplified, clean design (no over-engineering)
+✅ Removed: auto-focus, <nav> wrapper, OG tags
 ```
 
 ### Checkout Pages Accessibility & SEO ⭐ [UPDATED]

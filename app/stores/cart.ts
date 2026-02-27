@@ -223,10 +223,10 @@ export const useCartStore = defineStore('cart', () => {
 
       if (response?.success) {
         await clearCart()
-        
+
         // Fetch updated enrollments (user now owns these courses)
         await userStore.fetchEnrollments()
-        
+
         // Success toast is optional here as we redirect to success page
         return { success: true, message: response.message, orderId: response.orderId }
       }
@@ -254,7 +254,7 @@ export const useCartStore = defineStore('cart', () => {
   const initializeCart = async () => {
     // Wait a tick to ensure user store has initialized
     await nextTick()
-    
+
     if (userStore.isAuthenticated) {
       await fetchUserCart()
     }
@@ -268,7 +268,7 @@ export const useCartStore = defineStore('cart', () => {
   watch(() => userStore.isAuthenticated, async (isAuth, oldIsAuth) => {
     // Skip if auth state hasn't actually changed (prevents double fetch on init)
     if (isAuth === oldIsAuth) return
-    
+
     if (isAuth) {
       await fetchUserCart()
     }
