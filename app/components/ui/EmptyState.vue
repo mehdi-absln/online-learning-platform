@@ -14,6 +14,7 @@ const emit = defineEmits<{
 <template>
   <section
     role="status"
+    aria-live="polite"
     aria-labelledby="empty-state-title"
     class="flex flex-col items-center justify-center py-16 px-4 text-center"
   >
