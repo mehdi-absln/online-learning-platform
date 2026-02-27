@@ -85,38 +85,30 @@
           <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
             <div
               v-if="items.length === 0"
-              class="h-full flex flex-col items-center justify-center text-center space-y-4"
             >
-              <div class="p-6 bg-dark-bg rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-12 w-12 text-white/20"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.5"
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p class="text-white font-medium">
-                  Your cart is empty
-                </p>
-                <p class="text-white/70 text-sm mt-1">
-                  Looks like you haven't added anything yet.
-                </p>
-              </div>
-              <button
-                class="btn-primary mt-4 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-bg focus:outline-none"
-                @click="closeCart"
+              <EmptyState
+                title="Your cart is empty"
+                message="Looks like you haven't added anything yet."
+                action-label="Start Learning"
+                @action="closeCart"
               >
-                Start Learning
-              </button>
+                <template #icon>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-full h-full"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                    />
+                  </svg>
+                </template>
+              </EmptyState>
             </div>
 
             <ul

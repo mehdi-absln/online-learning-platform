@@ -59,36 +59,31 @@
         <!-- No Results State -->
         <div
           v-if="!isLoading && searchQuery && blogs.length === 0"
-          class="text-center py-12"
           role="status"
         >
-          <svg
-            class="mx-auto h-12 w-12 text-gray-400 mb-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
+          <EmptyState
+            title="No articles found"
+            :message="`No articles found for \"${searchQuery}\"`"
+            action-label="Clear search"
+            @action="handleClear"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <h3 class="text-lg font-medium text-white mb-2">
-            No articles found
-          </h3>
-          <p class="text-gray-400">
-            No articles found for "<span class="text-white font-medium">{{ searchQuery }}</span>"
-          </p>
-          <button
-            type="button"
-            class="btn-primary mt-4"
-            @click="handleClear"
-          >
-            Clear search
-          </button>
+            <template #icon>
+              <svg
+                class="w-full h-full"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </template>
+          </EmptyState>
         </div>
 
         <!-- Loading State -->

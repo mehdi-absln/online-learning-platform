@@ -234,73 +234,24 @@
         <!-- ═══ Empty State ═══ -->
         <section
           v-if="enrolledCourses.length === 0"
-          class="text-center py-20"
-          aria-labelledby="empty-state-heading"
+          aria-label="No enrolled courses"
         >
-          <div class="bg-dark-surface border border-dark-divider/50 rounded-2xl p-12 max-w-lg mx-auto">
-            <!-- Icon -->
-            <div class="w-24 h-24 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center">
-              <svg
-                class="w-12 h-12 text-primary"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                />
-              </svg>
-            </div>
-
-            <!-- Heading -->
-            <h2
-              id="empty-state-heading"
-              class="text-2xl font-bold text-white mb-3"
-            >
-              Start Your Learning Journey!
-            </h2>
-
-            <!-- Description -->
-            <p class="text-gray-400 mb-8 text-base">
-              Explore our courses and begin your path to mastery.
-            </p>
-
-            <!-- CTA Button -->
+          <EmptyState
+            title="Start Your Learning Journey!"
+            message="Explore our courses and begin your path to mastery."
+            action-to="/courses"
+            action-label="Browse Courses"
+          />
+          <p class="text-sm text-gray-500 mt-6 text-center">
+            Check out our
             <NuxtLink
-              to="/courses"
-              class="btn-primary inline-flex items-center gap-2"
+              to="/courses?featured=true"
+              class="text-primary hover:underline"
             >
-              Browse Courses
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                />
-              </svg>
+              featured courses
             </NuxtLink>
-
-            <!-- Optional: Popular courses hint -->
-            <p class="text-sm text-gray-500 mt-6">
-              Check out our
-              <NuxtLink
-                to="/courses?featured=true"
-                class="text-primary hover:underline"
-              >
-                featured courses
-              </NuxtLink>
-              to get started
-            </p>
-          </div>
+            to get started
+          </p>
         </section>
       </template>
 
