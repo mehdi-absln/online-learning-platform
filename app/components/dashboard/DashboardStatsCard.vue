@@ -12,8 +12,10 @@
     <div
       class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
       :class="iconBg"
+      role="img"
+      :aria-label="`Icon for ${label}`"
     >
-      <span class="text-xl">{{ icon }}</span>
+      <span class="text-xl" aria-hidden="true">{{ icon }}</span>
     </div>
 
     <!-- Value -->

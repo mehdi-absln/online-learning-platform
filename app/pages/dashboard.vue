@@ -1,6 +1,18 @@
 <template>
   <div class="min-h-screen">
-    <div class="container py-8 lg:py-12 space-y-8 lg:space-y-10 animate-fade-in">
+    <!-- Skip Link -->
+    <a
+      href="#dashboard-main"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg"
+    >
+      Skip to main content
+    </a>
+
+    <main
+      id="dashboard-main"
+      role="main"
+      class="container py-8 lg:py-12 space-y-8 lg:space-y-10 animate-fade-in"
+    >
       <!-- ═══ 1. Welcome Header ═══ -->
       <section aria-labelledby="dashboard-heading">
         <h1
@@ -18,6 +30,8 @@
       <div
         v-if="loading"
         class="space-y-8"
+        aria-busy="true"
+        aria-live="polite"
       >
         <!-- Stats skeleton -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
@@ -86,7 +100,7 @@
             id="continue-heading"
             class="text-xl font-bold text-white mb-4 flex items-center gap-2"
           >
-            <span class="text-primary">▶</span> Continue Learning
+            <span class="text-primary" aria-hidden="true">▶</span> Continue Learning
           </h2>
           <ContinueLearningCard :course="continueLearnCourse" />
         </section>
@@ -120,7 +134,7 @@
             id="bookmarks-heading"
             class="text-xl font-bold text-white mb-4"
           >
-            🔖 Bookmarked Lessons
+            <span aria-hidden="true">🔖</span> Bookmarked Lessons
           </h2>
           <div class="bg-dark-surface border border-dark-divider/50 rounded-2xl divide-y divide-dark-divider/50 overflow-hidden">
             <NuxtLink
@@ -129,18 +143,18 @@
               :to="`/courses/${bookmark.courseSlug}/lessons/${bookmark.lessonSlug}`"
               class="flex items-center gap-4 px-5 py-4 hover:bg-dark-bg/50 transition-colors group"
             >
-              <span class="w-8 h-8 bg-amber-500/15 rounded-lg flex items-center justify-center text-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform">
+              <span class="w-8 h-8 bg-amber-500/15 rounded-lg flex items-center justify-center text-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform" aria-hidden="true">
                 📖
               </span>
               <div class="min-w-0 flex-1">
                 <p class="text-sm font-medium text-white truncate group-hover:text-primary transition-colors">
                   {{ bookmark.lessonTitle }}
                 </p>
-                <p class="text-xs text-gray-500 truncate">
+                <p class="text-xs text-gray-400 truncate">
                   {{ bookmark.courseTitle }}
                 </p>
               </div>
-              <span class="text-gray-500 group-hover:text-primary transition-colors flex-shrink-0">
+              <span class="text-gray-400 group-hover:text-primary transition-colors flex-shrink-0" aria-hidden="true">
                 →
               </span>
             </NuxtLink>
@@ -242,7 +256,7 @@
             action-to="/courses"
             action-label="Browse Courses"
           />
-          <p class="text-sm text-gray-500 mt-6 text-center">
+          <p class="text-sm text-gray-400 mt-6 text-center">
             Check out our
             <NuxtLink
               to="/courses?featured=true"
@@ -261,7 +275,7 @@
         message="Failed to load dashboard data."
         @retry="() => refresh()"
       />
-    </div>
+    </main>
   </div>
 </template>
 

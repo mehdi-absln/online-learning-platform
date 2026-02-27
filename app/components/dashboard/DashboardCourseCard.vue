@@ -6,13 +6,14 @@
         v-if="course.thumbnail"
         :src="course.thumbnail"
         :alt="course.title"
+        loading="lazy"
         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
       >
       <div
         v-else
         class="w-full h-full flex items-center justify-center text-gray-500"
       >
-        <span class="text-3xl">📚</span>
+        <span class="text-3xl" aria-hidden="true">📚</span>
       </div>
 
       <!-- Completion badge -->
@@ -20,7 +21,7 @@
         v-if="isCompleted"
         class="absolute top-3 right-3 bg-emerald-500/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full"
       >
-        ✅ Completed
+        <span aria-hidden="true">✅</span> Completed
       </div>
     </div>
 
