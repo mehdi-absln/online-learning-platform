@@ -63,7 +63,7 @@
         >
           <EmptyState
             title="No articles found"
-            :message="`No articles found for \"${searchQuery}\"`"
+            :message="noResultsMessage"
             action-label="Clear search"
             @action="handleClear"
           >
@@ -161,6 +161,11 @@ const searchResultsLabel = computed(() => {
   }
   const count = blogs.value.length
   return `Search results: ${count} ${count === 1 ? 'article' : 'articles'} found for "${searchQuery.value}"`
+})
+
+// Computed message for empty state (avoids template literal parsing issues in tests)
+const noResultsMessage = computed(() => {
+  return `No articles found for "${searchQuery.value}"`
 })
 
 // Event handlers - بدون تغییر
