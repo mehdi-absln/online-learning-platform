@@ -9,7 +9,7 @@ export interface DatabaseUser {
   id: number
   username: string
   email: string
-  password: string  // Match schema field name
+  password: string // Match schema field name
   createdAt: Date
   updatedAt: Date
 }
@@ -22,7 +22,7 @@ export async function createUser(data: CreateUserRequest): Promise<DatabaseUser>
     .values({
       username: data.username,
       email: data.email,
-      password: passwordHash,  // Use schema field name
+      password: passwordHash, // Use schema field name
       createdAt: new Date(),
       updatedAt: new Date(),
     })
@@ -53,4 +53,8 @@ export async function findById(id: number): Promise<DatabaseUser | null> {
 
 export async function verifyPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
   return bcrypt.compare(plainPassword, hashedPassword)
+}
+export async function hashPassword(password: string): Promise<string> {
+  // همانند createUser از 12 دور نمک استفاده می‌کنیم
+  return bcrypt.hash(password, 12)
 }

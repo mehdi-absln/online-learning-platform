@@ -40,7 +40,7 @@
               formula, and it's never out of reach. Every skill starts with a single step.
             </p>
             <NuxtLink
-              to="/auth/sign-up"
+              to="/auth"
               class="inline-block"
             >
               <button

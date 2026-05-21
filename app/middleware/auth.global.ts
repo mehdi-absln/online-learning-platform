@@ -1,7 +1,16 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   const userStore = useUserStore()
 
-  // If not authenticated, fetch user to check session
+  // ───── Fast path for unauthenticated users trying to access protected pages ─────
+  if (to.meta.requiresAuth && !userStore.isAuthenticated) {
+    // Immediately redirect to sign in (don't wait for fetchUser)
+    return navigateTo('/auth/signin?redirected=please_login')
+  }
+
+  // ───── If we reach here, either the route doesn't require auth, or the user isAuthenticated in store ─────
+  // (isAuthenticated might be false but route doesn't need auth, so we fetch in background)
+
+  // Ensure user state is loaded for authenticated users
   if (!userStore.isAuthenticated) {
     await userStore.fetchUser()
   }
@@ -11,13 +20,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
     await userStore.fetchEnrollments()
   }
 
-  // FIRST: If going to /auth pages while authenticated, redirect to home
+  // If going to /auth pages while authenticated, redirect to home
   if (to.path.startsWith('/auth') && userStore.isAuthenticated) {
     return navigateTo('/home')
-  }
-
-  // SECOND: If route requires auth and user is not authenticated, redirect to /auth
-  if (to.meta.requiresAuth && !userStore.isAuthenticated) {
-    return navigateTo('/auth')
   }
 })

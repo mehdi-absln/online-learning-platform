@@ -18,7 +18,10 @@
             v-else
             class="w-full h-full flex items-center justify-center text-gray-500"
           >
-            <span class="text-4xl" aria-hidden="true">📚</span>
+            <span
+              class="text-4xl"
+              aria-hidden="true"
+            >📚</span>
           </div>
         </div>
       </div>
@@ -37,7 +40,10 @@
             class="text-sm text-gray-400 mb-4"
           >
             <span aria-hidden="true">📖</span> {{ course.lastAccessedLesson.title }}
-            <span class="text-gray-500 mx-1" aria-hidden="true">·</span>
+            <span
+              class="text-gray-500 mx-1"
+              aria-hidden="true"
+            >·</span>
             Lesson {{ course.completedLessons + 1 }} of {{ course.totalLessons }}
           </p>
         </div>
@@ -63,7 +69,10 @@
             class="btn-primary text-sm px-6 py-2.5"
           >
             Continue Learning
-            <span class="ml-1" aria-hidden="true">→</span>
+            <span
+              class="ml-1"
+              aria-hidden="true"
+            >→</span>
           </NuxtLink>
         </div>
       </div>

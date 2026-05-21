@@ -185,11 +185,6 @@ export const useCartStore = defineStore('cart', () => {
     catch (error: unknown) {
       console.warn('Cart merge failed silently:', error)
       // Don't show error toast - merge is not critical and user is already logged in
-      // This can happen if:
-      // - Course no longer exists
-      // - User already enrolled
-      // - Network issue
-      // None of these should block the login flow
     }
   }
 
@@ -227,7 +222,6 @@ export const useCartStore = defineStore('cart', () => {
         // Fetch updated enrollments (user now owns these courses)
         await userStore.fetchEnrollments()
 
-        // Success toast is optional here as we redirect to success page
         return { success: true, message: response.message, orderId: response.orderId }
       }
 
@@ -237,7 +231,6 @@ export const useCartStore = defineStore('cart', () => {
       const err = error as { statusMessage?: string, data?: { message?: string, orderId?: number } }
       console.error('Checkout error:', error)
       const message = err.statusMessage || err.data?.message || 'Payment processing failed'
-      // Only show error toast if it's a real unexpected failure, not a simulated one
       if (simulationType === 'success') toast.error(message)
       return { success: false, message, orderId: err.data?.orderId }
     }
@@ -246,39 +239,49 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
-  // ───── Initialization ─────
+  // ───── Initialization (SAFE & CLIENT‑ONLY) ─────
 
-  /**
-   * Initialize cart - called once on app mount after auth state is known
-   */
+  const isInitialized = ref(false)
+  let stopWatcher: (() => void) | undefined
+
   const initializeCart = async () => {
-    // Wait a tick to ensure user store has initialized
-    await nextTick()
-
-    if (userStore.isAuthenticated) {
-      await fetchUserCart()
+    if (isInitialized.value) return
+    try {
+      if (userStore.isAuthenticated) {
+        await fetchUserCart()
+      }
+      else {
+        await fetchGuestCartDetails()
+      }
+      isInitialized.value = true
     }
-    else {
-      await fetchGuestCartDetails()
+    catch (error) {
+      console.error('Cart init error:', error)
     }
   }
 
-  // Watch for auth changes to fetch appropriate data
-  // Note: No { immediate: true } - we fetch once user auth state is known
-  watch(() => userStore.isAuthenticated, async (isAuth, oldIsAuth) => {
-    // Skip if auth state hasn't actually changed (prevents double fetch on init)
-    if (isAuth === oldIsAuth) return
+  // Only on client side to avoid SSR hydration problems
+  if (import.meta.client) {
+    stopWatcher = watch(
+      () => userStore.isAuthenticated,
+      async (isAuth) => {
+        if (isAuth && !isInitialized.value) {
+          await fetchUserCart()
+        }
+        else if (!isAuth) {
+          await fetchGuestCartDetails()
+        }
+      },
+    )
 
-    if (isAuth) {
-      await fetchUserCart()
-    }
-    else {
-      await fetchGuestCartDetails()
-    }
-  })
+    // Cleanup when store scope is disposed (important!)
+    onScopeDispose(() => {
+      stopWatcher?.()
+    })
 
-  // Initialize cart on store creation (after auth state is known)
-  initializeCart()
+    // Trigger initial load
+    initializeCart()
+  }
 
   return {
     items,
