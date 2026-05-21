@@ -1,6 +1,9 @@
 <template>
-  <!-- Mobile Menu Backdrop & Panel (Teleported to body so it covers the entire viewport) -->
+  <!-- ========================================================================
+       Mobile Menu (Teleported to <body> so it can cover the full viewport)
+       ======================================================================== -->
   <Teleport to="body">
+    <!-- Backdrop -->
     <Transition
       enter-active-class="transition-opacity duration-300 ease-linear"
       enter-from-class="opacity-0"
@@ -17,17 +20,18 @@
       />
     </Transition>
 
+    <!-- Menu Panel -->
     <Transition
       enter-active-class="transition-all duration-300 ease-out"
       enter-from-class="opacity-0 -translate-y-4 max-h-0"
-      enter-to-class="opacity-100 translate-y-0 max-h-[600px]"
+      enter-to-class="opacity-100 translate-y-0"
       leave-active-class="transition-all duration-200 ease-in"
-      leave-from-class="opacity-100 translate-y-0 max-h-[600px]"
+      leave-from-class="opacity-100 translate-y-0"
       leave-to-class="opacity-0 -translate-y-4 max-h-0"
     >
       <div
         v-if="isMobileMenuOpen"
-        class="lg:hidden fixed top-20 left-4 right-4 z-50 bg-dark-surface/95 backdrop-blur-xl border border-dark-divider rounded-2xl shadow-2xl overflow-hidden"
+        class="lg:hidden scrollbar-hide fixed top-20 bottom-4 left-4 right-4 z-50 bg-dark-surface/95 backdrop-blur-xl border border-dark-divider rounded-2xl shadow-2xl overflow-y-auto pb-4"
       >
         <ul
           class="py-2"
@@ -98,6 +102,9 @@
     </Transition>
   </Teleport>
 
+  <!-- ========================================================================
+       Main Navigation Bar (fixed, transparent → solid on scroll)
+       ======================================================================== -->
   <nav
     aria-label="Main navigation"
     class="fixed top-0 left-0 right-0 z-50 container py-4 lg:py-10 transition-all duration-300"
@@ -105,9 +112,8 @@
       ? 'bg-dark-gray/85 backdrop-blur-md shadow-lg shadow-black/20'
       : 'bg-transparent'"
   >
-    <!-- Everything else inside <nav> remains unchanged -->
     <div class="flex justify-between items-center">
-      <!-- Logo/Brand -->
+      <!-- Logo / Brand -->
       <NuxtLink
         to="/home"
         class="text-lg lg:text-xl font-bold text-white drop-shadow-lg shrink-0"
@@ -138,7 +144,7 @@
 
       <!-- Desktop Action Buttons -->
       <div class="hidden lg:flex items-center space-x-4">
-        <!-- User Menu (when authenticated) -->
+        <!-- Authenticated User Menu -->
         <div
           v-if="userStore.isAuthenticated"
           class="relative"
@@ -182,7 +188,7 @@
             </Transition>
           </button>
 
-          <!-- Dropdown Menu -->
+          <!-- Desktop Dropdown Menu -->
           <Transition
             enter-active-class="transition ease-out duration-300"
             enter-from-class="opacity-0 scale-95 -translate-y-3"
@@ -485,22 +491,22 @@ const route = useRoute()
 const userStore = useUserStore()
 const { itemsCount: cartItemsCount, openCart } = useCart()
 
-// Transparent-to-solid nav background on scroll
+// ── Transparent-to-solid nav background on scroll ──
 const { y: scrollY } = useWindowScroll()
 const isScrolled = computed(() => scrollY.value > 10)
 
-// Accessibility IDs
+// ── Accessibility IDs ──
 const avatarButtonId = 'user-avatar-button'
 const dropdownMenuId = 'user-menu'
 
-// Desktop dropdown state
+// ── Desktop dropdown state ──
 const isDropdownOpen = ref(false)
 const avatarButton = ref<HTMLButtonElement | null>(null)
 const dropdownMenu = ref<HTMLDivElement | null>(null)
 const menuItemElements = ref<(HTMLElement | null)[]>([])
 const focusedItemIndex = ref(-1)
 
-// Mobile menu state
+// ── Mobile menu state ──
 const isMobileMenuOpen = ref(false)
 
 const toggleMobileMenu = () => {
@@ -511,35 +517,23 @@ const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
 }
 
-// Shared navigation links (extracted to composable)
+// ── Shared navigation links (extracted to composable) ──
 const { mainLinks } = useNavigationLinks()
 
-/**
- * Dynamic items for the user dropdown menu.
- * Add or remove entries here to update the menu structure.
- */
+// ── Dynamic items for the user dropdown menu. ──
 const dropdownMenuItems = computed(() => {
   const items = [
     { id: 'profile', to: '/profile', label: 'Profile', icon: 'profile' },
     { id: 'courses', to: '/dashboard', label: 'My Courses', icon: 'courses' },
-    { id: 'settings', to: '/settings', label: 'Settings', icon: 'settings' },
   ]
   return items
 })
 
-/**
- * Determines if a link is active based on the current route.
- * Matches both exact paths and nested routes (e.g., /admin and /admin/courses).
- */
 const isActiveLink = (path: string) => {
   const current = route.path
   return current === path || current.startsWith(path + '/')
 }
 
-/**
- * Sets a menu item element into the reactive array.
- * Accepts either a plain HTMLElement or a Vue ComponentPublicInstance (NuxtLink).
- */
 const setMenuItemRef = (el: Element | ComponentPublicInstance | null, index: number) => {
   if (el) {
     if (el instanceof HTMLElement) {
@@ -551,14 +545,11 @@ const setMenuItemRef = (el: Element | ComponentPublicInstance | null, index: num
   }
 }
 
-/**
- * Higher‑order function that returns a typed ref callback for a specific menu index.
- */
 const getMenuItemRef = (index: number) => (el: Element | ComponentPublicInstance | null) => {
   setMenuItemRef(el, index)
 }
 
-// Keyboard navigation within the dropdown
+// ── Keyboard navigation within the dropdown ──
 const { handleKeyDown } = useKeyboardFocus({
   items: menuItemElements,
 })
@@ -566,8 +557,7 @@ const { handleKeyDown } = useKeyboardFocus({
 const userInitials = computed(() => userStore.user?.username?.[0]?.toUpperCase() || 'U')
 const userDisplayName = computed(() => userStore.user?.username || 'User')
 
-// ── Desktop Dropdown Controls ──────────────────────────────────────────
-
+// ── Desktop Dropdown Controls ──
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
   if (isDropdownOpen.value) {
@@ -616,7 +606,7 @@ const handleLogout = async () => {
   await userStore.logout()
 }
 
-// Close dropdown when clicking outside
+// ── Close dropdown when clicking outside ──
 const handleClickOutside = (event: MouseEvent) => {
   if (isDropdownOpen.value && dropdownMenu.value && !dropdownMenu.value.contains(event.target as Node)) {
     closeDropdown()
