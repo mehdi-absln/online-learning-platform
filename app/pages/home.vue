@@ -1,25 +1,20 @@
 <template>
   <div>
     <!-- Hero Section -->
-    <section class="relative w-full overflow-hidden">
-      <div class="absolute top-0 left-0 z-10 pointer-events-none flex flex-col items-start">
-        <div class="w-[320px] h-[250px] bg-[#E05243] [clip-path:polygon(0_0,100%_0,0_100%)] z-10" />
-        <div class="w-[550px] h-[55px] bg-black/50 -rotate-[37deg] origin-left z-0 mb-5" />
-        <div class="w-[1900px] h-[550px] bg-black/10 -rotate-[37deg] origin-left z-0" />
-      </div>
-      <div class="absolute bottom-[-60px] right-[-300px] z-10 -rotate-[40deg]">
+    <section
+      aria-label="Hero section"
+      class="relative w-full overflow-hidden"
+    >
+      <div
+        aria-hidden="true"
+        class="absolute bottom-[-60px] right-[-300px] z-10 -rotate-[40deg]"
+      >
         <div class="w-[1200px] h-[140px] bg-[#E05243] mb-6" />
         <div class="w-[1200px] h-[140px] bg-[#E05243]" />
       </div>
-      <div
-        class="relative w-full aspect-video overflow-hidden"
-        role="banner"
-        aria-label="Hero banner"
-      >
+      <div class="relative w-full aspect-video overflow-hidden">
         <div class="absolute inset-0 w-full h-full">
-          <div
-            class="w-full h-full bg-cover bg-center bg-no-repeat bg-[url('@/public/images/banner.jpg')]"
-          >
+          <div class="w-full h-full bg-cover bg-center bg-no-repeat bg-[url('@/public/images/banner.jpg')]">
             <div
               class="absolute inset-0 bg-black bg-opacity-80"
               aria-hidden="true"
@@ -43,15 +38,14 @@
               to="/auth"
               class="inline-block"
             >
-              <button
-                class="btn-primary relative font-antonio group overflow-hidden"
-              >
-                <span
-                  class="absolute inset-0 w-0 bg-white/10 group-hover:w-full transition-all duration-500"
-                />
+              <button class="btn-primary relative font-antonio group overflow-hidden">
+                <span class="absolute inset-0 w-0 bg-white/10 group-hover:w-full transition-all duration-500" />
                 <span class="relative z-10 flex items-center">
                   GET STARTED NOW
-                  <span class="ml-2 transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  <span
+                    class="ml-2 transition-transform duration-300 group-hover:translate-x-1"
+                    aria-hidden="true"
+                  >→</span>
                 </span>
               </button>
             </NuxtLink>
@@ -68,10 +62,11 @@
         <div class="w-[45%] relative">
           <img
             src="../public/images/laptop-near-whilte-book.jpg"
-            alt="laptop near whilte book"
+            alt="Laptop near a white book"
             class="h-full object-cover z-20 ml-auto block w-[95%] relative"
           >
           <div
+            aria-hidden="true"
             class="absolute left-0 -bottom-[50px] rotate-180 w-0 h-0 border-l-[420px] border-l-transparent border-t-[350px] border-t-[#E05243]"
           />
         </div>
@@ -93,7 +88,8 @@
               <div>
                 <img
                   src="../public/icon/UPST0182.png"
-                  alt="UPST0182"
+                  alt=""
+                  role="presentation"
                   loading="lazy"
                 >
               </div>
@@ -107,7 +103,8 @@
               <div>
                 <img
                   src="../public/icon/UPST0181.png"
-                  alt="UPST0181"
+                  alt=""
+                  role="presentation"
                   loading="lazy"
                 >
               </div>
@@ -121,7 +118,8 @@
               <div>
                 <img
                   src="../public/icon/UPST0180.png"
-                  alt="UPST0180"
+                  alt=""
+                  role="presentation"
                   loading="lazy"
                 >
               </div>
@@ -135,7 +133,8 @@
               <div>
                 <img
                   src="../public/icon/UPST0179.png"
-                  alt="UPST0179"
+                  alt=""
+                  role="presentation"
                   loading="lazy"
                 >
               </div>
@@ -149,12 +148,14 @@
         </div>
       </div>
     </section>
+
     <!-- Online Classes Section -->
     <section
       class="bg-dark-surface py-32 relative z-0"
       aria-labelledby="classes-heading"
     >
       <div
+        aria-hidden="true"
         class="absolute inset-0 flex justify-center gap-[50%] pointer-events-none items-end -z-10"
       >
         <div class="w-px h-[95%] bg-primary transform -skew-x-[25deg]" />
@@ -172,7 +173,47 @@
             OUR POPULAR CLASSES
           </h2>
         </div>
-        <div>
+
+        <!-- Loading State -->
+        <div
+          v-if="isCoursesLoading"
+          class="text-center py-10"
+          role="status"
+          aria-live="polite"
+        >
+          <LoadingSpinner message="Loading popular courses..." />
+        </div>
+
+        <!-- Error State -->
+        <div
+          v-else-if="hasCoursesError"
+          class="py-10"
+          role="alert"
+        >
+          <ErrorState
+            :message="coursesErrorMessage"
+            @retry="refreshCourses"
+          />
+        </div>
+
+        <!-- Empty State -->
+        <div
+          v-else-if="popularCourses.length === 0"
+          role="status"
+          aria-live="polite"
+        >
+          <EmptyState
+            title="No courses available"
+            message="Check back soon for new courses"
+          />
+        </div>
+
+        <!-- Carousel -->
+        <div
+          v-else
+          aria-label="Popular courses carousel"
+          role="region"
+        >
           <Carousel
             :items-to-show="3"
             :wrap-around="false"
@@ -180,11 +221,11 @@
             :touch-drag="true"
           >
             <Slide
-              v-for="slide in slides"
-              :key="slide.id"
+              v-for="course in popularCourses"
+              :key="course.id"
             >
               <div class="w-[95%] group">
-                <CourseCard :course="slide" />
+                <CourseCard :course="course" />
               </div>
             </Slide>
             <template #addons>
@@ -194,6 +235,7 @@
         </div>
       </div>
     </section>
+
     <!-- Stats Section -->
     <section
       class="py-20"
@@ -201,37 +243,73 @@
     >
       <div class="container">
         <div class="flex flex-wrap justify-center gap-8 text-center">
-          <div class="flex-1 min-w-[200px] max-w-[300px] p-6">
-            <div class="text-5xl font-bold text-primary mb-2 font-antonio">
+          <div
+            class="flex-1 min-w-[200px] max-w-[300px] p-6"
+            aria-labelledby="stat1-value stat1-desc"
+          >
+            <div
+              id="stat1-value"
+              class="text-5xl font-bold text-primary mb-2 font-antonio"
+            >
               1200
             </div>
-            <p class="text-white text-base pt-2">
+            <p
+              id="stat1-desc"
+              class="text-white text-base pt-2"
+            >
               Hours Of Learning
             </p>
           </div>
 
-          <div class="flex-1 min-w-[200px] max-w-[300px] p-6">
-            <div class="text-5xl font-bold text-primary mb-2 font-antonio">
+          <div
+            class="flex-1 min-w-[200px] max-w-[300px] p-6"
+            aria-labelledby="stat2-value stat2-desc"
+          >
+            <div
+              id="stat2-value"
+              class="text-5xl font-bold text-primary mb-2 font-antonio"
+            >
               10,145
             </div>
-            <p class="text-white text-base pt-2">
+            <p
+              id="stat2-desc"
+              class="text-white text-base pt-2"
+            >
               Total Tutorials
             </p>
           </div>
 
-          <div class="flex-1 min-w-[200px] max-w-[300px] p-6">
-            <div class="text-5xl font-bold text-primary mb-2 font-antonio">
+          <div
+            class="flex-1 min-w-[200px] max-w-[300px] p-6"
+            aria-labelledby="stat3-value stat3-desc"
+          >
+            <div
+              id="stat3-value"
+              class="text-5xl font-bold text-primary mb-2 font-antonio"
+            >
               3745
             </div>
-            <p class="text-white text-base pt-2">
+            <p
+              id="stat3-desc"
+              class="text-white text-base pt-2"
+            >
               Enrolled Learners
             </p>
           </div>
-          <div class="flex-1 min-w-[200px] max-w-[300px] p-6">
-            <div class="text-5xl font-bold text-primary mb-2 font-antonio">
+          <div
+            class="flex-1 min-w-[200px] max-w-[300px] p-6"
+            aria-labelledby="stat4-value stat4-desc"
+          >
+            <div
+              id="stat4-value"
+              class="text-5xl font-bold text-primary mb-2 font-antonio"
+            >
               100%
             </div>
-            <p class="text-white text-base pt-2">
+            <p
+              id="stat4-desc"
+              class="text-white text-base pt-2"
+            >
               Achieve learning goals
             </p>
           </div>
@@ -239,6 +317,7 @@
         <hr class="my-6 border-gray-700 block w-full">
       </div>
     </section>
+
     <!-- Trainers Section -->
     <section
       class="py-32"
@@ -267,19 +346,16 @@
               :alt="trainer.name"
               class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             >
-            <div
-              class="absolute inset-0 bg-black/60 transition-all duration-300 p-6 flex flex-col items-start justify-end h-full"
-            >
+            <div class="absolute inset-0 bg-black/60 transition-all duration-300 p-6 flex flex-col items-start justify-end h-full">
               <div class="relative overflow-hidden group z-20 py-6 px-6 flex flex-col w-full">
                 <div class="text-center w-full">
-                  <h3
-                    class="text-white text-xl font-bold font-antonio cursor-pointer hover:text-[#021E40] transition-colors duration-300"
-                  >
+                  <h3 class="text-white text-xl font-bold font-antonio cursor-pointer hover:text-[#021E40] transition-colors duration-300">
                     {{ trainer.name }}
                   </h3>
                   <span class="text-white text-xs uppercase pt-1">{{ trainer.role }}</span>
                 </div>
                 <div
+                  aria-hidden="true"
                   class="absolute inset-0 w-1/5 h-full bg-primary transition-all duration-300 group-hover:w-full -z-10"
                 />
                 <div class="flex justify-center space-x-3 pt-4 w-full">
@@ -322,9 +398,7 @@
                         viewBox="0 0 24 24"
                         aria-hidden="true"
                       >
-                        <path
-                          d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"
-                        />
+                        <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
                       </svg>
                     </a>
                     <a
@@ -341,9 +415,7 @@
                         viewBox="0 0 24 24"
                         aria-hidden="true"
                       >
-                        <path
-                          d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-                        />
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                       </svg>
                     </a>
                   </template>
@@ -354,6 +426,7 @@
         </div>
       </div>
     </section>
+
     <!-- Testimonials Section -->
     <section
       class="pt-16 pb-24"
@@ -371,7 +444,11 @@
             What they say about us
           </h2>
         </div>
-        <div class="relative">
+        <div
+          class="relative"
+          aria-label="Testimonials carousel"
+          role="region"
+        >
           <Carousel
             :items-to-show="2"
             :wrap-around="false"
@@ -383,21 +460,17 @@
               v-for="testimonial in testimonials"
               :key="testimonial.id"
             >
-              <div
-                class="bg-transparent p-8 border-2 border-dark-divider rounded-2xl text-center mx-4 relative overflow-hidden before:content-['\201C'] before:absolute before:top-4 before:right-4 before:text-[#3a3a3a] before:text-9xl before:font-serif before:leading-none before:opacity-20 before:pointer-events-none"
-              >
-                <div
-                  class="w-20 h-20 mx-auto mb-6 rounded-full overflow-hidden border-2 border-primary"
-                >
+              <div class="bg-transparent p-8 border-2 border-dark-divider rounded-2xl text-center mx-4 relative overflow-hidden before:content-['\201C'] before:absolute before:top-4 before:right-4 before:text-[#3a3a3a] before:text-9xl before:font-serif before:leading-none before:opacity-20 before:pointer-events-none">
+                <div class="w-20 h-20 mx-auto mb-6 rounded-full overflow-hidden border-2 border-primary">
                   <img
                     :src="testimonial.avatar"
                     :alt="testimonial.name"
                     class="w-full h-full object-cover"
                   >
                 </div>
-                <p class="text-gray-300 text-lg mb-6">
+                <blockquote class="text-gray-300 text-lg mb-6">
                   "{{ testimonial.content }}"
-                </p>
+                </blockquote>
                 <h4 class="text-white text-xl font-semibold">
                   {{ testimonial.name }}
                 </h4>
@@ -413,6 +486,7 @@
         </div>
       </div>
     </section>
+
     <!-- Blog Section -->
     <section
       class="py-16"
@@ -430,40 +504,59 @@
             Have a look at our news
           </h2>
         </div>
-        <div class="flex flex-wrap justify-center gap-8">
-          <div
-            v-for="(item, index) in latestNews"
-            :key="index"
-            class="group cursor-pointer relative overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-1 w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)]"
+
+        <!-- Loading State -->
+        <div
+          v-if="isLoading"
+          class="text-center py-10"
+          role="status"
+          aria-live="polite"
+        >
+          <LoadingSpinner message="Loading latest articles..." />
+        </div>
+
+        <!-- Error State -->
+        <div
+          v-else-if="hasError"
+          class="py-10"
+          role="alert"
+        >
+          <ErrorState
+            :message="errorMessage"
+            @retry="refresh"
+          />
+        </div>
+
+        <!-- Empty State -->
+        <div
+          v-else-if="latestPosts.length === 0"
+          role="status"
+          aria-live="polite"
+        >
+          <EmptyState
+            title="No articles yet"
+            message="Check back soon for new articles"
+          />
+        </div>
+
+        <!-- Blog Cards Grid -->
+        <div
+          v-else
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          role="list"
+          :aria-label="`Showing ${latestPosts.length} latest blog articles`"
+        >
+          <article
+            v-for="post in latestPosts"
+            :key="post.id"
+            role="listitem"
+            class="flex"
           >
-            <div class="relative h-48 overflow-hidden">
-              <img
-                :src="item.thumbnail"
-                :alt="item.title"
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              >
-              <div
-                class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"
-              />
-            </div>
-            <div class="py-8">
-              <div class="flex items-center text-white">
-                <span class="uppercase text-sm font-medium">
-                  by <NuxtLink
-                    to="/"
-                    class="hover:underline"
-                  >{{ item.author }}</NuxtLink>
-                </span>
-                <div class="mx-4 bg-primary w-2 h-2" />
-                <span class="uppercase text-sm font-medium">
-                  {{ formatDate(item.date) }}
-                </span>
-              </div>
-              <h4 class="text-[22px] font-semibold text-white mt-4 font-antonio hover:text-primary transition-colors duration-300">
-                {{ item.title }}
-              </h4>
-            </div>
-          </div>
+            <BlogCard
+              :blog="post"
+              class="w-full h-full"
+            />
+          </article>
         </div>
       </div>
     </section>
@@ -471,10 +564,22 @@
 </template>
 
 <script setup lang="ts">
+// ──────────── 3rd Party & Nuxt Imports ────────────
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
-import CourseCard from '~/components/courses/CourseCard.vue'
 
+// ──────────── App Components ────────────
+import CourseCard from '~/components/courses/CourseCard.vue'
+import BlogCard from '~/components/blogs/BlogCard.vue'
+import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
+import ErrorState from '~/components/ui/ErrorState.vue'
+import EmptyState from '~/components/ui/EmptyState.vue'
+
+// ──────────── Types ────────────
+import type { Blog } from '~/types/shared/blogs'
+import type { Course } from '~/types/shared/courses'
+
+// ──────────── SEO ────────────
 useSeoMeta({
   title: 'Home - Online Learning Platform',
   ogTitle: 'Home - Online Learning Platform',
@@ -485,14 +590,13 @@ useSeoMeta({
   ogImage: '/images/banner.jpg',
 })
 
+// ──────────── Static Data (Trainers, Testimonials) ────────────
 const trainers = [
-
   {
     id: 1,
     name: 'Jonathan Bean',
     role: 'Lead Instructor',
-    image:
-      'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&auto=format&fit=crop&q=80',
     social: [
       { name: 'Facebook', url: '#' },
       { name: 'Twitter', url: '#' },
@@ -503,8 +607,7 @@ const trainers = [
     id: 2,
     name: 'Sarah Johnson',
     role: 'UI/UX Expert',
-    image:
-      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=80',
     social: [
       { name: 'Twitter', url: '#' },
       { name: 'LinkedIn', url: '#' },
@@ -515,8 +618,7 @@ const trainers = [
     id: 3,
     name: 'Michael Chen',
     role: 'Full Stack Developer',
-    image:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80',
     social: [
       { name: 'GitHub', url: '#' },
       { name: 'LinkedIn', url: '#' },
@@ -527,8 +629,7 @@ const trainers = [
     id: 4,
     name: 'Emma Wilson',
     role: 'DevOps Engineer',
-    image:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=80',
     social: [
       { name: 'Facebook', url: '#' },
       { name: 'Twitter', url: '#' },
@@ -537,188 +638,77 @@ const trainers = [
   },
 ]
 
-const slides = [
-  {
-    id: 1,
-    title: 'Mastering the Art of Cooking',
-    description: 'Learn the fundamental techniques of cooking from scratch',
-    category: 'COOKING',
-    instructor: {
-      name: 'Chef Maria Garcia',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-      title: 'Senior Chef',
-    },
-    stats: {
-      students: 42,
-    },
-    rating: 4.8,
-    price: 89.99,
-    level: 'Intermediate',
-    image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&auto=format&fit=crop&q=70',
-    slug: 'mastering-the-art-of-cooking',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    instructorId: 1,
-  },
-  {
-    id: 2,
-    title: 'Web Development Bootcamp',
-    description: 'Master modern web development technologies',
-    category: 'PROGRAMMING',
-    instructor: {
-      name: 'Alex Johnson',
-      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-      title: 'Senior Developer',
-    },
-    stats: {
-      students: 156,
-    },
-    rating: 4.9,
-    price: 129.99,
-    level: 'Beginner',
-    image: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&auto=format&fit=crop&q=60',
-    slug: 'web-development-bootcamp',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    instructorId: 2,
-  },
-  {
-    id: 3,
-    title: 'Digital Marketing Mastery',
-    description: 'Become an expert in digital marketing strategies',
-    category: 'MARKETING',
-    instructor: {
-      name: 'Sarah Williams',
-      avatar: 'https://randomuser.me/api/portraits/women/28.jpg',
-      title: 'Marketing Expert',
-    },
-    stats: {
-      students: 87,
-    },
-    rating: 4.7,
-    price: 79.99,
-    level: 'All Levels',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60',
-    slug: 'digital-marketing-mastery',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    instructorId: 3,
-  },
-  {
-    id: 4,
-    title: 'Photography Fundamentals',
-    description: 'Learn the fundamentals of photography',
-    category: 'PHOTOGRAPHY',
-    instructor: {
-      name: 'James Wilson',
-      avatar: 'https://randomuser.me/api/portraits/men/45.jpg',
-      title: 'Professional Photographer',
-    },
-    stats: {
-      students: 63,
-    },
-    rating: 4.6,
-    price: 69.99,
-    level: 'Beginner',
-    image: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&auto=format&fit=crop&q=60',
-    slug: 'photography-fundamentals',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    instructorId: 4,
-  },
-  {
-    id: 5,
-    title: 'Data Science Essentials',
-    description: 'Essential concepts and techniques in data science',
-    category: 'DATA SCIENCE',
-    instructor: {
-      name: 'Dr. Emily Chen',
-      avatar: 'https://randomuser.me/api/portraits/women/52.jpg',
-      title: 'Data Scientist',
-    },
-    stats: {
-      students: 94,
-    },
-    rating: 4.9,
-    price: 149.99,
-    level: 'Advanced',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=60',
-    slug: 'data-science-essentials',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    instructorId: 5,
-  },
-]
-
-const latestNews = [
-  {
-    id: 1,
-    title: 'New Web Development Course Launched',
-    author: 'Alex Johnson',
-    date: '2025-08-15',
-    image:
-      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=60',
-    excerpt: 'Learn the latest web development technologies in our new comprehensive course.',
-  },
-  {
-    id: 2,
-    title: 'Top 10 Tips for Learning Programming',
-    author: 'Sarah Williams',
-    date: '2025-08-20',
-    image:
-      'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&auto=format&fit=crop&q=60',
-    excerpt: 'Discover the most effective strategies to accelerate your programming journey.',
-  },
-  {
-    id: 3,
-    title: 'The Future of Online Education',
-    author: 'Michael Chen',
-    date: '2025-08-25',
-    image:
-      'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&auto=format&fit=crop&q=80',
-    excerpt: 'Exploring how technology is transforming the way we learn and acquire new skills.',
-  },
-]
-
-const formatDate = (dateString: string) => {
-  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' }
-  return new Date(dateString).toLocaleDateString('en-US', options)
-}
-
 const testimonials = [
   {
     id: 1,
     name: 'Sarah Johnson',
     role: 'Web Development Student',
-    content:
-      'The courses here completely transformed my career. The instructors are knowledgeable and the curriculum is well-structured. Highly recommended!',
+    content: 'The courses here completely transformed my career...',
     avatar: 'https://randomuser.me/api/portraits/women/32.jpg',
   },
   {
     id: 2,
     name: 'Michael Chen',
     role: 'UI/UX Designer',
-    content:
-      'I was able to upgrade my skills significantly through their design courses. The practical projects were especially valuable for my portfolio.',
+    content: 'I was able to upgrade my skills significantly...',
     avatar: 'https://randomuser.me/api/portraits/men/42.jpg',
   },
   {
     id: 3,
     name: 'Emma Rodriguez',
     role: 'Data Science Enthusiast',
-    content:
-      'The quality of instruction and course materials exceeded my expectations. The community support is also fantastic!',
+    content: 'The quality of instruction and course materials exceeded my expectations...',
     avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
   },
   {
     id: 4,
     name: 'David Kim',
     role: 'Full-stack Developer',
-    content:
-      'The hands-on approach helped me understand complex concepts easily. The certificate I earned helped me land a great job!',
+    content: 'The hands-on approach helped me understand complex concepts easily...',
     avatar: 'https://randomuser.me/api/portraits/men/36.jpg',
   },
 ]
+
+// ──────────── Popular Courses Carousel ────────────
+const {
+  data: coursesData,
+  pending: isCoursesLoading,
+  error: coursesError,
+  refresh: refreshCourses,
+} = useFetch<{ success: boolean, data: Course[] }>('/api/courses', {
+  query: { limit: 10, page: 1 },
+})
+
+const hasCoursesError = computed(() => !!coursesError.value)
+const coursesErrorMessage = computed(() =>
+  coursesError.value ? 'Failed to load popular courses. Please try again.' : '',
+)
+
+// Sort courses by student count (descending) to display the most popular ones
+const popularCourses = computed(() => {
+  const raw = coursesData.value?.data ?? []
+  return [...raw].sort((a, b) => (b.stats?.students ?? 0) - (a.stats?.students ?? 0))
+})
+
+// ──────────── Blog Section ────────────
+const {
+  data: blogData,
+  pending: isLoading,
+  error: blogError,
+  refresh,
+} = useFetch<{
+  success: boolean
+  data: Blog[]
+  message?: string
+}>('/api/blogs', {
+  query: { limit: 3, page: 1 },
+})
+
+const latestPosts = computed(() => blogData.value?.data ?? [])
+const hasError = computed(() => !!blogError.value)
+const errorMessage = computed(() =>
+  blogError.value ? 'Failed to load latest articles. Please try again.' : '',
+)
 </script>
 
 <style scoped lang="postcss">
