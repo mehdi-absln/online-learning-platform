@@ -1,8 +1,10 @@
 // Define a minimal User interface that can be shared between frontend and backend
+export type UserRole = 'student' | 'instructor' | 'admin' | 'superadmin'
 export interface User {
   id: number
   username: string
   email: string
+  role: UserRole
 }
 
 // Define common auth response interfaces

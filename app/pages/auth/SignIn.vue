@@ -136,6 +136,17 @@ const userStore = useUserStore()
 // Announcement for screen readers (ARIA live region)
 const announcement = ref('')
 
+// Toast notification for redirects
+const route = useRoute()
+const toast = useToast()
+
+// Show toast if redirected from a protected page
+if (import.meta.client && route.query.redirected === 'please_login') {
+  onMounted(() => {
+    toast.showLoginRequired('access this page')
+  })
+}
+
 // Initialize form state and validation functions using Zod schema
 const { form, isFormValid, validateAll, getError, handleBlur, setFieldError, clearErrors }
   = useZodValidation<SignInFormData>(signInSchema, {

@@ -53,6 +53,26 @@ export const signUpSchema = z
     path: ['confirmPassword'],
   })
 
+// Change Password schema
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(1, 'Current password is required.'),
+    newPassword: z
+      .string()
+      .min(VALIDATION_LIMITS.PASSWORD_MIN, AUTH_ERRORS.PASSWORD_TOO_SHORT)
+      .max(VALIDATION_LIMITS.PASSWORD_MAX)
+      .regex(VALIDATION_PATTERNS.PASSWORD, AUTH_ERRORS.PASSWORD_TOO_WEAK),
+    confirmPassword: z
+      .string()
+      .min(1, 'Please confirm your new password.'),
+  })
+  .refine(data => data.newPassword === data.confirmPassword, {
+    message: 'Passwords do not match.',
+    path: ['confirmPassword'],
+  })
 // Type exports for form data
 export type SignInFormData = z.infer<typeof signInSchema>
 export type SignUpFormData = z.infer<typeof signUpSchema>
+export type ChangePasswordFormData = z.infer<typeof changePasswordSchema>

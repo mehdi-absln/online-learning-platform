@@ -1,32 +1,44 @@
 <template>
   <footer
-    class="bg-[#0E0E0D] text-white py-16"
-    aria-label="Main footer"
+    class="bg-dark-gray text-white py-12 lg:py-16 border-t border-dark-divider"
+    aria-labelledby="footer-heading"
   >
-    <div class="container">
-      <div class="flex flex-wrap justify-between">
+    <h2
+      id="footer-heading"
+      class="sr-only"
+    >
+      Footer
+    </h2>
+    <div class="container px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <!-- Brand Section -->
-        <div class="w-full md:w-1/2 lg:w-1/4 px-4 mb-8 lg:mb-0 space-y-4">
-          <h3 class="text-2xl font-bold text-primary font-antonio uppercase">
+        <section aria-labelledby="footer-brand-heading">
+          <h3
+            id="footer-brand-heading"
+            class="text-2xl font-bold text-primary font-antonio uppercase"
+          >
             Online Learning Platform
           </h3>
-          <p class="text-gray-400">
+          <p class="text-gray-400 text-sm leading-relaxed mt-4">
             Empowering learners worldwide with quality education and innovative learning solutions.
           </p>
 
           <!-- Social Links -->
-          <nav aria-label="Social media links">
+          <nav
+            aria-label="Social media links"
+            class="mt-6"
+          >
             <ul class="flex space-x-4">
               <li>
                 <a
                   href="https://facebook.com/yourpage"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-gray-400 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0E0E0D] rounded-full p-1 inline-block"
+                  class="text-gray-400 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray rounded-full p-1 inline-block"
                 >
                   <span class="sr-only">Facebook (opens in new tab)</span>
                   <svg
-                    class="h-6 w-6"
+                    class="h-5 w-5"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                     aria-hidden="true"
@@ -44,18 +56,16 @@
                   href="https://twitter.com/yourpage"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-gray-400 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0E0E0D] rounded-full p-1 inline-block"
+                  class="text-gray-400 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray rounded-full p-1 inline-block"
                 >
                   <span class="sr-only">Twitter (opens in new tab)</span>
                   <svg
-                    class="h-6 w-6"
+                    class="h-5 w-5"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                     aria-hidden="true"
                   >
-                    <path
-                      d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"
-                    />
+                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
                   </svg>
                 </a>
               </li>
@@ -64,11 +74,11 @@
                   href="https://instagram.com/yourpage"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-gray-400 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0E0E0D] rounded-full p-1 inline-block"
+                  class="text-gray-400 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray rounded-full p-1 inline-block"
                 >
                   <span class="sr-only">Instagram (opens in new tab)</span>
                   <svg
-                    class="h-6 w-6"
+                    class="h-5 w-5"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                     aria-hidden="true"
@@ -83,77 +93,46 @@
               </li>
             </ul>
           </nav>
-        </div>
+        </section>
 
         <!-- Quick Links Section -->
-        <div class="w-full md:w-1/2 lg:w-1/4 px-4 mb-8 lg:mb-0">
-          <h3 class="text-lg font-semibold mb-6">
+        <section aria-labelledby="footer-links-heading">
+          <h3
+            id="footer-links-heading"
+            class="text-lg font-semibold mb-6"
+          >
             Quick Links
           </h3>
           <nav aria-label="Footer navigation">
             <ul class="space-y-3">
-              <li>
+              <li
+                v-for="link in mainLinks"
+                :key="link.to"
+              >
                 <NuxtLink
-                  to="/home"
-                  class="text-gray-400 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-1"
+                  :to="link.to"
+                  class="text-gray-400 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded px-1"
                 >
-                  Home
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink
-                  to="/courses"
-                  class="text-gray-400 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-1"
-                >
-                  Courses
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink
-                  to="/about"
-                  class="text-gray-400 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-1"
-                >
-                  About Us
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink
-                  to="/instructors"
-                  class="text-gray-400 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-1"
-                >
-                  Instructors
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink
-                  to="/blog"
-                  class="text-gray-400 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-1"
-                >
-                  Blog
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink
-                  to="/contact"
-                  class="text-gray-400 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-1"
-                >
-                  Contact
+                  {{ link.label }}
                 </NuxtLink>
               </li>
             </ul>
           </nav>
-        </div>
+        </section>
 
         <!-- Contact Section -->
-        <div class="w-full md:w-1/2 lg:w-1/4 px-4 mb-8 lg:mb-0">
-          <h3 class="text-lg font-semibold mb-6">
+        <section aria-labelledby="footer-contact-heading">
+          <h3
+            id="footer-contact-heading"
+            class="text-lg font-semibold mb-6"
+          >
             Contact Us
           </h3>
           <address class="not-italic">
-            <ul class="space-y-4 text-gray-400">
+            <ul class="space-y-4 text-gray-400 text-sm">
               <li class="flex items-start">
                 <svg
-                  class="h-5 w-5 text-primary mr-3 mt-1 flex-shrink-0"
+                  class="h-5 w-5 text-primary mr-3 mt-0.5 flex-shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -191,7 +170,7 @@
                 </svg>
                 <a
                   href="tel:+15551234567"
-                  class="hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                  class="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
                 >
                   +1 (555) 123-4567
                 </a>
@@ -213,24 +192,28 @@
                 </svg>
                 <a
                   href="mailto:info@edulearn.com"
-                  class="hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                  class="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
                 >
                   info@edulearn.com
                 </a>
               </li>
             </ul>
           </address>
-        </div>
+        </section>
       </div>
 
       <!-- Copyright -->
-      <div class="w-full border-t border-gray-800 mt-16 pt-8 text-center text-gray-500">
+      <div class="w-full border-t border-dark-divider mt-12 pt-8 text-center text-gray-500 text-sm">
         <p>
-          <small>&copy; {{ new Date().getFullYear() }} EduLearn. All rights reserved.</small>
+          <small>&copy; {{ new Date().getFullYear() }} Online Learning Platform. All rights reserved.</small>
         </p>
       </div>
     </div>
   </footer>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useNavigationLinks } from '~/composables/useNavigationLinks'
+
+const { mainLinks } = useNavigationLinks()
+</script>

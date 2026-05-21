@@ -24,6 +24,21 @@
         <p class="text-gray-400 mt-2 text-sm sm:text-base">
           {{ greeting }}
         </p>
+        <div
+          v-if="userStore.user?.role === 'admin' || userStore.user?.role === 'instructor' || userStore.user?.role === 'superadmin'"
+          class="mt-4"
+        >
+          <NuxtLink
+            to="/admin/courses/create"
+            class="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            <IconPlus
+              class="w-4 h-4"
+              aria-hidden="true"
+            />
+            Create New Course
+          </NuxtLink>
+        </div>
       </section>
 
       <!-- Loading State -->
@@ -39,6 +54,7 @@
             v-for="i in 4"
             :key="i"
             class="bg-dark-surface border border-dark-divider/50 rounded-2xl p-6 animate-pulse"
+            role="presentation"
           >
             <div class="w-12 h-12 bg-dark-bg rounded-xl mb-4" />
             <div class="w-16 h-8 bg-dark-bg rounded mb-1" />
@@ -46,7 +62,10 @@
           </div>
         </div>
         <!-- Course skeleton -->
-        <div class="bg-dark-surface border border-dark-divider/50 rounded-2xl p-8 animate-pulse">
+        <div
+          class="bg-dark-surface border border-dark-divider/50 rounded-2xl p-8 animate-pulse"
+          role="presentation"
+        >
           <div class="flex gap-6">
             <div class="w-56 h-32 bg-dark-bg rounded-xl hidden sm:block" />
             <div class="flex-1 space-y-4">
@@ -64,6 +83,7 @@
         <!-- ═══ 2. Stats Cards ═══ -->
         <section aria-label="Learning statistics">
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+            <!-- Note: Ensure DashboardStatsCard uses aria-hidden on icon -->
             <DashboardStatsCard
               icon="📚"
               label="Enrolled Courses"
@@ -103,7 +123,8 @@
             <span
               class="text-primary"
               aria-hidden="true"
-            >▶</span> Continue Learning
+            >▶</span>
+            Continue Learning
           </h2>
           <ContinueLearningCard :course="continueLearnCourse" />
         </section>
@@ -185,6 +206,9 @@
             <!-- Desktop table -->
             <div class="hidden sm:block overflow-x-auto">
               <table class="w-full text-left">
+                <caption class="sr-only">
+                  List of recent orders
+                </caption>
                 <thead>
                   <tr class="border-b border-dark-divider/50">
                     <th class="px-5 py-3.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
@@ -221,7 +245,8 @@
                         class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full"
                         :class="statusClass(order.status)"
                       >
-                        {{ statusIcon(order.status) }} {{ order.status }}
+                        <span aria-hidden="true">{{ statusIcon(order.status) }}</span>
+                        {{ order.status }}
                       </span>
                     </td>
                   </tr>
@@ -242,12 +267,15 @@
                     class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full"
                     :class="statusClass(order.status)"
                   >
-                    {{ statusIcon(order.status) }} {{ order.status }}
+                    <span aria-hidden="true">{{ statusIcon(order.status) }}</span>
+                    {{ order.status }}
                   </span>
                 </div>
                 <div class="flex items-center justify-between">
                   <span class="text-xs text-gray-500">{{ formatDate(order.createdAt) }}</span>
-                  <span class="text-sm font-semibold text-white tabular-nums">${{ Number(order.totalAmount).toFixed(2) }}</span>
+                  <span class="text-sm font-semibold text-white tabular-nums">
+                    ${{ Number(order.totalAmount).toFixed(2) }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -289,6 +317,8 @@
 </template>
 
 <script setup lang="ts">
+import IconPlus from '~/components/icons/IconPlus.vue'
+
 definePageMeta({
   requiresAuth: true,
 })

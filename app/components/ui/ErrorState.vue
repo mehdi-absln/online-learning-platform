@@ -22,7 +22,10 @@ const emit = defineEmits<{
     role="alert"
     class="bg-dark-surface border border-red-500/30 rounded-2xl p-8 text-center"
   >
-    <div class="w-16 h-16 mx-auto mb-4 text-red-400" aria-hidden="true">
+    <div
+      class="w-16 h-16 mx-auto mb-4 text-red-400"
+      aria-hidden="true"
+    >
       <IconAlertCircle class="w-full h-full" />
     </div>
     <p class="text-red-400 mb-4">

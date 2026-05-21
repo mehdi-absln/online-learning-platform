@@ -1,92 +1,153 @@
 <template>
+  <!-- Mobile Menu Backdrop & Panel (Teleported to body so it covers the entire viewport) -->
+  <Teleport to="body">
+    <Transition
+      enter-active-class="transition-opacity duration-300 ease-linear"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity duration-200 ease-linear"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="isMobileMenuOpen"
+        class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+        aria-hidden="true"
+        @click="closeMobileMenu"
+      />
+    </Transition>
+
+    <Transition
+      enter-active-class="transition-all duration-300 ease-out"
+      enter-from-class="opacity-0 -translate-y-4 max-h-0"
+      enter-to-class="opacity-100 translate-y-0 max-h-[600px]"
+      leave-active-class="transition-all duration-200 ease-in"
+      leave-from-class="opacity-100 translate-y-0 max-h-[600px]"
+      leave-to-class="opacity-0 -translate-y-4 max-h-0"
+    >
+      <div
+        v-if="isMobileMenuOpen"
+        class="lg:hidden fixed top-20 left-4 right-4 z-50 bg-dark-surface/95 backdrop-blur-xl border border-dark-divider rounded-2xl shadow-2xl overflow-hidden"
+      >
+        <ul
+          class="py-2"
+          role="list"
+        >
+          <li
+            v-for="link in mainLinks"
+            :key="link.to"
+          >
+            <NuxtLink
+              :to="link.to"
+              class="block px-5 py-3 text-white font-medium hover:bg-dark-bg hover:text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
+              :class="isActiveLink(link.to) ? 'text-primary bg-dark-bg border-l-2 border-primary' : ''"
+              :aria-current="isActiveLink(link.to) ? 'page' : undefined"
+              @click="closeMobileMenu"
+            >
+              {{ link.label }}
+            </NuxtLink>
+          </li>
+        </ul>
+
+        <div class="h-px bg-dark-divider" />
+
+        <div class="p-4">
+          <template v-if="userStore.isAuthenticated">
+            <div class="flex items-center space-x-3 mb-3">
+              <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">
+                {{ userInitials }}
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-bold text-white truncate">
+                  {{ userDisplayName }}
+                </p>
+                <p
+                  v-if="userStore.user?.email"
+                  class="text-xs text-gray-400 truncate"
+                >
+                  {{ userStore.user?.email }}
+                </p>
+              </div>
+            </div>
+            <NuxtLink
+              to="/profile"
+              class="block w-full text-center px-4 py-2 text-sm text-gray-300 hover:text-primary transition-colors"
+              @click="closeMobileMenu"
+            >
+              Profile
+            </NuxtLink>
+            <button
+              type="button"
+              class="w-full mt-2 px-4 py-2 text-sm font-semibold text-primary hover:bg-dark-bg rounded-lg transition-colors"
+              @click="handleLogout"
+            >
+              Logout
+            </button>
+          </template>
+          <template v-else>
+            <NuxtLink
+              to="/auth"
+              class="block w-full text-center px-4 py-2 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-colors"
+              @click="closeMobileMenu"
+            >
+              Sign In
+            </NuxtLink>
+          </template>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
+
   <nav
     aria-label="Main navigation"
-    class="fixed top-0 left-0 right-0 z-50 py-10 bg-transparent container"
+    class="fixed top-0 left-0 right-0 z-50 container py-4 lg:py-10 transition-all duration-300"
+    :class="isScrolled
+      ? 'bg-dark-gray/85 backdrop-blur-md shadow-lg shadow-black/20'
+      : 'bg-transparent'"
   >
+    <!-- Everything else inside <nav> remains unchanged -->
     <div class="flex justify-between items-center">
       <!-- Logo/Brand -->
       <NuxtLink
         to="/home"
-        class="text-xl font-bold text-white drop-shadow-lg"
+        class="text-lg lg:text-xl font-bold text-white drop-shadow-lg shrink-0"
         aria-label="Online Learning Platform - Home"
       >
         ONLINE LEARNING PLATFORM
       </NuxtLink>
 
-      <!-- Navigation Menu -->
+      <!-- Desktop Navigation Menu -->
       <ul
-        class="flex space-x-8"
+        class="hidden lg:flex lg:space-x-6 xl:space-x-8"
         role="list"
       >
-        <li>
+        <li
+          v-for="link in mainLinks"
+          :key="link.to"
+        >
           <NuxtLink
-            to="/home"
-            class="font-semibold text-white hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark-gray rounded px-2 py-1"
-            :aria-current="route.path === '/home' ? 'page' : undefined"
+            :to="link.to"
+            class="font-semibold text-white hover:text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray rounded px-2 py-1"
+            :class="isActiveLink(link.to) ? 'text-primary border-b-2 border-primary' : ''"
+            :aria-current="isActiveLink(link.to) ? 'page' : undefined"
           >
-            Home
-          </NuxtLink>
-        </li>
-        <li>
-          <NuxtLink
-            to="/courses"
-            class="font-semibold text-white hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark-gray rounded px-2 py-1"
-            :aria-current="route.path === '/courses' ? 'page' : undefined"
-          >
-            Courses
-          </NuxtLink>
-        </li>
-        <li>
-          <NuxtLink
-            to="/dashboard"
-            class="font-semibold text-white hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark-gray rounded px-2 py-1"
-            :aria-current="route.path === '/dashboard' ? 'page' : undefined"
-          >
-            Dashboard
-          </NuxtLink>
-        </li>
-        <li>
-          <NuxtLink
-            to="/pages"
-            class="font-semibold text-white hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark-gray rounded px-2 py-1"
-            :aria-current="route.path === '/pages' ? 'page' : undefined"
-          >
-            Pages
-          </NuxtLink>
-        </li>
-        <li>
-          <NuxtLink
-            to="/blog"
-            class="font-semibold text-white hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark-gray rounded px-2 py-1"
-            :aria-current="route.path === '/blog' ? 'page' : undefined"
-          >
-            Blog
-          </NuxtLink>
-        </li>
-        <li>
-          <NuxtLink
-            to="/contact"
-            class="font-semibold text-white hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark-gray rounded px-2 py-1"
-            :aria-current="route.path === '/contact' ? 'page' : undefined"
-          >
-            Contact
+            {{ link.label }}
           </NuxtLink>
         </li>
       </ul>
 
-      <!-- Action Buttons -->
-      <div class="flex items-center space-x-4">
+      <!-- Desktop Action Buttons -->
+      <div class="hidden lg:flex items-center space-x-4">
         <!-- User Menu (when authenticated) -->
         <div
           v-if="userStore.isAuthenticated"
           class="relative"
         >
-          <!-- User Avatar Button -->
           <button
             :id="avatarButtonId"
             ref="avatarButton"
             type="button"
-            class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 text-white font-semibold text-sm transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
+            class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 text-white font-semibold text-sm transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
             :class="[
               isDropdownOpen
                 ? 'border-primary bg-primary/20 shadow-[0_0_20px_rgba(236,82,82,0.5)] scale-105'
@@ -102,13 +163,9 @@
             @keydown.arrow-down.prevent="openDropdown"
             @keydown.arrow-up.prevent="openDropdown"
           >
-            <!-- Subtle gradient overlay -->
             <div class="absolute inset-0 rounded-full bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-
-            <!-- User Initials -->
             <span class="relative z-10 text-white group-hover:text-primary transition-colors duration-300">{{ userInitials }}</span>
 
-            <!-- Arrow Indicator (shows when dropdown is open) -->
             <Transition
               enter-active-class="transition-all duration-300"
               enter-from-class="opacity-0 scale-50"
@@ -143,13 +200,9 @@
               :aria-labelledby="avatarButtonId"
               @keydown="onMenuKeyDown"
             >
-              <!-- Subtle Primary Glow Effect -->
               <div class="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-
-              <!-- User Info Header -->
               <div class="relative px-5 py-4 border-b border-dark-divider bg-gradient-to-br from-primary/10 to-transparent">
                 <div class="flex items-center space-x-3">
-                  <!-- Avatar in Header -->
                   <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-base shadow-lg">
                     {{ userInitials }}
                   </div>
@@ -167,18 +220,22 @@
                 </div>
               </div>
 
-              <!-- Menu Items -->
+              <!-- Dynamic User Menu Items -->
               <div class="relative py-2">
                 <NuxtLink
-                  :id="`${dropdownMenuId}-item-0`"
-                  :ref="(el: any) => setMenuItemRef(el, 0)"
-                  to="/profile"
-                  class="group flex items-center px-5 py-3 text-sm text-gray-300 hover:bg-dark-bg hover:text-primary transition-all duration-200 focus:outline-none focus:bg-dark-bg focus:text-primary"
+                  v-for="(item, index) in dropdownMenuItems"
+                  :id="`${dropdownMenuId}-item-${index}`"
+                  :key="item.id"
+                  :ref="getMenuItemRef(index)"
+                  :to="item.to"
+                  class="group flex items-center px-5 py-3 text-sm text-gray-300 hover:bg-dark-bg hover:text-primary transition-all duration-200 focus-visible:outline-none focus-visible:bg-dark-bg focus-visible:text-primary"
                   role="menuitem"
                   tabindex="-1"
                   @click="closeDropdown"
                 >
+                  <!-- Profile Icon -->
                   <svg
+                    v-if="item.icon === 'profile'"
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5 mr-3 text-gray-400 group-hover:text-primary transition-colors duration-200"
                     fill="none"
@@ -193,19 +250,9 @@
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                  <span class="font-medium">Profile</span>
-                </NuxtLink>
-
-                <NuxtLink
-                  :id="`${dropdownMenuId}-item-1`"
-                  :ref="(el: any) => setMenuItemRef(el, 1)"
-                  to="/my-courses"
-                  class="group flex items-center px-5 py-3 text-sm text-gray-300 hover:bg-dark-bg hover:text-primary transition-all duration-200 focus:outline-none focus:bg-dark-bg focus:text-primary"
-                  role="menuitem"
-                  tabindex="-1"
-                  @click="closeDropdown"
-                >
+                  <!-- Courses Icon -->
                   <svg
+                    v-else-if="item.icon === 'courses'"
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5 mr-3 text-gray-400 group-hover:text-primary transition-colors duration-200"
                     fill="none"
@@ -220,19 +267,9 @@
                       d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                     />
                   </svg>
-                  <span class="font-medium">My Courses</span>
-                </NuxtLink>
-
-                <NuxtLink
-                  :id="`${dropdownMenuId}-item-2`"
-                  :ref="(el: any) => setMenuItemRef(el, 2)"
-                  to="/settings"
-                  class="group flex items-center px-5 py-3 text-sm text-gray-300 hover:bg-dark-bg hover:text-primary transition-all duration-200 focus:outline-none focus:bg-dark-bg focus:text-primary"
-                  role="menuitem"
-                  tabindex="-1"
-                  @click="closeDropdown"
-                >
+                  <!-- Settings Icon -->
                   <svg
+                    v-else-if="item.icon === 'settings'"
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5 mr-3 text-gray-400 group-hover:text-primary transition-colors duration-200"
                     fill="none"
@@ -253,20 +290,17 @@
                       d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  <span class="font-medium">Settings</span>
+                  <span class="font-medium">{{ item.label }}</span>
                 </NuxtLink>
               </div>
 
-              <!-- Divider with Primary Accent -->
               <div class="relative h-px bg-gradient-to-r from-primary/50 via-dark-divider to-dark-divider" />
-
-              <!-- Logout -->
               <div class="relative pb-2 pt-1">
                 <button
-                  :id="`${dropdownMenuId}-item-3`"
-                  :ref="(el: any) => setMenuItemRef(el, 3)"
+                  :id="`${dropdownMenuId}-item-${dropdownMenuItems.length}`"
+                  :ref="getMenuItemRef(dropdownMenuItems.length)"
                   type="button"
-                  class="group w-full flex items-center px-5 py-3 text-sm text-primary hover:bg-dark-bg transition-all duration-200 focus:outline-none focus:bg-dark-bg"
+                  class="group w-full flex items-center px-5 py-3 text-sm text-primary hover:bg-dark-bg transition-all duration-200 focus-visible:outline-none focus-visible:bg-dark-bg"
                   role="menuitem"
                   aria-label="Sign out of your account"
                   tabindex="-1"
@@ -298,7 +332,7 @@
         <NuxtLink
           v-else
           to="/auth"
-          class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(236,82,82,0.4)] hover:scale-105  focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
+          class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(236,82,82,0.4)] hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
           aria-label="Login to your account"
         >
           <svg
@@ -318,16 +352,15 @@
           </svg>
         </NuxtLink>
 
-        <!-- Divider -->
         <div
           class="h-6 w-px bg-white/20"
           aria-hidden="true"
         />
-        <!-- Cart Button -->
+        <!-- Desktop Cart Button -->
         <button
           type="button"
-          class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(236,82,82,0.4)] hover:scale-105  focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
-          aria-label="Shopping cart with {{ cartItemsCount }} items"
+          class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(236,82,82,0.4)] hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
+          :aria-label="`Shopping cart with ${cartItemsCount} items`"
           @click="openCart"
         >
           <svg
@@ -355,6 +388,83 @@
           </span>
         </button>
       </div>
+
+      <!-- Mobile: Cart + Hamburger -->
+      <div class="flex lg:hidden items-center space-x-3">
+        <!-- Mobile Cart Button -->
+        <button
+          type="button"
+          class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(236,82,82,0.4)] hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
+          :aria-label="`Shopping cart with ${cartItemsCount} items`"
+          @click="openCart"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 text-white group-hover:text-primary transition-colors duration-300"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            />
+          </svg>
+          <span
+            v-if="cartItemsCount > 0"
+            class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-primary rounded-full shadow-lg"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {{ cartItemsCount }}
+          </span>
+        </button>
+
+        <!-- Hamburger Button -->
+        <button
+          type="button"
+          class="relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
+          :aria-label="isMobileMenuOpen ? 'Close menu' : 'Open menu'"
+          :aria-expanded="isMobileMenuOpen"
+          @click="toggleMobileMenu"
+        >
+          <svg
+            v-if="!isMobileMenuOpen"
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+          <svg
+            v-else
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
     </div>
 
     <!-- Cart Drawer Component -->
@@ -364,8 +474,10 @@
 
 <script setup lang="ts">
 import type { ComponentPublicInstance } from 'vue'
+import { useWindowScroll } from '@vueuse/core'
 import { useCart } from '~/composables/useCart'
 import { useKeyboardFocus } from '~/composables/useKeyboardFocus'
+import { useNavigationLinks } from '~/composables/useNavigationLinks'
 import { useUserStore } from '~/stores/user'
 import CartDrawer from '~/components/ui/CartDrawer.vue'
 
@@ -373,47 +485,92 @@ const route = useRoute()
 const userStore = useUserStore()
 const { itemsCount: cartItemsCount, openCart } = useCart()
 
-// Unique IDs for accessibility
+// Transparent-to-solid nav background on scroll
+const { y: scrollY } = useWindowScroll()
+const isScrolled = computed(() => scrollY.value > 10)
+
+// Accessibility IDs
 const avatarButtonId = 'user-avatar-button'
 const dropdownMenuId = 'user-menu'
 
-// Dropdown state
+// Desktop dropdown state
 const isDropdownOpen = ref(false)
 const avatarButton = ref<HTMLButtonElement | null>(null)
 const dropdownMenu = ref<HTMLDivElement | null>(null)
 const menuItemElements = ref<(HTMLElement | null)[]>([])
-
-// Focus management
 const focusedItemIndex = ref(-1)
 
-// Template ref setter for menu items (handles NuxtLink components)
-const setMenuItemRef = (el: ComponentPublicInstance | HTMLElement | null, index: number) => {
+// Mobile menu state
+const isMobileMenuOpen = ref(false)
+
+const toggleMobileMenu = () => {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+
+const closeMobileMenu = () => {
+  isMobileMenuOpen.value = false
+}
+
+// Shared navigation links (extracted to composable)
+const { mainLinks } = useNavigationLinks()
+
+/**
+ * Dynamic items for the user dropdown menu.
+ * Add or remove entries here to update the menu structure.
+ */
+const dropdownMenuItems = computed(() => {
+  const items = [
+    { id: 'profile', to: '/profile', label: 'Profile', icon: 'profile' },
+    { id: 'courses', to: '/dashboard', label: 'My Courses', icon: 'courses' },
+    { id: 'settings', to: '/settings', label: 'Settings', icon: 'settings' },
+  ]
+  return items
+})
+
+/**
+ * Determines if a link is active based on the current route.
+ * Matches both exact paths and nested routes (e.g., /admin and /admin/courses).
+ */
+const isActiveLink = (path: string) => {
+  const current = route.path
+  return current === path || current.startsWith(path + '/')
+}
+
+/**
+ * Sets a menu item element into the reactive array.
+ * Accepts either a plain HTMLElement or a Vue ComponentPublicInstance (NuxtLink).
+ */
+const setMenuItemRef = (el: Element | ComponentPublicInstance | null, index: number) => {
   if (el) {
-    // NuxtLink is a component, need to get $el
-    menuItemElements.value[index] = '$el' in el ? (el.$el as HTMLElement) : el
+    if (el instanceof HTMLElement) {
+      menuItemElements.value[index] = el
+    }
+    else {
+      menuItemElements.value[index] = (el as ComponentPublicInstance).$el as HTMLElement
+    }
   }
 }
 
-// Use keyboard focus composable
+/**
+ * Higher‑order function that returns a typed ref callback for a specific menu index.
+ */
+const getMenuItemRef = (index: number) => (el: Element | ComponentPublicInstance | null) => {
+  setMenuItemRef(el, index)
+}
+
+// Keyboard navigation within the dropdown
 const { handleKeyDown } = useKeyboardFocus({
   items: menuItemElements,
 })
 
-// Computed user info
-const userInitials = computed(() => {
-  // Use first letter of username (or 'U' as fallback)
-  return userStore.user?.username?.[0]?.toUpperCase() || 'U'
-})
+const userInitials = computed(() => userStore.user?.username?.[0]?.toUpperCase() || 'U')
+const userDisplayName = computed(() => userStore.user?.username || 'User')
 
-const userDisplayName = computed(() => {
-  return userStore.user?.username || 'User'
-})
+// ── Desktop Dropdown Controls ──────────────────────────────────────────
 
-// Dropdown control functions
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
   if (isDropdownOpen.value) {
-    // Focus first item when opened
     nextTick(() => {
       focusedItemIndex.value = 0
       focusItem(0)
@@ -432,14 +589,11 @@ const openDropdown = () => {
 const closeDropdown = () => {
   isDropdownOpen.value = false
   focusedItemIndex.value = -1
-  menuItemElements.value = [] // Clear refs
-  // Return focus to avatar button
   nextTick(() => {
     avatarButton.value?.focus()
   })
 }
 
-// Focus management function
 const focusItem = (index: number) => {
   const el = menuItemElements.value[index]
   if (el) {
@@ -448,37 +602,27 @@ const focusItem = (index: number) => {
   }
 }
 
-// Unified keyboard handler for menu
 const onMenuKeyDown = (event: KeyboardEvent) => {
-  // Handle Escape separately (not handled by composable)
   if (event.key === 'Escape') {
     closeDropdown()
     return
   }
-
-  // Delegate arrow keys, Home, End to composable
-  handleKeyDown(
-    event,
-    focusedItemIndex.value,
-    menuItemElements.value.length,
-    focusItem,
-  )
+  handleKeyDown(event, focusedItemIndex.value, menuItemElements.value.length, focusItem)
 }
 
-// Handle logout
 const handleLogout = async () => {
   closeDropdown()
+  closeMobileMenu()
   await userStore.logout()
 }
 
-// Click outside to close dropdown
+// Close dropdown when clicking outside
 const handleClickOutside = (event: MouseEvent) => {
   if (isDropdownOpen.value && dropdownMenu.value && !dropdownMenu.value.contains(event.target as Node)) {
     closeDropdown()
   }
 }
 
-// Setup event listeners
 onMounted(() => {
   document.addEventListener('mousedown', handleClickOutside)
 })
