@@ -48,7 +48,7 @@ export const useCourses = () => {
 
   return {
     courses: computed(() => data.value?.data || []),
-    isLoading: pending,  // ✅ فقط از useFetch
+    isLoading: pending, // ✅ فقط از useFetch
     error: hasError,
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-dark-gray">
+  <div class="min-h-screen flex flex-col bg-dark-gray overflow-x-hidden">
     <!-- Skip to main content link -->
     <a
       href="#main-content"
