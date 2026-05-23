@@ -1,4 +1,6 @@
 import type { Config } from 'tailwindcss'
+import typography from '@tailwindcss/typography'
+import plugin from 'tailwindcss/plugin'
 
 export default {
   content: [
@@ -28,6 +30,9 @@ export default {
       },
     },
     extend: {
+      screens: {
+        xxs: '380px',
+      },
       colors: {
         'primary': '#EC5252',
         'primary-alt': '#ff4830',
@@ -47,9 +52,8 @@ export default {
     },
   },
   plugins: [
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('@tailwindcss/typography'),
-    function ({ addUtilities }) {
+    typography,
+    plugin(({ addUtilities }) => {
       addUtilities({
         '.scrollbar-hide': {
           '-ms-overflow-style': 'none',
@@ -59,6 +63,6 @@ export default {
           },
         },
       })
-    },
+    }),
   ],
 } satisfies Config

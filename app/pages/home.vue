@@ -1,8 +1,6 @@
 <template>
   <div>
-    <!-- ========================================================================
-     Hero Section
-     ======================================================================== -->
+    <!-- Hero Section -->
     <section
       aria-label="Hero section"
       class="relative w-full overflow-hidden"
@@ -40,28 +38,24 @@
               formula, and it's never out of reach. Every skill starts with a single step.
             </p>
             <NuxtLink
-              to="/auth"
-              class="inline-block"
+              to="/courses"
+              class="btn-primary relative font-antonio group overflow-hidden inline-flex items-center text-xs sm:text-sm md:text-base px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3"
             >
-              <button class="btn-primary relative font-antonio group overflow-hidden text-xs sm:text-sm md:text-base px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3">
-                <span class="absolute inset-0 w-0 bg-white/10 group-hover:w-full transition-all duration-500" />
-                <span class="relative z-10 flex items-center">
-                  GET STARTED NOW
-                  <span
-                    class="ml-2 transition-transform duration-300 group-hover:translate-x-1"
-                    aria-hidden="true"
-                  >→</span>
-                </span>
-              </button>
+              <span class="absolute inset-0 w-0 bg-white/10 group-hover:w-full transition-all duration-500" />
+              <span class="relative z-10 flex items-center">
+                GET STARTED NOW
+                <span
+                  class="ml-2 transition-transform duration-300 group-hover:translate-x-1"
+                  aria-hidden="true"
+                >→</span>
+              </span>
             </NuxtLink>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ========================================================================
-     About Section
-     ======================================================================== -->
+    <!-- About Section -->
     <section
       class="py-16 md:py-32 overflow-hidden"
       aria-labelledby="about-heading"
@@ -160,9 +154,7 @@
       </div>
     </section>
 
-    <!-- ========================================================================
-         Online Classes Section
-         ======================================================================== -->
+    <!-- Online Classes Section -->
     <section
       class="bg-dark-surface py-16 md:py-32 relative z-0"
       aria-labelledby="classes-heading"
@@ -245,9 +237,7 @@
       </div>
     </section>
 
-    <!-- ========================================================================
-         Stats Section
-         ======================================================================== -->
+    <!-- Stats Section -->
     <section
       class="py-10 md:py-20"
       aria-label="Platform statistics"
@@ -327,9 +317,7 @@
       </div>
     </section>
 
-    <!-- ========================================================================
-         Trainers Section
-         ======================================================================== -->
+    <!-- Trainers Section -->
     <section
       class="py-16 md:py-32"
       aria-labelledby="trainers-heading"
@@ -438,9 +426,7 @@
       </div>
     </section>
 
-    <!-- ========================================================================
-         Testimonials Section
-         ======================================================================== -->
+    <!-- Testimonials Section -->
     <section
       class="pt-10 md:pt-16 pb-16 md:pb-24"
       aria-labelledby="testimonials-heading"
@@ -500,9 +486,7 @@
       </div>
     </section>
 
-    <!-- ========================================================================
-         Blog Section
-         ======================================================================== -->
+    <!-- Blog Section -->
     <section
       class="py-10 md:py-16"
       aria-labelledby="blog-heading"
@@ -573,23 +557,23 @@
 </template>
 
 <script setup lang="ts">
-// ──────────── 3rd Party & Nuxt Imports ────────────
+// 3rd Party & Nuxt Imports
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-// ──────────── App Components ────────────
+// App Components
 import CourseCard from '~/components/courses/CourseCard.vue'
 import BlogCard from '~/components/blogs/BlogCard.vue'
 import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 import ErrorState from '~/components/ui/ErrorState.vue'
 import EmptyState from '~/components/ui/EmptyState.vue'
 
-// ──────────── Types ────────────
+// Types
 import type { Blog } from '~/types/shared/blogs'
 import type { Course } from '~/types/shared/courses'
 
-// ──────────── SEO ────────────
+// SEO
 useSeoMeta({
   title: 'Home - Online Learning Platform',
   ogTitle: 'Home - Online Learning Platform',
@@ -600,7 +584,7 @@ useSeoMeta({
   ogImage: '/images/banner.jpg',
 })
 
-// ──────────── Static Data (Trainers, Testimonials) ────────────
+// Static Data (Trainers, Testimonials)
 const trainers = [
   {
     id: 1,
@@ -679,7 +663,7 @@ const testimonials = [
   },
 ]
 
-// ──────────── Popular Courses Carousel ────────────
+// Popular Courses Carousel
 const {
   data: coursesData,
   pending: isCoursesLoading,
@@ -700,7 +684,7 @@ const popularCourses = computed(() => {
   return [...raw].sort((a, b) => (b.stats?.students ?? 0) - (a.stats?.students ?? 0))
 })
 
-// ──────────── Blog Section ────────────
+// Blog Section
 const {
   data: blogData,
   pending: isLoading,
@@ -720,7 +704,7 @@ const errorMessage = computed(() =>
   blogError.value ? 'Failed to load latest articles. Please try again.' : '',
 )
 
-// ── Responsive breakpoints for carousels (mobile-first to avoid SSR flash) ──
+// Responsive breakpoints for carousels
 const carouselBreakpoints = ref(1) // default 1 for mobile
 const testimonialBreakpoints = ref(1) // default 1 for mobile
 
@@ -741,8 +725,6 @@ onMounted(() => {
 .clip-triangle {
   clip-path: polygon(0 0, 100% 100%, 0 100%);
 }
-
-/* یکسان‌سازی ارتفاع اسلایدها */
 :deep(.carousel__track) {
   align-items: stretch;
 }
@@ -754,7 +736,6 @@ onMounted(() => {
   height: 100%;
 }
 
-/* pagination styles (existing) */
 :deep(.carousel__pagination) {
   @apply flex justify-center absolute -bottom-11;
 }

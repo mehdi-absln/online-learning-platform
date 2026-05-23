@@ -1,9 +1,6 @@
 <template>
-  <!-- ========================================================================
-       Mobile Menu (Teleported to <body> so it can cover the full viewport)
-       ======================================================================== -->
+  <!-- Mobile Menu (teleported to body) -->
   <Teleport to="body">
-    <!-- Backdrop -->
     <Transition
       enter-active-class="transition-opacity duration-300 ease-linear"
       enter-from-class="opacity-0"
@@ -20,7 +17,6 @@
       />
     </Transition>
 
-    <!-- Menu Panel -->
     <Transition
       enter-active-class="transition-all duration-300 ease-out"
       enter-from-class="opacity-0 -translate-y-4 max-h-0"
@@ -30,7 +26,6 @@
       leave-to-class="opacity-0 -translate-y-4 max-h-0"
     >
       <div
-
         v-if="isMobileMenuOpen"
         class="lg:hidden scrollbar-hide fixed top-20 left-4 right-4 z-50 bg-dark-surface/95 backdrop-blur-xl border border-dark-divider rounded-2xl shadow-2xl max-h-[calc(100vh-6rem)] overflow-y-auto pb-4"
       >
@@ -103,9 +98,7 @@
     </Transition>
   </Teleport>
 
-  <!-- ========================================================================
-       Main Navigation Bar (fixed, transparent → solid on scroll)
-       ======================================================================== -->
+  <!-- Main Navigation Bar -->
   <nav
     aria-label="Main navigation"
     class="fixed top-0 left-0 right-0 z-50 py-4 lg:py-10 transition-all duration-300"
@@ -114,16 +107,16 @@
       : 'bg-transparent'"
   >
     <div class="flex justify-between items-center container">
-      <!-- Logo / Brand -->
       <NuxtLink
         to="/home"
         class="text-base lg:text-xl font-bold text-white drop-shadow-lg shrink-0"
         aria-label="Online Learning Platform - Home"
       >
-        ONLINE LEARNING PLATFORM
+        <span class="hidden xxs:inline">ONLINE LEARNING PLATFORM</span>
+        <span class="xxs:hidden">OLP</span>
       </NuxtLink>
 
-      <!-- Desktop Navigation Menu -->
+      <!-- Desktop navigation links -->
       <ul
         class="hidden lg:flex lg:space-x-6 xl:space-x-8"
         role="list"
@@ -143,9 +136,9 @@
         </li>
       </ul>
 
-      <!-- Desktop Action Buttons -->
+      <!-- Desktop actions -->
       <div class="hidden lg:flex items-center space-x-4">
-        <!-- Authenticated User Menu -->
+        <!-- Authenticated user dropdown -->
         <div
           v-if="userStore.isAuthenticated"
           class="relative"
@@ -189,7 +182,7 @@
             </Transition>
           </button>
 
-          <!-- Desktop Dropdown Menu -->
+          <!-- Dropdown menu -->
           <Transition
             enter-active-class="transition ease-out duration-300"
             enter-from-class="opacity-0 scale-95 -translate-y-3"
@@ -227,7 +220,7 @@
                 </div>
               </div>
 
-              <!-- Dynamic User Menu Items -->
+              <!-- Dropdown items -->
               <div class="relative py-2">
                 <NuxtLink
                   v-for="(item, index) in dropdownMenuItems"
@@ -240,7 +233,6 @@
                   tabindex="-1"
                   @click="closeDropdown"
                 >
-                  <!-- Profile Icon -->
                   <svg
                     v-if="item.icon === 'profile'"
                     xmlns="http://www.w3.org/2000/svg"
@@ -257,7 +249,6 @@
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                  <!-- Courses Icon -->
                   <svg
                     v-else-if="item.icon === 'courses'"
                     xmlns="http://www.w3.org/2000/svg"
@@ -274,7 +265,6 @@
                       d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                     />
                   </svg>
-                  <!-- Settings Icon -->
                   <svg
                     v-else-if="item.icon === 'settings'"
                     xmlns="http://www.w3.org/2000/svg"
@@ -335,7 +325,7 @@
           </Transition>
         </div>
 
-        <!-- Login Button (when not authenticated) -->
+        <!-- Login button (unauthenticated) -->
         <NuxtLink
           v-else
           to="/auth"
@@ -363,7 +353,8 @@
           class="h-6 w-px bg-white/20"
           aria-hidden="true"
         />
-        <!-- Desktop Cart Button -->
+
+        <!-- Cart button -->
         <button
           type="button"
           class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(236,82,82,0.4)] hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
@@ -396,9 +387,8 @@
         </button>
       </div>
 
-      <!-- Mobile: Cart + Hamburger -->
+      <!-- Mobile buttons -->
       <div class="flex lg:hidden items-center space-x-3">
-        <!-- Mobile Cart Button -->
         <button
           type="button"
           class="group relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(236,82,82,0.4)] hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
@@ -430,7 +420,7 @@
           </span>
         </button>
 
-        <!-- Hamburger Button -->
+        <!-- Hamburger -->
         <button
           type="button"
           class="relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/30 bg-transparent text-white transition-all duration-300 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-gray"
@@ -474,7 +464,6 @@
       </div>
     </div>
 
-    <!-- Cart Drawer Component -->
     <CartDrawer />
   </nav>
 </template>
@@ -492,22 +481,22 @@ const route = useRoute()
 const userStore = useUserStore()
 const { itemsCount: cartItemsCount, openCart } = useCart()
 
-// ── Transparent-to-solid nav background on scroll ──
+// Scroll‑driven nav background
 const { y: scrollY } = useWindowScroll()
 const isScrolled = computed(() => scrollY.value > 10)
 
-// ── Accessibility IDs ──
+// Accessibility IDs
 const avatarButtonId = 'user-avatar-button'
 const dropdownMenuId = 'user-menu'
 
-// ── Desktop dropdown state ──
+// Desktop dropdown state
 const isDropdownOpen = ref(false)
 const avatarButton = ref<HTMLButtonElement | null>(null)
 const dropdownMenu = ref<HTMLDivElement | null>(null)
 const menuItemElements = ref<(HTMLElement | null)[]>([])
 const focusedItemIndex = ref(-1)
 
-// ── Mobile menu state ──
+// Mobile menu state
 const isMobileMenuOpen = ref(false)
 
 const toggleMobileMenu = () => {
@@ -518,10 +507,10 @@ const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
 }
 
-// ── Shared navigation links (extracted to composable) ──
+// Shared navigation links
 const { mainLinks } = useNavigationLinks()
 
-// ── Dynamic items for the user dropdown menu. ──
+// Dynamic dropdown menu items
 const dropdownMenuItems = computed(() => {
   const items = [
     { id: 'profile', to: '/profile', label: 'Profile', icon: 'profile' },
@@ -550,7 +539,7 @@ const getMenuItemRef = (index: number) => (el: Element | ComponentPublicInstance
   setMenuItemRef(el, index)
 }
 
-// ── Keyboard navigation within the dropdown ──
+// Dropdown keyboard navigation
 const { handleKeyDown } = useKeyboardFocus({
   items: menuItemElements,
 })
@@ -558,7 +547,7 @@ const { handleKeyDown } = useKeyboardFocus({
 const userInitials = computed(() => userStore.user?.username?.[0]?.toUpperCase() || 'U')
 const userDisplayName = computed(() => userStore.user?.username || 'User')
 
-// ── Desktop Dropdown Controls ──
+// Dropdown controls
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
   if (isDropdownOpen.value) {
@@ -607,7 +596,7 @@ const handleLogout = async () => {
   await userStore.logout()
 }
 
-// ── Close dropdown when clicking outside ──
+// Close dropdown on outside click
 const handleClickOutside = (event: MouseEvent) => {
   if (isDropdownOpen.value && dropdownMenu.value && !dropdownMenu.value.contains(event.target as Node)) {
     closeDropdown()
