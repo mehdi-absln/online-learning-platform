@@ -1,18 +1,22 @@
 <template>
   <div>
-    <!-- Hero Section -->
+    <!-- ========================================================================
+     Hero Section
+     ======================================================================== -->
     <section
       aria-label="Hero section"
       class="relative w-full overflow-hidden"
     >
+      <!-- Decorative shapes (z-index back to 10) -->
       <div
         aria-hidden="true"
-        class="absolute bottom-[-60px] right-[-300px] z-10 -rotate-[40deg]"
+        class="absolute bottom-[-60px] right-[-300px] z-10 -rotate-[40deg] hidden xl:block"
       >
         <div class="w-[1200px] h-[140px] bg-[#E05243] mb-6" />
         <div class="w-[1200px] h-[140px] bg-[#E05243]" />
       </div>
-      <div class="relative w-full aspect-video overflow-hidden">
+
+      <div class="relative w-full aspect-video min-h-[450px] md:min-h-0 overflow-hidden">
         <div class="absolute inset-0 w-full h-full">
           <div class="w-full h-full bg-cover bg-center bg-no-repeat bg-[url('@/public/images/banner.jpg')]">
             <div
@@ -21,16 +25,17 @@
             />
           </div>
         </div>
-        <div class="relative h-full flex items-center container">
-          <div class="md:w-[60%] w-full space-y-10 text-center md:text-start">
+        <!-- Padding top responsive for spacing from nav -->
+        <div class="relative h-full flex items-center container pt-32 lg:pt-40 xl:pt-44">
+          <div class="lg:w-[60%] w-full space-y-6 md:space-y-10 text-center md:text-start px-4 md:px-0">
             <h1
               id="main-heading"
-              class="text-4xl font-antonio md:text-6xl lg:text-8xl font-bold text-white"
+              class="text-3xl font-antonio md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white"
             >
               <span class="text-primary">GROW YOUR MIND</span>
               <span class="block">SHAPE YOUR FUTURE</span>
             </h1>
-            <p class="text-base text-white">
+            <p class="text-sm md:text-base text-white max-w-prose mx-auto md:mx-0">
               The key to learning is consistency — nothing more, nothing less. There's no secret
               formula, and it's never out of reach. Every skill starts with a single step.
             </p>
@@ -38,7 +43,7 @@
               to="/auth"
               class="inline-block"
             >
-              <button class="btn-primary relative font-antonio group overflow-hidden">
+              <button class="btn-primary relative font-antonio group overflow-hidden text-xs sm:text-sm md:text-base px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3">
                 <span class="absolute inset-0 w-0 bg-white/10 group-hover:w-full transition-all duration-500" />
                 <span class="relative z-10 flex items-center">
                   GET STARTED NOW
@@ -53,128 +58,136 @@
         </div>
       </div>
     </section>
-    <!-- About Section -->
+
+    <!-- ========================================================================
+     About Section
+     ======================================================================== -->
     <section
-      class="py-32"
+      class="py-16 md:py-32 overflow-hidden"
       aria-labelledby="about-heading"
     >
-      <div class="container flex justify-between items-center flex-wrap md:flex-nowrap gap-x-6">
-        <div class="w-[45%] relative">
+      <div class="container flex flex-col lg:flex-row justify-between items-center gap-y-12 lg:gap-12">
+        <!-- Image column -->
+        <div class="w-full lg:w-[45%] relative">
           <img
             src="../public/images/laptop-near-whilte-book.jpg"
             alt="Laptop near a white book"
-            class="h-full object-cover z-20 ml-auto block w-[95%] relative"
+            class="h-auto xl:h-full w-full xl:w-[95%] object-cover z-20 ml-auto block relative"
           >
+          <!-- Responsive decorative triangle using clip-path -->
           <div
             aria-hidden="true"
-            class="absolute left-0 -bottom-[50px] rotate-180 w-0 h-0 border-l-[420px] border-l-transparent border-t-[350px] border-t-[#E05243]"
+            class="absolute left-0 -bottom-[50px] w-[25%] md:w-[30%] pt-[20%] md:pt-[25%] bg-[#E05243] clip-triangle hidden lg:block"
           />
         </div>
-        <div class="w-[45%]">
+
+        <!-- Text column -->
+        <div class="w-full lg:w-[45%]">
           <h2
             id="about-heading"
-            class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]"
+            class="text-3xl md:text-4xl xl:text-5xl font-antonio font-semibold text-white leading-snug md:leading-tight lg:leading-tight xl:leading-[4.7rem]"
           >
             Empowering learners with knowledge and tools
             <span class="text-primary">for success</span>
           </h2>
-          <p class="text-[#C2C2C2] text-base py-6">
+          <p class="text-[#C2C2C2] text-sm md:text-base py-6">
             The first thing to remember about success is that it is a process – nothing more,
             nothing less. There is really no magic to it and it's not reserved only for a select few
             people.
           </p>
-          <div class="flex flex-wrap justify-between gap-y-6">
-            <div class="bg-dark-bg py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
-              <div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+            <div class="bg-dark-bg py-4 px-4 md:px-6 grid grid-cols-[auto_1fr] items-center gap-x-3 md:gap-x-5">
+              <div class="flex-shrink-0">
                 <img
                   src="../public/icon/UPST0182.png"
                   alt=""
                   role="presentation"
                   loading="lazy"
+                  class="w-10 h-10 md:w-auto md:h-auto"
                 >
               </div>
-              <div>
-                <p class="font-antonio font-bold text-white text-base">
-                  Supportive and inspiring learning
-                </p>
-              </div>
+              <p class="font-antonio font-bold text-white text-sm md:text-base">
+                Supportive and inspiring learning
+              </p>
             </div>
-            <div class="bg-dark-bg py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
-              <div>
+
+            <div class="bg-dark-bg py-4 px-4 md:px-6 grid grid-cols-[auto_1fr] items-center gap-x-3 md:gap-x-5">
+              <div class="flex-shrink-0">
                 <img
                   src="../public/icon/UPST0181.png"
                   alt=""
                   role="presentation"
                   loading="lazy"
+                  class="w-10 h-10 md:w-auto md:h-auto"
                 >
               </div>
-              <div>
-                <p class="font-antonio font-bold text-white text-base">
-                  Learning experience that is rewarding and meaningful
-                </p>
-              </div>
+              <p class="font-antonio font-bold text-white text-sm md:text-base">
+                Learning experience that is rewarding and meaningful
+              </p>
             </div>
-            <div class="bg-dark-bg py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
-              <div>
+
+            <div class="bg-dark-bg py-4 px-4 md:px-6 grid grid-cols-[auto_1fr] items-center gap-x-3 md:gap-x-5">
+              <div class="flex-shrink-0">
                 <img
                   src="../public/icon/UPST0180.png"
                   alt=""
                   role="presentation"
                   loading="lazy"
+                  class="w-10 h-10 md:w-auto md:h-auto"
                 >
               </div>
-              <div>
-                <p class="font-antonio font-bold text-white text-base">
-                  Bringing together knowledge, skills, and growth
-                </p>
-              </div>
+              <p class="font-antonio font-bold text-white text-sm md:text-base">
+                Bringing together knowledge, skills, and growth
+              </p>
             </div>
-            <div class="bg-dark-bg py-4 px-6 flex justify-center items-center gap-x-5 w-[47%]">
-              <div>
+
+            <div class="bg-dark-bg py-4 px-4 md:px-6 grid grid-cols-[auto_1fr] items-center gap-x-3 md:gap-x-5">
+              <div class="flex-shrink-0">
                 <img
                   src="../public/icon/UPST0179.png"
                   alt=""
                   role="presentation"
                   loading="lazy"
+                  class="w-10 h-10 md:w-auto md:h-auto"
                 >
               </div>
-              <div>
-                <p class="font-antonio font-bold text-white text-base">
-                  We help you achieve your learning goals
-                </p>
-              </div>
+              <p class="font-antonio font-bold text-white text-sm md:text-base">
+                We help you achieve your learning goals
+              </p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Online Classes Section -->
+    <!-- ========================================================================
+         Online Classes Section
+         ======================================================================== -->
     <section
-      class="bg-dark-surface py-32 relative z-0"
+      class="bg-dark-surface py-16 md:py-32 relative z-0"
       aria-labelledby="classes-heading"
     >
       <div
         aria-hidden="true"
         class="absolute inset-0 flex justify-center gap-[50%] pointer-events-none items-end -z-10"
       >
-        <div class="w-px h-[95%] bg-primary transform -skew-x-[25deg]" />
-        <div class="w-px h-[95%] bg-primary transform -skew-x-[25deg]" />
+        <div class="w-px h-[50%] md:h-[95%] bg-primary transform -skew-x-[25deg]" />
+        <div class="w-px h-[50%] md:h-[95%] bg-primary transform -skew-x-[25deg]" />
       </div>
       <div class="container relative z-20">
-        <div class="text-center pb-14">
-          <p class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
+        <div class="text-center pb-10 md:pb-14">
+          <p class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-2 md:pb-4">
             ONLINE CLASSES
           </p>
           <h2
             id="classes-heading"
-            class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]"
+            class="text-3xl md:text-5xl font-antonio font-semibold text-white leading-snug md:leading-[4.7rem]"
           >
             OUR POPULAR CLASSES
           </h2>
         </div>
 
-        <!-- Loading State -->
+        <!-- Loading / Error / Empty states -->
         <div
           v-if="isCoursesLoading"
           class="text-center py-10"
@@ -183,8 +196,6 @@
         >
           <LoadingSpinner message="Loading popular courses..." />
         </div>
-
-        <!-- Error State -->
         <div
           v-else-if="hasCoursesError"
           class="py-10"
@@ -195,8 +206,6 @@
             @retry="refreshCourses"
           />
         </div>
-
-        <!-- Empty State -->
         <div
           v-else-if="popularCourses.length === 0"
           role="status"
@@ -208,14 +217,14 @@
           />
         </div>
 
-        <!-- Carousel -->
+        <!-- Carousel (responsive items-to-show) -->
         <div
           v-else
           aria-label="Popular courses carousel"
           role="region"
         >
           <Carousel
-            :items-to-show="3"
+            :items-to-show="carouselBreakpoints"
             :wrap-around="false"
             :mouse-drag="true"
             :touch-drag="true"
@@ -224,7 +233,7 @@
               v-for="course in popularCourses"
               :key="course.id"
             >
-              <div class="w-[95%] group">
+              <div class="w-[95%] group mx-auto h-full">
                 <CourseCard :course="course" />
               </div>
             </Slide>
@@ -236,79 +245,79 @@
       </div>
     </section>
 
-    <!-- Stats Section -->
+    <!-- ========================================================================
+         Stats Section
+         ======================================================================== -->
     <section
-      class="py-20"
+      class="py-10 md:py-20"
       aria-label="Platform statistics"
     >
       <div class="container">
-        <div class="flex flex-wrap justify-center gap-8 text-center">
+        <div class="flex flex-wrap justify-center gap-6 md:gap-8 text-center">
           <div
-            class="flex-1 min-w-[200px] max-w-[300px] p-6"
+            class="flex-1 min-w-[140px] max-w-[300px] p-4 md:p-6"
             aria-labelledby="stat1-value stat1-desc"
           >
             <div
               id="stat1-value"
-              class="text-5xl font-bold text-primary mb-2 font-antonio"
+              class="text-3xl md:text-5xl font-bold text-primary mb-2 font-antonio"
             >
               1200
             </div>
             <p
               id="stat1-desc"
-              class="text-white text-base pt-2"
+              class="text-white text-sm md:text-base pt-2"
             >
               Hours Of Learning
             </p>
           </div>
-
           <div
-            class="flex-1 min-w-[200px] max-w-[300px] p-6"
+            class="flex-1 min-w-[140px] max-w-[300px] p-4 md:p-6"
             aria-labelledby="stat2-value stat2-desc"
           >
             <div
               id="stat2-value"
-              class="text-5xl font-bold text-primary mb-2 font-antonio"
+              class="text-3xl md:text-5xl font-bold text-primary mb-2 font-antonio"
             >
               10,145
             </div>
             <p
               id="stat2-desc"
-              class="text-white text-base pt-2"
+              class="text-white text-sm md:text-base pt-2"
             >
               Total Tutorials
             </p>
           </div>
-
           <div
-            class="flex-1 min-w-[200px] max-w-[300px] p-6"
+            class="flex-1 min-w-[140px] max-w-[300px] p-4 md:p-6"
             aria-labelledby="stat3-value stat3-desc"
           >
             <div
               id="stat3-value"
-              class="text-5xl font-bold text-primary mb-2 font-antonio"
+              class="text-3xl md:text-5xl font-bold text-primary mb-2 font-antonio"
             >
               3745
             </div>
             <p
               id="stat3-desc"
-              class="text-white text-base pt-2"
+              class="text-white text-sm md:text-base pt-2"
             >
               Enrolled Learners
             </p>
           </div>
           <div
-            class="flex-1 min-w-[200px] max-w-[300px] p-6"
+            class="flex-1 min-w-[140px] max-w-[300px] p-4 md:p-6"
             aria-labelledby="stat4-value stat4-desc"
           >
             <div
               id="stat4-value"
-              class="text-5xl font-bold text-primary mb-2 font-antonio"
+              class="text-3xl md:text-5xl font-bold text-primary mb-2 font-antonio"
             >
               100%
             </div>
             <p
               id="stat4-desc"
-              class="text-white text-base pt-2"
+              class="text-white text-sm md:text-base pt-2"
             >
               Achieve learning goals
             </p>
@@ -318,41 +327,43 @@
       </div>
     </section>
 
-    <!-- Trainers Section -->
+    <!-- ========================================================================
+         Trainers Section
+         ======================================================================== -->
     <section
-      class="py-32"
+      class="py-16 md:py-32"
       aria-labelledby="trainers-heading"
     >
       <div class="container">
-        <div class="text-center pb-14">
-          <p class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
+        <div class="text-center pb-10 md:pb-14">
+          <p class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-2 md:pb-4">
             Trainers
           </p>
           <h2
             id="trainers-heading"
-            class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]"
+            class="text-3xl md:text-5xl font-antonio font-semibold text-white leading-snug md:leading-[4.7rem]"
           >
             Meet our top trainers
           </h2>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full gap-4 md:gap-6">
           <div
             v-for="trainer in trainers"
             :key="trainer.id"
-            class="relative overflow-hidden h-96 group"
+            class="relative overflow-hidden group rounded-xl aspect-[3/4]"
           >
             <img
               :src="trainer.image"
               :alt="trainer.name"
-              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             >
             <div class="absolute inset-0 bg-black/60 transition-all duration-300 p-6 flex flex-col items-start justify-end h-full">
               <div class="relative overflow-hidden group z-20 py-6 px-6 flex flex-col w-full">
                 <div class="text-center w-full">
-                  <h3 class="text-white text-xl font-bold font-antonio cursor-pointer hover:text-[#021E40] transition-colors duration-300">
+                  <h3 class="text-white text-lg md:text-xl font-bold font-antonio cursor-pointer hover:text-[#021E40] transition-colors duration-300 line-clamp-1">
                     {{ trainer.name }}
                   </h3>
-                  <span class="text-white text-xs uppercase pt-1">{{ trainer.role }}</span>
+                  <span class="text-white text-xs uppercase pt-1 line-clamp-1">{{ trainer.role }}</span>
                 </div>
                 <div
                   aria-hidden="true"
@@ -427,19 +438,21 @@
       </div>
     </section>
 
-    <!-- Testimonials Section -->
+    <!-- ========================================================================
+         Testimonials Section
+         ======================================================================== -->
     <section
-      class="pt-16 pb-24"
+      class="pt-10 md:pt-16 pb-16 md:pb-24"
       aria-labelledby="testimonials-heading"
     >
       <div class="container">
-        <div class="text-center pb-14">
-          <p class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
+        <div class="text-center pb-10 md:pb-14">
+          <p class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-2 md:pb-4">
             Testimonials
           </p>
           <h2
             id="testimonials-heading"
-            class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]"
+            class="text-3xl md:text-5xl font-antonio font-semibold text-white leading-snug md:leading-[4.7rem]"
           >
             What they say about us
           </h2>
@@ -450,7 +463,7 @@
           role="region"
         >
           <Carousel
-            :items-to-show="2"
+            :items-to-show="testimonialBreakpoints"
             :wrap-around="false"
             :mouse-drag="true"
             :touch-drag="true"
@@ -460,21 +473,21 @@
               v-for="testimonial in testimonials"
               :key="testimonial.id"
             >
-              <div class="bg-transparent p-8 border-2 border-dark-divider rounded-2xl text-center mx-4 relative overflow-hidden before:content-['\201C'] before:absolute before:top-4 before:right-4 before:text-[#3a3a3a] before:text-9xl before:font-serif before:leading-none before:opacity-20 before:pointer-events-none">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full overflow-hidden border-2 border-primary">
+              <div class="bg-transparent p-4 md:p-8 border-2 border-dark-divider rounded-2xl text-center mx-2 md:mx-4 relative overflow-hidden before:content-['\201C'] before:absolute before:top-4 before:right-4 before:text-[#3a3a3a] before:text-6xl md:before:text-9xl before:font-serif before:leading-none before:opacity-20 before:pointer-events-none">
+                <div class="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-full overflow-hidden border-2 border-primary">
                   <img
                     :src="testimonial.avatar"
                     :alt="testimonial.name"
                     class="w-full h-full object-cover"
                   >
                 </div>
-                <blockquote class="text-gray-300 text-lg mb-6">
+                <blockquote class="text-gray-300 text-sm md:text-lg mb-4 md:mb-6 line-clamp-4 md:line-clamp-none">
                   "{{ testimonial.content }}"
                 </blockquote>
-                <h4 class="text-white text-xl font-semibold">
+                <h4 class="text-white text-lg md:text-xl font-semibold">
                   {{ testimonial.name }}
                 </h4>
-                <p class="text-primary text-sm">
+                <p class="text-primary text-xs md:text-sm">
                   {{ testimonial.role }}
                 </p>
               </div>
@@ -487,25 +500,26 @@
       </div>
     </section>
 
-    <!-- Blog Section -->
+    <!-- ========================================================================
+         Blog Section
+         ======================================================================== -->
     <section
-      class="py-16"
+      class="py-10 md:py-16"
       aria-labelledby="blog-heading"
     >
       <div class="container">
-        <div class="text-center pb-14">
-          <p class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-4">
+        <div class="text-center pb-10 md:pb-14">
+          <p class="text-sm text-primary font-semibold font-antonio tracking-[2px] pb-2 md:pb-4">
             Latest tips & news
           </p>
           <h2
             id="blog-heading"
-            class="text-5xl font-antonio font-semibold text-white leading-[4.7rem]"
+            class="text-3xl md:text-5xl font-antonio font-semibold text-white leading-snug md:leading-[4.7rem]"
           >
             Have a look at our news
           </h2>
         </div>
 
-        <!-- Loading State -->
         <div
           v-if="isLoading"
           class="text-center py-10"
@@ -514,8 +528,6 @@
         >
           <LoadingSpinner message="Loading latest articles..." />
         </div>
-
-        <!-- Error State -->
         <div
           v-else-if="hasError"
           class="py-10"
@@ -526,8 +538,6 @@
             @retry="refresh"
           />
         </div>
-
-        <!-- Empty State -->
         <div
           v-else-if="latestPosts.length === 0"
           role="status"
@@ -539,10 +549,9 @@
           />
         </div>
 
-        <!-- Blog Cards Grid -->
         <div
           v-else
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
           role="list"
           :aria-label="`Showing ${latestPosts.length} latest blog articles`"
         >
@@ -567,6 +576,7 @@
 // ──────────── 3rd Party & Nuxt Imports ────────────
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 // ──────────── App Components ────────────
 import CourseCard from '~/components/courses/CourseCard.vue'
@@ -709,24 +719,52 @@ const hasError = computed(() => !!blogError.value)
 const errorMessage = computed(() =>
   blogError.value ? 'Failed to load latest articles. Please try again.' : '',
 )
+
+// ── Responsive breakpoints for carousels (mobile-first to avoid SSR flash) ──
+const carouselBreakpoints = ref(1) // default 1 for mobile
+const testimonialBreakpoints = ref(1) // default 1 for mobile
+
+onMounted(() => {
+  const update = () => {
+    const w = window.innerWidth
+    carouselBreakpoints.value = w < 640 ? 1 : w < 1024 ? 2 : 3
+    testimonialBreakpoints.value = w < 640 ? 1 : 2
+  }
+  update()
+  window.addEventListener('resize', update)
+  onUnmounted(() => window.removeEventListener('resize', update))
+})
 </script>
 
 <style scoped lang="postcss">
+/* Responsive triangle for About section */
+.clip-triangle {
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+
+/* یکسان‌سازی ارتفاع اسلایدها */
+:deep(.carousel__track) {
+  align-items: stretch;
+}
+:deep(.carousel__slide) {
+  height: auto;
+  display: flex;
+}
+:deep(.carousel__slide > *) {
+  height: 100%;
+}
+
+/* pagination styles (existing) */
 :deep(.carousel__pagination) {
   @apply flex justify-center absolute -bottom-11;
 }
-
 :deep(.carousel__pagination-button) {
   @apply p-0 m-0 border-0;
-}
-
-:deep(.carousel__pagination-button) {
   @apply block w-3 h-3 rounded-full mx-1;
   @apply bg-gray-400;
   @apply transition-all duration-300;
   content: '';
 }
-
 :deep(.carousel__pagination-button--active) {
   @apply bg-primary;
 }
