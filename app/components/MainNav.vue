@@ -30,8 +30,9 @@
       leave-to-class="opacity-0 -translate-y-4 max-h-0"
     >
       <div
+
         v-if="isMobileMenuOpen"
-        class="lg:hidden scrollbar-hide fixed top-20 bottom-4 left-4 right-4 z-50 bg-dark-surface/95 backdrop-blur-xl border border-dark-divider rounded-2xl shadow-2xl overflow-y-auto pb-4"
+        class="lg:hidden scrollbar-hide fixed top-20 left-4 right-4 z-50 bg-dark-surface/95 backdrop-blur-xl border border-dark-divider rounded-2xl shadow-2xl max-h-[calc(100vh-6rem)] overflow-y-auto pb-4"
       >
         <ul
           class="py-2"
@@ -107,16 +108,16 @@
        ======================================================================== -->
   <nav
     aria-label="Main navigation"
-    class="fixed top-0 left-0 right-0 z-50 container py-4 lg:py-10 transition-all duration-300"
+    class="fixed top-0 left-0 right-0 z-50 py-4 lg:py-10 transition-all duration-300"
     :class="isScrolled
       ? 'bg-dark-gray/85 backdrop-blur-md shadow-lg shadow-black/20'
       : 'bg-transparent'"
   >
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center container">
       <!-- Logo / Brand -->
       <NuxtLink
         to="/home"
-        class="text-lg lg:text-xl font-bold text-white drop-shadow-lg shrink-0"
+        class="text-base lg:text-xl font-bold text-white drop-shadow-lg shrink-0"
         aria-label="Online Learning Platform - Home"
       >
         ONLINE LEARNING PLATFORM
