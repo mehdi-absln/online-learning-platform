@@ -1,16 +1,6 @@
 <template>
   <div class="min-h-screen">
-    <!-- Skip Link -->
-    <a
-      href="#dashboard-main"
-      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg"
-    >
-      Skip to main content
-    </a>
-
-    <main
-      id="dashboard-main"
-      role="main"
+    <div
       class="container py-8 lg:py-12 space-y-8 lg:space-y-10 animate-fade-in"
     >
       <!-- ═══ 1. Welcome Header ═══ -->
@@ -312,7 +302,7 @@
         message="Failed to load dashboard data."
         @retry="() => refresh()"
       />
-    </main>
+    </div>
   </div>
 </template>
 

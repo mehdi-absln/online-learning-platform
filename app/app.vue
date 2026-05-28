@@ -16,14 +16,15 @@
 
 <script setup lang="ts">
 import Toast from '~/components/ui/Toast.vue'
+import { SITE_NAME } from '~/constants/index'
 
 const toast = useToast()
 // Main app component with TypeScript support
 useSeoMeta({
-  title: 'Online Learning Platform',
+  title: `${SITE_NAME}`,
   description:
     'Empowering learners worldwide with quality education and innovative learning solutions.',
-  ogTitle: 'Online Learning Platform',
+  ogTitle: `${SITE_NAME}`,
   ogDescription:
     'Empowering learners worldwide with quality education and innovative learning solutions.',
   ogImage: '/images/banner.jpg',

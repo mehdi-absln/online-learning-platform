@@ -47,6 +47,7 @@
 
 <script setup lang="ts">
 import type { NuxtError } from '#app'
+import { SITE_NAME } from '~/constants/index'
 
 const props = defineProps<{
   error: NuxtError
@@ -67,7 +68,7 @@ const errorMessage = computed(() => {
 const handleGoHome = () => clearError({ redirect: '/' })
 
 useSeoMeta({
-  title: () => `${errorTitle.value} — Online Learning Platform`,
+  title: () => `${errorTitle.value} — ${SITE_NAME}`,
   robots: 'noindex, nofollow',
 })
 </script>

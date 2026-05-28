@@ -17,7 +17,7 @@
             id="footer-brand-heading"
             class="text-2xl font-bold text-primary font-antonio uppercase"
           >
-            Online Learning Platform
+            {{ SITE_NAME }}
           </h3>
           <p class="text-gray-400 text-sm leading-relaxed mt-4">
             Empowering learners worldwide with quality education and innovative learning solutions.
@@ -205,7 +205,7 @@
       <!-- Copyright -->
       <div class="w-full border-t border-dark-divider mt-12 pt-8 text-center text-gray-500 text-sm">
         <p>
-          <small>&copy; {{ new Date().getFullYear() }} Online Learning Platform. All rights reserved.</small>
+          <small>&copy; {{ new Date().getFullYear() }} {{ SITE_NAME }}. All rights reserved.</small>
         </p>
       </div>
     </div>
@@ -214,6 +214,7 @@
 
 <script setup lang="ts">
 import { useNavigationLinks } from '~/composables/useNavigationLinks'
+import { SITE_NAME } from '~/constants/index'
 
 const { mainLinks } = useNavigationLinks()
 </script>

@@ -110,9 +110,11 @@
       <NuxtLink
         to="/home"
         class="text-base lg:text-xl font-bold text-white drop-shadow-lg shrink-0"
-        aria-label="Online Learning Platform - Home"
+        :aria-label="`${SITE_NAME}"
+        -
+        Home`
       >
-        <span class="hidden xxs:inline">ONLINE LEARNING PLATFORM</span>
+        <span class="hidden xxs:inline">{{ SITE_NAME }}</span>
         <span class="xxs:hidden">OLP</span>
       </NuxtLink>
 
@@ -476,6 +478,7 @@ import { useKeyboardFocus } from '~/composables/useKeyboardFocus'
 import { useNavigationLinks } from '~/composables/useNavigationLinks'
 import { useUserStore } from '~/stores/user'
 import CartDrawer from '~/components/ui/CartDrawer.vue'
+import { SITE_NAME } from '~/constants/index'
 
 const route = useRoute()
 const userStore = useUserStore()
