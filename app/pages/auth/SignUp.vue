@@ -143,11 +143,12 @@ import FormInput from '~/components/ui/FormInput.vue'
 // Define page metadata
 definePageMeta({ layout: 'auth', title: 'Sign Up' })
 
+import { SITE_NAME } from '~/constants'
 // SEO metadata
 useHead({
-  title: 'Sign Up - Online Learning Platform',
+  title: `Sign Up - ${SITE_NAME}`,
   meta: [
-    { name: 'description', content: 'Create a free account to start learning. Access courses, track your progress, and earn certificates on our online learning platform.' },
+    { name: 'description', content: `Create a free account to start learning. Access courses, track your progress, and earn certificates on our ${SITE_NAME}.` },
     { name: 'robots', content: 'noindex, nofollow' },
   ],
   link: [

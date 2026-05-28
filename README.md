@@ -1,4 +1,4 @@
-# Online Learning Platform
+# {{ SITE_NAME }}
 
 A comprehensive online learning platform built with Nuxt.js, featuring user authentication, course browsing, and a responsive UI.
 

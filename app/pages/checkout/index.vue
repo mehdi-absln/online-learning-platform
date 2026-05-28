@@ -275,11 +275,12 @@ definePageMeta({
   title: 'Checkout',
 })
 
+import { SITE_NAME } from '~/constants'
 useSeoMeta({
-  title: 'Checkout - Complete Your Purchase | Online Learning Platform',
+  title: `Checkout - Complete Your Purchase | ${SITE_NAME}`,
   description: 'Secure checkout page for course enrollment. Review your order and complete your purchase to start learning.',
   robots: 'noindex, nofollow',
-  ogTitle: 'Checkout - Online Learning Platform',
+  ogTitle: `Checkout - ${SITE_NAME}`,
   ogDescription: 'Secure checkout page for course enrollment. Review your order and complete your purchase.',
   ogType: 'website',
   twitterCard: 'summary',

@@ -309,11 +309,13 @@
 <script setup lang="ts">
 import IconPlus from '~/components/icons/IconPlus.vue'
 
+import { SITE_NAME } from '~/constants'
+
 definePageMeta({
   requiresAuth: true,
 })
 useSeoMeta({
-  title: 'Dashboard — Online Learning Platform',
+  title: `Dashboard — ${SITE_NAME}`,
   description: 'Track your learning progress...',
   robots: 'noindex, nofollow',
 })

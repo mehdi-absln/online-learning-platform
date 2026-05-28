@@ -578,10 +578,12 @@ import EmptyState from '~/components/ui/EmptyState.vue'
 import type { Blog } from '~/types/shared/blogs'
 import type { Course } from '~/types/shared/courses'
 
+import { SITE_NAME } from '~/constants'
+
 // SEO
 useSeoMeta({
-  title: 'Home - Online Learning Platform',
-  ogTitle: 'Home - Online Learning Platform',
+  title: `Home - ${SITE_NAME}`,
+  ogTitle: `Home - ${SITE_NAME}`,
   description:
     'Start your learning journey with our comprehensive online courses taught by expert instructors.',
   ogDescription:

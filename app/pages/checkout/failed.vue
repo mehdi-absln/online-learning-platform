@@ -126,11 +126,12 @@ definePageMeta({
   title: 'Payment Failed',
 })
 
+import { SITE_NAME } from '~/constants'
 useSeoMeta({
-  title: 'Payment Declined - Try Again | Online Learning Platform',
+  title: `Payment Declined - Try Again | ${SITE_NAME}`,
   description: 'Your payment was declined. Learn what might have gone wrong and how to complete your purchase.',
   robots: 'noindex, nofollow',
-  ogTitle: 'Payment Declined - Online Learning Platform',
+  ogTitle: `Payment Declined - ${SITE_NAME}`,
   ogDescription: 'Your payment was declined. Try again or browse more courses.',
   ogType: 'website',
   twitterCard: 'summary',

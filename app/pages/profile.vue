@@ -141,12 +141,14 @@ import type { ChangePasswordFormData } from '~/schemas/auth'
 import FormInput from '~/components/ui/FormInput.vue'
 import SubmitButton from '~/components/ui/SubmitButton.vue'
 
+import { SITE_NAME } from '~/constants'
+
 definePageMeta({
   requiresAuth: true,
 })
 
 useHead({
-  title: 'Profile - Online Learning Platform',
+  title: `Profile - ${SITE_NAME}`,
   meta: [
     { name: 'description', content: 'Manage your profile and change your password' },
     { name: 'robots', content: 'noindex, nofollow' },

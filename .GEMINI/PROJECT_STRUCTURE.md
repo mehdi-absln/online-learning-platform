@@ -1,5 +1,5 @@
 ```markdown
-# Online Learning Platform - Project Structure
+# {{ SITE_NAME }} - Project Structure
 
 ## Overview
 Comprehensive documentation of the project structure for the Online Learning Platform built with **Nuxt 4**, **Vue 3**, **TypeScript**, **Tailwind CSS**, **Pinia**, **SQLite** with **Drizzle ORM**, and **Vitest** for testing.

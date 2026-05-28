@@ -991,7 +991,7 @@ const fetchLessonAccess = async () => {
 - Added authentication navigation links ("Browse courses without signing in/up")
 
 **SEO Improvements:**
-- Unique descriptive titles: "Sign In - Online Learning Platform", "Sign Up - Online Learning Platform"
+- Unique descriptive titles: "Sign In - {{ SITE_NAME }}", "Sign Up - {{ SITE_NAME }}"
 - Detailed meta descriptions for each page
 - `noindex, nofollow` robots tags (auth pages)
 - Canonical URLs via `useHead`
