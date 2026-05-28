@@ -1,6 +1,5 @@
 <template>
-  <main
-    id="main-content"
+  <div
     class="container py-8"
     aria-labelledby="profile-heading"
   >
@@ -16,7 +15,7 @@
     </h1>
 
     <div class="grid gap-6 lg:grid-cols-2">
-      <!-- کارت اطلاعات کاربری -->
+      <!-- User Info Card -->
       <section
         class="bg-dark-surface border border-dark-divider rounded-lg p-6"
         aria-labelledby="account-heading"
@@ -56,7 +55,7 @@
         </dl>
       </section>
 
-      <!-- کارت تغییر رمز عبور -->
+      <!-- Password Change Card -->
       <section
         class="bg-dark-surface border border-dark-divider rounded-lg p-6"
         aria-labelledby="password-heading"
@@ -102,7 +101,7 @@
             @blur="handleBlur('confirmPassword')"
           />
 
-          <!-- پیام موفقیت -->
+          <!-- Success Message -->
           <div
             v-if="successMessage"
             role="status"
@@ -111,7 +110,7 @@
             {{ successMessage }}
           </div>
 
-          <!-- پیام خطا -->
+          <!-- Error Message -->
           <div
             v-if="errorMessage"
             role="alert"
@@ -129,7 +128,7 @@
         </form>
       </section>
     </div>
-  </main>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -157,7 +156,7 @@ useHead({
 const userStore = useUserStore()
 const toast = useToast()
 
-// مقادیر اولیه فرم
+// Initial form data
 const initialData: ChangePasswordFormData = {
   currentPassword: '',
   newPassword: '',

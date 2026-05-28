@@ -2,10 +2,10 @@
   <div>
     <!-- Hero Section -->
     <section
-      aria-label="Hero section"
+      aria-labelledby="main-heading"
       class="relative w-full overflow-hidden"
     >
-      <!-- Decorative shapes (z-index back to 10) -->
+      <!-- Decorative shapes -->
       <div
         aria-hidden="true"
         class="absolute bottom-[-60px] right-[-300px] z-10 -rotate-[40deg] hidden xl:block"
@@ -23,7 +23,6 @@
             />
           </div>
         </div>
-        <!-- Padding top responsive for spacing from nav -->
         <div class="relative h-full flex items-center container pt-32 lg:pt-40 xl:pt-44">
           <div class="lg:w-[60%] w-full space-y-6 md:space-y-10 text-center md:text-start px-4 md:px-0">
             <h1
@@ -230,7 +229,10 @@
               </div>
             </Slide>
             <template #addons>
-              <Pagination :paginate-by-items-to-show="true" />
+              <Pagination
+                label="Go to slide"
+                active-label="Current slide"
+              />
             </template>
           </Carousel>
         </div>
@@ -479,7 +481,10 @@
               </div>
             </Slide>
             <template #addons>
-              <Pagination />
+              <Pagination
+                label="Go to slide"
+                active-label="Current slide"
+              />
             </template>
           </Carousel>
         </div>

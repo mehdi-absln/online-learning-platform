@@ -2,9 +2,9 @@
   <div class="min-h-screen py-8 relative w-full bg-dark-gray flex items-center justify-center">
     <NuxtLink
       to="/home"
-      class="text-xl font-bold text-white drop-shadow-lg absolute top-4 left-4 z-50"
+      class="text-xl font-bold text-white drop-shadow-lg absolute top-4 left-4 z-50 uppercase"
     >
-      ONLINE LEARNING PLATFORM
+      {{ SITE_NAME }}
     </NuxtLink>
     <div class="max-w-md w-full">
       <div class="bg-[#1F1F1F] rounded-2xl shadow-xl p-8">
@@ -32,6 +32,8 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { SITE_NAME } from '~/constants/index'
+</script>
 
 <style scoped></style>

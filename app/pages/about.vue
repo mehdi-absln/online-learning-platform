@@ -20,7 +20,7 @@
       <!-- Introduction -->
       <div class="bg-dark-surface border border-dark-divider rounded-lg p-6 md:p-8 mb-8">
         <p class="text-gray-300 leading-relaxed text-lg">
-          Welcome to <span class="text-white font-semibold">Online Learning Platform</span> —
+          Welcome to <span class="text-white font-semibold">{{ SITE_NAME }}</span> —
           your destination for high-quality online education. We believe that learning
           should be accessible, engaging, and tailored to your needs. Our platform
           brings together expert instructors and passionate learners from around the world.
@@ -85,21 +85,23 @@
 </template>
 
 <script setup lang="ts">
+import { SITE_NAME } from '~/constants/index'
+
 // SEO Meta Tags
 useHead({
-  title: 'About - Online Learning Platform',
+  title: `About - ${SITE_NAME}`,
   meta: [
     {
       name: 'description',
-      content: 'Learn more about the Online Learning Platform, our mission, and our values.',
+      content: `Learn more about the ${SITE_NAME}, our mission, and our values.`,
     },
     {
       property: 'og:title',
-      content: 'About - Online Learning Platform',
+      content: `About - ${SITE_NAME}`,
     },
     {
       property: 'og:description',
-      content: 'Learn more about the Online Learning Platform, our mission, and our values.',
+      content: `Learn more about the ${SITE_NAME}, our mission, and our values.`,
     },
     {
       property: 'og:type',

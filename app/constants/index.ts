@@ -37,3 +37,6 @@ export const VALIDATION_LIMITS = {
   PASSWORD_MAX: 100,
   EMAIL_MAX: 255,
 } as const
+
+// Brand Name
+export const SITE_NAME = 'Online Learning Platform' as const
