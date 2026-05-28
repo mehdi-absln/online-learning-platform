@@ -118,11 +118,12 @@ import SubmitButton from '~/components/ui/SubmitButton.vue'
 // Define page metadata
 definePageMeta({ layout: 'auth', title: 'Sign In' })
 
+import { SITE_NAME } from '~/constants'
 // SEO metadata
 useHead({
-  title: 'Sign In - Online Learning Platform',
+  title: `Sign In - ${SITE_NAME}`,
   meta: [
-    { name: 'description', content: 'Sign in to access your courses, track progress, and continue learning on our online learning platform.' },
+    { name: 'description', content: `Sign in to access your courses, track progress, and continue learning on our ${SITE_NAME}.` },
     { name: 'robots', content: 'noindex, nofollow' },
   ],
   link: [

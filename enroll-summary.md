@@ -1,6 +1,6 @@
 # 🎓 Enrollment System - Complete Implementation Summary
 
-**Project:** Online Learning Platform  
+**Project:** {{ SITE_NAME }}  
 **Tech Stack:** Nuxt 4, Vue 3, TypeScript, SQLite, Drizzle ORM  
 **Last Updated:** February 24, 2026  
 **Version:** 2.0.0

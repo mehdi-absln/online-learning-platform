@@ -193,6 +193,8 @@ import type { CourseApiResponse } from '~/types/shared/courses'
 import { getErrorMessage } from '~/utils/error-helpers'
 import { useUserStore } from '~/stores/user'
 
+import { SITE_NAME } from '~/constants'
+
 definePageMeta({
   middleware: ['admin'], // ← جایگزین middleware inline
 })
@@ -204,7 +206,7 @@ useHead({
   title: () => {
     const role = userStore.user?.role ?? 'student'
     const prefix = role === 'instructor' ? 'My Courses' : 'Admin Panel'
-    return `${prefix} - Online Learning Platform`
+    return `${prefix} - ${SITE_NAME}`
   },
   meta: [{ name: 'robots', content: 'noindex, nofollow' }],
 })

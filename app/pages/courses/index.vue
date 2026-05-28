@@ -95,6 +95,8 @@ import CourseSidebarFilters from '~/components/courses/CourseSidebarFilters.vue'
 import CoursesGrid from '~/components/courses/CoursesGrid.vue'
 import IconChevronRight from '~/components/icons/IconChevronRight.vue'
 
+import { SITE_NAME } from '~/constants'
+
 const route = useRoute()
 const { courses, isLoading, error } = useCourses()
 const { currentPage, totalPages, changePage } = useCourseFilters()
@@ -108,7 +110,7 @@ const activeFilterCount = computed(() => {
 })
 
 useHead({
-  title: 'Courses - Online Learning Platform',
+  title: `Courses - ${SITE_NAME}`,
   meta: [
     {
       name: 'description',

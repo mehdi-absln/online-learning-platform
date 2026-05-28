@@ -261,11 +261,12 @@ definePageMeta({
   title: 'Order Confirmed',
 })
 
+import { SITE_NAME } from '~/constants'
 useSeoMeta({
-  title: 'Order Confirmed - Purchase Successful | Online Learning Platform',
+  title: `Order Confirmed - Purchase Successful | ${SITE_NAME}`,
   description: 'Your order has been confirmed. Start learning now with full access to your purchased courses.',
   robots: 'noindex, nofollow',
-  ogTitle: 'Order Confirmed - Online Learning Platform',
+  ogTitle: `Order Confirmed - ${SITE_NAME}`,
   ogDescription: 'Your order has been confirmed. Start learning now with full access to your purchased courses.',
   ogType: 'website',
   ogUrl: 'https://learning-platform.com/checkout/success',

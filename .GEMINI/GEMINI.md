@@ -36,7 +36,7 @@ Never run: `npm run dev`, `npx nuxi dev`, `npm start` (infinite loop risk)
 
 ## PROJECT OVERVIEW
 
-Online learning platform with authentication, course browsing, responsive UI.
+{{ SITE_NAME }} with authentication, course browsing, responsive UI.
 
 **Tech Stack:** Nuxt 4 + Vue 3 | TypeScript | Tailwind CSS | Pinia | SQLite + Drizzle ORM | JWT Auth | Vitest
 

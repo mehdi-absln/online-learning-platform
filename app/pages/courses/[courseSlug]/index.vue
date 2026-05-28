@@ -653,6 +653,8 @@ import { useUserStore } from '~/stores/user'
 import { useCart } from '~/composables/useCart'
 import type { CourseContentLesson } from '~/types/shared/courses'
 
+import { SITE_NAME } from '~/constants'
+
 const route = useRoute()
 const userStore = useUserStore()
 const { addItem, isInCart, openCart } = useCart()
@@ -671,7 +673,7 @@ if (!courseSlug.value) {
 const { course, isLoading, error } = useCourse(courseSlug.value)
 
 useSeoMeta({
-  title: () => `${course.value?.title || 'Course'} - Online Learning Platform`,
+  title: () => `${course.value?.title || 'Course'} - ${SITE_NAME}`,
   description: () => course.value?.description || '',
   ogTitle: () => course.value?.title || 'Course',
   ogDescription: () => course.value?.description || '',
