@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import CourseCard from '~/components/courses/CourseCard.vue'
+import CourseImage from '~/components/courses/CourseImage.vue'
 import type { Course } from '~/types/shared/courses'
+import { PLACEHOLDER_COURSE_IMAGE } from '~/constants'
 
 // Mock NuxtLink component
 const MockNuxtLink = {
@@ -47,6 +49,7 @@ describe('CourseCard', () => {
       global: {
         components: {
           NuxtLink: MockNuxtLink,
+          CourseImage,
         },
       },
     })
@@ -56,7 +59,7 @@ describe('CourseCard', () => {
     await imageElement.trigger('error')
 
     // Check if the placeholder image is now set
-    expect(imageElement.attributes('src')).toBe('/images/placeholder-course.svg')
+    expect(imageElement.attributes('src')).toBe(PLACEHOLDER_COURSE_IMAGE)
   })
 
   it('renders course information correctly', () => {
@@ -67,6 +70,7 @@ describe('CourseCard', () => {
       global: {
         components: {
           NuxtLink: MockNuxtLink,
+          CourseImage,
         },
       },
     })
@@ -87,6 +91,7 @@ describe('CourseCard', () => {
       global: {
         components: {
           NuxtLink: MockNuxtLink,
+          CourseImage,
         },
       },
     })

@@ -40,3 +40,6 @@ export const VALIDATION_LIMITS = {
 
 // Brand Name
 export const SITE_NAME = 'Online Learning Platform' as const
+
+// Assets
+export const PLACEHOLDER_COURSE_IMAGE = '/images/placeholder-course.svg' as const

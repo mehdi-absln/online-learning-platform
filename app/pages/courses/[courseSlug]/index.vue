@@ -138,12 +138,13 @@
             <!-- Pricing Card -->
             <div class="rounded-2xl bg-dark-gray border border-gray-700">
               <figure class="relative overflow-hidden">
-                <img
-                  class="rounded-t-2xl w-full h-full object-cover"
-                  :src="course?.thumbnail || '/images/placeholder-course.svg'"
-                  :alt="course?.title"
-                  @error="handleImageError"
-                >
+                <CourseImage
+                  :src="course.thumbnail"
+                  :alt="course.title"
+                  class="w-full h-auto object-cover"
+                  sizes="100vw lg:33vw"
+                  priority
+                />
                 <div class="absolute inset-0 bg-black/50 z-10 rounded-t-2xl" />
               </figure>
 
@@ -649,6 +650,7 @@ import Tabs from '~/components/ui/Tabs.vue'
 import Accordion from '~/components/ui/Accordion.vue'
 import CourseReviews from '~/components/courses/CourseReviews.vue'
 import RelatedCourses from '~/components/courses/RelatedCourses.vue'
+import CourseImage from '~/components/courses/CourseImage.vue'
 import { useUserStore } from '~/stores/user'
 import { useCart } from '~/composables/useCart'
 import type { CourseContentLesson } from '~/types/shared/courses'
@@ -720,13 +722,6 @@ const courseTags = computed(() => {
   if (!course.value?.tags) return []
   return course.value.tags.split(',').map(t => t.trim())
 })
-
-const PLACEHOLDER_IMAGE = '/images/placeholder-course.svg'
-
-const handleImageError = (event: Event) => {
-  const img = event.target as HTMLImageElement
-  img.src = PLACEHOLDER_IMAGE
-}
 
 const handleAddToCart = () => {
   if (!course.value) return

@@ -1,0 +1,104 @@
+warning: in the working copy of '.GEMINI/PROJECT_STRUCTURE.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '__tests__/CourseCard.test.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '__tests__/CourseDetailPageUpdated.test.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/assets/css/app.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/components/MainNav.vue', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/components/courses/CourseCard.vue', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/components/dashboard/DashboardContinueLearningCard.vue', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/components/dashboard/DashboardCourseCard.vue', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/components/ui/CartDrawer.vue', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/composables/useCourses.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/constants/index.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/pages/checkout/index.vue', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/pages/checkout/success.vue', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/pages/courses/[courseSlug]/index.vue', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/pages/home.vue', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/utils/course-helpers.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.GEMINI/PROJECT_STRUCTURE.md', LF will be replaced by CRLF the next time Git touches it
+ .GEMINI/PROJECT_STRUCTURE.md                       | 203 [32m+++[m[31m---[m
+ __tests__/CourseCard.test.ts                       |   7 [32m+[m[31m-[m
+ __tests__/CourseDetailPageUpdated.test.ts          |   5 [32m+[m[31m-[m
+ app/assets/css/app.css                             |  26 [32m+[m
+ app/components/MainNav.vue                         |   4 [32m+[m[31m-[m
+ app/components/courses/CourseCard.vue              |  46 [32m+[m[31m-[m
+ .../dashboard/DashboardContinueLearningCard.vue    |  19 [32m+[m[31m-[m
+ app/components/dashboard/DashboardCourseCard.vue   |  13 [32m+[m[31m-[m
+ app/components/ui/CartDrawer.vue                   |  10 [32m+[m[31m-[m
+ app/composables/useCourses.ts                      |  57 [32m+[m[31m-[m
+ app/constants/index.ts                             |   3 [32m+[m
+ app/pages/checkout/index.vue                       |   7 [32m+[m[31m-[m
+ app/pages/checkout/success.vue                     |   7 [32m+[m[31m-[m
+ app/pages/courses/[courseSlug]/index.vue           |  21 [32m+[m[31m-[m
+ app/pages/home.vue                                 | 731 [32m+[m[31m--------------------[m
+ app/public/icon/UPST0179.png                       | Bin [31m970[m -> [32m0[m bytes
+ app/public/icon/UPST0180.png                       | Bin [31m831[m -> [32m0[m bytes
+ app/public/icon/UPST0181.png                       | Bin [31m915[m -> [32m0[m bytes
+ app/public/icon/UPST0182.png                       | Bin [31m923[m -> [32m0[m bytes
+ app/public/images/banner.jpg                       | Bin [31m2591048[m -> [32m0[m bytes
+ app/public/images/laptop-near-whilte-book.jpg      | Bin [31m1440109[m -> [32m0[m bytes
+ app/public/images/placeholder-course.svg           |   1 [31m-[m
+ app/utils/course-helpers.ts                        |  26 [32m+[m
+ package-lock.json                                  |  86 [32m++[m[31m-[m
+ package.json                                       |   2 [32m+[m[31m-[m
+ 25 files changed, 381 insertions(+), 893 deletions(-)
+
+[1mdiff --git a/.GEMINI/PROJECT_STRUCTURE.md b/.GEMINI/PROJECT_STRUCTURE.md[m
+[1mindex 213e8f0..6a951a2 100644[m
+[1m--- a/.GEMINI/PROJECT_STRUCTURE.md[m
+[1m+++ b/.GEMINI/PROJECT_STRUCTURE.md[m
+[36m@@ -4,8 +4,8 @@[m
+ ## Overview[m
+ Comprehensive documentation of the project structure for the Online Learning Platform built with **Nuxt 4**, **Vue 3**, **TypeScript**, **Tailwind CSS**, **Pinia**, **SQLite** with **Drizzle ORM**, and **Vitest** for testing.[m
+ [m
+[31m-**Last Updated:** May 18, 2026[m
+[31m-**Version:** 2.10.0[m
+[32m+[m[32m**Last Updated:** May 31, 2026[m
+[32m+[m[32m**Version:** 2.11.0[m
+ [m
+ ---[m
+ [m
+[36m@@ -58,10 +58,9 @@[m [monline-learning-platform/[m
+ │[m
+ ├── 📂 app/                                # Frontend Nuxt application[m
+ │   ├── 📂 assets/                         # Static assets[m
+[31m-│   │   ├── 📂 css/[m
+[31m-│   │   │   ├── app.css                    # Main styles + utility classes[m
+[31m-│   │   │   └── fonts.css                  # Font configurations[m
+[31m-│   │   └── .gitkeep[m
+[32m+[m[32m│   │   └── 📂 css/[m
+[32m+[m[32m│   │       ├── app.css                    # Main styles + utility classes[m
+[32m+[m[32m│   │       └── fonts.css                  # Font configurations[m
+ │   │[m
+ │   ├── 📂 components/                     # Reusable Vue components[m
+ │   │   ├── 📂 admin/                      # Admin-specific components[m
+[36m@@ -75,6 +74,7 @@[m [monline-learning-platform/[m
+ │   │   │   └── BlogsGrid.vue[m
+ │   │   ├── 📂 courses/                    # Course components[m
+ │   │   │   ├── CourseCard.vue[m
+[32m+[m[32m│   │   │   ├── CourseImage.vue            # Reusable course image with reactive fallback[m
+ │   │   │   ├── CourseReviews.vue          # Display ratings & reviews[m
+ │   │   │   ├── CoursesGrid.vue[m
+ │   │   │   ├── CourseSidebarFilters.vue   # Search + filters sidebar[m
+[36m@@ -94,6 +94,14 @@[m [monline-learning-platform/[m
+ │   │   │                                  # - Animated counter (0→value)[m
+ │   │   │                                  # - Color-coded icons[m
+ │   │   │                                  # - Hover effects[m
+[32m+[m[32m│   │   ├── 📂 home/                       # Homepage sections[m
+[32m+[m[32m│   │   │   ├── HomeAbout.vue              # Homepage About section[m
+[32m+[m[32m│   │   │   ├── HomeBlog.vue               # Homepage Blog section[m
+[32m+[m[32m│   │   │   ├── HomeHero.vue               # Homepage Hero section[m
+[32m+[m[32m│   │   │   ├── HomePopularClasses.vue     # Homepage Popular Classes section[m
+[32m+[m[32m│   │   │   ├── HomeStats.vue              # Homepage Stats section[m
+[32m+[m[32m│   │   │   ├── HomeTestimonials.vue       # Homepage Testimonials section[m
+[32m+[m[32m│   │   │   └── HomeTrainers.vue           # Homepage Trainers section[m
+ │   │   ├── 📂 icons/                      # Icon components[m
+ │   │   │   ├── IconAlertCircle.vue        # Error/alert icon[m
+ │   │   │   ├── IconArrowRight.vue         # Right arrow for CTAs[m
+[36m@@ -151,19 +159,18 @@[m [monline-learning-platform/[m
+ │   │   │   ├── SubmitButton.vue[m
+ │   │   │   ├── Tabs.vue[m
+ │   │   │   └── Toast.vue                  # Enhanced toast notifications[m
+[31m-│   │   ├── MainFooter.vue                 # Site-wide footer [UPDATED ⭐][m
+[32m+[m[32m│   

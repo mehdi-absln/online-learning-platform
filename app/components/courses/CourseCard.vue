@@ -8,13 +8,12 @@
         <div
           class="absolute inset-0 bg-black/40 z-10 transition-all duration-500 group-hover:bg-black/20"
         />
-        <img
-          :src="course.thumbnail ?? undefined"
+        <CourseImage
+          :src="course.thumbnail"
           :alt="course.title"
           loading="lazy"
           class="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
-          @error="handleImageError"
-        >
+        />
       </div>
 
       <!-- Top Bar: Category & Bookmark -->
@@ -51,13 +50,13 @@
       <div
         class="absolute bottom-3 start-4 flex items-center gap-3 z-10 transition-all duration-500 ease-in-out group-hover:translate-y-0 group-hover:opacity-100 opacity-90 translate-y-2"
       >
-        <img
-          :src="course.instructor.avatar"
+        <NuxtImg
+          :src="avatarSrc"
           :alt="course.instructor.name"
           loading="lazy"
           class="w-10 h-10 rounded-full border-2 border-solid border-white"
-          @error="handleImageError"
-        >
+          @error="handleAvatarError"
+        />
         <span class="font-medium text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
           {{ course.instructor.name }}
         </span>
@@ -189,10 +188,12 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, watch } from 'vue'
 import { useCart } from '~/composables/useCart'
 import { useUserStore } from '~/stores/user'
-import type { Course as AuthCourse } from '~/types/shared/auth'
 import type { Course } from '~/types/shared/courses'
+import { mapCourseToAuthCourse } from '~/utils/course-helpers'
+import CourseImage from '~/components/courses/CourseImage.vue'
 
 interface Props {
   course: Course
@@ -207,8 +208,7 @@ defineEmits<{
 }>()
 
 const handleAddToCart = () => {
-  // Convert course to the format expected by the store if necessary
-  addItem(props.course as unknown as AuthCourse)
+  addItem(mapCourseToAuthCourse(props.course))
   openCart()
 }
 
@@ -220,16 +220,18 @@ const courseLink = computed(() => {
   return `/courses/${props.course.slug}`
 })
 
-const handleImageError = (event: Event) => {
-  const img = event.target as HTMLImageElement
-  if (img.src.includes('placeholder-course')) {
-    return
-  }
-  if (img.alt === props.course.instructor.name) {
-    img.src = '/images/placeholder-avatar.svg'
-  }
-  else {
-    img.src = '/images/placeholder-course.svg'
-  }
+const avatarError = ref(false)
+
+const avatarSrc = computed(() => {
+  if (avatarError.value || !props.course.instructor.avatar) return '/images/placeholder-avatar.svg'
+  return props.course.instructor.avatar
+})
+
+const handleAvatarError = () => {
+  avatarError.value = true
 }
+
+watch(() => props.course.id, () => {
+  avatarError.value = false
+})
 </script>

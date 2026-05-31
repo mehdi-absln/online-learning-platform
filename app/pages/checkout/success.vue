@@ -170,12 +170,12 @@
               class="py-6 flex gap-6 first:pt-0 last:pb-0"
               role="listitem"
             >
-              <img
+              <CourseImage
                 :src="item.thumbnail"
                 :alt="`Thumbnail for ${item.title} course`"
                 class="w-24 h-16 object-cover rounded-xl border border-white/5 shadow-lg"
                 loading="lazy"
-              >
+              />
               <div class="flex-1 min-w-0">
                 <h3 class="text-white font-bold text-lg mb-1 leading-tight">
                   {{ item.title }}
@@ -253,6 +253,8 @@
 <script setup lang="ts">
 import { useApiError } from '~/composables/useApiError'
 import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
+import CourseImage from '~/components/courses/CourseImage.vue'
+import { SITE_NAME } from '~/constants'
 
 // Page metadata and SEO
 definePageMeta({
@@ -261,7 +263,6 @@ definePageMeta({
   title: 'Order Confirmed',
 })
 
-import { SITE_NAME } from '~/constants'
 useSeoMeta({
   title: `Order Confirmed - Purchase Successful | ${SITE_NAME}`,
   description: 'Your order has been confirmed. Start learning now with full access to your purchased courses.',

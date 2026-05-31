@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import CourseDetailPage from '~/pages/courses/[courseSlug]/index.vue'
+import CourseImage from '~/components/courses/CourseImage.vue'
+import { PLACEHOLDER_COURSE_IMAGE } from '~/constants'
 
 // Mock NuxtLink component
 const MockNuxtLink = {
@@ -130,6 +132,7 @@ describe('CourseDetailPage', () => {
       global: {
         components: {
           NuxtLink: MockNuxtLink,
+          CourseImage,
         },
       },
     })
@@ -147,6 +150,6 @@ describe('CourseDetailPage', () => {
     await imageElement.trigger('error')
 
     // Check if the placeholder image is now set
-    expect(imageElement.attributes('src')).toBe('/images/placeholder-course.svg')
+    expect(imageElement.attributes('src')).toBe(PLACEHOLDER_COURSE_IMAGE)
   })
 })

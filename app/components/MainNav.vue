@@ -110,9 +110,7 @@
       <NuxtLink
         to="/home"
         class="text-base lg:text-xl font-bold text-white drop-shadow-lg shrink-0"
-        :aria-label="`${SITE_NAME}"
-        -
-        Home`
+        :aria-label="`${SITE_NAME} - Home`"
       >
         <span class="hidden xxs:inline">{{ SITE_NAME }}</span>
         <span class="xxs:hidden">OLP</span>

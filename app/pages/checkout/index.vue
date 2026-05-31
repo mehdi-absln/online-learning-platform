@@ -73,12 +73,12 @@
                 class="py-4 flex gap-4"
                 role="listitem"
               >
-                <img
+                <CourseImage
                   :src="item.thumbnail"
                   :alt="`Thumbnail for ${item.title} course`"
                   class="w-20 h-14 object-cover rounded-lg border border-white/5"
                   loading="lazy"
-                >
+                />
                 <div class="flex-1 min-w-0">
                   <h3 class="text-white font-medium line-clamp-1">
                     {{ item.title }}
@@ -267,6 +267,8 @@
 
 <script setup lang="ts">
 import { useCart } from '~/composables/useCart'
+import CourseImage from '~/components/courses/CourseImage.vue'
+import { SITE_NAME } from '~/constants'
 
 // Page metadata and SEO
 definePageMeta({
@@ -275,7 +277,6 @@ definePageMeta({
   title: 'Checkout',
 })
 
-import { SITE_NAME } from '~/constants'
 useSeoMeta({
   title: `Checkout - Complete Your Purchase | ${SITE_NAME}`,
   description: 'Secure checkout page for course enrollment. Review your order and complete your purchase to start learning.',

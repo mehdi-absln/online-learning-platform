@@ -7,22 +7,12 @@
       <!-- Thumbnail -->
       <div class="sm:w-48 lg:w-56 flex-shrink-0">
         <div class="aspect-video rounded-xl overflow-hidden bg-dark-bg">
-          <img
-            v-if="course.thumbnail"
+          <CourseImage
             :src="course.thumbnail"
             :alt="course.title"
-            loading="lazy"
-            class="w-full h-full object-cover"
-          >
-          <div
-            v-else
-            class="w-full h-full flex items-center justify-center text-gray-500"
-          >
-            <span
-              class="text-4xl"
-              aria-hidden="true"
-            >📚</span>
-          </div>
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="100vw sm:50vw md:33vw"
+          />
         </div>
       </div>
 
@@ -82,6 +72,7 @@
 
 <script setup lang="ts">
 import type { DashboardEnrolledCourse } from '~/types/shared/dashboard'
+import CourseImage from '~/components/courses/CourseImage.vue'
 
 interface Props {
   course: DashboardEnrolledCourse
