@@ -4,8 +4,8 @@
 ## Overview
 Comprehensive documentation of the project structure for the Online Learning Platform built with **Nuxt 4**, **Vue 3**, **TypeScript**, **Tailwind CSS**, **Pinia**, **SQLite** with **Drizzle ORM**, and **Vitest** for testing.
 
-**Last Updated:** May 18, 2026
-**Version:** 2.10.0
+**Last Updated:** May 31, 2026
+**Version:** 2.11.0
 
 ---
 
@@ -58,10 +58,9 @@ online-learning-platform/
 │
 ├── 📂 app/                                # Frontend Nuxt application
 │   ├── 📂 assets/                         # Static assets
-│   │   ├── 📂 css/
-│   │   │   ├── app.css                    # Main styles + utility classes
-│   │   │   └── fonts.css                  # Font configurations
-│   │   └── .gitkeep
+│   │   └── 📂 css/
+│   │       ├── app.css                    # Main styles + utility classes
+│   │       └── fonts.css                  # Font configurations
 │   │
 │   ├── 📂 components/                     # Reusable Vue components
 │   │   ├── 📂 admin/                      # Admin-specific components
@@ -75,6 +74,7 @@ online-learning-platform/
 │   │   │   └── BlogsGrid.vue
 │   │   ├── 📂 courses/                    # Course components
 │   │   │   ├── CourseCard.vue
+│   │   │   ├── CourseImage.vue            # Reusable course image with reactive fallback
 │   │   │   ├── CourseReviews.vue          # Display ratings & reviews
 │   │   │   ├── CoursesGrid.vue
 │   │   │   ├── CourseSidebarFilters.vue   # Search + filters sidebar
@@ -94,6 +94,14 @@ online-learning-platform/
 │   │   │                                  # - Animated counter (0→value)
 │   │   │                                  # - Color-coded icons
 │   │   │                                  # - Hover effects
+│   │   ├── 📂 home/                       # Homepage sections
+│   │   │   ├── HomeAbout.vue              # Homepage About section
+│   │   │   ├── HomeBlog.vue               # Homepage Blog section
+│   │   │   ├── HomeHero.vue               # Homepage Hero section
+│   │   │   ├── HomePopularClasses.vue     # Homepage Popular Classes section
+│   │   │   ├── HomeStats.vue              # Homepage Stats section
+│   │   │   ├── HomeTestimonials.vue       # Homepage Testimonials section
+│   │   │   └── HomeTrainers.vue           # Homepage Trainers section
 │   │   ├── 📂 icons/                      # Icon components
 │   │   │   ├── IconAlertCircle.vue        # Error/alert icon
 │   │   │   ├── IconArrowRight.vue         # Right arrow for CTAs
@@ -151,19 +159,18 @@ online-learning-platform/
 │   │   │   ├── SubmitButton.vue
 │   │   │   ├── Tabs.vue
 │   │   │   └── Toast.vue                  # Enhanced toast notifications
-│   │   ├── MainFooter.vue                 # Site-wide footer [UPDATED ⭐]
+│   │   ├── MainFooter.vue                 # Site-wide footer
 │   │   │                                  # - Responsive grid layout
 │   │   │                                  # - Border-top separator
 │   │   │                                  # - Role‑based quick links from useNavigationLinks
 │   │   │                                  # - Improved accessibility (sections, aria-labelledby)
-│   │   ├── MainNav.vue                    # Main navigation [UPDATED ⭐]
-│   │   │                                  # - Responsive hamburger menu with backdrop
-│   │   │                                  # - Mobile menu teleported to body for full coverage
-│   │   │                                  # - Active link detection with nested routes
-│   │   │                                  # - Dynamic dropdown menu items
-│   │   │                                  # - Sticky background on scroll
-│   │   │                                  # - No `any` types in template refs
-│   │   └── .gitkeep
+│   │   └── MainNav.vue                    # Main navigation
+│   │                                      # - Responsive hamburger menu with backdrop
+│   │                                      # - Mobile menu teleported to body for full coverage
+│   │                                      # - Active link detection with nested routes
+│   │                                      # - Dynamic dropdown menu items
+│   │                                      # - Sticky background on scroll
+│   │                                      # - No `any` types in template refs
 │   │
 │   ├── 📂 composables/                    # Vue composables (reusable logic)
 │   │   ├── useAccordion.ts
@@ -185,14 +192,13 @@ online-learning-platform/
 │   │   ├── useLessonAccess.ts             # Lesson access control
 │   │   │                                  # - Checks if lesson is locked
 │   │   │                                  # - Server-side access verification
-│   │   ├── useNavigationLinks.ts          # Shared navigation links [NEW ⭐]
+│   │   ├── useNavigationLinks.ts          # Shared navigation links
 │   │   │                                  # - Role-based main menu links
 │   │   │                                  # - Used by MainNav and MainFooter
 │   │   ├── usePagination.ts
 │   │   ├── useRelatedCourses.ts
 │   │   ├── useToast.ts
-│   │   ├── useZodValidation.ts
-│   │   └── .gitkeep
+│   │   └── useZodValidation.ts
 │   │
 │   ├── 📂 constants/                      # Application constants
 │   │   └── index.ts
@@ -200,20 +206,18 @@ online-learning-platform/
 │   ├── 📂 layouts/                        # Layout components
 │   │   ├── auth.vue                       # Authentication pages layout
 │   │   ├── default.vue                    # Main application layout
-│   │   ├── minimal.vue                    # Streamlined layout
-│   │   └── .gitkeep
+│   │   └── minimal.vue                    # Streamlined layout
 │   │
 │   ├── 📂 middleware/                     # Route middleware
 │   │   ├── admin.ts                       # Admin route protection
 │   │   │                                  # - Checks user role ∈ {admin, superadmin, instructor}
 │   │   │                                  # - Blocks /admin/users for instructors
 │   │   │                                  # - Redirects based on role & path
-│   │   ├── auth.global.ts                 # Global authentication
-│   │   │                                  # - Runs on ALL routes automatically
-│   │   │                                  # - Fast path for unauthenticated → redirect to /auth/signin
-│   │   │                                  # - Toast notification when redirected from protected page
-│   │   │                                  # - Fetches user session + enrollments
-│   │   └── .gitkeep
+│   │   └── auth.global.ts                 # Global authentication
+│   │                                      # - Runs on ALL routes automatically
+│   │                                      # - Fast path for unauthenticated → redirect to /auth/signin
+│   │                                      # - Toast notification when redirected from protected page
+│   │                                      # - Fetches user session + enrollments
 │   │
 │   ├── 📂 pages/                          # Route pages (file-based routing)
 │   │   ├── 📂 admin/                      # Admin pages
@@ -259,7 +263,7 @@ online-learning-platform/
 │   │   │   │   │   └── [lessonSlug].vue   # Lesson viewer
 │   │   │   │   └── index.vue              # Course detail page
 │   │   │   └── index.vue                  # Course listing with filters
-│   │   ├── about.vue                      # About Us page [NEW ⭐]
+│   │   ├── about.vue                      # About Us page
 │   │   │                                  # - Introduction, mission, values
 │   │   │                                  # - PageHero with breadcrumb
 │   │   │                                  # - Responsive grid for values
@@ -283,27 +287,14 @@ online-learning-platform/
 │   │   │                                  # - Change password form with Zod validation
 │   │   │                                  # - uses useZodValidation composable
 │   │   │                                  # - requiresAuth: true via definePageMeta
-│   │   ├── error.vue                      # Global error page
-│   │   │                                  # - 404 and 500 error handling
-│   │   │                                  # - WCAG 2.1 AA compliant
-│   │   │                                  # - aria-labelledby landmark
-│   │   │                                  # - noindex, nofollow SEO
-│   │   │                                  # - Simplified, clean design
-│   │   └── .gitkeep
+│   │   └── error.vue                      # Global error page
+│   │                                      # - 404 and 500 error handling
+│   │                                      # - WCAG 2.1 AA compliant
+│   │                                      # - aria-labelledby landmark
+│   │                                      # - noindex, nofollow SEO
+│   │                                      # - Simplified, clean design
 │   │
 │   ├── 📂 plugins/                        # Nuxt plugins
-│   │   └── .gitkeep
-│   │
-│   ├── 📂 public/                         # Static assets (served directly)
-│   │   ├── 📂 icon/
-│   │   │   ├── UPST0179.png
-│   │   │   ├── UPST0180.png
-│   │   │   ├── UPST0181.png
-│   │   │   └── UPST0182.png
-│   │   └── 📂 images/
-│   │       ├── banner.jpg
-│   │       ├── laptop-near-whilte-book.jpg
-│   │       └── placeholder-course.svg
 │   │
 │   ├── 📂 schemas/                        # Zod validation schemas
 │   │   ├── auth.ts                        # Auth form validation
@@ -339,6 +330,7 @@ online-learning-platform/
 │   │   │   ├── auth.ts
 │   │   │   ├── blogs.ts
 │   │   │   ├── courses.ts
+│   │   │   ├── dashboard.ts
 │   │   │   ├── lessons.ts
 │   │   │   └── users.ts
 │   │   ├── auth-errors.ts
@@ -353,6 +345,17 @@ online-learning-platform/
 │   │
 │   └── app.vue                            # Root Vue component
 │
+├── 📂 public/                             # Static assets (served directly)
+│   ├── 📂 icon/
+│   │   ├── UPST0179.png
+│   │   ├── UPST0180.png
+│   │   ├── UPST0181.png
+│   │   └── UPST0182.png
+│   └── 📂 images/
+│       ├── banner.jpg
+│       ├── laptop-near-whilte-book.jpg
+│       └── placeholder-course.svg
+│
 ├── 📂 scripts/                            # Database & utility scripts
 │   ├── add-instructors.ts
 │   ├── add-lesson-progress-table.ts
@@ -361,6 +364,7 @@ online-learning-platform/
 │   ├── check-blogs.ts
 │   ├── check-reading-time.ts
 │   ├── check-tables.ts
+│   ├── make-admin.ts
 │   ├── make-super-admin.ts                # Super admin promotion script
 │   ├── migrate-user-roles.ts              # User role migration (user → student)
 │   ├── seed-blogs.ts
@@ -464,6 +468,7 @@ online-learning-platform/
 │   │   │                                  # - addToCart, getCart
 │   │   │                                  # - removeFromCart, mergeCarts
 │   │   ├── course-service.ts              # Course database operations
+│   │   ├── dashboard-service.ts           # Dashboard database operations
 │   │   ├── index.ts                       # Database connection
 │   │   ├── migrate.ts                     # Migration utilities
 │   │   ├── order-service.ts               # Order processing
@@ -505,27 +510,24 @@ online-learning-platform/
 │   │       ├── 0005_create_blogs.sql
 │   │       └── 0006_add_reading_time.sql
 │   │
-│   ├── 📂 utils/                          # Server utilities
-│   │   ├── auth-helpers.ts                # Authentication helpers
-│   │   │                                  # - requireAuth (checks accessToken)
-│   │   │                                  # - requireInstructor (accepts superadmin)
-│   │   ├── blog-helpers.ts
-│   │   ├── course-authorization.ts
-│   │   ├── course-transformer.ts
-│   │   ├── format-utils.ts
-│   │   ├── image-processor.ts
-│   │   ├── instructor-service.ts
-│   │   ├── jwt.ts                         # JWT token utilities
-│   │   │                                  # - Sign tokens (7/30 days)
-│   │   │                                  # - Verify tokens
-│   │   │                                  # - Cookie configuration
-│   │   ├── lesson-access.ts               # Lesson access check
-│   │   ├── related-courses.ts
-│   │   ├── response.ts                    # Response helpers
-│   │   ├── safe-parse.ts
-│   │   └── .gitkeep
-│   │
-│   └── .gitkeep
+│   └── 📂 utils/                          # Server utilities
+│       ├── auth-helpers.ts                # Authentication helpers
+│       │                                  # - requireAuth (checks accessToken)
+│       │                                  # - requireInstructor (accepts superadmin)
+│       ├── blog-helpers.ts
+│       ├── course-authorization.ts
+│       ├── course-transformer.ts
+│       ├── format-utils.ts
+│       ├── image-processor.ts
+│       ├── instructor-service.ts
+│       ├── jwt.ts                         # JWT token utilities
+│       │                                  # - Sign tokens (7/30 days)
+│       │                                  # - Verify tokens
+│       │                                  # - Cookie configuration
+│       ├── lesson-access.ts               # Lesson access check
+│       ├── related-courses.ts
+│       ├── response.ts                    # Response helpers
+│       └── safe-parse.ts
 │
 ├── 📂 .cursor/                            # Cursor IDE settings
 ├── 📂 .idea/                              # JetBrains IDE settings
@@ -560,25 +562,56 @@ online-learning-platform/
 | Category | Count | Description |
 |----------|-------|-------------|
 | **Root Config Files** | 15 | Build, lint, type-check configs (+GEMINI.md, enroll-summary) |
-| **Vue Components** | 44 | Reusable UI components |
+| **Vue Components** | 58 | Reusable UI components (including Home section) |
 | **Composables** | 18 | Reusable Vue logic (+useNavigationLinks) |
-| **Pages** | 18 | Route pages (+about.vue) |
+| **Pages** | 19 | Route pages (including error.vue) |
 | **Pinia Stores** | 5 | State management |
-| **Type Definitions** | 12 | TypeScript types (+admin/course-form.ts) |
+| **Type Definitions** | 13 | TypeScript types (+shared/dashboard.ts) |
 | **Utility Functions** | 4 | Client-side utils |
-| **API Routes** | 51 | Server endpoints (+change-password) |
-| **DB Services** | 7 | Database operations |
+| **API Routes** | 41 | Server endpoints |
+| **DB Services** | 10 | Database operations and utilities |
 | **Server Utils** | 12 | Server-side helpers |
 | **DB Migrations** | 14 | Schema migrations (14 tables) |
-| **Scripts** | 16 | Database utilities |
-| **Test Files** | 38 | Vitest test suite |
+| **Scripts** | 17 | Database utilities (+make-admin.ts) |
+| **Test Files** | 33 | Vitest test suite |
 | **Documentation** | 5 | README, PROJECT_STRUCTURE, enroll-summary, PROJECT_SUMMARY, GEMINI.md |
 
 ---
 
-## 🆕 Latest Session Updates (May 18, 2026) ⭐ [NEW]
+## 🆕 Latest Session Updates (May 31, 2026)
 
-### Responsive MainNav & MainFooter ⭐ [NEW]
+### Centralized Course Image Component
+**Files:** `app/components/courses/CourseImage.vue`, `app/components/courses/CourseCard.vue`, `app/pages/courses/[courseSlug]/index.vue`, etc.
+```
+✅ Created reusable CourseImage.vue with reactive fallback and auto-reset
+✅ Refactored all course thumbnail/cover implementations to use CourseImage
+✅ Removed redundant handleImageError logic and duplicate constants imports
+✅ Updated test suite (__tests__/CourseCard.test.ts, etc.) to handle the new component
+```
+
+### Project Structure Synchronization
+```
+✅ Comprehensive audit of project structure completed
+✅ Updated file counts for Components (58), Pages (19), API Routes (41), and Tests (33)
+✅ Synchronized missing scripts: make-admin.ts
+✅ Documented new Home section components: HomeHero, HomeStats, HomeTrainers, etc.
+✅ Added shared/dashboard.ts type definition
+✅ Verified all server/db services are listed and correctly described
+✅ Moved public/ from app/public/ to root per Nuxt 4 convention
+```
+
+### Dashboard Enhancements
+**Files:** `server/db/dashboard-service.ts`, `app/types/shared/dashboard.ts`
+```
+✅ New dashboard-service.ts for aggregated learning statistics
+✅ Shared dashboard type definitions for frontend-backend consistency
+```
+
+---
+
+## 📜 Previous Session Updates
+
+### Responsive MainNav & MainFooter (May 18, 2026)
 **Files:** `app/components/MainNav.vue`, `app/components/MainFooter.vue`, `app/composables/useNavigationLinks.ts`
 ```
 ✅ MainNav fully responsive with hamburger menu, backdrop, and Teleport
@@ -591,7 +624,7 @@ online-learning-platform/
 ✅ Both components share the same role‑based link set
 ```
 
-### About Page ⭐ [NEW]
+### About Page
 **File:** `app/pages/about.vue`
 ```
 ✅ New standalone About Us page with PageHero and breadcrumb
@@ -601,7 +634,7 @@ online-learning-platform/
 ✅ Linked from MainNav and MainFooter
 ```
 
-### User Profile Page ⭐ [PREVIOUS]
+### User Profile Page
 **Files:** `app/pages/profile.vue`, `server/api/auth/change-password.post.ts`, `app/schemas/auth.ts`, `server/db/user-service.ts`
 ```
 ✅ Profile page with account details and password change form
@@ -610,27 +643,27 @@ online-learning-platform/
 ✅ Server endpoint for authenticated password change
 ```
 
-### Auth Redirect with Toast Notification ⭐ [PREVIOUS]
+### Auth Redirect with Toast Notification
 **Files:** `app/middleware/auth.global.ts`, `app/pages/auth/SignIn.vue`
 ```
 ✅ Fast path for unauthenticated users eliminates 5-6s delay
 ✅ Toast message shown after redirect to sign-in page
 ```
 
-### Admin Navigation Tabs ⭐ [PREVIOUS]
+### Admin Navigation Tabs
 **File:** `app/components/admin/AdminTabs.vue`
 ```
 ✅ Role‑based tabs (Courses / Users) using existing Tabs.vue component
 ```
 
-### Client‑Side Navigation Bug Fix ⭐ [PREVIOUS]
+### Client‑Side Navigation Bug Fix
 **Files:** `app/pages/admin/index.vue`, `app/stores/cart.ts`
 ```
 ✅ Fixed "Cannot read properties of undefined (reading 'dispose')" error
 ✅ Resolved client‑side navigation failure to /admin/courses/create
 ```
 
-### Unified Course Management Page ⭐ [PREVIOUS]
+### Unified Course Management Page
 **File:** `app/pages/admin/index.vue`
 ```
 ✅ Single page for both admins and instructors
@@ -679,7 +712,7 @@ online-learning-platform/
 
 ---
 
-**Last Updated:** May 18, 2026
-**Version:** 2.10.0
-**Total Commits:** 71 ahead of `origin/main`
+**Last Updated:** May 31, 2026
+**Version:** 2.11.0
+**Total Commits:** 75 ahead of `origin/main`
 ```

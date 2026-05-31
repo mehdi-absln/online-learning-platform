@@ -122,11 +122,12 @@
                 class="flex gap-4 p-4 bg-dark-bg rounded-xl border border-dark-divider group focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/30"
               >
                 <div class="relative w-20 h-20 flex-shrink-0 bg-dark-surface rounded-lg overflow-hidden border border-dark-divider">
-                  <img
-                    :src="item.thumbnail || '/images/placeholder-course.svg'"
+                  <CourseImage
+                    :src="item.thumbnail"
                     :alt="item.title"
-                    class="w-full h-full object-cover"
-                  >
+                    class="h-16 w-16 flex-shrink-0 rounded-md border border-dark-divider object-cover"
+                    sizes="64px"
+                  />
                 </div>
                 <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                   <div>
@@ -235,6 +236,7 @@
 <script setup lang="ts">
 import { useCart } from '~/composables/useCart'
 import { onKeyStroke } from '@vueuse/core'
+import CourseImage from '~/components/courses/CourseImage.vue'
 
 const drawerRef = ref<HTMLElement | null>(null)
 

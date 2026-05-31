@@ -2,27 +2,62 @@
 import type { CourseListResponse } from '~/types/shared/api'
 import { useApiError } from '~/composables/useApiError'
 
+interface CourseQueryParams {
+  page: number
+  limit: number
+  categories?: string | string[]
+  levels?: string | string[]
+  tags?: string | string[]
+  freeOnly?: boolean
+  paidOnly?: boolean
+  q?: string
+  instructorId?: number
+  minPrice?: number
+  maxPrice?: number
+}
+
 export const useCourses = () => {
   const route = useRoute()
   const coursesStore = useCoursesStore()
   const { setPagination } = useCourseFilters()
 
-  const queryParams = computed(() => {
+  const queryParams = computed<CourseQueryParams>(() => {
     const query = route.query
-    const params: Record<string, any> = {
-      page: Number(query.page) || 1,
-      limit: 12,
+
+    // Normalize and parse query parameters to ensure type safety
+    const parseNumber = (val: any): number | undefined => {
+      if (!val) return undefined
+      const parsed = Number(val)
+      return isNaN(parsed) ? undefined : parsed
     }
 
-    if (query.categories) params.categories = query.categories
-    if (query.levels) params.levels = query.levels
-    if (query.tags) params.tags = query.tags
+    const parseString = (val: any): string | undefined => {
+      if (!val) return undefined
+      return Array.isArray(val) ? String(val[0]) : String(val)
+    }
+
+    const params: CourseQueryParams = {
+      page: parseNumber(query.page) || 1,
+      limit: parseNumber(query.limit) || 12,
+    }
+
+    if (query.categories) params.categories = query.categories as string | string[]
+    if (query.levels) params.levels = query.levels as string | string[]
+    if (query.tags) params.tags = query.tags as string | string[]
     if (query.freeOnly === 'true') params.freeOnly = true
     if (query.paidOnly === 'true') params.paidOnly = true
-    if (query.q) params.q = query.q
-    if (query.instructorId) params.instructorId = query.instructorId
-    if (query.minPrice) params.minPrice = query.minPrice
-    if (query.maxPrice) params.maxPrice = query.maxPrice
+
+    const q = parseString(query.q)
+    if (q) params.q = q
+
+    const instructorId = parseNumber(query.instructorId)
+    if (instructorId !== undefined) params.instructorId = instructorId
+
+    const minPrice = parseNumber(query.minPrice)
+    if (minPrice !== undefined) params.minPrice = minPrice
+
+    const maxPrice = parseNumber(query.maxPrice)
+    if (maxPrice !== undefined) params.maxPrice = maxPrice
 
     return params
   })

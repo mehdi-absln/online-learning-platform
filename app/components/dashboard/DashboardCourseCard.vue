@@ -2,19 +2,13 @@
   <div class="bg-dark-surface border border-dark-divider/50 rounded-2xl overflow-hidden transition-all duration-300 hover:border-dark-divider hover:shadow-lg hover:shadow-black/20 group">
     <!-- Thumbnail -->
     <div class="aspect-video overflow-hidden bg-dark-bg relative">
-      <img
-        v-if="course.thumbnail"
+      <CourseImage
         :src="course.thumbnail"
         :alt="course.title"
         loading="lazy"
+        sizes="100vw sm:50vw md:33vw"
         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-      >
-      <div
-        v-else
-        class="w-full h-full flex items-center justify-center text-gray-500"
-      >
-        <span class="text-3xl" aria-hidden="true">📚</span>
-      </div>
+      />
 
       <!-- Completion badge -->
       <div
@@ -69,6 +63,7 @@
 
 <script setup lang="ts">
 import type { DashboardEnrolledCourse } from '~/types/shared/dashboard'
+import CourseImage from '~/components/courses/CourseImage.vue'
 
 interface Props {
   course: DashboardEnrolledCourse

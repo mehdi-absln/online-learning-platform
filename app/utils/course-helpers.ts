@@ -1,4 +1,6 @@
 import type { CoursesFilter } from '~/types/courses-filter'
+import type { Course as AuthCourse } from '~/types/shared/auth'
+import type { Course } from '~/types/shared/courses'
 
 export interface UrlQueryParams {
   category?: string
@@ -122,3 +124,27 @@ export const buildQueryParams = (filter: CoursesFilter, page: number, limit: num
   return queryParams
 }
 
+/** Maps a shared Course to an AuthCourse required by cart/user stores */
+export const mapCourseToAuthCourse = (course: Course): AuthCourse => {
+  return {
+    id: course.id,
+    title: course.title,
+    description: course.description,
+    category: course.category,
+    instructor: {
+      name: course.instructor.name,
+      avatar: course.instructor.avatar,
+    },
+    stats: {
+      students: course.stats.students,
+    },
+    rating: course.rating,
+    price: course.price,
+    level: course.level,
+    tags: course.tags,
+    thumbnail: course.thumbnail,
+    createdAt: course.createdAt,
+    updatedAt: course.updatedAt,
+    instructorId: course.instructorId,
+  }
+}

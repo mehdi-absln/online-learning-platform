@@ -19,6 +19,32 @@
     .animate-fade-in {
         animation: fadeIn 0.6s ease-out forwards;
     }
+
+    /* Carousel shared styles */
+    .carousel__track {
+        align-items: stretch;
+    }
+    .carousel__slide {
+        height: auto;
+        display: flex;
+    }
+    .carousel__slide > * {
+        height: 100%;
+    }
+
+    .carousel__pagination {
+        @apply flex justify-center absolute -bottom-11 w-full;
+    }
+    .carousel__pagination-button {
+        @apply p-0 m-0 border-0;
+        @apply block w-3 h-3 rounded-full mx-1;
+        @apply bg-gray-400;
+        @apply transition-all duration-300;
+        content: '';
+    }
+    .carousel__pagination-button--active {
+        @apply bg-primary;
+    }
 }
 
 @keyframes fadeIn {
