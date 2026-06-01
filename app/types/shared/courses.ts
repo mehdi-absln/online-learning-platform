@@ -1,13 +1,12 @@
-// Define Course interface for UI components that includes instructor and stats
 export interface Course {
   id: number
   title: string
-  description: string
+  description: string | null
   category: string
   instructor: {
     name: string
     avatar: string
-    title: string
+    title?: string
   }
   stats: {
     students: number
@@ -17,13 +16,12 @@ export interface Course {
   level: string
   tags?: string
   thumbnail: string | null
-  slug: string // URL-friendly slug for the course
+  slug: string
   createdAt: Date
   updatedAt: Date
   instructorId: number
 }
 
-// Define Course API Response interface for related courses
 export interface CourseApiResponse {
   id: string
   title: string
@@ -58,8 +56,6 @@ export interface CourseApiResponse {
   }[]
 }
 
-// Interfaces for course data operations that can be shared between client and server
-
 export interface CreateCourseData {
   title: string
   description: string
@@ -75,14 +71,13 @@ export interface UpdateCourseData {
   description?: string
   category?: string
   instructorId?: number
-  studentCount?: number
+  studentsCount?: number
   rating?: number
   price?: number
   level?: string
   image?: string | null
 }
 
-// Detailed course interface for when we need additional data (e.g., lessons)
 export interface DetailedCourse extends Course {
   lessons: string[]
   learningObjectives?: string[]
@@ -90,20 +85,18 @@ export interface DetailedCourse extends Course {
   reviews?: Review[]
 }
 
-// Lesson interface
 export interface Lesson {
   id: number
   courseId: number
   title: string
   content: string
-  videoUrl: string // Required YouTube video URL
+  videoUrl: string
   order: number
   sectionId?: number
   createdAt: Date
   updatedAt: Date
 }
 
-// Extended lesson interface for detailed lesson pages
 export interface DetailedLesson extends CourseContentLesson {
   id: number
   courseId: number
@@ -114,30 +107,32 @@ export interface DetailedLesson extends CourseContentLesson {
   updatedAt?: Date
 }
 
-// Course content section interface
 export interface CourseContentSection {
-  id: number // Required ID field for the section
+  id: number
   title: string
   description?: string
   lessons: number
-  content?: CourseContentLesson[] // Array of lesson objects with title and duration
+  content?: CourseContentLesson[]
 }
 
-// Lesson content interface
 export interface CourseContentLesson {
-  id?: number // Optional ID field to identify the lesson
+  id?: number
   title: string
-  slug: string // URL-friendly slug for the lesson
-  duration: string // Duration in format like "5:30" or "10 min"
-  videoUrl?: string // Optional YouTube video URL
-  description?: string // Optional description field
-  isFree?: boolean // Optional field to indicate if lesson is free
+  slug: string
+  duration: string
+  videoUrl?: string
+  description?: string
+  isFree?: boolean
 }
 
-// Review interface
 export interface Review {
-  reviewerName: string
+  id: number
   rating: number
-  comment: string
-  date: string
+  comment: string | null
+  createdAt: string | Date
+  user?: {
+    id: number
+    name: string | null
+    avatar: string | null
+  }
 }

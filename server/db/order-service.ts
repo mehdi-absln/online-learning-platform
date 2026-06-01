@@ -5,7 +5,6 @@ import { orders, orderItems, enrollments, cartItems, courses } from './schema'
 export async function processCheckout(userId: number, simulationType: 'success' | 'fail') {
   if (simulationType === 'fail') {
     return db.transaction((tx) => {
-      // 1. Get cart total for the failed order record
       const userCartItems = tx
         .select({ courseId: cartItems.courseId })
         .from(cartItems)
@@ -25,8 +24,7 @@ export async function processCheckout(userId: number, simulationType: 'success' 
 
       const totalAmount = dbCourses.reduce((sum, course) => sum + (course.price || 0), 0)
 
-      // 2. Create a FAILED order
-      const [failedOrder] = tx
+      const insertedOrders = tx
         .insert(orders)
         .values({
           userId,
@@ -37,12 +35,15 @@ export async function processCheckout(userId: number, simulationType: 'success' 
         .returning()
         .all()
 
-      // We do NOT enroll or clear cart on failure
+      const failedOrder = insertedOrders[0]
+      if (!failedOrder) {
+        throw { statusCode: 500, statusMessage: 'Failed to create order' }
+      }
+
       return { success: false, orderId: failedOrder.id }
     })
   }
 
-  // Success simulation
   return db.transaction((tx) => {
     const userCartItems = tx
       .select({ courseId: cartItems.courseId })
@@ -66,7 +67,7 @@ export async function processCheckout(userId: number, simulationType: 'success' 
 
     const totalAmount = dbCourses.reduce((sum, course) => sum + (course.price || 0), 0)
 
-    const [newOrder] = tx
+    const insertedOrders = tx
       .insert(orders)
       .values({
         userId,
@@ -77,6 +78,11 @@ export async function processCheckout(userId: number, simulationType: 'success' 
       })
       .returning()
       .all()
+
+    const newOrder = insertedOrders[0]
+    if (!newOrder) {
+      throw { statusCode: 500, statusMessage: 'Failed to create order' }
+    }
 
     for (const course of dbCourses) {
       tx.insert(orderItems).values({
@@ -125,11 +131,12 @@ export async function getOrderDetails(orderId: number, userId: number) {
 
   if (!result.length) return null
 
+  const firstRow = result[0]!
   return {
-    id: result[0].id,
-    totalAmount: result[0].totalAmount,
-    status: result[0].status,
-    createdAt: result[0].createdAt,
+    id: firstRow.id,
+    totalAmount: firstRow.totalAmount,
+    status: firstRow.status,
+    createdAt: firstRow.createdAt,
     items: result.map(r => r.items),
   }
 }

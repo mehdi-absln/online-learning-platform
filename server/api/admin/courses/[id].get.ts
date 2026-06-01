@@ -1,3 +1,4 @@
+import { setResponseStatus } from 'h3'
 import { db } from '../../../db'
 import { courses, instructors } from '../../../db/schema'
 import { eq } from 'drizzle-orm'
@@ -38,11 +39,16 @@ export default defineEventHandler(async (event) => {
 
     return successResponse('Course retrieved', course)
   }
-  catch (error: any) {
-    if (error.statusCode) {
-      return errorResponse(error.statusMessage, error.message, error.statusCode)
+  catch (error: unknown) {
+    const err = error as { statusCode?: number; statusMessage?: string; message?: string }
+
+    if (err.statusCode) {
+      setResponseStatus(event, err.statusCode)
+      return errorResponse(err.statusMessage || 'Request failed', err.message)
     }
+
     console.error('Get Course Error:', error)
-    return errorResponse('Internal server error', error.message)
+    setResponseStatus(event, 500)
+    return errorResponse('Internal server error', err.message || 'Unknown error')
   }
 })
