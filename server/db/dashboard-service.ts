@@ -156,8 +156,8 @@ async function getEnrolledCoursesWithProgress(userId: number) {
     }
 
     // Edge case: All lessons completed → Show last lesson for review
-    if (!lastAccessedLesson && cLessons.length > 0) {
-      const lastLesson = cLessons[cLessons.length - 1]
+    const lastLesson = cLessons.at(-1)
+    if (!lastAccessedLesson && lastLesson) {
       lastAccessedLesson = { title: lastLesson.title, slug: lastLesson.slug }
     }
 

@@ -131,6 +131,7 @@ export const mapCourseToAuthCourse = (course: Course): AuthCourse => {
     title: course.title,
     description: course.description,
     category: course.category,
+    slug: course.slug,
     instructor: {
       name: course.instructor.name,
       avatar: course.instructor.avatar,

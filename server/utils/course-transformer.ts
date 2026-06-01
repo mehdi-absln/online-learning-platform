@@ -1,23 +1,18 @@
-// server/utils/course-transformer.ts
-
 import type { Course as CourseType, DetailedCourse, Review } from '~/types/shared/courses'
 import { processCourseImage } from './image-processor'
 import type { InstructorInfo } from './instructor-service'
 
-/**
- * Raw course data from database (with instructor already enriched)
- */
 export interface RawCourse {
   id: number
   title: string
-  description: string
+  description: string | null
   categoryId: number | null
   category: string | null
   instructorId: number | null
   studentCount: number | null
   rating: number | null
   price: number
-  level: string
+  level: string | null
   tags: string | null
   thumbnail: string | null
   slug: string
@@ -26,29 +21,24 @@ export interface RawCourse {
   instructor?: InstructorInfo | null
 }
 
-/**
- * Transform a single course to client format
- * This is the SINGLE source of truth for course transformation
- */
 export function transformCourseForClient(course: RawCourse): CourseType {
   return {
     id: course.id,
     title: course.title,
     description: course.description,
-    category: course.category || (course.categoryId ? String(course.categoryId) : null),
+    category: course.category || (course.categoryId ? String(course.categoryId) : 'Uncategorized'),
     instructorId: course.instructorId || 0,
     rating: course.rating || 0,
-    price: course.price / 100, // Convert from cents to dollars
-    level: course.level,
+    price: course.price / 100,
+    level: course.level || 'beginner',
     tags: course.tags || undefined,
-    thumbnail: processCourseImage(course.thumbnail) ?? undefined,
+    thumbnail: processCourseImage(course.thumbnail) ?? null,
     slug: course.slug,
     createdAt: course.createdAt,
     updatedAt: course.updatedAt,
-    instructor: course.instructor || {
-      id: 0,
-      name: 'Unknown Instructor',
-      avatar: '/images/placeholder-avatar.svg',
+    instructor: {
+      name: course.instructor?.name || 'Unknown Instructor',
+      avatar: course.instructor?.avatar || '/images/placeholder-avatar.svg',
     },
     stats: {
       students: course.studentCount || 0,
@@ -56,14 +46,10 @@ export function transformCourseForClient(course: RawCourse): CourseType {
   }
 }
 
-/**
- * Transform multiple courses to client format
- */
 export function transformCoursesForClient(courses: RawCourse[]): CourseType[] {
   return courses.map(course => transformCourseForClient(course))
 }
 
-// Define type for raw course learning objectives from database
 interface RawCourseLearningObjective {
   id: number
   courseId: number
@@ -73,7 +59,6 @@ interface RawCourseLearningObjective {
   updatedAt: Date
 }
 
-// Define type for raw course content sections from database
 interface RawCourseContentSection {
   id: number
   courseId: number
@@ -85,32 +70,30 @@ interface RawCourseContentSection {
   updatedAt: Date
 }
 
-// Define type for raw reviews from database
-interface RawReview {
-  id: number
-  courseId: number
-  reviewerName: string
-  reviewerId: number | null
-  rating: number
-  comment: string | null
-  date: Date
-  createdAt: Date
-  updatedAt: Date
-}
-
-// Define type for raw lessons from database
 interface RawLesson {
   id: number
   courseId: number
   sectionId: number | null
   title: string
-  slug: string // URL-friendly slug for the lesson
+  slug: string
   content: string | null
-  videoUrl: string // Required YouTube video URL (as per schema)
-  duration?: string // Duration of the lesson
+  videoUrl: string
+  duration?: string
   orderVal: number
   createdAt: Date
   updatedAt: Date
+}
+
+interface RawReview {
+  id: number
+  rating: number
+  comment: string | null
+  createdAt: Date
+  user?: {
+    id: number
+    name: string | null
+    avatar: string | null
+  }
 }
 
 export function transformCourseForClientWithDetails(
@@ -120,66 +103,53 @@ export function transformCourseForClientWithDetails(
   reviews: RawReview[] = [],
   lessons: RawLesson[] = [],
 ): DetailedCourse {
-  // Transform the basic course info
   const basicCourse = transformCourseForClient(course)
 
-  // Transform learning objectives to an array of strings in order
   const orderedLearningObjectives = learningObjectives
-    ? learningObjectives.sort((a, b) => a.orderVal - b.orderVal).map(obj => obj.objective)
-    : []
+    .sort((a, b) => a.orderVal - b.orderVal)
+    .map(obj => obj.objective)
 
-  // Transform content sections and group lessons by section
   const orderedContentSections = contentSections
-    ? contentSections
-        .sort((a, b) => a.orderVal - b.orderVal)
-        .map((section) => {
-          // Get lessons for this specific section
-          const sectionLessons
-            = lessons && lessons.length > 0
-              ? lessons
-                  .filter(lesson => lesson.sectionId === section.id)
-                  .sort((a, b) => a.orderVal - b.orderVal)
-                  .map(lesson => ({
-                    id: lesson.id, // Include the lesson ID
-                    title: lesson.title,
-                    slug: lesson.slug || lesson.title
-                      .toLowerCase()
-                      .trim()
-                      .replace(/[^\w\s-]/g, '')
-                      .replace(/[\s_-]+/g, '-')
-                      .replace(/^-+|-+$/g, ''), // Generate slug from title if not available
-                    duration: lesson.duration || `${Math.floor(Math.random() * 10) + 1} min`, // Generate a random duration if not available
-                    videoUrl: lesson.videoUrl, // Use existing videoUrl
-                  }))
-              : []
+    .sort((a, b) => a.orderVal - b.orderVal)
+    .map((section) => {
+      const sectionLessons = lessons.length > 0
+        ? lessons
+            .filter(lesson => lesson.sectionId === section.id)
+            .sort((a, b) => a.orderVal - b.orderVal)
+            .map(lesson => ({
+              id: lesson.id,
+              title: lesson.title,
+              slug: lesson.slug || lesson.title
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/[\s_-]+/g, '-')
+                .replace(/^-+|-+$/g, ''),
+              duration: lesson.duration || `${Math.floor(Math.random() * 10) + 1} min`,
+              videoUrl: lesson.videoUrl,
+            }))
+        : []
 
-          return {
-            id: section.id,
-            title: section.title,
-            description: section.description || undefined,
-            lessons: section.lessonsCount,
-            content: sectionLessons, // Add lessons array to the section
-          }
-        })
-    : []
+      return {
+        id: section.id,
+        title: section.title,
+        description: section.description || undefined,
+        lessons: section.lessonsCount,
+        content: sectionLessons,
+      }
+    })
 
-  // Transform reviews
-  const transformedReviews
-    = reviews && reviews.length > 0
-      ? reviews.map(
-          review =>
-            ({
-              reviewerName: review.reviewerName,
-              rating: review.rating,
-              comment: review.comment || '',
-              date: review.date ? review.date.toISOString() : new Date().toISOString(),
-            }) as Review,
-        )
-      : []
+  const transformedReviews: Review[] = reviews.map(review => ({
+    id: review.id,
+    rating: review.rating,
+    comment: review.comment,
+    createdAt: review.createdAt,
+    user: review.user,
+  }))
 
   return {
     ...basicCourse,
-    lessons: lessons && lessons.length > 0 ? lessons.map(lesson => lesson.title) : [], // Just the lesson titles for the main course
+    lessons: lessons.length > 0 ? lessons.map(lesson => lesson.title) : [],
     learningObjectives: orderedLearningObjectives,
     courseContent: orderedContentSections,
     reviews: transformedReviews,

@@ -1,6 +1,3 @@
-// Barrel file for common type exports
-// Re-export from shared types for convenience
-
 export type {
   User,
   AuthResponse,
@@ -22,15 +19,14 @@ export type {
 export type {
   DetailedCourse,
   Review,
-  LearningObjective,
   CourseContentSection,
   Lesson,
 } from '~/types/shared/courses'
 
 export type {
   Blog,
-  BlogListResponse,
-  BlogDetailResponse,
+  BlogsResponse as BlogListResponse,
+  BlogResponse as BlogDetailResponse,
 } from '~/types/shared/blogs'
 
 export type {

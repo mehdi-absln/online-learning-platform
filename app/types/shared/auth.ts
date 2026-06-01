@@ -23,12 +23,13 @@ export interface CourseStats {
 export interface CourseInstructor {
   name: string
   avatar: string
+  title?: string
 }
 
 export interface Course {
   id: number
   title: string
-  description: string
+  description: string | null
   category: string
   instructor: CourseInstructor
   stats: CourseStats
@@ -37,6 +38,7 @@ export interface Course {
   level: string // Add level property
   tags?: string // Comma-separated tags for the course
   thumbnail: string | null
+  slug: string
   createdAt: Date
   updatedAt: Date
   instructorId: number

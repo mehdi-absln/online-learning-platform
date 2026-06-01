@@ -16,10 +16,9 @@ export const courseSchema = z.object({
 
 export type CourseFormData = z.infer<typeof courseSchema>
 
-// ⭐ فقط سه نقش مجاز
 export const adminUserUpdateSchema = z.object({
   role: z.enum(['admin', 'instructor', 'student'], {
-    errorMap: () => ({ message: 'Role must be one of: admin, instructor, student' }),
+    error: 'Role must be one of: admin, instructor, student',
   }),
 })
 

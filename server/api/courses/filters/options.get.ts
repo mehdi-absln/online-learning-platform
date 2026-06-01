@@ -1,58 +1,60 @@
 import { setResponseStatus } from 'h3'
-import { sql } from 'drizzle-orm'
-import { courses } from '../../../db/schema'
+import { sql, eq } from 'drizzle-orm'
+import { courses, categories } from '../../../db/schema'
 import { db } from '../../../db'
 
 export default defineEventHandler(async (event) => {
   try {
-    // Fetch unique categories from the database
     const categoriesResult = await db
-      .select({ category: courses.category })
-      .from(courses)
-      .groupBy(courses.category)
-      .orderBy(courses.category)
+      .select({
+        id: categories.id,
+        name: categories.name,
+      })
+      .from(categories)
+      .leftJoin(courses, eq(courses.categoryId, categories.id))
+      .groupBy(categories.id, categories.name)
+      .orderBy(categories.name)
 
-    const categories = categoriesResult.map(row => row.category)
+    const categoriesList = categoriesResult.map(row => ({
+      id: row.id,
+      name: row.name,
+    }))
 
-    // Fetch unique levels from the database
     const levelsResult = await db
       .select({ level: courses.level })
       .from(courses)
       .groupBy(courses.level)
       .orderBy(courses.level)
 
-    const levels = levelsResult.map(row => row.level)
+    const levels = levelsResult
+      .map(row => row.level)
+      .filter((l): l is string => l !== null)
 
-    // Fetch unique tags from the database
-    // Since tags are stored as comma-separated values, we need to extract unique tags
     const allTagsResult = await db
       .select({ tags: courses.tags })
       .from(courses)
       .where(sql`${courses.tags} IS NOT NULL`)
 
-    // Extract unique tags from all courses
     const allTags = new Set<string>()
     allTagsResult.forEach((row) => {
       if (row.tags) {
-        // Split comma-separated tags and trim whitespace
-        const tags = row.tags.split(',').map(tag => tag.trim())
-        tags.forEach((tag) => {
-          if (tag) allTags.add(tag)
-        })
+        row.tags
+          .split(',')
+          .map(tag => tag.trim())
+          .filter(Boolean)
+          .forEach(tag => allTags.add(tag))
       }
     })
 
     const tags = Array.from(allTags).sort()
 
-    const filterOptions = {
-      categories,
-      levels,
-      tags,
-    }
-
     return {
       success: true,
-      data: filterOptions,
+      data: {
+        categories: categoriesList,
+        levels,
+        tags,
+      },
     }
   }
   catch (error: unknown) {

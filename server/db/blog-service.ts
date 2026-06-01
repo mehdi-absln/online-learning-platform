@@ -148,7 +148,11 @@ export async function createBlog(data: CreateBlogInput): Promise<Blog> {
     })
     .returning()
 
-  return result[0]
+  const createdBlog = result[0]
+  if (!createdBlog) {
+    throw new Error('Failed to create blog - no result returned')
+  }
+  return createdBlog
 }
 
 // آپدیت بلاگ
@@ -192,7 +196,11 @@ export async function isSlugExists(
   const result = await query
 
   if (result.length === 0) return false
-  if (excludeId && result[0].id === excludeId) return false
+
+  const existing = result[0]
+  if (!existing) return false
+
+  if (excludeId && existing.id === excludeId) return false
 
   return true
 }

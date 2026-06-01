@@ -66,7 +66,7 @@
               {{ review.user?.name || 'Anonymous' }}
             </h4>
             <time
-              :datetime="review.createdAt"
+              :datetime="typeof review.createdAt === 'string' ? review.createdAt : review.createdAt.toISOString()"
               class="text-white/70 text-sm mt-1 block"
             >
               {{ formatDate(review.createdAt) }}

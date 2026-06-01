@@ -8,7 +8,8 @@ import {
   reviews,
   instructors,
   users,
-  categories
+  categories,
+  type Course as DbCourse,
 } from './schema'
 import type { CreateCourseData, UpdateCourseData } from '~/types/shared/courses'
 import { enrichCoursesWithInstructors } from '../utils/instructor-service'
@@ -287,7 +288,7 @@ export async function getCourseBySlug(slug: string) {
     return {
       ...course,
       category: categoryName,
-      categoryId: course.categoryId
+      categoryId: course.categoryId,
     }
   }
   return null
@@ -429,7 +430,7 @@ export async function getDetailedCourseBySlug(slug: string) {
   console.log('👨‍🏫 Instructor:', instructor?.name || 'Not found')
 
   // 8. Build courseContent structure
-  const courseContent = sections.map(section => {
+  const courseContent = sections.map((section) => {
     const sectionLessons = allLessons
       .filter(lesson => lesson.sectionId === section.id)
       .sort((a, b) => a.orderVal - b.orderVal)
@@ -502,20 +503,22 @@ export async function getDetailedCourseBySlug(slug: string) {
     tags: course.tags,
     categoryId: course.categoryId,
     categoryName,
-    instructor: instructor ? {
-      id: instructor.id,
-      name: instructor.name,
-      title: instructor.title,
-      avatar: instructor.avatar,
-      bio: instructor.bio,
-    } : null,
+    instructor: instructor
+      ? {
+          id: instructor.id,
+          name: instructor.name,
+          title: instructor.title,
+          avatar: instructor.avatar,
+          bio: instructor.bio,
+        }
+      : null,
     learningObjectives,
     courseContent,
     reviews: courseReviews,
   }
 }
 
-export async function getCoursesByInstructorId(instructorId: number): Promise<any[]> {
+export async function getCoursesByInstructorId(instructorId: number): Promise<DbCourse[]> {
   const result = await db
     .select()
     .from(courses)
@@ -538,7 +541,7 @@ export async function createCourse(data: CreateCourseData) {
     .values({
       ...data,
       slug,
-      studentCount: 0,
+      studentsCount: 0,
       rating: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -590,7 +593,7 @@ export async function deleteCourse(id: number) {
   await db.delete(courses).where(eq(courses.id, id))
 }
 
-export async function getAllCategories(): Promise<{ id: number; name: string }[]> {
+export async function getAllCategories(): Promise<{ id: number, name: string }[]> {
   try {
     // First try to get from categories table
     const result = await db
@@ -601,7 +604,8 @@ export async function getAllCategories(): Promise<{ id: number; name: string }[]
       .from(categories)
 
     return result
-  } catch (error) {
+  }
+  catch (error) {
     // If categories table doesn't exist, return empty
     console.error('Error getting categories:', error)
     return []
@@ -609,9 +613,14 @@ export async function getAllCategories(): Promise<{ id: number; name: string }[]
 }
 
 export async function getAllLevels(): Promise<string[]> {
-  const results = await db.select({ level: courses.level }).from(courses).groupBy(courses.level)
+  const results = await db
+    .select({ level: courses.level })
+    .from(courses)
+    .groupBy(courses.level)
 
-  return results.map(result => result.level)
+  return results
+    .map(result => result.level)
+    .filter((l): l is string => l !== null)
 }
 
 export async function getAllTags(): Promise<string[]> {
