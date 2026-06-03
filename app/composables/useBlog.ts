@@ -1,4 +1,4 @@
-import type { BlogResponse } from '~/types/shared/blogs'
+import type { ApiResponse } from '~/types/api'; import type { Blog } from '~/types/blog'; type BlogResponse = ApiResponse<Blog>
 import { useApiError } from '~/composables/useApiError'
 
 export const useBlog = (slug: string) => {

@@ -315,7 +315,7 @@
 <script setup lang="ts">
 import Accordion from '~/components/ui/Accordion.vue'
 import { useUserStore } from '~/stores/user'
-import type { CourseContentLesson } from '~/types/shared/courses'
+import type { CourseContentLesson } from '~/types/course'
 import type { AccordionItem } from '~/types/components/accordion'
 
 // ───── Types ─────

@@ -106,7 +106,7 @@
 
 <script setup lang="ts">
 // Import necessary types and schemas for authentication
-import type { AuthResponse } from '~/types/types'
+import type { ApiResponse } from '~/types/api'; import type { User } from '~/types/auth'; type AuthResponse = ApiResponse<{ user: User }>
 import { signInSchema, type SignInFormData } from '~/schemas/auth'
 import { handleSignInError } from '~/utils/auth-error-handler-helpers'
 

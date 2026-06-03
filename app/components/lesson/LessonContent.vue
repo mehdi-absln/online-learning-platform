@@ -147,8 +147,8 @@
 <script setup lang="ts">
 import { marked } from 'marked'
 import Tabs from '~/components/ui/Tabs.vue'
-import type { DetailedLesson } from '~/types/shared/courses'
-import type { LessonAttachment } from '~/types/shared/lessons'
+import type { DetailedLesson } from '~/types/lesson'
+import type { LessonAttachment } from '~/types/lesson'
 
 interface Props {
   lesson: DetailedLesson | null

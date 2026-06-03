@@ -1,4 +1,4 @@
-import type { CourseDetailResponse } from '~/types/shared/api'
+import type { ApiResponse } from '~/types/api'; import type { DetailedCourse } from '~/types/course'; type CourseDetailResponse = ApiResponse<DetailedCourse>
 import { useApiError } from '~/composables/useApiError'
 
 /**

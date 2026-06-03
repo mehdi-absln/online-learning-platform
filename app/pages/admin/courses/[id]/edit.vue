@@ -53,8 +53,8 @@
 </template>
 
 <script setup lang="ts">
-import type { CourseApiResponse } from '~/types/shared/courses'
-import type { CourseFormInitialData } from '~/types/admin/course-form'
+import type { CourseApiResponse } from '~/types/course'
+import type { CourseFormInitialData } from '~/types/forms/course-form'
 import { useToast } from '~/composables/useToast'
 import CourseForm from '~/components/admin/CourseForm.vue'
 import type { CourseFormData } from '~/schemas/admin'

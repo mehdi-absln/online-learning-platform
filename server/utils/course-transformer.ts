@@ -1,4 +1,4 @@
-import type { Course as CourseType, DetailedCourse, Review } from '~/types/shared/courses'
+import type { Course as CourseType, DetailedCourse, Review } from '~/types/course'
 import { processCourseImage } from './image-processor'
 import type { InstructorInfo } from './instructor-service'
 

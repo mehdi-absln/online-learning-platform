@@ -2,7 +2,7 @@ import { eq, or } from 'drizzle-orm'
 import { db } from './index'
 import { users, type User } from './schema'
 import bcrypt from 'bcrypt'
-import type { CreateUserRequest } from '../../app/types/shared/users'
+import type { CreateUserRequest } from '../../app/types/user'
 
 export type DatabaseUser = User
 

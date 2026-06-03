@@ -1,5 +1,5 @@
 // app/composables/useCourses.ts
-import type { CourseListResponse } from '~/types/shared/api'
+import type { ApiResponse } from '~/types/api'; import type { Course } from '~/types/course'; type CourseListResponse = ApiResponse<Course[]>
 import { useApiError } from '~/composables/useApiError'
 
 interface CourseQueryParams {

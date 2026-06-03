@@ -1,4 +1,5 @@
-import type { DetailedLesson, CourseContentLesson } from '~/types/shared/courses'
+import type { DetailedLesson } from '~/types/lesson'
+import type { CourseContentLesson } from '~/types/course'
 import { useUserStore } from '~/stores/user'
 
 export const useLesson = (

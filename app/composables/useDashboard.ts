@@ -1,11 +1,11 @@
-import type { ApiResponse } from '~/types/shared/api'
+import type { ApiResponse } from '~/types/api'
 import type {
   DashboardData,
   DashboardEnrolledCourse,
   DashboardStats,
   DashboardOrder,
   DashboardBookmark,
-} from '~/types/shared/dashboard'
+} from '~/types/dashboard'
 
 export function useDashboard() {
   const requestHeaders = import.meta.server

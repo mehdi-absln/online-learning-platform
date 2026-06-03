@@ -3,8 +3,10 @@ import { getErrorMessage } from '~/utils/error-helpers'
 import { useCartStore } from './cart'
 import { useToast } from '~/composables/useToast'
 import type { SignInFormData, SignUpFormData } from '~/schemas/auth'
-import type { User } from '~/types/shared/auth'
-import type { ApiResponse, AuthResponse as AuthResponseType } from '~/types/shared/api'
+import type { User } from '~/types/auth'
+import type { ApiResponse } from '~/types/api'
+
+type AuthResponseType = ApiResponse<{ user: User }>
 
 export const useUserStore = defineStore('user', () => {
   const toast = useToast()

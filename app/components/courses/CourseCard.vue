@@ -191,8 +191,7 @@
 import { ref, computed, watch } from 'vue'
 import { useCart } from '~/composables/useCart'
 import { useUserStore } from '~/stores/user'
-import type { Course } from '~/types/shared/courses'
-import { mapCourseToAuthCourse } from '~/utils/course-helpers'
+import type { Course } from '~/types/course'
 import CourseImage from '~/components/courses/CourseImage.vue'
 
 interface Props {
@@ -208,7 +207,7 @@ defineEmits<{
 }>()
 
 const handleAddToCart = () => {
-  addItem(mapCourseToAuthCourse(props.course))
+  addItem(props.course)
   openCart()
 }
 

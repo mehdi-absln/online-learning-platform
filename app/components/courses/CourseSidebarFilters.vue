@@ -41,7 +41,7 @@
           <FilterCheckboxGroup
             :model-value="filter.categories || []"
             name="category"
-            :options="categories?.map(c => ({ label: c.name, value: String(c.id) })) || []"
+            :options="categories?.map((c: { id: number; name: string }) => ({ label: c.name, value: String(c.id) })) || []"
             @update:model-value="handleCategoryChange"
           />
         </div>
@@ -58,7 +58,7 @@
           <FilterCheckboxGroup
             :model-value="filter.levels || []"
             name="level"
-            :options="levels?.map(l => ({ label: l, value: l })) || []"
+            :options="levels?.map((l: string) => ({ label: l, value: l })) || []"
             @update:model-value="handleLevelChange"
           />
         </div>
@@ -75,7 +75,7 @@
           <FilterCheckboxGroup
             :model-value="filter.tags || []"
             name="tag"
-            :options="tags?.map(t => ({ label: t, value: t })) || []"
+            :options="tags?.map((t: string) => ({ label: t, value: t })) || []"
             @update:model-value="handleTagChange"
           />
         </div>

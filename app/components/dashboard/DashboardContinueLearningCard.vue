@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DashboardEnrolledCourse } from '~/types/shared/dashboard'
+import type { DashboardEnrolledCourse } from '~/types/dashboard'
 import CourseImage from '~/components/courses/CourseImage.vue'
 
 interface Props {

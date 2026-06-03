@@ -1,4 +1,4 @@
-import type { BlogsResponse } from '~/types/shared/blogs'
+import type { ApiResponse } from '~/types/api'; import type { Blog } from '~/types/blog'; type BlogsResponse = ApiResponse<Blog[]>
 import { useApiError } from '~/composables/useApiError'
 
 export function useBlogs() {

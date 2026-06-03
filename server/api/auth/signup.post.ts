@@ -1,5 +1,5 @@
 import { findByUsernameOrEmail, createUser } from '../../db/user-service'
-import { AUTH_ERRORS } from '../../../app/types/auth-errors'
+import { AUTH_ERRORS } from '../../../app/constants'
 import { errorResponse, successResponse } from '../../utils/response'
 
 export default defineEventHandler(async (event) => {

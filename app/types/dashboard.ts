@@ -1,4 +1,13 @@
-// Dashboard API response types
+// ──────────────────────────────────────
+// Dashboard types
+// ──────────────────────────────────────
+
+export interface DashboardStats {
+  totalEnrolled: number
+  totalCompleted: number
+  inProgress: number
+  totalBookmarked: number
+}
 
 export interface DashboardEnrolledCourse {
   id: number
@@ -12,13 +21,6 @@ export interface DashboardEnrolledCourse {
     title: string
     slug: string
   } | null
-}
-
-export interface DashboardStats {
-  totalEnrolled: number
-  totalCompleted: number
-  inProgress: number
-  totalBookmarked: number
 }
 
 export interface DashboardOrder {

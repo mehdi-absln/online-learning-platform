@@ -11,7 +11,7 @@ import {
   categories,
   type Course as DbCourse,
 } from './schema'
-import type { CreateCourseData, UpdateCourseData } from '~/types/shared/courses'
+import type { CreateCourseData, UpdateCourseData } from '~/types/course'
 import { enrichCoursesWithInstructors } from '../utils/instructor-service'
 
 // =====================

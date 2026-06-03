@@ -253,7 +253,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CourseFormInitialData } from '~/types/admin/course-form'
+import type { CourseFormInitialData } from '~/types/forms/course-form'
 import IconBookOpen from '~/components/icons/IconBookOpen.vue'
 import SubmitButton from '~/components/ui/SubmitButton.vue'
 import { useZodValidation } from '~/composables/useZodValidation'

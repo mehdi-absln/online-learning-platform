@@ -1,4 +1,4 @@
-import type { ApiResponse, ValidationError, ValidationErrorResponse } from '~/types/shared/api'
+import type { ApiResponse, ValidationError, ValidationErrorResponse } from '~/types/api'
 
 export const successResponse = <T>(message: string, data?: T): ApiResponse<T> => ({
   success: true,

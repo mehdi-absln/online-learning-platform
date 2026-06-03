@@ -1,3 +1,7 @@
+// ──────────────────────────────────────
+// Tabs component types
+// ──────────────────────────────────────
+
 export interface TabItem {
   id: string
   title: string
@@ -9,7 +13,6 @@ export interface TabsProps {
   modelValue?: number
   ariaLabel?: string
   tabs?: Array<{ name: string; title: string; disabled?: boolean }>
-  // 🆕 Customization props
   tabListClass?: string
   tabClass?: string
   activeTabClass?: string

@@ -1,6 +1,6 @@
 import { findByUsernameOrEmail, verifyPassword } from '../../db/user-service'
 import { generateToken, generateRefreshToken } from '../../utils/jwt'
-import { AUTH_ERRORS } from '../../../app/types/auth-errors'
+import { AUTH_ERRORS } from '../../../app/constants'
 import { errorResponse, successResponse } from '../../utils/response'
 
 export default defineEventHandler(async (event) => {
