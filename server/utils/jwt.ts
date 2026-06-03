@@ -1,9 +1,13 @@
 import { SignJWT, jwtVerify } from 'jose'
 import type { JWTPayload } from '~/types/auth'
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-in-production',
-)
+const secret = process.env.JWT_SECRET
+
+if (!secret && process.env.NODE_ENV === 'production') {
+  throw new Error('JWT_SECRET environment variable is required in production')
+}
+
+const JWT_SECRET = new TextEncoder().encode(secret || 'dev-only-secret')
 
 export async function generateToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): Promise<string> {
   return new SignJWT(payload)
