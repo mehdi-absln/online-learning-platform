@@ -15,86 +15,97 @@ import type { CreateCourseData, UpdateCourseData } from '~/types/course'
 import { enrichCoursesWithInstructors } from '../utils/instructor-service'
 
 // =====================
+// Types
+// =====================
+export interface CourseFilter {
+  category?: string
+  categories?: string[]
+  level?: string
+  levels?: string[]
+  tags?: string[]
+  freeOnly?: boolean
+  paidOnly?: boolean
+  minPrice?: number
+  maxPrice?: number
+  searchQuery?: string
+  instructorId?: number
+}
+
+// =====================
+// Helper: Build filter conditions
+// =====================
+function buildCourseWhereConditions(filter: CourseFilter = {}) {
+  const whereConditions = []
+
+  if (filter.category) {
+    const categoryId = parseInt(filter.category)
+    if (!isNaN(categoryId)) {
+      whereConditions.push(eq(courses.categoryId, categoryId))
+    }
+  }
+
+  if (filter.categories && filter.categories.length > 0) {
+    const categoryIds = filter.categories
+      .map(c => parseInt(c))
+      .filter(id => !isNaN(id))
+    if (categoryIds.length > 0) {
+      whereConditions.push(inArray(courses.categoryId, categoryIds))
+    }
+  }
+
+  if (filter.level) {
+    whereConditions.push(eq(courses.level, filter.level))
+  }
+
+  if (filter.levels && filter.levels.length > 0) {
+    whereConditions.push(inArray(courses.level, filter.levels))
+  }
+
+  if (filter.tags && filter.tags.length > 0) {
+    const tagConditions = filter.tags.map(tag => like(courses.tags, `%${tag}%`))
+    if (tagConditions.length > 0) {
+      whereConditions.push(tagConditions.length === 1 ? tagConditions[0] : or(...tagConditions))
+    }
+  }
+
+  if (filter.freeOnly) {
+    whereConditions.push(eq(courses.price, 0))
+  }
+
+  if (filter.paidOnly) {
+    whereConditions.push(gte(courses.price, 1))
+  }
+
+  if (filter.minPrice !== undefined) {
+    whereConditions.push(gte(courses.price, filter.minPrice))
+  }
+
+  if (filter.maxPrice !== undefined) {
+    whereConditions.push(lte(courses.price, filter.maxPrice))
+  }
+
+  if (filter.searchQuery) {
+    whereConditions.push(like(courses.title, `%${filter.searchQuery}%`))
+  }
+
+  if (filter.instructorId !== undefined) {
+    whereConditions.push(eq(courses.instructorId, filter.instructorId))
+  }
+
+  return whereConditions.length > 0 ? and(...whereConditions) : undefined
+}
+
+// =====================
 // Get all courses with filters
 // =====================
 export async function getAllCourses(
-  filter: {
-    category?: string
-    categories?: string[]
-    level?: string
-    levels?: string[]
-    tags?: string[]
-    freeOnly?: boolean
-    paidOnly?: boolean
-    minPrice?: number
-    maxPrice?: number
-    searchQuery?: string
-    instructorId?: number
-  } = {},
+  filter: CourseFilter = {},
   limit?: number,
   offset?: number,
 ) {
   try {
-    const whereConditions = []
+    const where = buildCourseWhereConditions(filter)
 
-    // Category filter - now using categoryId
-    if (filter.category) {
-      // If category is a number (ID), use it directly
-      const categoryId = parseInt(filter.category)
-      if (!isNaN(categoryId)) {
-        whereConditions.push(eq(courses.categoryId, categoryId))
-      }
-    }
-
-    if (filter.categories && filter.categories.length > 0) {
-      const categoryIds = filter.categories
-        .map(c => parseInt(c))
-        .filter(id => !isNaN(id))
-      if (categoryIds.length > 0) {
-        whereConditions.push(inArray(courses.categoryId, categoryIds))
-      }
-    }
-
-    if (filter.level) {
-      whereConditions.push(eq(courses.level, filter.level))
-    }
-
-    if (filter.levels && filter.levels.length > 0) {
-      whereConditions.push(inArray(courses.level, filter.levels))
-    }
-
-    if (filter.tags && filter.tags.length > 0) {
-      const tagConditions = filter.tags.map(tag => like(courses.tags, `%${tag}%`))
-      if (tagConditions.length > 0) {
-        whereConditions.push(tagConditions.length === 1 ? tagConditions[0] : or(...tagConditions))
-      }
-    }
-
-    if (filter.freeOnly) {
-      whereConditions.push(eq(courses.price, 0))
-    }
-
-    if (filter.paidOnly) {
-      whereConditions.push(gte(courses.price, 1))
-    }
-
-    if (filter.minPrice !== undefined) {
-      whereConditions.push(gte(courses.price, filter.minPrice))
-    }
-
-    if (filter.maxPrice !== undefined) {
-      whereConditions.push(lte(courses.price, filter.maxPrice))
-    }
-
-    if (filter.searchQuery) {
-      whereConditions.push(like(courses.title, `%${filter.searchQuery}%`))
-    }
-
-    if (filter.instructorId !== undefined) {
-      whereConditions.push(eq(courses.instructorId, filter.instructorId))
-    }
-
-    // Build the query with proper field names
     let query = db
       .select({
         id: courses.id,
@@ -115,35 +126,24 @@ export async function getAllCourses(
       })
       .from(courses)
       .leftJoin(categories, eq(courses.categoryId, categories.id))
+      .$dynamic()
 
-    // Apply where conditions
-    if (whereConditions.length > 0) {
-      if (whereConditions.length === 1) {
-        // @ts-expect-error - Drizzle type issue
-        query = query.where(whereConditions[0])
-      }
-      else {
-        // @ts-expect-error - Drizzle type issue
-        query = query.where(and(...whereConditions))
-      }
+    if (where) {
+      query = query.where(where)
     }
 
-    // @ts-expect-error - Drizzle type issue
     query = query.orderBy(desc(courses.createdAt))
 
     if (limit !== undefined) {
-      // @ts-expect-error - Drizzle type issue
       query = query.limit(limit)
     }
 
     if (offset !== undefined) {
-      // @ts-expect-error - Drizzle type issue
       query = query.offset(offset)
     }
 
     const result = await query
 
-    // Enrich with instructors
     const enrichedCourses = await enrichCoursesWithInstructors(result)
 
     return enrichedCourses
@@ -156,89 +156,15 @@ export async function getAllCourses(
 
 // Function to count courses matching the filters
 export async function getCoursesCount(
-  filter: {
-    category?: string
-    categories?: string[]
-    level?: string
-    levels?: string[]
-    tags?: string[]
-    freeOnly?: boolean
-    paidOnly?: boolean
-    minPrice?: number
-    maxPrice?: number
-    searchQuery?: string
-    instructorId?: number
-  } = {},
+  filter: CourseFilter = {},
 ): Promise<number> {
   try {
-    const whereConditions = []
+    const where = buildCourseWhereConditions(filter)
 
-    if (filter.category) {
-      const categoryId = parseInt(filter.category)
-      if (!isNaN(categoryId)) {
-        whereConditions.push(eq(courses.categoryId, categoryId))
-      }
-    }
+    let query = db.select({ id: courses.id }).from(courses).$dynamic()
 
-    if (filter.categories && filter.categories.length > 0) {
-      const categoryIds = filter.categories
-        .map(c => parseInt(c))
-        .filter(id => !isNaN(id))
-      if (categoryIds.length > 0) {
-        whereConditions.push(inArray(courses.categoryId, categoryIds))
-      }
-    }
-
-    if (filter.level) {
-      whereConditions.push(eq(courses.level, filter.level))
-    }
-
-    if (filter.levels && filter.levels.length > 0) {
-      whereConditions.push(inArray(courses.level, filter.levels))
-    }
-
-    if (filter.tags && filter.tags.length > 0) {
-      const tagConditions = filter.tags.map(tag => like(courses.tags, `%${tag}%`))
-      if (tagConditions.length > 0) {
-        whereConditions.push(tagConditions.length === 1 ? tagConditions[0] : or(...tagConditions))
-      }
-    }
-
-    if (filter.freeOnly) {
-      whereConditions.push(eq(courses.price, 0))
-    }
-
-    if (filter.paidOnly) {
-      whereConditions.push(gte(courses.price, 1))
-    }
-
-    if (filter.minPrice !== undefined) {
-      whereConditions.push(gte(courses.price, filter.minPrice))
-    }
-
-    if (filter.maxPrice !== undefined) {
-      whereConditions.push(lte(courses.price, filter.maxPrice))
-    }
-
-    if (filter.searchQuery) {
-      whereConditions.push(like(courses.title, `%${filter.searchQuery}%`))
-    }
-
-    if (filter.instructorId !== undefined) {
-      whereConditions.push(eq(courses.instructorId, filter.instructorId))
-    }
-
-    let query = db.select({ id: courses.id }).from(courses)
-
-    if (whereConditions.length > 0) {
-      if (whereConditions.length === 1) {
-        // @ts-expect-error - Drizzle type issue
-        query = query.where(whereConditions[0])
-      }
-      else {
-        // @ts-expect-error - Drizzle type issue
-        query = query.where(and(...whereConditions))
-      }
+    if (where) {
+      query = query.where(where)
     }
 
     const result = await query
