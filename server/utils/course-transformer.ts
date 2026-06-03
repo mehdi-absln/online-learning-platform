@@ -125,7 +125,7 @@ export function transformCourseForClientWithDetails(
                 .replace(/[^\w\s-]/g, '')
                 .replace(/[\s_-]+/g, '-')
                 .replace(/^-+|-+$/g, ''),
-              duration: lesson.duration || `${Math.floor(Math.random() * 10) + 1} min`,
+              duration: lesson.duration || '00:00',
               videoUrl: lesson.videoUrl,
             }))
         : []
