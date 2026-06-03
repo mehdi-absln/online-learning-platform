@@ -1,13 +1,21 @@
+// ──────────────────────────────────────
+// Course domain types
+// ──────────────────────────────────────
+
+export interface CourseInstructor {
+  id?: number
+  name: string
+  avatar: string
+  title?: string
+}
+
 export interface Course {
   id: number
   title: string
+  slug: string
   description: string | null
   category: string
-  instructor: {
-    name: string
-    avatar: string
-    title?: string
-  }
+  instructor: CourseInstructor
   stats: {
     students: number
   }
@@ -16,10 +24,9 @@ export interface Course {
   level: string
   tags?: string
   thumbnail: string | null
-  slug: string
+  instructorId: number
   createdAt: Date
   updatedAt: Date
-  instructorId: number
 }
 
 export interface CourseApiResponse {
@@ -56,55 +63,11 @@ export interface CourseApiResponse {
   }[]
 }
 
-export interface CreateCourseData {
-  title: string
-  description: string
-  category: string
-  instructorId: number
-  price: number
-  level: string
-  image?: string | null
-}
-
-export interface UpdateCourseData {
-  title?: string
-  description?: string
-  category?: string
-  instructorId?: number
-  studentsCount?: number
-  rating?: number
-  price?: number
-  level?: string
-  image?: string | null
-}
-
 export interface DetailedCourse extends Course {
   lessons: string[]
   learningObjectives?: string[]
   courseContent?: CourseContentSection[]
-  reviews?: Review[]
-}
-
-export interface Lesson {
-  id: number
-  courseId: number
-  title: string
-  content: string
-  videoUrl: string
-  order: number
-  sectionId?: number
-  createdAt: Date
-  updatedAt: Date
-}
-
-export interface DetailedLesson extends CourseContentLesson {
-  id: number
-  courseId: number
-  content: string
-  order: number
-  sectionId?: number
-  createdAt?: Date
-  updatedAt?: Date
+  reviews?: CourseReview[]
 }
 
 export interface CourseContentSection {
@@ -125,7 +88,7 @@ export interface CourseContentLesson {
   isFree?: boolean
 }
 
-export interface Review {
+export interface CourseReview {
   id: number
   rating: number
   comment: string | null
@@ -135,4 +98,52 @@ export interface Review {
     name: string | null
     avatar: string | null
   }
+}
+
+export type Review = CourseReview
+
+export interface CourseFilters {
+  category?: string
+  categories?: string[]
+  level?: string
+  levels?: string[]
+  tags?: string[]
+  instructorId?: number
+  priceFilter?: 'all' | 'free' | 'paid'
+  freeOnly?: boolean
+  paidOnly?: boolean
+  searchQuery?: string
+  minPrice?: number
+  maxPrice?: number
+}
+
+export type CoursesFilter = CourseFilters
+
+export interface FilterOptions {
+  categories: { id: number; name: string }[]
+  levels: string[]
+  tags: string[]
+  instructors?: { id: number; name: string }[]
+}
+
+export interface CreateCourseData {
+  title: string
+  description: string
+  category: string
+  instructorId: number
+  price: number
+  level: string
+  image?: string | null
+}
+
+export interface UpdateCourseData {
+  title?: string
+  description?: string
+  category?: string
+  instructorId?: number
+  studentsCount?: number
+  rating?: number
+  price?: number
+  level?: string
+  image?: string | null
 }

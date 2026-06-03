@@ -1,5 +1,5 @@
 import { getErrorMessage } from '~/utils/error-helpers'
-import type { LessonProgress } from '~/types/shared/lessons'
+import type { LessonProgress } from '~/types/lesson'
 
 // ───── API Response Types ─────
 interface ProgressResponse {

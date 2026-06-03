@@ -89,7 +89,7 @@
 <script setup lang="ts">
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
-import type { Course } from '~/types/shared/courses'
+import type { Course } from '~/types/course'
 
 defineProps<{
   courses: Course[]

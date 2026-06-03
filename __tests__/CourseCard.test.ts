@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import CourseCard from '~/components/courses/CourseCard.vue'
 import CourseImage from '~/components/courses/CourseImage.vue'
-import type { Course } from '~/types/shared/courses'
+import type { Course } from '~/types/course'
 import { PLACEHOLDER_COURSE_IMAGE } from '~/constants'
 
 // Mock NuxtLink component

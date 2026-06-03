@@ -1,6 +1,5 @@
-import type { CoursesFilter } from '~/types/courses-filter'
-import type { Course as AuthCourse } from '~/types/shared/auth'
-import type { Course } from '~/types/shared/courses'
+import type { CourseFilters } from '~/types/course'
+import type { Course } from '~/types/course'
 
 export interface UrlQueryParams {
   category?: string
@@ -20,14 +19,14 @@ export interface UrlQueryParams {
 }
 
 export interface UrlParams {
-  filter: CoursesFilter
+  filter: CourseFilters
   page: number
   limit: number
 }
 
 /** Parse route query → structured filter + pagination (supports both old singular & new plural params) */
 export const extractParamsFromUrl = (urlQuery: UrlQueryParams): UrlParams => {
-  const filter: CoursesFilter = {}
+  const filter: CourseFilters = {}
 
   const parseArrayParam = (param: string | string[] | undefined): string[] | undefined => {
     if (!param) return undefined
@@ -90,7 +89,7 @@ export const arraysEqual = (a: string[] = [], b: string[] = []): boolean => {
 }
 
 /** Deep equality check for filters (used to prevent unnecessary updates) */
-export const isFilterEqual = (a: CoursesFilter, b: CoursesFilter): boolean => {
+export const isFilterEqual = (a: CourseFilters, b: CourseFilters): boolean => {
   return (
     (a.searchQuery ?? '') === (b.searchQuery ?? '')
     && (a.priceFilter ?? 'all') === (b.priceFilter ?? 'all')
@@ -104,12 +103,12 @@ export const isFilterEqual = (a: CoursesFilter, b: CoursesFilter): boolean => {
 }
 
 /** Build clean URLSearchParams – only active filters are included */
-export const buildQueryParams = (filter: CoursesFilter, page: number, limit: number): URLSearchParams => {
+export const buildQueryParams = (filter: CourseFilters, page: number, limit: number): URLSearchParams => {
   const queryParams = new URLSearchParams()
 
-  if (filter.categories?.length) filter.categories.forEach(c => c && queryParams.append('categories', c))
-  if (filter.levels?.length) filter.levels.forEach(l => l && queryParams.append('levels', l))
-  if (filter.tags?.length) filter.tags.forEach(t => t && queryParams.append('tags', t))
+  if (filter.categories?.length) filter.categories.forEach((c: string) => c && queryParams.append('categories', c))
+  if (filter.levels?.length) filter.levels.forEach((l: string) => l && queryParams.append('levels', l))
+  if (filter.tags?.length) filter.tags.forEach((t: string) => t && queryParams.append('tags', t))
 
   if (filter.priceFilter === 'free') queryParams.append('freeOnly', 'true')
   if (filter.priceFilter === 'paid') queryParams.append('paidOnly', 'true')
@@ -122,30 +121,4 @@ export const buildQueryParams = (filter: CoursesFilter, page: number, limit: num
   queryParams.append('limit', limit.toString())
 
   return queryParams
-}
-
-/** Maps a shared Course to an AuthCourse required by cart/user stores */
-export const mapCourseToAuthCourse = (course: Course): AuthCourse => {
-  return {
-    id: course.id,
-    title: course.title,
-    description: course.description,
-    category: course.category,
-    slug: course.slug,
-    instructor: {
-      name: course.instructor.name,
-      avatar: course.instructor.avatar,
-    },
-    stats: {
-      students: course.stats.students,
-    },
-    rating: course.rating,
-    price: course.price,
-    level: course.level,
-    tags: course.tags,
-    thumbnail: course.thumbnail,
-    createdAt: course.createdAt,
-    updatedAt: course.updatedAt,
-    instructorId: course.instructorId,
-  }
 }

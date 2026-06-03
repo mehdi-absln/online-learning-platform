@@ -1,4 +1,4 @@
-import type { Blog } from '~/types/shared/blogs'
+import type { Blog } from '~/types/blog'
 
 export const useBlogsStore = defineStore('blogs', () => {
   // ============== State ==============

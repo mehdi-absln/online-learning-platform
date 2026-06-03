@@ -147,7 +147,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Blog } from '~/types/shared/blogs'
+import type { Blog } from '~/types/blog'
 import { truncateText } from '~/utils/text-helpers'
 
 interface Props {

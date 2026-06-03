@@ -72,7 +72,7 @@ import BlogCard from '~/components/blogs/BlogCard.vue'
 import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 import ErrorState from '~/components/ui/ErrorState.vue'
 import EmptyState from '~/components/ui/EmptyState.vue'
-import type { Blog } from '~/types/shared/blogs'
+import type { Blog } from '~/types/blog'
 
 defineProps<{
   posts: Blog[]

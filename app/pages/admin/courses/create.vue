@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CourseApiResponse } from '~/types/shared/courses'
+import type { CourseApiResponse } from '~/types/course'
 import { useToast } from '~/composables/useToast'
 import CourseForm from '~/components/admin/CourseForm.vue'
 import type { CourseFormData } from '~/schemas/admin'

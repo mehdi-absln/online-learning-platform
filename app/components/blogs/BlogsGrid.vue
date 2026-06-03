@@ -88,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Blog } from '~/types/shared/blogs'
+import type { Blog } from '~/types/blog'
 import BlogCard from '~/components/blogs/BlogCard.vue'
 import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 import Pagination from '~/components/ui/Pagination.vue'

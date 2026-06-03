@@ -320,22 +320,18 @@ online-learning-platform/
 │   │                                      # - computed isAuthenticated
 │   │
 │   ├── 📂 types/                          # TypeScript type definitions
-│   │   ├── 📂 admin/                      # Admin-specific types
-│   │   │   └── course-form.ts             # Course form data types
 │   │   ├── 📂 components/
 │   │   │   ├── accordion.ts
-│   │   │   └── tabs-types.ts
-│   │   ├── 📂 shared/                     # Shared API types
-│   │   │   ├── api.ts
-│   │   │   ├── auth.ts
-│   │   │   ├── blogs.ts
-│   │   │   ├── courses.ts
-│   │   │   ├── dashboard.ts
-│   │   │   ├── lessons.ts
-│   │   │   └── users.ts
-│   │   ├── auth-errors.ts
-│   │   ├── courses-filter.ts
-│   │   └── types.ts
+│   │   │   └── tabs.ts
+│   │   ├── 📂 forms/
+│   │   │   └── course-form.ts
+│   │   ├── api.ts
+│   │   ├── auth.ts
+│   │   ├── blog.ts
+│   │   ├── course.ts
+│   │   ├── dashboard.ts
+│   │   ├── lesson.ts
+│   │   └── user.ts
 │   │
 │   ├── 📂 utils/                          # Utility functions
 │   │   ├── auth-error-handler-helpers.ts
@@ -555,164 +551,4 @@ online-learning-platform/
 └── vitest.config.ts                       # Vitest testing configuration
 ```
 
----
-
-## 📊 Project Statistics
-
-| Category | Count | Description |
-|----------|-------|-------------|
-| **Root Config Files** | 15 | Build, lint, type-check configs (+GEMINI.md, enroll-summary) |
-| **Vue Components** | 58 | Reusable UI components (including Home section) |
-| **Composables** | 18 | Reusable Vue logic (+useNavigationLinks) |
-| **Pages** | 19 | Route pages (including error.vue) |
-| **Pinia Stores** | 5 | State management |
-| **Type Definitions** | 13 | TypeScript types (+shared/dashboard.ts) |
-| **Utility Functions** | 4 | Client-side utils |
-| **API Routes** | 41 | Server endpoints |
-| **DB Services** | 10 | Database operations and utilities |
-| **Server Utils** | 12 | Server-side helpers |
-| **DB Migrations** | 14 | Schema migrations (14 tables) |
-| **Scripts** | 17 | Database utilities (+make-admin.ts) |
-| **Test Files** | 33 | Vitest test suite |
-| **Documentation** | 5 | README, PROJECT_STRUCTURE, enroll-summary, PROJECT_SUMMARY, GEMINI.md |
-
----
-
-## 🆕 Latest Session Updates (May 31, 2026)
-
-### Centralized Course Image Component
-**Files:** `app/components/courses/CourseImage.vue`, `app/components/courses/CourseCard.vue`, `app/pages/courses/[courseSlug]/index.vue`, etc.
-```
-✅ Created reusable CourseImage.vue with reactive fallback and auto-reset
-✅ Refactored all course thumbnail/cover implementations to use CourseImage
-✅ Removed redundant handleImageError logic and duplicate constants imports
-✅ Updated test suite (__tests__/CourseCard.test.ts, etc.) to handle the new component
-```
-
-### Project Structure Synchronization
-```
-✅ Comprehensive audit of project structure completed
-✅ Updated file counts for Components (58), Pages (19), API Routes (41), and Tests (33)
-✅ Synchronized missing scripts: make-admin.ts
-✅ Documented new Home section components: HomeHero, HomeStats, HomeTrainers, etc.
-✅ Added shared/dashboard.ts type definition
-✅ Verified all server/db services are listed and correctly described
-✅ Moved public/ from app/public/ to root per Nuxt 4 convention
-```
-
-### Dashboard Enhancements
-**Files:** `server/db/dashboard-service.ts`, `app/types/shared/dashboard.ts`
-```
-✅ New dashboard-service.ts for aggregated learning statistics
-✅ Shared dashboard type definitions for frontend-backend consistency
-```
-
----
-
-## 📜 Previous Session Updates
-
-### Responsive MainNav & MainFooter (May 18, 2026)
-**Files:** `app/components/MainNav.vue`, `app/components/MainFooter.vue`, `app/composables/useNavigationLinks.ts`
-```
-✅ MainNav fully responsive with hamburger menu, backdrop, and Teleport
-✅ Active link styling for nested routes (e.g., /admin/courses)
-✅ Dynamic user dropdown menu items
-✅ Removed all `any` types from template refs via higher‑order function
-✅ MainFooter converted to responsive grid with border‑top separator
-✅ Quick links in footer dynamically generated from shared composable
-✅ Extracted navigation link logic into reusable `useNavigationLinks` composable
-✅ Both components share the same role‑based link set
-```
-
-### About Page
-**File:** `app/pages/about.vue`
-```
-✅ New standalone About Us page with PageHero and breadcrumb
-✅ Sections for Introduction, Mission, and Values
-✅ Responsive grid layout for values
-✅ SEO meta tags and accessibility labels
-✅ Linked from MainNav and MainFooter
-```
-
-### User Profile Page
-**Files:** `app/pages/profile.vue`, `server/api/auth/change-password.post.ts`, `app/schemas/auth.ts`, `server/db/user-service.ts`
-```
-✅ Profile page with account details and password change form
-✅ Zod validation via useZodValidation composable
-✅ Submit button disabled until form is valid
-✅ Server endpoint for authenticated password change
-```
-
-### Auth Redirect with Toast Notification
-**Files:** `app/middleware/auth.global.ts`, `app/pages/auth/SignIn.vue`
-```
-✅ Fast path for unauthenticated users eliminates 5-6s delay
-✅ Toast message shown after redirect to sign-in page
-```
-
-### Admin Navigation Tabs
-**File:** `app/components/admin/AdminTabs.vue`
-```
-✅ Role‑based tabs (Courses / Users) using existing Tabs.vue component
-```
-
-### Client‑Side Navigation Bug Fix
-**Files:** `app/pages/admin/index.vue`, `app/stores/cart.ts`
-```
-✅ Fixed "Cannot read properties of undefined (reading 'dispose')" error
-✅ Resolved client‑side navigation failure to /admin/courses/create
-```
-
-### Unified Course Management Page
-**File:** `app/pages/admin/index.vue`
-```
-✅ Single page for both admins and instructors
-✅ Dynamic title and smart API filtering
-✅ Integrated AdminTabs
-```
-
----
-
-## ♿ Accessibility Checklist (UPDATED)
-
-- [x] SignIn/SignUp pages - WCAG 2.1 AA compliant
-- [x] Checkout pages - WCAG 2.1 AA compliant
-- [x] MainNav responsive hamburger menu - ARIA attributes, keyboard navigation
-- [x] MainFooter - semantic sections with aria‑labelledby
-- [x] CartDrawer - Focus trap + focus-visible states
-- [x] Home page - Proper heading hierarchy + ARIA landmarks
-- [x] Skip link - Visible on focus, fixed positioning
-- [x] All interactive elements - focus-visible states
-- [x] Form inputs - Visible labels + aria-describedby
-- [x] Password fields - Show/hide toggle with ARIA
-- [x] LoadingSpinner - aria-live announcements
-- [x] Semantic HTML - main, nav, section, article, aside
-- [x] Dashboard pages - WCAG 2.1 AA compliant
-- [x] EmptyState component - role="status" + aria-live
-- [x] ErrorState component - role="alert"
-- [x] Decorative icons - aria-hidden="true"
-- [x] Images - loading="lazy" + alt text
-- [x] Admin pages (Courses, Users, Edit, Create) - WCAG 2.1 AA compliant
-- [x] AdminTabs - role="tablist" and keyboard navigation via Tabs.vue
-- [x] Profile page - WCAG 2.1 AA compliant, aria-labelledby landmarks
-- [x] About page - WCAG 2.1 AA compliant, proper heading structure
-- [x] SubmitButton - disabled state when form is invalid
-
----
-
-## 🗑️ Files Removed in Previous Versions
-
-```
-❌ app/pages/instructor/courses/create.vue
-❌ app/pages/instructor/courses/[id]/edit.vue
-❌ app/middleware/instructor.ts
-```
-
-**Reason:** Instructor pages merged into unified `/admin` interface to reduce duplication.
-
----
-
-**Last Updated:** May 31, 2026
-**Version:** 2.11.0
-**Total Commits:** 75 ahead of `origin/main`
-```
+---`

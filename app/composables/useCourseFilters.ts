@@ -1,7 +1,8 @@
 // app/composables/useCourseFilters.ts
 import { debounce } from 'lodash-es'
-import type { CoursesFilter } from '~/types/courses-filter'
-import type { FilterOptionsResponse } from '~/types/shared/api'
+import type { CourseFilters, FilterOptions } from '~/types/course'
+import type { ApiResponse } from '~/types/api'
+type FilterOptionsResponse = ApiResponse<FilterOptions>
 import { extractParamsFromUrl, buildQueryParams } from '~/utils/course-helpers'
 
 const COURSE_LIMIT = 12
@@ -40,7 +41,7 @@ export const useCourseFilters = () => {
   })
 
   // ✅ Update URL helper
-  const updateFilters = (newFilter: CoursesFilter, page: number = 1) => {
+  const updateFilters = (newFilter: CourseFilters, page: number = 1) => {
     const queryParams = buildQueryParams(newFilter, page, COURSE_LIMIT)
     const queryString = queryParams.toString()
 
@@ -50,11 +51,11 @@ export const useCourseFilters = () => {
     })
   }
 
-  const applyFilters = debounce((newFilter: CoursesFilter) => {
+  const applyFilters = debounce((newFilter: CourseFilters) => {
     updateFilters(newFilter, 1)
   }, 300)
 
-  const applyFiltersImmediate = (newFilter?: CoursesFilter) => {
+  const applyFiltersImmediate = (newFilter?: CourseFilters) => {
     applyFilters.cancel()
     const filterToApply = newFilter ?? filter.value
     updateFilters(filterToApply, 1)

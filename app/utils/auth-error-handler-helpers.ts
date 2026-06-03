@@ -1,7 +1,4 @@
-import {
-  SHARED_AUTH_ERRORS,
-  AUTH_ERRORS,
-} from '~/constants'
+import { AUTH_ERRORS } from '~/constants'
 import type { SignInFormData, SignUpFormData } from '~/schemas/auth'
 
 type SetFieldError<T = Record<string, unknown>> = (field: keyof T, error: string) => void
@@ -15,15 +12,17 @@ export function handleSignInError(
     return
   }
 
-  // Directly implement the logic to avoid type casting
-  if (error.includes(SHARED_AUTH_ERRORS.INVALID_CREDENTIALS)) {
-    setFieldError('password', SHARED_AUTH_ERRORS.INVALID_CREDENTIALS)
+  if (error.includes(AUTH_ERRORS.INVALID_CREDENTIALS)) {
+    setFieldError('password', AUTH_ERRORS.INVALID_CREDENTIALS)
     return
   }
 
-  if (error.includes(SHARED_AUTH_ERRORS.USERNAME_REQUIRED) && error.includes(SHARED_AUTH_ERRORS.PASSWORD_REQUIRED)) {
-    setFieldError('username', SHARED_AUTH_ERRORS.USERNAME_REQUIRED)
-    setFieldError('password', SHARED_AUTH_ERRORS.PASSWORD_REQUIRED)
+  if (
+    error.includes(AUTH_ERRORS.USERNAME_REQUIRED)
+    && error.includes(AUTH_ERRORS.PASSWORD_REQUIRED)
+  ) {
+    setFieldError('username', AUTH_ERRORS.USERNAME_REQUIRED)
+    setFieldError('password', AUTH_ERRORS.PASSWORD_REQUIRED)
     return
   }
 
@@ -39,8 +38,7 @@ export function handleSignUpError(
     return
   }
 
-  // Directly implement the logic to avoid type casting
-  if (error.includes(SHARED_AUTH_ERRORS.USERNAME_OR_EMAIL_EXISTS)) {
+  if (error.includes(AUTH_ERRORS.USERNAME_OR_EMAIL_EXISTS)) {
     if (error.toLowerCase().includes('email')) {
       setFieldError('email', AUTH_ERRORS.EMAIL_ALREADY_EXISTS)
     }
@@ -48,40 +46,40 @@ export function handleSignUpError(
       setFieldError('username', AUTH_ERRORS.USERNAME_ALREADY_EXISTS)
     }
     else {
-      setFieldError('email', SHARED_AUTH_ERRORS.USERNAME_OR_EMAIL_EXISTS)
+      setFieldError('email', AUTH_ERRORS.USERNAME_OR_EMAIL_EXISTS)
     }
     return
   }
 
-  if (error.includes(SHARED_AUTH_ERRORS.PASSWORD_TOO_WEAK)) {
+  if (error.includes(AUTH_ERRORS.PASSWORD_TOO_WEAK)) {
     setFieldError('password', AUTH_ERRORS.PASSWORD_TOO_WEAK)
     return
   }
 
-  if (error.includes(SHARED_AUTH_ERRORS.PASSWORD_TOO_SHORT)) {
-    setFieldError('password', SHARED_AUTH_ERRORS.PASSWORD_TOO_SHORT)
+  if (error.includes(AUTH_ERRORS.PASSWORD_TOO_SHORT)) {
+    setFieldError('password', AUTH_ERRORS.PASSWORD_TOO_SHORT)
     return
   }
 
-  if (error.includes(SHARED_AUTH_ERRORS.PASSWORDS_DONT_MATCH)) {
-    setFieldError('confirmPassword', SHARED_AUTH_ERRORS.PASSWORDS_DONT_MATCH)
+  if (error.includes(AUTH_ERRORS.PASSWORDS_DONT_MATCH)) {
+    setFieldError('confirmPassword', AUTH_ERRORS.PASSWORDS_DONT_MATCH)
     return
   }
 
-  if (error.includes(SHARED_AUTH_ERRORS.TERMS_NOT_ACCEPTED)) {
-    setFieldError('termsAccepted', SHARED_AUTH_ERRORS.TERMS_NOT_ACCEPTED)
+  if (error.includes(AUTH_ERRORS.TERMS_NOT_ACCEPTED)) {
+    setFieldError('termsAccepted', AUTH_ERRORS.TERMS_NOT_ACCEPTED)
     return
   }
 
-  if (error.includes(SHARED_AUTH_ERRORS.EMAIL_INVALID)) {
-    setFieldError('email', SHARED_AUTH_ERRORS.EMAIL_INVALID)
+  if (error.includes(AUTH_ERRORS.EMAIL_INVALID)) {
+    setFieldError('email', AUTH_ERRORS.EMAIL_INVALID)
     return
   }
 
-  if (error.includes(SHARED_AUTH_ERRORS.ALL_FIELDS_REQUIRED)) {
-    setFieldError('username', SHARED_AUTH_ERRORS.USERNAME_REQUIRED)
-    setFieldError('email', SHARED_AUTH_ERRORS.EMAIL_REQUIRED)
-    setFieldError('password', SHARED_AUTH_ERRORS.PASSWORD_REQUIRED)
+  if (error.includes(AUTH_ERRORS.ALL_FIELDS_REQUIRED)) {
+    setFieldError('username', AUTH_ERRORS.USERNAME_REQUIRED)
+    setFieldError('email', AUTH_ERRORS.EMAIL_REQUIRED)
+    setFieldError('password', AUTH_ERRORS.PASSWORD_REQUIRED)
     setFieldError('confirmPassword', AUTH_ERRORS.CONFIRM_PASSWORD_REQUIRED)
     return
   }

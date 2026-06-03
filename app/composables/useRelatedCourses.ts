@@ -1,4 +1,4 @@
-import type { Course } from '~/types/shared/courses'
+import type { Course } from '~/types/course'
 
 interface RelatedCoursesResponse {
   success: boolean

@@ -1,6 +1,6 @@
 // app/stores/courses.ts
-import type { Course } from '~/types/shared/auth'
-import type { DetailedCourse, CourseContentLesson } from '~/types/shared/courses'
+import type { Course } from '~/types/course'
+import type { DetailedCourse, CourseContentLesson } from '~/types/course'
 
 export const useCoursesStore = defineStore('courses', () => {
   // ───── State ─────

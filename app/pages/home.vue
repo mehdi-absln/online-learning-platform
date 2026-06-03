@@ -25,8 +25,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { SITE_NAME } from '~/constants'
-import type { Blog } from '~/types/shared/blogs'
-import type { Course } from '~/types/shared/courses'
+import type { Blog } from '~/types/blog'
+import type { Course } from '~/types/course'
 
 // SEO
 useSeoMeta({

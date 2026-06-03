@@ -189,7 +189,7 @@ import ErrorState from '~/components/ui/ErrorState.vue'
 import IconLock from '~/components/icons/IconLock.vue'
 import ConfirmModal from '~/components/ui/ConfirmModal.vue'
 import { useToast } from '~/composables/useToast'
-import type { CourseApiResponse } from '~/types/shared/courses'
+import type { CourseApiResponse } from '~/types/course'
 import { getErrorMessage } from '~/utils/error-helpers'
 import { useUserStore } from '~/stores/user'
 

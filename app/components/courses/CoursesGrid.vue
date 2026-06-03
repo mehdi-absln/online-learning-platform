@@ -53,7 +53,7 @@
 import CourseCard from '~/components/courses/CourseCard.vue'
 import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 import Pagination from '~/components/ui/Pagination.vue'
-import type { Course } from '~/types/shared/courses'
+import type { Course } from '~/types/course'
 
 interface CoursesGridProps {
   courses: Course[]

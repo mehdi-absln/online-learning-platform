@@ -2,8 +2,8 @@
 import { defineStore } from 'pinia'
 import { useUserStore } from './user'
 import { useToast } from '~/composables/useToast'
-import type { Course } from '~/types/shared/auth'
-import type { ApiResponse } from '~/types/shared/api'
+import type { Course } from '~/types/course'
+import type { ApiResponse } from '~/types/api'
 
 export const useCartStore = defineStore('cart', () => {
   const userStore = useUserStore()
@@ -36,12 +36,12 @@ export const useCartStore = defineStore('cart', () => {
     if (userStore.isAuthenticated) {
       return serverTotalPrice.value
     }
-    return items.value.reduce((total, item) => total + (item.price || 0), 0)
+    return items.value.reduce((total: number, item: Course) => total + (item.price || 0), 0)
   })
 
   const isInCart = (courseId: number) => {
     if (userStore.isAuthenticated) {
-      return items.value.some(item => item.id === courseId)
+      return items.value.some((item: Course) => item.id === courseId)
     }
     return guestCartCookie.value?.includes(courseId) || false
   }
@@ -157,7 +157,7 @@ export const useCartStore = defineStore('cart', () => {
     else {
       const currentIds = guestCartCookie.value || []
       guestCartCookie.value = currentIds.filter(id => id !== courseId)
-      items.value = items.value.filter(item => item.id !== courseId)
+      items.value = items.value.filter((item: Course) => item.id !== courseId)
       toast.info('Course removed from cart')
     }
   }

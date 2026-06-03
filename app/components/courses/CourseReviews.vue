@@ -117,7 +117,7 @@
 
 <script setup lang="ts">
 import StarRating from '~/components/ui/StarRating.vue'
-import type { Review } from '~/types/shared/courses'
+import type { Review } from '~/types/course'
 
 interface Props {
   reviews: Review[] | undefined

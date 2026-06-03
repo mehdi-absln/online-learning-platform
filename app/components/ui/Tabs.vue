@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TabItem, TabsEmits } from '~/types/components/tabs-types'
+import type { TabItem, TabsEmits } from '~/types/components/tabs'
 import { useKeyboardFocus } from '~/composables/useKeyboardFocus'
 
 interface Props {

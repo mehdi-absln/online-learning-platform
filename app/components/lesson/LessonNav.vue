@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CourseContentLesson } from '~/types/shared/courses'
+import type { CourseContentLesson } from '~/types/course'
 import IconSpinner from '~/components/icons/IconSpinner.vue'
 import IconCheckCircle from '~/components/icons/IconCheckCircle.vue'
 import IconChevronLeft from '~/components/icons/IconChevronLeft.vue'

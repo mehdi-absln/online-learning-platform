@@ -653,8 +653,7 @@ import RelatedCourses from '~/components/courses/RelatedCourses.vue'
 import CourseImage from '~/components/courses/CourseImage.vue'
 import { useUserStore } from '~/stores/user'
 import { useCart } from '~/composables/useCart'
-import { mapCourseToAuthCourse } from '~/utils/course-helpers'
-import type { CourseContentLesson } from '~/types/shared/courses'
+import type { CourseContentLesson } from '~/types/course'
 
 import { SITE_NAME } from '~/constants'
 
@@ -726,7 +725,7 @@ const courseTags = computed(() => {
 
 const handleAddToCart = () => {
   if (!course.value) return
-  addItem(mapCourseToAuthCourse(course.value))
+  addItem(course.value)
   openCart()
 }
 
@@ -739,7 +738,7 @@ const handleEnrollNow = async () => {
     return
   }
 
-  addItem(mapCourseToAuthCourse(course.value))
+  addItem(course.value)
   await navigateTo('/checkout')
 }
 </script>
