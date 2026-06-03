@@ -422,8 +422,6 @@ online-learning-platform/
 │   │   ├── 📂 courses/                    # Course endpoints
 │   │   │   ├── [courseId]/
 │   │   │   │   └── related.get.ts
-│   │   │   ├── filters/
-│   │   │   │   └── options.get.ts
 │   │   │   ├── slug/
 │   │   │   │   ├── [slug]/
 │   │   │   │   │   └── lessons/
