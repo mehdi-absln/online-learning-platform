@@ -26,4 +26,7 @@ logs
 # Database
 server/data/db.sqlite
 
+# Qwen Code
+.qwen/
+
 QWEN.md 
