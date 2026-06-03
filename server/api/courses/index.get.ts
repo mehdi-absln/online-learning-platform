@@ -6,8 +6,6 @@ import { transformCoursesForClient } from '../../utils/course-transformer'
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
-    console.log('Fetching courses with filters and pagination...')
-
     // Get query parameters for filtering and pagination
     const query = getQuery(event)
 
@@ -42,9 +40,6 @@ export default defineEventHandler(async (event: H3Event) => {
     const limit = query.limit ? Math.min(50, Math.max(1, Number(query.limit))) : 12 // Default 12 courses per page
     const offset = (page - 1) * limit
 
-    console.log('Applied filters:', filter)
-    console.log('Pagination params: page:', page, 'limit:', limit, 'offset:', offset)
-
     // Get filtered courses with pagination
     const courses = await getAllCourses(filter, limit, offset)
     const totalCourses = await getCoursesCount(filter)
@@ -66,10 +61,7 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
   catch (error: unknown) {
-    console.error('Detailed error in GET /api/courses:', error)
-    console.error('Error name:', (error as Error).name)
-    console.error('Error message:', (error as Error).message)
-    console.error('Error stack:', (error as Error).stack)
+    console.error('Failed to fetch courses:', error)
 
     setResponseStatus(event, 500)
     return {

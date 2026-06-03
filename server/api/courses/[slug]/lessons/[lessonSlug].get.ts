@@ -5,15 +5,10 @@ import { getOptionalUser, hasLessonAccess } from '~~/server/utils/lesson-access'
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
-    console.log('🔵 [API] Fetching detailed course and lesson by slug...')
     const courseSlug = getRouterParam(event, 'slug')
     const lessonSlug = getRouterParam(event, 'lessonSlug')
 
-    console.log('📝 [API] Course slug:', courseSlug)
-    console.log('📝 [API] Lesson slug:', lessonSlug)
-
     if (!courseSlug || !lessonSlug) {
-      console.error('❌ [API] Invalid slugs')
       setResponseStatus(event, 400)
       return {
         success: false,
@@ -23,25 +18,16 @@ export default defineEventHandler(async (event: H3Event) => {
 
     // Get optional user (doesn't require auth)
     const user = await getOptionalUser(event)
-    console.log('👤 [API] User:', user ? { id: user.id, username: user.username } : 'Anonymous')
 
-    console.log('🔍 [API] Fetching course data from DB...')
     const detailedCourseData = await getDetailedCourseBySlug(courseSlug)
 
     if (!detailedCourseData) {
-      console.error('❌ [API] Course not found:', courseSlug)
       setResponseStatus(event, 404)
       return {
         success: false,
         message: 'Course not found',
       }
     }
-
-    console.log('✅ [API] Course data retrieved:', {
-      courseId: detailedCourseData.id,
-      courseTitle: detailedCourseData.title,
-      lessonsCount: detailedCourseData.courseContent?.reduce((acc, s) => acc + s.content.length, 0) || 0,
-    })
 
     // Build lessons array from courseContent
     const lessons = detailedCourseData.courseContent?.flatMap(section =>
@@ -57,21 +43,10 @@ export default defineEventHandler(async (event: H3Event) => {
       })),
     ) || []
 
-    console.log('📚 [API] Lessons extracted:', lessons.length)
-
     // Find the lesson based on the lesson slug
     const lesson = lessons.find(l => l.slug === lessonSlug)
-    console.log('🔍 [API] Lesson found:', lesson
-      ? {
-          id: lesson.id,
-          title: lesson.title,
-          slug: lesson.slug,
-          isFree: lesson.isFree,
-        }
-      : 'NOT FOUND')
 
     if (!lesson) {
-      console.error('❌ [API] Lesson not found:', lessonSlug)
       setResponseStatus(event, 404)
       return {
         success: false,
@@ -80,13 +55,11 @@ export default defineEventHandler(async (event: H3Event) => {
     }
 
     // Check if user has access to this lesson
-    console.log('🔐 [API] Checking access control...')
     const hasAccess = await hasLessonAccess(
       user?.id || null,
       detailedCourseData.id,
       lesson.isFree || false,
     )
-    console.log('✅ [API] Access check:', { hasAccess, isFree: lesson.isFree, isEnrolled: hasAccess && !lesson.isFree })
 
     // Return lesson data - strip videoUrl and content if not accessible
     return {
@@ -119,10 +92,7 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
   catch (error: unknown) {
-    console.error(`Detailed error in GET /api/courses/slug/[slug]/lessons/[lessonSlug]:`, error)
-    console.error('Error name:', (error as Error).name)
-    console.error('Error message:', (error as Error).message)
-    console.error('Error stack:', (error as Error).stack)
+    console.error('Failed to fetch course or lesson:', error)
 
     setResponseStatus(event, 500)
     return {
