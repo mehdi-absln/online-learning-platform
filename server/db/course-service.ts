@@ -377,8 +377,6 @@ export async function getInstructor(instructorId: number) {
 // Get detailed course by slug (MAIN FUNCTION)
 // =====================
 export async function getDetailedCourseBySlug(slug: string) {
-  console.log('🔍 Looking for course with slug:', slug)
-
   // 1. Get course
   const courseResult = await db
     .select()
@@ -387,12 +385,10 @@ export async function getDetailedCourseBySlug(slug: string) {
     .limit(1)
 
   if (!courseResult[0]) {
-    console.log('❌ Course not found')
     return null
   }
 
   const course = courseResult[0]
-  console.log('✅ Course found:', course.title, '(ID:', course.id, ')')
 
   // 2. Get category name
   let categoryName: string | null = null
@@ -404,30 +400,24 @@ export async function getDetailedCourseBySlug(slug: string) {
       .limit(1)
 
     categoryName = categoryResult[0]?.name || null
-    console.log('📁 Category:', categoryName)
   }
 
   // 3. Get sections
   const sections = await getCourseSections(course.id)
-  console.log('📂 Sections found:', sections.length)
 
   // 4. Get all lessons
   const allLessons = await getCourseLessons(course.id)
-  console.log('📝 Lessons found:', allLessons.length)
 
   // 5. Get learning objectives
   const learningObjectives = await getCourseLearningObjectives(course.id)
-  console.log('🎯 Objectives found:', learningObjectives.length)
 
   // 6. Get reviews
   const courseReviews = await getCourseReviews(course.id)
-  console.log('⭐ Reviews found:', courseReviews.length)
 
   // 7. Get instructor
   const instructor = course.instructorId
     ? await getInstructor(course.instructorId)
     : null
-  console.log('👨‍🏫 Instructor:', instructor?.name || 'Not found')
 
   // 8. Build courseContent structure
   const courseContent = sections.map((section) => {
@@ -456,8 +446,6 @@ export async function getDetailedCourseBySlug(slug: string) {
   // 9. Handle orphan lessons (lessons without section)
   const orphanLessons = allLessons.filter(lesson => !lesson.sectionId)
   if (orphanLessons.length > 0) {
-    console.log('⚠️ Found', orphanLessons.length, 'orphan lessons')
-
     if (sections.length === 0) {
       courseContent.push({
         id: 0,
@@ -476,9 +464,6 @@ export async function getDetailedCourseBySlug(slug: string) {
       })
     }
   }
-
-  console.log('📊 Final courseContent sections:', courseContent.length)
-  console.log('📊 Final total lessons in content:', courseContent.reduce((acc, s) => acc + s.content.length, 0))
 
   return {
     id: course.id,
