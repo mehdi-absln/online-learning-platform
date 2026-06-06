@@ -45,8 +45,9 @@ const {
   pending: isCoursesLoading,
   error: coursesError,
   refresh: refreshCourses,
-} = useFetch<{ success: boolean, data: Course[] }>('/api/courses', {
+} = await useFetch<{ success: boolean, data: Course[] }>('/api/courses', {
   query: { limit: 10, page: 1 },
+  default: () => ({ success: false, data: [] }),
 })
 
 const hasCoursesError = computed(() => !!coursesError.value)
@@ -57,7 +58,9 @@ const coursesErrorMessage = computed(() =>
 // Sort courses by student count (descending) to display the most popular ones
 const popularCourses = computed(() => {
   const raw = coursesData.value?.data ?? []
-  return [...raw].sort((a, b) => (b.stats?.students ?? 0) - (a.stats?.students ?? 0))
+  return [...raw]
+    .filter(course => course && course.id)
+    .sort((a, b) => (b.stats?.students ?? 0) - (a.stats?.students ?? 0))
 })
 
 // Blog Section Data Fetching
@@ -66,12 +69,13 @@ const {
   pending: isBlogLoading,
   error: blogError,
   refresh: refreshBlog,
-} = useFetch<{
+} = await useFetch<{
   success: boolean
   data: Blog[]
   message?: string
 }>('/api/blogs', {
   query: { limit: 3, page: 1 },
+  default: () => ({ success: false, data: [] }),
 })
 
 const latestPosts = computed(() => blogData.value?.data ?? [])

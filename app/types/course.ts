@@ -120,10 +120,10 @@ export interface CourseFilters {
 export type CoursesFilter = CourseFilters
 
 export interface FilterOptions {
-  categories: { id: number; name: string }[]
+  categories: { id: number, name: string }[]
   levels: string[]
   tags: string[]
-  instructors?: { id: number; name: string }[]
+  instructors?: { id: number, name: string }[]
 }
 
 export interface CreateCourseData {

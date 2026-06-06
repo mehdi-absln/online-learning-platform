@@ -23,7 +23,7 @@
         </h2>
       </div>
 
-      <!-- Loading / Error / Empty states -->
+      <!-- Loading State -->
       <div
         v-if="isLoading"
         class="text-center py-10"
@@ -32,6 +32,8 @@
       >
         <LoadingSpinner message="Loading popular courses..." />
       </div>
+
+      <!-- Error State -->
       <div
         v-else-if="hasError"
         class="py-10"
@@ -42,6 +44,8 @@
           @retry="$emit('retry')"
         />
       </div>
+
+      <!-- Empty State -->
       <div
         v-else-if="courses.length === 0"
         role="status"
@@ -53,7 +57,7 @@
         />
       </div>
 
-      <!-- Carousel (responsive items-to-show) -->
+      <!-- Carousel -->
       <div
         v-else
         aria-label="Popular courses carousel"
@@ -75,10 +79,7 @@
             </div>
           </Slide>
           <template #addons>
-            <Pagination
-              label="Go to slide"
-              active-label="Current slide"
-            />
+            <Pagination />
           </template>
         </Carousel>
       </div>
@@ -90,6 +91,7 @@
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
 import type { Course } from '~/types/course'
+import CourseCard from '~/components/courses/CourseCard.vue'
 
 defineProps<{
   courses: Course[]
@@ -98,7 +100,5 @@ defineProps<{
   errorMessage: string
 }>()
 
-defineEmits<{
-  retry: []
-}>()
+defineEmits<{ retry: [] }>()
 </script>
