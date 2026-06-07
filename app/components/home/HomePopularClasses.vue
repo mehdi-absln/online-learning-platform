@@ -62,6 +62,7 @@
         v-else
         aria-label="Popular courses carousel"
         role="region"
+        class="courses-carousel-wrapper"
       >
         <Carousel
           :items-to-show="1"
@@ -103,3 +104,51 @@ defineProps<{
 
 defineEmits<{ retry: [] }>()
 </script>
+
+<style scoped>
+.courses-carousel-wrapper :deep(.carousel__pagination) {
+  margin-top: 2rem;
+  padding: 0;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 10;
+}
+
+.courses-carousel-wrapper :deep(.carousel__pagination-button) {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0;
+  background-color: rgba(255, 255, 255, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.courses-carousel-wrapper :deep(.carousel__pagination-button:hover) {
+  background-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.courses-carousel-wrapper :deep(.carousel__pagination-button--active) {
+  background-color: #EC5252;
+  width: 32px;
+  border-radius: 6px;
+}
+
+ @media (min-width: 768px) {
+  .courses-carousel-wrapper :deep(.carousel__pagination) {
+    margin-top: 3rem;
+  }
+
+  .courses-carousel-wrapper :deep(.carousel__pagination-button) {
+    width: 14px;
+    height: 14px;
+  }
+
+  .courses-carousel-wrapper :deep(.carousel__pagination-button--active) {
+    width: 40px;
+  }
+}
+</style>
