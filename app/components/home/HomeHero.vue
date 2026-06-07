@@ -14,16 +14,17 @@
 
     <div class="relative w-full aspect-video min-h-[450px] md:min-h-0 overflow-hidden">
       <div class="absolute inset-0 w-full h-full">
-        <!-- Replaced background image with NuxtImg for better optimization -->
         <NuxtImg
           src="/images/banner.jpg"
-          alt=""
+          alt="Students learning online"
           class="w-full h-full object-cover object-center absolute inset-0"
           priority
-          sizes="100vw sm:100vw md:100vw"
+          fetchpriority="high"
+          sizes="100vw"
+          :placeholder="[20, 12, 75, 5]"
         />
         <div
-          class="absolute inset-0 bg-black bg-opacity-80 z-0"
+          class="absolute inset-0 bg-black/80 z-0"
           aria-hidden="true"
         />
       </div>

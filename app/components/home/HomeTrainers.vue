@@ -68,12 +68,14 @@
 
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { resolveComponent } from 'vue'
 import { TRAINERS } from '~/constants/home'
+import IconFacebook from '~/components/icons/IconFacebook.vue'
+import IconTwitter from '~/components/icons/IconTwitter.vue'
+import IconLinkedIn from '~/components/icons/IconLinkedIn.vue'
 
-const socialIconMap: Record<string, Component | string> = {
-  Facebook: resolveComponent('IconFacebook'),
-  Twitter: resolveComponent('IconTwitter'),
-  LinkedIn: resolveComponent('IconLinkedIn'),
+const socialIconMap: Record<string, Component> = {
+  Facebook: IconFacebook,
+  Twitter: IconTwitter,
+  LinkedIn: IconLinkedIn,
 }
 </script>

@@ -34,64 +34,24 @@
           people.
         </p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
-          <div class="bg-dark-bg py-4 px-4 md:px-6 grid grid-cols-[auto_1fr] items-center gap-x-3 md:gap-x-5">
+          <div
+            v-for="(feature, index) in FEATURES"
+            :key="index"
+            class="bg-dark-bg py-4 px-4 md:px-6 grid grid-cols-[auto_1fr] items-center gap-x-3 md:gap-x-5"
+          >
             <div class="flex-shrink-0">
-              <!-- Using img for decorative icons as per user instructions -->
-              <img
-                src="/icon/UPST0182.png"
+              <NuxtImg
+                :src="feature.icon"
                 alt=""
                 role="presentation"
                 loading="lazy"
+                width="40"
+                height="40"
                 class="w-10 h-10 md:w-auto md:h-auto"
-              >
+              />
             </div>
             <p class="font-antonio font-bold text-white text-sm md:text-base">
-              Supportive and inspiring learning
-            </p>
-          </div>
-
-          <div class="bg-dark-bg py-4 px-4 md:px-6 grid grid-cols-[auto_1fr] items-center gap-x-3 md:gap-x-5">
-            <div class="flex-shrink-0">
-              <img
-                src="/icon/UPST0181.png"
-                alt=""
-                role="presentation"
-                loading="lazy"
-                class="w-10 h-10 md:w-auto md:h-auto"
-              >
-            </div>
-            <p class="font-antonio font-bold text-white text-sm md:text-base">
-              Learning experience that is rewarding and meaningful
-            </p>
-          </div>
-
-          <div class="bg-dark-bg py-4 px-4 md:px-6 grid grid-cols-[auto_1fr] items-center gap-x-3 md:gap-x-5">
-            <div class="flex-shrink-0">
-              <img
-                src="/icon/UPST0180.png"
-                alt=""
-                role="presentation"
-                loading="lazy"
-                class="w-10 h-10 md:w-auto md:h-auto"
-              >
-            </div>
-            <p class="font-antonio font-bold text-white text-sm md:text-base">
-              Bringing together knowledge, skills, and growth
-            </p>
-          </div>
-
-          <div class="bg-dark-bg py-4 px-4 md:px-6 grid grid-cols-[auto_1fr] items-center gap-x-3 md:gap-x-5">
-            <div class="flex-shrink-0">
-              <img
-                src="/icon/UPST0179.png"
-                alt=""
-                role="presentation"
-                loading="lazy"
-                class="w-10 h-10 md:w-auto md:h-auto"
-              >
-            </div>
-            <p class="font-antonio font-bold text-white text-sm md:text-base">
-              We help you achieve your learning goals
+              {{ feature.text }}
             </p>
           </div>
         </div>
@@ -105,3 +65,12 @@
   clip-path: polygon(0 0, 100% 100%, 0 100%);
 }
 </style>
+
+<script setup lang="ts">
+const FEATURES = [
+  { icon: '/icon/UPST0182.png', text: 'Supportive and inspiring learning' },
+  { icon: '/icon/UPST0181.png', text: 'Learning experience that is rewarding and meaningful' },
+  { icon: '/icon/UPST0180.png', text: 'Bringing together knowledge, skills, and growth' },
+  { icon: '/icon/UPST0179.png', text: 'We help you achieve your learning goals' },
+] as const
+</script>
