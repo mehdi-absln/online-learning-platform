@@ -26,6 +26,7 @@
           :wrap-around="false"
           :mouse-drag="true"
           :touch-drag="true"
+          snap-align="start"
           class="testimonial-carousel"
         >
           <Slide

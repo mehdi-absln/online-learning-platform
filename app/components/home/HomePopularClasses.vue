@@ -69,6 +69,7 @@
           :wrap-around="false"
           :mouse-drag="true"
           :touch-drag="true"
+          snap-align="start"
         >
           <Slide
             v-for="course in courses"
