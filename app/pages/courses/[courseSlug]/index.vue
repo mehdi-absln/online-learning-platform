@@ -34,32 +34,32 @@
     <!-- Hero Section -->
     <section
       aria-labelledby="course-title"
-      class="min-h-[28rem] py-5 bg-hero-shimmer overflow-visible"
+      class="py-8 lg:py-5 bg-hero-shimmer overflow-visible"
     >
       <div class="container">
-        <div class="relative flex flex-col md:flex-row md:justify-between gap-6">
+        <div class="relative flex flex-col lg:flex-row lg:justify-between gap-6">
           <!-- Course Header Info -->
-          <header class="w-full md:w-2/3">
+          <header class="w-full lg:w-2/3">
             <Breadcrumb
               :crumbs="breadcrumbCrumbs"
               class="block mb-6"
             />
-            <div class="flex flex-col justify-center min-h-[20rem] space-y-8 text-white">
+            <div class="flex flex-col justify-center min-h-[16rem] lg:min-h-[20rem] space-y-6 lg:space-y-8 text-white">
               <h1
                 id="course-title"
-                class="text-4xl md:text-5xl font-bold text-white"
+                class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white"
               >
                 {{ course?.title }}
               </h1>
-              <p class="text-white">
+              <p class="text-white text-sm sm:text-base">
                 {{ course?.description }}
               </p>
               <!-- Meta info -->
-              <ul class="flex items-center gap-x-4 list-none">
+              <ul class="flex flex-wrap items-center gap-x-4 gap-y-2 list-none">
                 <li class="flex items-center gap-x-1">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-[18px] w-[18px] text-primary"
+                    class="h-[18px] w-[18px] text-primary shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -72,34 +72,7 @@
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                  <span>{{ course?.instructor?.name }}</span>
-                </li>
-                <li
-                  aria-hidden="true"
-                  class="w-px h-6 bg-white/30"
-                />
-                <li>
-                  <NuxtLink
-                    to="/wishlist"
-                    class="flex items-center gap-x-2 text-white hover:text-primary transition-colors duration-300"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-[18px] w-[18px] text-primary"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M5 5v14l7-4 7 4V5a2 2 0 00-2-2H7a2 2 0 00-2 2z"
-                      />
-                    </svg>
-                    <span>Wishlist</span>
-                  </NuxtLink>
+                  <span class="text-sm sm:text-base">{{ course?.instructor?.name }}</span>
                 </li>
                 <li
                   aria-hidden="true"
@@ -108,7 +81,7 @@
                 <li class="flex items-center gap-x-1">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-[18px] w-[18px] text-[#f8a406]"
+                    class="h-[18px] w-[18px] text-[#f8a406] shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -121,20 +94,20 @@
                       d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
                     />
                   </svg>
-                  <span>{{ course?.rating ?? 'N/A' }} Ratings</span>
+                  <span class="text-sm sm:text-base">{{ course?.rating ?? 'N/A' }} Ratings</span>
                 </li>
               </ul>
             </div>
           </header>
 
-          <!-- Placeholder to preserve flex space -->
+          <!-- Placeholder to preserve flex space — only on lg+ -->
           <div
-            class="hidden md:block md:w-1/3"
+            class="hidden lg:block lg:w-1/3"
             aria-hidden="true"
           />
 
-          <!-- Sidebar - Course Card & Tags (absolute positioned) -->
-          <aside class="w-full md:w-1/3 md:absolute md:right-0 md:top-5 space-y-10">
+          <!-- Sidebar - Course Card & Tags -->
+          <aside class="w-full lg:w-1/3 lg:absolute lg:right-0 lg:top-5 space-y-6 lg:space-y-10">
             <!-- Pricing Card -->
             <div class="rounded-2xl bg-dark-gray border border-gray-700">
               <figure class="relative overflow-hidden">
@@ -148,7 +121,7 @@
                 <div class="absolute inset-0 bg-black/50 z-10 rounded-t-2xl" />
               </figure>
 
-              <div class="px-9 pt-7">
+              <div class="px-5 sm:px-9 pt-7">
                 <h2 class="text-white text-xl font-semibold">
                   Course Includes
                 </h2>
@@ -312,7 +285,7 @@
                   </h3>
                   <ul
                     aria-label="Share on social media"
-                    class="flex space-x-4 mt-5 list-none"
+                    class="flex flex-wrap gap-3 mt-5 list-none"
                   >
                     <li>
                       <a
@@ -433,7 +406,7 @@
 
     <!-- Main Content -->
     <main class="py-10 container">
-      <div class="w-full md:w-[65%]">
+      <div class="w-full lg:w-[65%]">
         <Tabs
           v-if="course"
           :tabs="[
@@ -519,7 +492,7 @@
                     "
                   >
                     <template #default="{ item }">
-                      <ul class="p-4 space-y-2 divide-y divide-dark-divider">
+                      <ul class="p-2 sm:p-4 space-y-2 divide-y divide-dark-divider">
                         <template
                           v-for="(lesson, lessonIndex) in (item.content as CourseContentLesson[])"
                           :key="lessonIndex"
@@ -556,13 +529,13 @@
                                 />
                               </svg>
                               <span class="text-white/90 ml-2">{{ lesson.title }}</span>
-                              <span class="ml-auto text-sm text-white/70">
+                              <span class="ml-auto text-xs sm:text-sm text-white/70 shrink-0">
                                 <time>{{ lesson.duration }}</time>
                               </span>
                               <!-- Free Badge -->
                               <span
                                 v-if="lesson.isFree && !userStore.isEnrolled(course?.id || 0)"
-                                class="ml-3 text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded"
+                                class="ml-2 sm:ml-3 text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded shrink-0"
                               >
                                 🆓 Free
                               </span>
@@ -593,12 +566,12 @@
                                   d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                                 />
                               </svg>
-                              <span class="text-gray-500 ml-2">{{ lesson.title }}</span>
-                              <span class="ml-auto text-sm text-gray-600">
+                              <span class="text-gray-500 ml-2 text-sm sm:text-base">{{ lesson.title }}</span>
+                              <span class="ml-auto text-xs sm:text-sm text-gray-600 shrink-0">
                                 <time>{{ lesson.duration }}</time>
                               </span>
                               <!-- Locked Badge -->
-                              <span class="ml-3 text-xs bg-gray-500/20 text-gray-400 px-2 py-0.5 rounded">
+                              <span class="ml-2 sm:ml-3 text-xs bg-gray-500/20 text-gray-400 px-2 py-0.5 rounded shrink-0">
                                 🔒 Locked
                               </span>
 
