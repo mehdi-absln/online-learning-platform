@@ -1,5 +1,8 @@
-import type { ApiResponse } from '~/types/api'; import type { DetailedCourse } from '~/types/course'; type CourseDetailResponse = ApiResponse<DetailedCourse>
+import type { ApiResponse } from '~/types/api'
+import type { DetailedCourse } from '~/types/course'
 import { useApiError } from '~/composables/useApiError'
+
+type CourseDetailResponse = ApiResponse<DetailedCourse>
 
 /**
  * Fetch single course by slug with perfect two-way sync to Pinia store.
