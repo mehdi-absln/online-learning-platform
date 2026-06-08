@@ -13,6 +13,7 @@ import {
 } from './schema'
 import type { CreateCourseData, UpdateCourseData } from '~/types/course'
 import { enrichCoursesWithInstructors } from '../utils/instructor-service'
+import { getCourseReviews as getCourseReviewsFromService } from './review-service'
 
 // =====================
 // Types
@@ -258,33 +259,7 @@ export async function getCourseLearningObjectives(courseId: number) {
 // =====================
 // Get reviews with user info
 // =====================
-export async function getCourseReviews(courseId: number) {
-  const result = await db
-    .select({
-      id: reviews.id,
-      rating: reviews.rating,
-      comment: reviews.comment,
-      createdAt: reviews.createdAt,
-      userId: reviews.userId,
-      userName: users.name,
-      userAvatar: users.avatar,
-    })
-    .from(reviews)
-    .leftJoin(users, eq(reviews.userId, users.id))
-    .where(eq(reviews.courseId, courseId))
-
-  return result.map(review => ({
-    id: review.id,
-    rating: review.rating,
-    comment: review.comment || '',
-    createdAt: review.createdAt,
-    user: {
-      id: review.userId,
-      name: review.userName || 'User',
-      avatar: review.userAvatar || '/images/default-avatar.png',
-    },
-  }))
-}
+// Uses getCourseReviews from review-service.ts for enhanced functionality
 
 // =====================
 // Get instructor
@@ -338,7 +313,7 @@ export async function getDetailedCourseBySlug(slug: string) {
   const learningObjectives = await getCourseLearningObjectives(course.id)
 
   // 6. Get reviews
-  const courseReviews = await getCourseReviews(course.id)
+  const courseReviews = await getCourseReviewsFromService(course.id)
 
   // 7. Get instructor
   const instructor = course.instructorId
@@ -425,7 +400,7 @@ export async function getDetailedCourseBySlug(slug: string) {
       : null,
     learningObjectives,
     courseContent,
-    reviews: courseReviews,
+    reviews: courseReviews || [],
   }
 }
 

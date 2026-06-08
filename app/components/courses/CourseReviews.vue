@@ -4,92 +4,91 @@
       Student Ratings & Reviews
     </h3>
 
-    <!-- Rating Summary -->
-    <div
-      v-if="reviews && reviews.length > 0"
-      class="flex flex-col md:flex-row items-start md:items-center gap-6"
-    >
-      <!-- Average Rating Box -->
-      <div class="bg-dark-bg p-8 border border-dark-divider rounded-2xl flex flex-col items-center justify-center">
-        <div class="text-6xl font-semibold text-primary">
-          {{ averageRating }}
+    <!-- Combined content when hasReviews -->
+    <template v-if="hasReviews">
+      <!-- Rating Summary -->
+      <div
+        class="flex flex-col md:flex-row items-start md:items-center gap-6"
+      >
+        <!-- Average Rating Box -->
+        <div class="bg-dark-bg p-8 border border-dark-divider rounded-2xl flex flex-col items-center justify-center">
+          <div class="text-6xl font-semibold text-primary">
+            {{ averageRating }}
+          </div>
+          <div class="flex items-center mt-4">
+            <StarRating :rating="parseFloat(averageRating)" />
+          </div>
+          <div class="text-base text-white/90 mt-2 capitalize">
+            total {{ reviews?.length }} ratings
+          </div>
         </div>
-        <div class="flex items-center mt-4">
-          <StarRating :rating="parseFloat(averageRating)" />
-        </div>
-        <div class="text-base text-white/90 mt-2 capitalize">
-          total {{ reviews.length }} ratings
-        </div>
-      </div>
 
-      <!-- Rating Distribution -->
-      <div class="space-y-4 flex-1 w-full">
-        <div
-          v-for="star in STAR_LEVELS"
-          :key="star"
-          class="flex items-center"
-        >
-          <StarRating
-            :rating="0"
-            :max-stars="1"
-            :show-empty="true"
-            class="mx-2"
-          />
-          <span class="text-sm text-white/70 w-4">{{ star }}</span>
-          <div class="flex-1 bg-dark-bg rounded-full h-2">
-            <div
-              class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-              :style="{ width: `${getStarPercentage(star)}%` }"
+        <!-- Rating Distribution -->
+        <div class="space-y-4 flex-1 w-full">
+          <div
+            v-for="star in STAR_LEVELS"
+            :key="star"
+            class="flex items-center"
+          >
+            <StarRating
+              :rating="0"
+              :max-stars="1"
+              :show-empty="true"
+              class="mx-2"
             />
+            <span class="text-sm text-white/70 w-4">{{ star }}</span>
+            <div class="flex-1 bg-dark-bg rounded-full h-2">
+              <div
+                class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                :style="{ width: `${getStarPercentage(star)}%` }"
+              />
+            </div>
+            <span class="text-sm text-white/70 ml-4 min-w-[80px] text-right">
+              {{ ratingDistribution[star] }}&nbsp;Ratings
+            </span>
           </div>
-          <span class="text-sm text-white/70 ml-4 min-w-[80px] text-right">
-            {{ ratingDistribution[star] }}&nbsp;Ratings
-          </span>
         </div>
       </div>
-    </div>
 
-    <!-- Reviews List -->
-    <div
-      v-if="reviews && reviews.length > 0"
-      class="space-y-6"
-    >
-      <div class="divide-y divide-dark-divider">
-        <article
-          v-for="review in reviews"
-          :key="review.id"
-          class="flex flex-col md:flex-row md:items-start gap-4 py-8"
-        >
-          <!-- Reviewer Info -->
-          <div class="flex-shrink-0 md:w-40">
-            <h4 class="font-semibold text-white">
-              {{ review.user?.name || 'Anonymous' }}
-            </h4>
-            <time
-              :datetime="typeof review.createdAt === 'string' ? review.createdAt : review.createdAt.toISOString()"
-              class="text-white/70 text-sm mt-1 block"
-            >
-              {{ formatDate(review.createdAt) }}
-            </time>
-          </div>
-
-          <!-- Review Content -->
-          <div class="flex-1">
-            <div class="flex items-center mb-2">
-              <StarRating :rating="review.rating" />
+      <!-- Reviews List -->
+      <div
+        class="space-y-6"
+      >
+        <div class="divide-y divide-dark-divider">
+          <article
+            v-for="review in reviews"
+            :key="review.id"
+            class="flex flex-col md:flex-row md:items-start gap-4 py-8"
+          >
+            <!-- Reviewer Info -->
+            <div class="flex-shrink-0 md:w-40">
+              <h4 class="font-semibold text-white">
+                {{ review.user?.name || 'Anonymous' }}
+              </h4>
+              <time
+                :datetime="typeof review.createdAt === 'string' ? review.createdAt : review.createdAt.toISOString()"
+                class="text-white/70 text-sm mt-1 block"
+              >
+                {{ formatDate(review.createdAt) }}
+              </time>
             </div>
-            <p class="text-white/90 leading-relaxed">
-              {{ review.comment }}
-            </p>
-          </div>
-        </article>
+
+            <!-- Review Content -->
+            <div class="flex-1">
+              <div class="flex items-center mb-2">
+                <StarRating :rating="review.rating" />
+              </div>
+              <p class="text-white/90 leading-relaxed">
+                {{ review.comment }}
+              </p>
+            </div>
+          </article>
+        </div>
       </div>
-    </div>
+    </template>
 
     <!-- Empty State -->
-    <div
-      v-else
-    >
+    <template v-else>
       <EmptyState
         title="No reviews yet"
         message="Be the first to share your experience!"
@@ -111,12 +110,13 @@
           </svg>
         </template>
       </EmptyState>
-    </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import StarRating from '~/components/ui/StarRating.vue'
+import EmptyState from '~/components/ui/EmptyState.vue'
 import type { Review } from '~/types/course'
 
 interface Props {
@@ -127,6 +127,14 @@ const props = defineProps<Props>()
 
 // Constants
 const STAR_LEVELS = [5, 4, 3, 2, 1] as const
+
+// Computed - Defensive check for reviews existence
+const hasReviews = computed(() => {
+  return props.reviews !== undefined
+    && props.reviews !== null
+    && Array.isArray(props.reviews)
+    && props.reviews.length > 0
+})
 
 // Computed
 const averageRating = computed(() => {
