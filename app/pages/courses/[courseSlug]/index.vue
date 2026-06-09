@@ -404,8 +404,8 @@
       </div>
     </section>
 
-    <!-- Main Content -->
-    <main class="py-10 container">
+    <!-- Content -->
+    <section class="py-10 container">
       <div class="w-full lg:w-[65%]">
         <Tabs
           v-if="course"
@@ -612,7 +612,7 @@
           title="Similar Courses"
         />
       </aside>
-    </main>
+    </section>
   </div>
 </template>
 
