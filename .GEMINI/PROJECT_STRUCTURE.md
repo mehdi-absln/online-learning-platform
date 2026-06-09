@@ -4,8 +4,8 @@
 ## Overview
 Comprehensive documentation of the project structure for the Online Learning Platform built with **Nuxt 4**, **Vue 3**, **TypeScript**, **Tailwind CSS**, **Pinia**, **SQLite** with **Drizzle ORM**, and **Vitest** for testing.
 
-**Last Updated:** May 31, 2026
-**Version:** 2.11.0
+**Last Updated:** June 8, 2026
+**Version:** 2.12.0
 
 ---
 
@@ -370,6 +370,7 @@ online-learning-platform/
 │   ├── update-blogs-batch1.ts
 │   ├── update-blogs-batch2.ts
 │   └── verify-lesson-progress-table.ts
+│   └── sync-reviews-count.ts              # Database & utility scripts - Sync reviewsCount with actual review counts
 │
 ├── 📂 server/                             # Backend (Nitro server)
 │   ├── 📂 api/                            # API routes (endpoints)
@@ -471,6 +472,10 @@ online-learning-platform/
 │   │   ├── progress-service.ts            # Progress tracking
 │   │   │                                  # - getProgress, markComplete
 │   │   │                                  # - toggleBookmark, saveNotes
+│   │   ├── review-service.ts              # Review management
+│   │   │                                  # - addReview, deleteReview
+│   │   │                                  # - getCourseReviews, canUserReview
+│   │   │                                  # - Automatic reviewsCount & rating updates
 │   │   ├── schema.ts                      # Drizzle schema definitions
 │   │   │                                  # - 14 tables total
 │   │   │                                  # - users (with username)
