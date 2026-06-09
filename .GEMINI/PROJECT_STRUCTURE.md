@@ -19,42 +19,46 @@ online-learning-platform/
 │   │   ├── cart.test.ts                   # Cart API tests
 │   │   ├── checkout.test.ts               # Checkout API tests
 │   │   └── orders.test.ts                 # Orders API tests
-│   ├── 📂 components/                     # Component tests
-│   │   ├── LessonContent.test.ts
-│   │   └── LessonVideo.test.ts
+│   ├── 📂 components/                     # Component tests (all .test.ts naming)
+│   │   ├── Accordion.test.ts              # Accordion component tests
+│   │   ├── AccordionComprehensive.test.ts # Comprehensive accordion tests
+│   │   ├── AccordionNavigation.test.ts    # Navigation accordion tests
+│   │   ├── AccordionSimple.test.ts       # Simple accordion tests
+│   │   ├── CourseCard.test.ts            # Course card component tests
+│   │   ├── CourseFilterCheckbox.test.ts  # Filter checkbox component tests
+│   │   ├── DashboardStatsCard.test.ts     # Stats card component tests
+│   │   ├── EmptyState.test.ts            # Empty state component tests
+│   │   ├── ErrorState.test.ts            # Error state component tests
+│   │   ├── LessonContent.test.ts         # Lesson content component tests
+│   │   ├── LessonVideo.test.ts           # Lesson video component tests
+│   │   ├── Pagination.test.ts            # Pagination component tests
+│   │   └── Tabs.test.ts                  # Tabs component tests
 │   ├── 📂 composables/                    # Composable tests
-│   │   ├── useLesson.test.ts
-│   │   └── useToast.test.ts
+│   │   ├── useLesson.test.ts             # Lesson composable tests
+│   │   ├── useToast.test.ts              # Toast composable tests
+│   │   └── useZodValidation.test.ts      # Zod validation composable tests
 │   ├── 📂 helpers/                        # Test helpers
 │   │   └── db.ts                          # Database setup/cleanup for tests
+│   ├── 📂 integration/                    # Integration tests
+│   │   └── course-filters-integration.test.ts # Course filters integration tests
+│   ├── 📂 pages/                          # Page tests
+│   │   ├── 📂 auth/                       # Authentication page tests
+│   │   │   └── auth.test.ts              # Auth page tests
+│   │   ├── CourseDetailPageUpdated.test.ts # Course detail page tests
+│   │   ├── lesson-header.test.ts         # Lesson header page tests
+│   │   ├── lesson-page.test.ts          # Lesson page tests
+│   │   └── lesson-video.test.ts          # Lesson video page tests
 │   ├── 📂 services/                       # Service layer tests
-│   │   ├── cart-service.test.ts           # Cart service logic tests
-│   │   └── order-service.test.ts          # Order service logic tests
+│   │   ├── cart-service.test.ts          # Cart service logic tests
+│   │   ├── course-transformer.test.ts     # Course transformer service tests
+│   │   └── order-service.test.ts         # Order service logic tests
 │   ├── 📂 stores/                         # Pinia store tests
-│   │   └── lesson-progress.test.ts
+│   │   ├── lesson-progress.test.ts        # Lesson progress store tests
+│   │   └── user-store.test.ts            # User store tests
 │   ├── 📂 unit/                           # Unit tests
-│   │   └── related-courses.test.ts
-│   ├── Accordion.test.ts
-│   ├── AccordionComprehensive.test.ts
-│   ├── AccordionNavigation.test.ts
-│   ├── AccordionSimple.test.ts
-│   ├── auth.test.ts
-│   ├── authErrorHandler.test.ts
-│   ├── course-filters-integration.test.ts
-│   ├── course-transformer.test.ts
-│   ├── CourseCard.test.ts
-│   ├── CourseDetailPageUpdated.test.ts
-│   ├── CourseFilterCheckbox.test.ts
-│   ├── DashboardStatsCard.spec.ts         # Stats card tests
-│   ├── EmptyState.spec.ts                 # Empty state tests
-│   ├── ErrorState.spec.ts                 # Error state tests
-│   ├── lesson-header.test.ts
-│   ├── lesson-page.test.ts
-│   ├── lesson-video.test.ts
-│   ├── Pagination.test.ts
-│   ├── Tabs.test.ts
-│   ├── user-store.test.ts
-│   └── useZodValidation.test.ts
+│   │   └── related-courses.test.ts       # Related courses unit tests
+│   └── 📂 utils/                          # Utility tests
+│       └── authErrorHandler.test.ts       # Auth error handler utility tests
 │
 ├── 📂 app/                                # Frontend Nuxt application
 │   ├── 📂 assets/                         # Static assets
