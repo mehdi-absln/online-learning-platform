@@ -1,9 +1,6 @@
 <template>
-  <main
-    id="failed-main"
+  <section
     class="max-w-2xl mx-auto py-16 px-4"
-    role="main"
-    aria-labelledby="failed-heading"
   >
     <section
       class="bg-dark-surface p-12 rounded-3xl border border-dark-divider shadow-2xl relative overflow-hidden"
@@ -115,18 +112,18 @@
     >
       Payment was declined. Please try again or contact support if the problem persists.
     </div>
-  </main>
+  </section>
 </template>
 
 <script setup lang="ts">
 // Page metadata and SEO
+import { SITE_NAME } from '~/constants'
+
 definePageMeta({
   layout: 'minimal',
   requiresAuth: true,
   title: 'Payment Failed',
 })
-
-import { SITE_NAME } from '~/constants'
 useSeoMeta({
   title: `Payment Declined - Try Again | ${SITE_NAME}`,
   description: 'Your payment was declined. Learn what might have gone wrong and how to complete your purchase.',

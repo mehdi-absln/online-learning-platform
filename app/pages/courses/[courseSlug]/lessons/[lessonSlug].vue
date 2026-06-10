@@ -38,7 +38,7 @@
                 <p class="text-sm text-gray-400">
                   Lesson {{ currentIndex + 1 }} of {{ totalLessons }}
                 </p>
-                <h1 class="font-bold text-white truncate">
+                <h1 id="lesson-title" class="font-bold text-white truncate">
                   {{ lesson.title }}
                 </h1>
               </div>
@@ -81,7 +81,7 @@
       <div class="container py-6">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <!-- Main Content -->
-          <main class="lg:col-span-3 space-y-6">
+          <section class="lg:col-span-3 space-y-6" aria-labelledby="lesson-title">
             <LessonVideo
               :video-url="lessonData?.isLocked ? undefined : (lesson.videoUrl || undefined)"
               :title="lesson.title"
@@ -246,7 +246,7 @@
                 Return to course page
               </NuxtLink>
             </section>
-          </main>
+          </section>
 
           <!-- Sidebar -->
           <LessonSidebar

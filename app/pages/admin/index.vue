@@ -1,6 +1,5 @@
 <template>
-  <main
-    id="main-content"
+  <section
     class="container py-8"
     aria-labelledby="admin-panel-heading"
   >
@@ -178,7 +177,7 @@
       @confirm="confirmDelete"
       @cancel="closeDeleteModal"
     />
-  </main>
+  </section>
 </template>
 
 <script setup lang="ts">

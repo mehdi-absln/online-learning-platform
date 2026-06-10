@@ -1,9 +1,6 @@
 <template>
-  <main
-    id="success-main"
+  <section
     class="max-w-3xl mx-auto py-16 px-4"
-    role="main"
-    aria-labelledby="success-heading"
   >
     <!-- Loading State -->
     <div
@@ -247,7 +244,7 @@
         {{ orderData.order.items.length }} {{ orderData.order.items.length === 1 ? 'course' : 'courses' }} purchased.
       </div>
     </div>
-  </main>
+  </section>
 </template>
 
 <script setup lang="ts">
