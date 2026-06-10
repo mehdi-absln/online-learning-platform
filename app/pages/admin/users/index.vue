@@ -1,6 +1,5 @@
 <template>
-  <main
-    id="main-content"
+  <section
     class="container py-8"
     aria-labelledby="user-management-heading"
   >
@@ -240,7 +239,7 @@
         </div>
       </Transition>
     </Teleport>
-  </main>
+  </section>
 </template>
 
 <script setup lang="ts">

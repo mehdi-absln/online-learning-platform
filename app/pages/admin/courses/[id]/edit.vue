@@ -1,6 +1,5 @@
 <template>
-  <main
-    id="main-content"
+  <section
     class="container"
     aria-labelledby="edit-course-heading"
   >
@@ -49,7 +48,7 @@
         />
       </div>
     </div>
-  </main>
+  </section>
 </template>
 
 <script setup lang="ts">

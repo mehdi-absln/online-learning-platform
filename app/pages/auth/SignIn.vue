@@ -1,6 +1,5 @@
 <template>
   <main
-    role="main"
     aria-labelledby="signin-heading"
   >
     <!-- ARIA live region for announcements -->
@@ -106,7 +105,8 @@
 
 <script setup lang="ts">
 // Import necessary types and schemas for authentication
-import type { ApiResponse } from '~/types/api'; import type { User } from '~/types/auth'; type AuthResponse = ApiResponse<{ user: User }>
+import type { ApiResponse } from '~/types/api'
+import type { User } from '~/types/auth'
 import { signInSchema, type SignInFormData } from '~/schemas/auth'
 import { handleSignInError } from '~/utils/auth-error-handler-helpers'
 
@@ -115,10 +115,12 @@ import FormInput from '~/components/ui/FormInput.vue'
 import FormCheckbox from '~/components/ui/FormCheckbox.vue'
 import SubmitButton from '~/components/ui/SubmitButton.vue'
 
+import { SITE_NAME } from '~/constants'
+
+type AuthResponse = ApiResponse<{ user: User }>
+
 // Define page metadata
 definePageMeta({ layout: 'auth', title: 'Sign In' })
-
-import { SITE_NAME } from '~/constants'
 // SEO metadata
 useHead({
   title: `Sign In - ${SITE_NAME}`,

@@ -1,6 +1,5 @@
 <template>
   <main
-    role="main"
     aria-labelledby="signup-heading"
   >
     <!-- ARIA live region for announcements -->
@@ -131,7 +130,8 @@
 
 <script setup lang="ts">
 // Import necessary types and schemas for authentication
-import type { ApiResponse } from '~/types/api'; import type { User } from '~/types/auth'; type AuthResponse = ApiResponse<{ user: User }>
+import type { ApiResponse } from '~/types/api'
+import type { User } from '~/types/auth'
 import { signUpSchema, type SignUpFormData } from '~/schemas/auth'
 import { handleSignUpError } from '~/utils/auth-error-handler-helpers'
 
@@ -140,10 +140,12 @@ import SubmitButton from '~/components/ui/SubmitButton.vue'
 import FormCheckbox from '~/components/ui/FormCheckbox.vue'
 import FormInput from '~/components/ui/FormInput.vue'
 
+import { SITE_NAME } from '~/constants'
+
+type AuthResponse = ApiResponse<{ user: User }>
+
 // Define page metadata
 definePageMeta({ layout: 'auth', title: 'Sign Up' })
-
-import { SITE_NAME } from '~/constants'
 // SEO metadata
 useHead({
   title: `Sign Up - ${SITE_NAME}`,

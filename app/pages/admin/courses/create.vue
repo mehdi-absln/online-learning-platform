@@ -1,6 +1,5 @@
 <template>
-  <main
-    id="main-content"
+  <section
     class="container"
     aria-labelledby="create-course-heading"
   >
@@ -26,7 +25,7 @@
         @cancel="goBack"
       />
     </div>
-  </main>
+  </section>
 </template>
 
 <script setup lang="ts">

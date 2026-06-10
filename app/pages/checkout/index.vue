@@ -1,9 +1,7 @@
 <template>
   <div class="min-h-screen bg-dark-bg py-16 px-4">
-    <main
-      id="checkout-main"
+    <section
       class="max-w-4xl mx-auto"
-      role="main"
       aria-labelledby="checkout-heading"
     >
       <h1
@@ -261,7 +259,7 @@
           Ready to checkout with {{ itemsCount }} {{ itemsCount === 1 ? 'item' : 'items' }}, total ${{ totalPrice.toFixed(2) }}
         </template>
       </div>
-    </main>
+    </section>
   </div>
 </template>
 
