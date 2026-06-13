@@ -43,7 +43,8 @@ export const useCourses = () => {
 
     if (query.categories) params.categories = query.categories as string | string[]
     if (query.levels) params.levels = query.levels as string | string[]
-    if (query.tags) params.tags = query.tags as string | string[]
+    const rawTags = query.tags ?? query.tag
+  if (rawTags) params.tags = rawTags as string | string[]
     if (query.freeOnly === 'true') params.freeOnly = true
     if (query.paidOnly === 'true') params.paidOnly = true
 

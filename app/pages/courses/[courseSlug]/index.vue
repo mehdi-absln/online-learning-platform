@@ -383,10 +383,10 @@
                     v-for="tag in courseTags"
                     :key="tag"
                   >
-                    <NuxtLink
-                      :to="`/courses?tag=${encodeURIComponent(tag)}`"
-                      class="px-3 py-1 bg-gray-700 text-white text-sm rounded-full hover:bg-primary transition-colors duration-300"
-                    >
+<NuxtLink
+       :to="{ path: '/courses', query: { tags: tag } }"
+       class="px-3 py-1 bg-gray-700 text-white text-sm rounded-full hover:bg-primary transition-colors duration-300"
+     >
                       {{ tag }}
                     </NuxtLink>
                   </li>

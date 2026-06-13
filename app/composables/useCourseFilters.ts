@@ -45,10 +45,31 @@ export const useCourseFilters = () => {
     const queryParams = buildQueryParams(newFilter, page, COURSE_LIMIT)
     const queryString = queryParams.toString()
 
-    router.push({
-      path: '/courses',
-      query: queryString ? Object.fromEntries(queryParams) : undefined,
-    })
+    const searchParamsToQueryObject = (params: URLSearchParams) => {
+    const query: Record<string, string | string[]> = {}
+
+    for (const [key, value] of params.entries()) {
+      const existing = query[key]
+
+      if (!existing) {
+        query[key] = value
+      }
+      else if (Array.isArray(existing)) {
+        existing.push(value)
+      }
+      else {
+        query[key] = [existing, value]
+      }
+    }
+    return query
+  }
+
+  const queryObject = searchParamsToQueryObject(queryParams)
+
+  router.push({
+    path: '/courses',
+    query: Object.keys(queryObject).length ? queryObject : undefined,
+  })
   }
 
   const applyFilters = debounce((newFilter: CourseFilters) => {
