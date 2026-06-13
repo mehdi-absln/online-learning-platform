@@ -1,10 +1,9 @@
-import { requireAuth } from '../../utils/auth-helpers'
+import { requirePurchaser } from '../../utils/auth-helpers'
 import { processCheckout } from '../../db/order-service'
 
 export default defineEventHandler(async (event) => {
   try {
-    // Authenticate user - this checks the accessToken cookie
-    const user = await requireAuth(event)
+    const user = await requirePurchaser(event)
 
     const body = await readBody(event)
     const { simulationType } = body

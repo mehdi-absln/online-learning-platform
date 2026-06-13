@@ -1,8 +1,21 @@
 // app/composables/useCart.ts
 import { useCartStore } from '~/stores/cart'
+import { useUserStore } from '~/stores/user'
+import { useToast } from '~/composables/useToast'
+import type { Course } from '~/types/course'
 
 export const useCart = () => {
   const cartStore = useCartStore()
+  const userStore = useUserStore()
+  const toast = useToast()
+
+  const ensureCanPurchase = () => {
+    if (userStore.isAuthenticated && !userStore.canPurchaseCourses) {
+      toast.error('Admin and superadmin accounts cannot purchase courses.')
+      return false
+    }
+    return true
+  }
 
   // ───── UI State ─────
   // Using useState for cross-component UI state management in Nuxt
@@ -34,10 +47,17 @@ export const useCart = () => {
     isLoading: computed(() => cartStore.isLoading),
 
     // Store Actions
-    addItem: cartStore.addItem,
+    addItem: async (course: Course) => {
+      if (!ensureCanPurchase()) return false
+      await cartStore.addItem(course)
+      return true
+    },
     removeItem: cartStore.removeItem,
     clearCart: cartStore.clearCart,
     isInCart: cartStore.isInCart,
-    checkout: cartStore.checkout,
+    checkout: async () => {
+      if (!ensureCanPurchase()) return false
+      return await cartStore.checkout()
+    },
   }
 }

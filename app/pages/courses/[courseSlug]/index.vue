@@ -238,8 +238,15 @@
                     </NuxtLink>
                   </template>
 
-                  <!-- State 2: Already in Cart 🛒 -->
-                  <template v-else-if="isInCart(course?.id || 0)">
+<!-- State 2: Purchase blocked for admin/superadmin -->
+                   <template v-else-if="userStore.isAuthenticated && !userStore.canPurchaseCourses">
+                     <div class="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+                       Administrative accounts cannot purchase courses.
+                     </div>
+                   </template>
+
+                   <!-- State 3: Already in Cart 🛒 -->
+                   <template v-else-if="isInCart(course?.id || 0)">
                     <button
                       type="button"
                       class="btn-secondary w-full font-antonio"
@@ -696,22 +703,31 @@ const courseTags = computed(() => {
   return course.value.tags.split(',').map(t => t.trim())
 })
 
-const handleAddToCart = () => {
-  if (!course.value) return
-  addItem(course.value)
-  openCart()
-}
+const handleAddToCart = async () => {
+    if (!course.value) return
 
-const handleEnrollNow = async () => {
-  if (!course.value) return
-
-  if (!userStore.isAuthenticated) {
-    // Redirect to login if not authenticated
-    await navigateTo(`/auth/signin?redirect=${route.fullPath}`)
-    return
+    const added = await addItem(course.value)
+    if (added) {
+      openCart()
+    }
   }
 
-  addItem(course.value)
-  await navigateTo('/checkout')
-}
+  const handleEnrollNow = async () => {
+    if (!course.value) return
+
+    if (!userStore.isAuthenticated) {
+      await navigateTo(`/auth/signin?redirect=${route.fullPath}`)
+      return
+    }
+
+    // New guard for admin/superadmin
+    if (!userStore.canPurchaseCourses) {
+      return
+    }
+
+    const added = await addItem(course.value)
+    if (!added) return // If addItem failed (e.g., due to admin role), stop
+
+    await navigateTo('/checkout')
+  }
 </script>

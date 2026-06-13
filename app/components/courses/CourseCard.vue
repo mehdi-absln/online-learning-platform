@@ -119,8 +119,23 @@
           </NuxtLink>
         </template>
 
-        <!-- ❌ NOT ENROLLED or loading enrollments -->
-        <template v-else>
+<!-- 🚫 Admin/Superadmin: no purchase actions -->
+                    <template v-else-if="userStore.isAuthenticated && !userStore.canPurchaseCourses">
+                      <span class="text-base font-semibold text-primary-alt">
+                        ${{ course.price }}
+                      </span>
+
+                      <NuxtLink
+                        v-if="courseLink"
+                        :to="courseLink"
+                        class="font-medium text-white transition-all duration-300 hover:text-primary whitespace-nowrap"
+                      >
+                        Explore Now
+                      </NuxtLink>
+                    </template>
+
+                    <!-- ❌ Normal not-enrolled state -->
+                    <template v-else>
           <span class="text-base font-semibold text-primary-alt">
             ${{ course.price }}
           </span>
@@ -206,10 +221,12 @@ defineEmits<{
   bookmark: [courseId: number]
 }>()
 
-const handleAddToCart = () => {
-  addItem(props.course)
-  openCart()
-}
+const handleAddToCart = async () => {
+    const added = await addItem(props.course)
+    if (added) {
+      openCart()
+    }
+  }
 
 const courseLink = computed(() => {
   if (!props.course.slug) {

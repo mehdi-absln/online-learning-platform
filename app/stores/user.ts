@@ -3,7 +3,7 @@ import { getErrorMessage } from '~/utils/error-helpers'
 import { useCartStore } from './cart'
 import { useToast } from '~/composables/useToast'
 import type { SignInFormData, SignUpFormData } from '~/schemas/auth'
-import type { User } from '~/types/auth'
+import type { User, UserRole } from '~/types/auth'
 import type { ApiResponse } from '~/types/api'
 
 type AuthResponseType = ApiResponse<{ user: User }>
@@ -26,6 +26,14 @@ export const useUserStore = defineStore('user', () => {
   // Computed state (readonly from outside)
   const isAuthenticated = computed(() => user.value !== null)
   const hasError = computed(() => error.value !== null)
+
+  const NON_PURCHASING_ROLES: UserRole[] = ['admin', 'superadmin']
+  const isAdminLike = computed(() =>
+    user.value?.role === 'admin' || user.value?.role === 'superadmin',
+  )
+  const canPurchaseCourses = computed(() =>
+    !user.value || !NON_PURCHASING_ROLES.includes(user.value.role),
+  )
 
   // Check if user is enrolled in a course (O(1) lookup)
   const isEnrolled = (courseId: number) => {
@@ -254,9 +262,10 @@ export const useUserStore = defineStore('user', () => {
     // State (readonly)
     user: readonly(user),
     isAuthenticated,
+    isAdminLike,
+    canPurchaseCourses,
     loading: readonly(loading),
     error: readonly(error),
-    enrolledCourseIds: readonly(enrolledCourseIds),
     enrollmentsFetched: readonly(enrollmentsFetched),
 
     // Getters

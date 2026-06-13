@@ -5,6 +5,9 @@ import { db } from '../db/index'
 import { users } from '../db/schema'
 import { eq } from 'drizzle-orm'
 
+// اگر createError از قبل در این فایل import نشده، اضافه‌اش کن
+import { createError } from 'h3'
+
 export async function requireAuth(event: H3Event) {
   const token = getCookie(event, 'accessToken')
 
@@ -77,6 +80,23 @@ export async function requireInstructor(event: H3Event) {
     throw createError({
       statusCode: 403,
       statusMessage: 'Only instructors, admins or superadmins can perform this action',
+    })
+  }
+
+  return user
+}
+
+export const isPurchasingRestrictedRole = (role?: string | null) => {
+  return role === 'admin' || role === 'superadmin'
+}
+
+export const requirePurchaser = async (event: H3Event) => {
+  const user = await requireAuth(event)
+
+  if (isPurchasingRestrictedRole(user.role)) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'Administrative accounts cannot perform purchase actions',
     })
   }
 
