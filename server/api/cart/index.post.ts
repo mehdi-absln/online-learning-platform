@@ -1,10 +1,11 @@
-import { requireAuth } from '../../utils/auth-helpers'
+import { requirePurchaser } from '../../utils/auth-helpers'
 import { addToCart } from '../../db/cart-service'
-import { successResponse, errorResponse } from '../../utils/response'
+import { successResponse } from '../../utils/response'
 
 export default defineEventHandler(async (event) => {
   try {
-    const user = await requireAuth(event)
+    const user = await requirePurchaser(event)
+
     const body = await readBody(event)
 
     if (!body.courseId) {

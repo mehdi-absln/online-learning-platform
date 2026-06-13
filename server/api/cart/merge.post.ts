@@ -1,10 +1,15 @@
-import { requireAuth } from '../../utils/auth-helpers'
+import { requireAuth, isPurchasingRestrictedRole } from '../../utils/auth-helpers'
 import { bulkAddToCart } from '../../db/cart-service'
 import { successResponse } from '../../utils/response'
 
 export default defineEventHandler(async (event) => {
   try {
     const user = await requireAuth(event)
+
+    if (isPurchasingRestrictedRole(user.role)) {
+      return successResponse('Cart merge skipped for administrative accounts')
+    }
+
     const body = await readBody(event)
     const { courseIds } = body
 
