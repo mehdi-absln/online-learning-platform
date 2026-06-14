@@ -1,17 +1,17 @@
 import { getDetailedCourseBySlug } from '../../../db/course-service'
 
 export default defineEventHandler(async (event) => {
-  const slug = getRouterParam(event, 'slug')
+  const courseSlug = getRouterParam(event, 'courseSlug')
 
-  if (!slug) {
+  if (!courseSlug) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Slug is required',
+      statusMessage: 'Course slug is required',
     })
   }
 
   try {
-    const course = await getDetailedCourseBySlug(slug)
+    const course = await getDetailedCourseBySlug(courseSlug)
 
     if (!course) {
       throw createError({

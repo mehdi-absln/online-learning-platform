@@ -4,8 +4,8 @@
 ## Overview
 Comprehensive documentation of the project structure for the Online Learning Platform built with **Nuxt 4**, **Vue 3**, **TypeScript**, **Tailwind CSS**, **Pinia**, **SQLite** with **Drizzle ORM**, and **Vitest** for testing.
 
-**Last Updated:** June 8, 2026
-**Version:** 2.12.0
+**Last Updated:** June 15, 2026
+**Version:** 2.13.0
 
 ---
 
@@ -427,11 +427,10 @@ online-learning-platform/
 │   │   ├── 📂 courses/                    # Course endpoints
 │   │   │   ├── [courseId]/
 │   │   │   │   └── related.get.ts
-│   │   │   ├── slug/
-│   │   │   │   ├── [slug]/
-│   │   │   │   │   └── lessons/
-│   │   │   │   │       └── [lessonSlug].get.ts
-│   │   │   │   └── [slug].get.ts
+│   │   │   ├── [courseSlug]/
+│   │   │   │   ├── lessons/
+│   │   │   │   │   └── [lessonSlug].get.ts
+│   │   │   │   └── index.get.ts
 │   │   │   ├── bulk.post.ts
 │   │   │   ├── count.get.ts
 │   │   │   ├── filter-options.get.ts

@@ -5,7 +5,7 @@ import { getOptionalUser, hasLessonAccess } from '~~/server/utils/lesson-access'
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
-    const courseSlug = getRouterParam(event, 'slug')
+    const courseSlug = getRouterParam(event, 'courseSlug')
     const lessonSlug = getRouterParam(event, 'lessonSlug')
 
     if (!courseSlug || !lessonSlug) {

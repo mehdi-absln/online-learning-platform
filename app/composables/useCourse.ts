@@ -15,7 +15,7 @@ type CourseDetailResponse = ApiResponse<DetailedCourse>
 export const useCourse = (slug: string) => {
   const coursesStore = useCoursesStore()
 
-  const { data, pending, error, refresh } = useFetch<CourseDetailResponse>(`/api/courses/slug/${slug}`, {
+  const { data, pending, error, refresh } = useFetch<CourseDetailResponse>(`/api/courses/${slug}`, {
     key: `course-${slug}`,
 
     /** Immediately sync successful response to store */
