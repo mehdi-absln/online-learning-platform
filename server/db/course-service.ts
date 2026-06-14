@@ -392,6 +392,7 @@ export async function getDetailedCourseBySlug(slug: string) {
     instructor: instructor
       ? {
           id: instructor.id,
+          userId: instructor.userId,
           name: instructor.name,
           title: instructor.title,
           avatar: instructor.avatar,

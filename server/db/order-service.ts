@@ -1,6 +1,6 @@
 import { eq, desc, inArray, and } from 'drizzle-orm'
 import { db } from './index'
-import { orders, orderItems, enrollments, cartItems, courses } from './schema'
+import { orders, orderItems, enrollments, cartItems, courses, instructors as instructorsTable } from './schema'
 
 export async function processCheckout(userId: number, simulationType: 'success' | 'fail') {
   if (simulationType === 'fail') {
@@ -64,6 +64,26 @@ export async function processCheckout(userId: number, simulationType: 'success' 
       .from(courses)
       .where(inArray(courses.id, courseIds))
       .all()
+
+    // Check if user is instructor of any course in cart
+    const ownedCourses = tx
+      .select({ courseId: courses.id })
+      .from(courses)
+      .innerJoin(instructorsTable, eq(courses.instructorId, instructorsTable.id))
+      .where(
+        and(
+          inArray(courses.id, courseIds),
+          eq(instructorsTable.userId, userId),
+        )
+      )
+      .all()
+
+    if (ownedCourses.length > 0) {
+      throw {
+        statusCode: 403,
+        statusMessage: 'Your cart contains a course you own. Please remove it before checkout.',
+      }
+    }
 
     const totalAmount = dbCourses.reduce((sum, course) => sum + (course.price || 0), 0)
 

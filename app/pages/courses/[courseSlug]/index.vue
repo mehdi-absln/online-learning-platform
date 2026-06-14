@@ -238,15 +238,28 @@
                     </NuxtLink>
                   </template>
 
-<!-- State 2: Purchase blocked for admin/superadmin -->
-                   <template v-else-if="userStore.isAuthenticated && !userStore.canPurchaseCourses">
-                     <div class="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
-                       Administrative accounts cannot purchase courses.
-                     </div>
-                   </template>
+                  <!-- State 2: Purchase blocked for admin/superadmin -->
+                  <template v-else-if="userStore.isAuthenticated && !userStore.canPurchaseCourses">
+                    <div class="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+                      Administrative accounts cannot purchase courses.
+                    </div>
+                  </template>
 
-                   <!-- State 3: Already in Cart 🛒 -->
-                   <template v-else-if="isInCart(course?.id || 0)">
+                  <!-- State 3: Instructor viewing own course -->
+                  <template v-else-if="isOwnCourse">
+                    <div class="rounded-xl border border-blue-500/30 bg-blue-500/10 px-4 py-3 text-sm text-blue-100">
+                      You are the instructor of this course.
+                    </div>
+                    <NuxtLink
+                      :to="`/admin/courses/${course?.id}/edit`"
+                      class="btn-secondary w-full font-antonio text-center block"
+                    >
+                      MANAGE COURSE
+                    </NuxtLink>
+                  </template>
+
+                  <!-- State 4: Already in Cart 🛒 -->
+                  <template v-else-if="isInCart(course?.id || 0)">
                     <button
                       type="button"
                       class="btn-secondary w-full font-antonio"
@@ -262,7 +275,7 @@
                     </NuxtLink>
                   </template>
 
-                  <!-- State 3: Not enrolled, not in cart -->
+                  <!-- State 5: Not enrolled, not in cart -->
                   <template v-else>
                     <button
                       type="button"
@@ -653,6 +666,12 @@ if (!courseSlug.value) {
 
 // Use the new composable
 const { course, isLoading, error } = useCourse(courseSlug.value)
+
+const isOwnCourse = computed(() => {
+  if (!userStore.isAuthenticated) return false
+  if (userStore.user?.role !== 'instructor') return false
+  return userStore.user?.id === course.value?.instructor?.userId
+})
 
 useSeoMeta({
   title: () => `${course.value?.title || 'Course'} - ${SITE_NAME}`,
