@@ -119,27 +119,38 @@
           </NuxtLink>
         </template>
 
-<!-- 🚫 Admin/Superadmin: no purchase actions -->
-                    <template v-else-if="userStore.isAuthenticated && !userStore.canPurchaseCourses">
-                      <span class="text-base font-semibold text-primary-alt">
-                        ${{ course.price }}
-                      </span>
-
-                      <NuxtLink
-                        v-if="courseLink"
-                        :to="courseLink"
-                        class="font-medium text-white transition-all duration-300 hover:text-primary whitespace-nowrap"
-                      >
-                        Explore Now
-                      </NuxtLink>
-                    </template>
-
-                    <!-- ❌ Normal not-enrolled state -->
-                    <template v-else>
+        <!-- 🚫 Admin/Superadmin: no purchase actions -->
+        <template v-else-if="userStore.isAuthenticated && !userStore.canPurchaseCourses">
           <span class="text-base font-semibold text-primary-alt">
             ${{ course.price }}
           </span>
+          <NuxtLink
+            v-if="courseLink"
+            :to="courseLink"
+            class="font-medium text-white transition-all duration-300 hover:text-primary whitespace-nowrap"
+          >
+            Explore Now
+          </NuxtLink>
+        </template>
 
+        <!-- 🎓 Instructor viewing own course -->
+        <template v-else-if="isOwnCourse">
+          <span class="text-base font-semibold text-primary-alt">
+            ${{ course.price }}
+          </span>
+          <NuxtLink
+            :to="`/admin/courses/${course.id}/edit`"
+            class="font-medium text-primary transition-all duration-300 hover:text-white whitespace-nowrap"
+          >
+            Manage Course
+          </NuxtLink>
+        </template>
+
+        <!-- ❌ Normal not-enrolled state -->
+        <template v-else>
+          <span class="text-base font-semibold text-primary-alt">
+            ${{ course.price }}
+          </span>
           <div class="flex items-center gap-2">
             <button
               v-if="!isInCart(course.id)"
@@ -216,6 +227,12 @@ interface Props {
 const props = defineProps<Props>()
 const { addItem, isInCart, openCart } = useCart()
 const userStore = useUserStore()
+
+const isOwnCourse = computed(() => {
+  if (!userStore.isAuthenticated) return false
+  if (userStore.user?.role !== 'instructor') return false
+  return userStore.user?.id === props.course.instructor?.userId
+})
 
 defineEmits<{
   bookmark: [courseId: number]

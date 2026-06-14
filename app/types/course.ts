@@ -4,6 +4,7 @@
 
 export interface CourseInstructor {
   id?: number
+  userId?: number
   name: string
   avatar: string
   title?: string

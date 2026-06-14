@@ -1,6 +1,6 @@
 import { eq, and } from 'drizzle-orm'
 import { db } from './index'
-import { cartItems, courses, instructors, enrollments } from './schema'
+import { cartItems, courses, instructors as instructorsTable, enrollments } from './schema'
 
 export async function getCartItems(userId: number) {
   return await db
@@ -64,7 +64,24 @@ export async function addToCart(userId: number, courseId: number) {
     })
   }
 
-  // 3. Add to cart (Unique constraint handled by DB if we miss a race condition)
+  // 3. Check if user is the instructor of this course
+  if (course.instructorId) {
+    const instructor = await db
+      .select({ userId: instructorsTable.userId })
+      .from(instructorsTable)
+      .where(eq(instructorsTable.id, course.instructorId))
+      .limit(1)
+      .then(res => res[0])
+
+    if (instructor?.userId === userId) {
+      throw createError({
+        statusCode: 403,
+        statusMessage: 'You cannot purchase your own course',
+      })
+    }
+  }
+
+  // 4. Add to cart (Unique constraint handled by DB if we miss a race condition)
   try {
     const [newItem] = await db
       .insert(cartItems)
