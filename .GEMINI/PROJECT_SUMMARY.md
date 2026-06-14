@@ -729,7 +729,7 @@ After (correct):
    - Uses `{ immediate: true }` on watch for instant fetch
 
 **Files Updated:**
-1. `server/api/courses/slug/[slug]/lessons/[lessonSlug].get.ts`
+1. `server/api/courses/[courseSlug]/lessons/[lessonSlug].get.ts`
    ```typescript
    // Check access before returning videoUrl
    const hasAccess = await hasLessonAccess(user?.id, course.id, lesson.isFree)
