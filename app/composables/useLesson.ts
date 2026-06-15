@@ -60,7 +60,14 @@ export const useLesson = (
   const courseId = computed(() => course.value?.id || 0)
   const isLessonAccessible = (targetLesson: CourseContentLesson | null) => {
     if (!targetLesson) return false
-    return targetLesson.isFree || userStore.isEnrolled(courseId.value)
+    if (targetLesson.isFree) return true
+    if (userStore.isEnrolled(courseId.value)) return true
+    if (userStore.isAdminLike) return true
+    if (
+      userStore.user?.role === 'instructor'
+      && userStore.user?.id === course.value?.instructor?.userId
+    ) return true
+    return false
   }
 
   const isNextLessonAccessible = computed(() => isLessonAccessible(nextLesson.value ?? null))

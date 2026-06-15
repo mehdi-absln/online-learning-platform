@@ -56,7 +56,7 @@ export default defineEventHandler(async (event: H3Event) => {
 
     // Check if user has access to this lesson
     const hasAccess = await hasLessonAccess(
-      user?.id || null,
+      user ? { id: user.id, role: user.role ?? 'student' } : null,
       detailedCourseData.id,
       lesson.isFree || false,
     )
