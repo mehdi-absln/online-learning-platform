@@ -108,7 +108,7 @@
                 <nav aria-label="Section lessons">
                   <template v-for="lesson in (item as SectionAccordionItem).lessons" :key="lesson.id || lesson.slug">
                     <!-- Accessible/Clickable Lesson -->
-                    <template v-if="lesson.isFree || userStore.isEnrolled(props.courseId)">
+                    <template v-if="lesson.isFree || userStore.isEnrolled(props.courseId) || userStore.isAdminLike || isOwnCourse">
                       <NuxtLink
                         :to="`/courses/${courseSlug}/lessons/${lesson.slug}`"
                         class="flex items-center gap-3 px-4 py-3 hover:bg-dark-bg transition"
@@ -340,6 +340,12 @@ const userStore = useUserStore()
 
 // ───── Computed from Store ─────
 const course = computed(() => coursesStore.detailedCourse)
+
+const isOwnCourse = computed(() => {
+  if (!userStore.isAuthenticated) return false
+  if (userStore.user?.role !== 'instructor') return false
+  return userStore.user?.id === course.value?.instructor?.userId
+})
 const hasContent = computed(() => coursesStore.allLessons.length > 0)
 
 const courseProgress = computed(() =>

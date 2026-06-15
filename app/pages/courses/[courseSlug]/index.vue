@@ -518,7 +518,7 @@
                           :key="lessonIndex"
                         >
                           <!-- Accessible/Clickable Lesson -->
-                          <template v-if="lesson.isFree || userStore.isEnrolled(course?.id || 0)">
+                          <template v-if="lesson.isFree || userStore.isEnrolled(course?.id || 0) || userStore.isAdminLike || isOwnCourse">
                             <li
                               class="flex items-center p-2 group hover:rounded hover:bg-primary/85 duration-200 transition-all cursor-pointer"
                               tabindex="0"
