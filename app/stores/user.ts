@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { readonly } from 'vue'
 import { getErrorMessage } from '~/utils/error-helpers'
 import { useCartStore } from './cart'
 import { useToast } from '~/composables/useToast'
@@ -257,16 +258,16 @@ export const useUserStore = defineStore('user', () => {
     }
   })
 
-  // Expose public API with readonly state
+  // Expose public API
   return {
-    // State (readonly)
-    user: readonly(user),
+    // State
+    user,
     isAuthenticated,
     isAdminLike,
     canPurchaseCourses,
-    loading: readonly(loading),
-    error: readonly(error),
-    enrollmentsFetched: readonly(enrollmentsFetched),
+    loading,
+    error,
+    enrollmentsFetched,
 
     // Getters
     hasError,

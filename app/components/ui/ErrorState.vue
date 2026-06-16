@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import IconAlertCircle from '~/components/icons/IconAlertCircle.vue'
+
 interface Props {
   message?: string
   retryLabel?: string

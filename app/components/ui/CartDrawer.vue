@@ -235,6 +235,7 @@
 
 <script setup lang="ts">
 import { useCart } from '~/composables/useCart'
+import EmptyState from '~/components/ui/EmptyState.vue'
 import { onKeyStroke } from '@vueuse/core'
 import CourseImage from '~/components/courses/CourseImage.vue'
 

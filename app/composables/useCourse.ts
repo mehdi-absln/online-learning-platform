@@ -1,6 +1,8 @@
 import type { ApiResponse } from '~/types/api'
 import type { DetailedCourse } from '~/types/course'
 import { useApiError } from '~/composables/useApiError'
+import { useCoursesStore } from '~/stores/courses'
+import { computed, toValue, watch } from '#imports'
 
 type CourseDetailResponse = ApiResponse<DetailedCourse>
 
@@ -12,38 +14,57 @@ type CourseDetailResponse = ApiResponse<DetailedCourse>
  *   • Component always has latest course (data → store fallback)
  */
 
-export const useCourse = (slug: string) => {
+export const useCourse = (slug: MaybeRefOrGetter<string>) => {
   const coursesStore = useCoursesStore()
+  const normalizeSlug = (value: string | null | undefined) => value?.trim().toLowerCase() ?? ''
+  const slugValue = computed(() => toValue(slug))
+  const normalizedSlug = computed(() => normalizeSlug(slugValue.value))
+  const fetchKey = computed(() => `course:${normalizedSlug.value}`)
 
-  const { data, pending, error, refresh } = useFetch<CourseDetailResponse>(`/api/courses/${slug}`, {
-    key: `course-${slug}`,
+  const { data, pending, error, refresh, clear } = useFetch<CourseDetailResponse>(
+    () => `/api/course-by-slug/${normalizedSlug.value}`,
+    {
+      key: fetchKey,
+      default: () => null,
+      dedupe: 'cancel',
+      watch: [normalizedSlug],
+      immediate: true,
+      transform: (response: CourseDetailResponse): CourseDetailResponse => {
+        if (response.success && response.data) {
+          coursesStore.setDetailedCourse(response.data)
+        }
+        return response
+      },
+    }
+  )
 
-    /** Immediately sync successful response to store */
-    transform: (response: CourseDetailResponse): CourseDetailResponse => {
-      if (response.success && response.data) {
-        coursesStore.detailedCourse = response.data
-      }
-      return response
-    },
-  })
-
-  /** Keep store in sync on subsequent updates (e.g. refresh, suspense re-fetch) */
   watch(data, (newData) => {
     if (newData?.success && newData.data) {
-      coursesStore.detailedCourse = newData.data
+      coursesStore.setDetailedCourse(newData.data)
     }
   }, { immediate: true })
 
-  /** Reactive course – prefers fresh API data, falls back to store (e.g. during SSR or navigation) */
-  const course = computed(() => data.value?.data ?? coursesStore.detailedCourse)
+  // Clear stale data on route change
+  watch(normalizedSlug, (newSlug, oldSlug) => {
+    if (oldSlug && newSlug !== oldSlug) {
+      clear()
+      coursesStore.setDetailedCourse(null)
+    }
+  })
 
-  /** Unified error state (network errors, 404, validation, etc.) */
+  const fetchedCourse = computed(() => data.value?.success ? data.value.data : null)
+  const course = computed(() => {
+    if (normalizeSlug(fetchedCourse.value?.slug) === normalizedSlug.value) {
+      return fetchedCourse.value
+    }
+
+    if (normalizeSlug(coursesStore.detailedCourse?.slug) === normalizedSlug.value) {
+      return coursesStore.detailedCourse
+    }
+
+    return null
+  })
   const hasError = useApiError(data, pending, error)
 
-  return {
-    course,
-    isLoading: pending,
-    error: hasError,
-    refresh,
-  }
+  return { course, isLoading: pending, error: hasError, refresh }
 }

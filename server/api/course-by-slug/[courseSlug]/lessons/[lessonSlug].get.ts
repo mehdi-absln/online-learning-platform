@@ -1,7 +1,16 @@
 import type { H3Event } from 'h3'
 import { getRouterParam, setResponseStatus } from 'h3'
-import { getDetailedCourseBySlug } from '~~/server/db/course-service'
+import { getDetailedCourseBySlug, getCourseLessons } from '~~/server/db/course-service'
 import { getOptionalUser, hasLessonAccess } from '~~/server/utils/lesson-access'
+
+function generateLessonSlug(title: string) {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
@@ -16,9 +25,7 @@ export default defineEventHandler(async (event: H3Event) => {
       }
     }
 
-    // Get optional user (doesn't require auth)
     const user = await getOptionalUser(event)
-
     const detailedCourseData = await getDetailedCourseBySlug(courseSlug)
 
     if (!detailedCourseData) {
@@ -29,22 +36,23 @@ export default defineEventHandler(async (event: H3Event) => {
       }
     }
 
-    // Build lessons array from courseContent
-    const lessons = detailedCourseData.courseContent?.flatMap(section =>
-      section.content.map(lesson => ({
-        id: lesson.id,
-        title: lesson.title,
-        slug: lesson.slug,
-        duration: lesson.duration,
-        videoUrl: lesson.videoUrl,
-        content: lesson.description,
-        isFree: lesson.isFree,
-        sectionId: section.id,
-      })),
-    ) || []
+    const rawLessons = await getCourseLessons(detailedCourseData.id)
+    const lessons = rawLessons.map(lesson => ({
+      id: lesson.id,
+      title: lesson.title,
+      slug: lesson.slug?.trim().toLowerCase() || generateLessonSlug(lesson.title),
+      duration: lesson.duration || '00:00',
+      videoUrl: lesson.videoUrl,
+      content: lesson.description,
+      isFree: lesson.isFree || false,
+      sectionId: lesson.sectionId,
+      createdAt: lesson.createdAt,
+      updatedAt: lesson.updatedAt,
+    }))
 
-    // Find the lesson based on the lesson slug
-    const lesson = lessons.find(l => l.slug === lessonSlug)
+    const lesson = lessons.find(l =>
+      l.slug?.trim().toLowerCase() === lessonSlug.trim().toLowerCase(),
+    )
 
     if (!lesson) {
       setResponseStatus(event, 404)
@@ -54,40 +62,38 @@ export default defineEventHandler(async (event: H3Event) => {
       }
     }
 
-    // Check if user has access to this lesson
     const hasAccess = await hasLessonAccess(
       user ? { id: user.id, role: user.role ?? 'student' } : null,
       detailedCourseData.id,
       lesson.isFree || false,
     )
 
-    // Return lesson data - strip videoUrl and content if not accessible
+    const currentLesson = {
+      id: lesson.id,
+      title: lesson.title,
+      slug: lesson.slug,
+      description: lesson.content,
+      duration: lesson.duration,
+      isFree: lesson.isFree || false,
+      isLocked: !hasAccess,
+      createdAt: lesson.createdAt,
+      updatedAt: lesson.updatedAt,
+      ...(hasAccess
+        ? {
+            videoUrl: lesson.videoUrl,
+            content: lesson.content,
+          }
+        : {
+            videoUrl: null,
+            content: null,
+          }),
+    }
+
     return {
       success: true,
       data: {
-        ...detailedCourseData,
-        currentLesson: {
-          id: lesson.id,
-          title: lesson.title,
-          slug: lesson.slug,
-          description: lesson.content,
-          duration: lesson.duration,
-          isFree: lesson.isFree || false,
-          isLocked: !hasAccess,
-          // Only include videoUrl and content if user has access
-          ...(hasAccess
-            ? {
-                videoUrl: lesson.videoUrl,
-                content: lesson.content,
-              }
-            : {
-                videoUrl: null,
-                content: null,
-              }),
-        },
+        currentLesson,
       },
-      courseId: detailedCourseData.id,
-      lessonId: lesson.id,
       hasAccess,
     }
   }

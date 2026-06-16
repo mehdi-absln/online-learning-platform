@@ -1,4 +1,4 @@
-import { getDetailedCourseBySlug } from '../../../db/course-service'
+import { getDetailedCourseBySlug } from '~~/server/db/course-service'
 import { getOptionalUser, checkEnrollment, checkIsInstructorOwner } from '~~/server/utils/lesson-access'
 
 export default defineEventHandler(async (event) => {
@@ -21,11 +21,9 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Get optional user for access-based content sanitization
     const user = await getOptionalUser(event)
     const userForAccess = user ? { id: user.id, role: user.role ?? 'student' } : null
 
-    // Pre-compute user access once for the entire course (not per lesson)
     let courseAccessGranted = false
     if (userForAccess) {
       if (userForAccess.role === 'admin' || userForAccess.role === 'superadmin') {
@@ -42,8 +40,7 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Sanitize courseContent: strip videoUrl and description for locked lessons
-    const sanitizedCourseContent = (course.courseContent || []).map((section) => ({
+    const sanitizedCourseContent = (course.courseContent || []).map(section => ({
       ...section,
       content: (section.content || []).map((lesson) => {
         const access = lesson.isFree || courseAccessGranted
@@ -54,7 +51,6 @@ export default defineEventHandler(async (event) => {
           slug: lesson.slug,
           duration: lesson.duration,
           isFree: lesson.isFree,
-          // Only expose sensitive content if user has access
           videoUrl: access ? lesson.videoUrl : null,
           description: access ? lesson.description : null,
         }
