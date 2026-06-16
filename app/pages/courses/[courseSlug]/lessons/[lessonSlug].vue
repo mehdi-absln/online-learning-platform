@@ -17,11 +17,11 @@
     <ErrorState
       v-else-if="combinedError"
       :message="combinedError"
-      @retry="fetchLessonAccess"
+      @retry="handleRetry"
     />
 
     <!-- Lesson Content -->
-    <ClientOnly v-else-if="lesson">
+    <template v-else-if="lesson">
       <header
         class="py-10 bg-hero-shimmer border-dark-divider"
       >
@@ -82,10 +82,17 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <!-- Main Content -->
           <section class="lg:col-span-3 space-y-6" aria-labelledby="lesson-title">
-            <LessonVideo
-              :video-url="lessonData?.isLocked ? undefined : (lesson.videoUrl || undefined)"
-              :title="lesson.title"
-            />
+            <ClientOnly>
+              <LessonVideo
+                :video-url="lessonData?.isLocked ? undefined : (lesson.videoUrl || undefined)"
+                :title="lesson.title"
+              />
+              <template #fallback>
+                <div class="rounded-xl border border-dark-divider bg-dark-surface aspect-video flex items-center justify-center">
+                  <LoadingSpinner message="Loading video..." />
+                </div>
+              </template>
+            </ClientOnly>
 
             <!-- Lesson Info Bar -->
             <section
@@ -104,8 +111,8 @@
                 <span class="flex items-center gap-1.5">
                   <IconCalendar class="w-4 h-4" />
                   <span class="sr-only">Published:</span>
-                  <time :datetime="lesson.createdAt?.toISOString() || ''">
-                    {{ lesson.createdAt ? formatDate(lesson.createdAt) : 'N/A' }}
+                  <time :datetime="toDateTimeValue(lesson.createdAt)">
+                    {{ safeFormatDate(lesson.createdAt) }}
                   </time>
                 </span>
               </div>
@@ -271,22 +278,36 @@
           @toggle-complete="handleToggleComplete"
         />
       </div>
+    </template>
 
-      <template #fallback>
-        <div
-          class="py-36 flex flex-col items-center justify-center"
-          role="status"
-          aria-label="Checking access"
-          aria-live="polite"
-        >
-          <LoadingSpinner message="Checking access..." />
-        </div>
-      </template>
-    </ClientOnly>
+    <ErrorState
+      v-else
+      message="Lesson could not be loaded."
+      @retry="handleRetry"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import type { DetailedLesson } from '~/types/lesson'
+import ErrorState from '~/components/ui/ErrorState.vue'
+
+definePageMeta({
+  key: route => `${String(route.params.courseSlug ?? '')}:${String(route.params.lessonSlug ?? '')}`,
+})
+
+function toDateTimeValue(date: string | Date | null | undefined) {
+  if (!date) return ''
+  const d = date instanceof Date ? date : new Date(date)
+  return Number.isNaN(d.getTime()) ? '' : d.toISOString()
+}
+
+function safeFormatDate(date: string | Date | null | undefined) {
+  if (!date) return 'N/A'
+  const d = date instanceof Date ? date : new Date(date)
+  if (Number.isNaN(d.getTime())) return 'N/A'
+  return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(d)
+}
 import Breadcrumb from '~/components/ui/Breadcrumb.vue'
 import LessonVideo from '~/components/lesson/LessonVideo.vue'
 import LessonContent from '~/components/lesson/LessonContent.vue'
@@ -302,24 +323,21 @@ import IconLock from '~/components/icons/IconLock.vue'
 import IconChevronRight from '~/components/icons/IconChevronRight.vue'
 
 const route = useRoute()
+const normalizeSlug = (value: string | null | undefined) => value?.trim().toLowerCase() ?? ''
 
 // ───── Route Params ─────
 const courseSlug = computed(() => route.params.courseSlug as string)
 const lessonSlug = computed(() => route.params.lessonSlug as string)
+const normalizedLessonSlug = computed(() => normalizeSlug(lessonSlug.value))
 
 // ───── Fetch Lesson Access (isLocked check) ─────
 const { lessonData, isLoading: isAccessLoading, error: accessError, fetchLessonAccess } = useLessonAccess(courseSlug, lessonSlug)
 
-// ───── Fetch Progress ─────
-const progressStore = useLessonProgressStore()
-await progressStore.fetchProgress()
-
 // ───── Composable ─────
 const {
   course,
-  lesson,
   isLoading,
-  error,
+  error: courseError,
   currentIndex,
   totalLessons,
   prevLesson,
@@ -335,18 +353,64 @@ const {
   toggleBookmark,
   shareLesson,
   courseId,
+  refreshCourse,
 } = useLesson(courseSlug, lessonSlug)
 
-// ───── Combined Loading & Error States ─────
-const combinedLoading = computed(() => isLoading.value || isAccessLoading.value)
-const combinedError = computed(() => error.value || accessError.value)
-const loadingMessage = computed(() => isLoading.value ? 'Loading Lesson...' : 'Checking access...')
-// ───── Redirect if lesson is locked ─────
-watch(lessonData, (newData) => {
-  if (newData?.isLocked && import.meta.client) {
-    navigateTo(`/courses/${courseSlug.value}`)
-  }
+// Use lessonData from API instead of store
+const lesson = computed(() => {
+  if (!lessonData.value) return null
+  return {
+    ...lessonData.value,
+    id: lessonData.value.id,
+    courseId: courseId.value,
+    content: lessonData.value.content || lessonData.value.description || '',
+    sectionId: 0, // Not available from API, will be 0
+    order: currentIndex.value >= 0 ? currentIndex.value : 0,
+    createdAt: lessonData.value.createdAt ? new Date(lessonData.value.createdAt) : new Date(0),
+    updatedAt: lessonData.value.updatedAt ? new Date(lessonData.value.updatedAt) : new Date(0),
+  } as DetailedLesson
 })
+
+const hasResolvedLesson = computed(() => normalizeSlug(lesson.value?.slug) === normalizedLessonSlug.value)
+
+// ───── Fetch Progress (non-blocking) ─────
+const progressStore = useLessonProgressStore()
+const userStore = useUserStore()
+
+// Fetch Progress (non-blocking for authenticated users)
+onMounted(() => {
+  if (!userStore.isAuthenticated) return
+
+  progressStore.fetchProgress().catch((err) => {
+    console.error('Failed to fetch lesson progress:', err)
+  })
+})
+
+// ───── Combined Loading & Error States ─────
+const combinedError = computed(() => {
+  const err = courseError.value || accessError.value
+  if (!err) return null
+  return err instanceof Error ? err.message : String(err)
+})
+const combinedLoading = computed(() =>
+  isLoading.value
+  || isAccessLoading.value
+  || (!combinedError.value && !hasResolvedLesson.value),
+)
+const loadingMessage = computed(() => isLoading.value ? 'Loading Lesson...' : 'Checking access...')
+
+// ───── Redirect if lesson is locked ─────
+watch(
+  () => lessonData.value,
+  async (resolvedLesson) => {
+    if (!import.meta.client || !resolvedLesson) return
+    if (normalizeSlug(resolvedLesson.slug) !== normalizedLessonSlug.value) return
+    if (!resolvedLesson.isLocked) return
+
+    await navigateTo(`/courses/${courseSlug.value}`, { replace: true })
+  },
+  { immediate: true },
+)
 
 // ───── Local UI State ─────
 const isCompletingLesson = ref(false)
@@ -355,6 +419,13 @@ const isCompletingLesson = ref(false)
 const courseLink = computed(() => `/courses/${courseSlug.value}`)
 
 // ───── Methods ─────
+async function handleRetry() {
+  await Promise.allSettled([
+    refreshCourse?.(),
+    fetchLessonAccess()
+  ])
+}
+
 async function handleToggleComplete() {
   isCompletingLesson.value = true
   try {
@@ -374,17 +445,15 @@ function formatDate(date: Date) {
 }
 
 // ───── Keyboard Shortcuts ─────
-onMounted(() => {
-  const handleKeydown = (e: KeyboardEvent) => {
-    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+  if (e.key === 'ArrowRight' && nextLesson.value) goToNext()
+  if (e.key === 'ArrowLeft' && prevLesson.value) goToPrev()
+  if (e.key === 'm' && !e.ctrlKey && !e.metaKey) handleToggleComplete()
+}
 
-    if (e.key === 'ArrowRight' && nextLesson.value) goToNext()
-    if (e.key === 'ArrowLeft' && prevLesson.value) goToPrev()
-    if (e.key === 'm' && !e.ctrlKey && !e.metaKey) handleToggleComplete()
-  }
-  window.addEventListener('keydown', handleKeydown)
-  onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
-})
+onMounted(() => window.addEventListener('keydown', handleKeydown))
+onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
 
 // ───── SEO ─────
 useSeoMeta({

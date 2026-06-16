@@ -17,7 +17,7 @@ export const useLesson = (
   const progressStore = useLessonProgressStore()
 
   // ───── Course Data ─────
-  const { course, isLoading, error: courseError } = useCourse(courseSlugValue.value)
+  const { course, isLoading, error: courseError, refresh: refreshCourse } = useCourse(courseSlugValue)
 
   // ───── Current Lesson ─────
   const currentIndex = computed(() =>
@@ -189,5 +189,8 @@ export const useLesson = (
     toggleBookmark,
     saveNotes,
     shareLesson,
+
+    // Refresh
+    refreshCourse,
   }
 }

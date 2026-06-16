@@ -35,6 +35,16 @@ export interface CourseFilter {
 // =====================
 // Helper: Build filter conditions
 // =====================
+
+function generateLessonSlug(title: string) {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
 function buildCourseWhereConditions(filter: CourseFilter = {}) {
   const whereConditions = []
 
@@ -328,10 +338,8 @@ export async function getDetailedCourseBySlug(slug: string) {
       .map(lesson => ({
         id: lesson.id,
         title: lesson.title,
-        slug: lesson.slug,
+        slug: lesson.slug?.trim().toLowerCase() || generateLessonSlug(lesson.title),
         duration: lesson.duration || '00:00',
-        videoUrl: lesson.videoUrl || undefined,
-        description: lesson.description || undefined,
         isFree: lesson.isFree || false,
       }))
 
@@ -356,10 +364,8 @@ export async function getDetailedCourseBySlug(slug: string) {
         content: orphanLessons.map(lesson => ({
           id: lesson.id,
           title: lesson.title,
-          slug: lesson.slug,
+          slug: lesson.slug?.trim().toLowerCase() || generateLessonSlug(lesson.title),
           duration: lesson.duration || '00:00',
-          videoUrl: lesson.videoUrl || undefined,
-          description: lesson.description || undefined,
           isFree: lesson.isFree || false,
         })),
       })

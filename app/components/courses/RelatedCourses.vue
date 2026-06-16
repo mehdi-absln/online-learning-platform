@@ -49,6 +49,7 @@
 import { useRelatedCourses } from '~/composables/useRelatedCourses'
 import CourseCard from '~/components/courses/CourseCard.vue'
 import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
+import ErrorState from '~/components/ui/ErrorState.vue'
 
 interface Props {
   courseId: string

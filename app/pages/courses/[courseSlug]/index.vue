@@ -638,6 +638,8 @@
 
 <script setup lang="ts">
 import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
+import ErrorState from '~/components/ui/ErrorState.vue'
+import EmptyState from '~/components/ui/EmptyState.vue'
 import Breadcrumb from '~/components/ui/Breadcrumb.vue'
 import Tabs from '~/components/ui/Tabs.vue'
 import Accordion from '~/components/ui/Accordion.vue'
@@ -665,7 +667,7 @@ if (!courseSlug.value) {
 }
 
 // Use the new composable
-const { course, isLoading, error } = useCourse(courseSlug.value)
+const { course, isLoading, error } = useCourse(courseSlug)
 
 const isOwnCourse = computed(() => {
   if (!userStore.isAuthenticated) return false

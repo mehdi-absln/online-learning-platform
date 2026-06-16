@@ -1,4 +1,5 @@
-import type { Ref } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import { computed, toValue, watch } from '#imports'
 
 interface LessonAccessData {
   id: number
@@ -10,63 +11,69 @@ interface LessonAccessData {
   isLocked: boolean
   videoUrl: string | null
   content: string | null
+  createdAt: string | Date | null
+  updatedAt: string | Date | null
 }
 
-export const useLessonAccess = (courseSlug: Ref<string>, lessonSlug: Ref<string>) => {
-  const lessonData = ref<LessonAccessData | null>(null)
-  const isLoading = ref(true) // ✅ Start as true to prevent race condition
-  const error = ref<string | null>(null)
-
-  const fetchLessonAccess = async () => {
-    // Guard: Don't fetch if slugs are empty
-    if (!courseSlug.value || !lessonSlug.value) {
-      lessonData.value = null
-      isLoading.value = false
-      error.value = null
-      return
-    }
-
-    isLoading.value = true
-    error.value = null
-
-    try {
-      const url = `/api/courses/${courseSlug.value}/lessons/${lessonSlug.value}`
-
-      const response = await $fetch<{
-        success: boolean
-        data: {
-          currentLesson: LessonAccessData
-        }
-        hasAccess: boolean
-      }>(url, {
-        credentials: 'include',
-      })
-
-      if (response.success && response.data?.currentLesson) {
-        lessonData.value = response.data.currentLesson
-      }
-    }
-    catch (err: unknown) {
-      const errorInfo = err as { statusCode?: number, statusMessage?: string, data?: unknown }
-      error.value = errorInfo?.statusMessage || 'Failed to load lesson details'
-    }
-    finally {
-      isLoading.value = false
-    }
+interface LessonAccessResponse {
+  success: boolean
+  data: {
+    currentLesson: LessonAccessData
   }
+  hasAccess: boolean
+}
 
-  // Fetch immediately on initialization (not just onMounted)
-  // Only run on client - server can't access cookies properly
-  if (import.meta.client) {
-    watch([courseSlug, lessonSlug], () => {
-      fetchLessonAccess()
-    }, { immediate: true }) // ✅ Fetch immediately when composable is used
-  }
+export const useLessonAccess = (
+  courseSlug: MaybeRefOrGetter<string>,
+  lessonSlug: MaybeRefOrGetter<string>,
+) => {
+  const normalizeSlug = (value: string | null | undefined) => value?.trim().toLowerCase() ?? ''
+  const courseSlugValue = computed(() => toValue(courseSlug))
+  const lessonSlugValue = computed(() => toValue(lessonSlug))
+  const normalizedCourseSlug = computed(() => normalizeSlug(courseSlugValue.value))
+  const normalizedLessonSlug = computed(() => normalizeSlug(lessonSlugValue.value))
+  const fetchKey = computed(
+    () => `lesson-access:${normalizedCourseSlug.value}:${normalizedLessonSlug.value}`,
+  )
+
+  const { data, pending, error, refresh, clear } = useFetch<LessonAccessResponse>(
+    () => `/api/course-by-slug/${normalizedCourseSlug.value}/lessons/${normalizedLessonSlug.value}`,
+    {
+      key: fetchKey,
+      default: () => null,
+      dedupe: 'cancel',
+      immediate: true,
+      watch: [normalizedCourseSlug, normalizedLessonSlug],
+      credentials: 'include',
+      server: true,
+    },
+  )
+
+  watch([normalizedCourseSlug, normalizedLessonSlug], ([newCourseSlug, newLessonSlug], [oldCourseSlug, oldLessonSlug]) => {
+    if (!oldCourseSlug && !oldLessonSlug) return
+    if (newCourseSlug !== oldCourseSlug || newLessonSlug !== oldLessonSlug) {
+      clear()
+    }
+  })
+
+  const lessonData = computed(() => {
+    const currentLesson = data.value?.data?.currentLesson
+    if (!currentLesson) return null
+
+    return normalizeSlug(currentLesson.slug) === normalizedLessonSlug.value
+      ? currentLesson
+      : null
+  })
+
+  const normalizedError = computed(() => {
+    const err = error.value as { statusMessage?: string } | null
+    return err?.statusMessage || null
+  })
 
   return {
     lessonData,
-    isLoading,
-    error,
-    fetchLessonAccess,
+    isLoading: pending,
+    error: normalizedError,
+    fetchLessonAccess: refresh,
   }
 }
