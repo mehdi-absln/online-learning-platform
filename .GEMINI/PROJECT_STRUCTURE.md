@@ -4,8 +4,8 @@
 ## Overview
 Comprehensive documentation of the project structure for the Online Learning Platform built with **Nuxt 4**, **Vue 3**, **TypeScript**, **Tailwind CSS**, **Pinia**, **SQLite** with **Drizzle ORM**, and **Vitest** for testing.
 
-**Last Updated:** June 15, 2026
-**Version:** 2.13.0
+**Last Updated:** June 18, 2026
+**Version:** 2.14.0
 
 ---
 
@@ -116,11 +116,14 @@ online-learning-platform/
 │   │   │   ├── IconChevronLeft.vue        # Left arrow navigation
 │   │   │   ├── IconChevronRight.vue       # Right arrow navigation
 │   │   │   ├── IconClock.vue              # Time/duration icon
+│   │   │   ├── IconFacebook.vue           # Facebook social icon
+│   │   │   ├── IconLinkedIn.vue           # LinkedIn social icon
 │   │   │   ├── IconLock.vue               # Lock/security icon
 │   │   │   ├── IconPlus.vue               # Plus/Add icon
 │   │   │   ├── IconShare.vue              # Share icon
 │   │   │   ├── IconSpinner.vue            # Loading spinner
-│   │   │   └── IconUsers.vue              # User management icon
+│   │   │   ├── IconTwitter.vue            # Twitter social icon
+│   │   │   ├── IconUsers.vue              # User management icon
 │   │   ├── 📂 lesson/                     # Lesson components
 │   │   │   ├── LessonContent.vue          # Lesson text content
 │   │   │   ├── LessonNav.vue              # Lesson navigation (prev/next/complete)
@@ -205,7 +208,8 @@ online-learning-platform/
 │   │   └── useZodValidation.ts
 │   │
 │   ├── 📂 constants/                      # Application constants
-│   │   └── index.ts
+│   │   ├── index.ts
+│   │   └── home.ts                        # Homepage content constants
 │   │
 │   ├── 📂 layouts/                        # Layout components
 │   │   ├── auth.vue                       # Authentication pages layout
@@ -264,6 +268,7 @@ online-learning-platform/
 │   │   ├── 📂 courses/                    # Course pages
 │   │   │   ├── [courseSlug]/              # Dynamic course routes
 │   │   │   │   ├── lessons/
+│   │   │   │   │   ├── index.vue          # Lessons listing page
 │   │   │   │   │   └── [lessonSlug].vue   # Lesson viewer
 │   │   │   │   └── index.vue              # Course detail page
 │   │   │   └── index.vue                  # Course listing with filters
@@ -363,18 +368,24 @@ online-learning-platform/
 │   ├── calculate-reading-times.ts
 │   ├── check-blogs.ts
 │   ├── check-reading-time.ts
+│   ├── check-reviews.ts                   # Check review data integrity
+│   ├── check-specific-course-reviews.ts   # Check reviews for a specific course
 │   ├── check-tables.ts
+│   ├── debug-course-api.ts                # Debug course API responses
+│   ├── list-courses.ts                    # List all courses
 │   ├── make-admin.ts
 │   ├── make-super-admin.ts                # Super admin promotion script
 │   ├── migrate-user-roles.ts              # User role migration (user → student)
 │   ├── seed-blogs.ts
+│   ├── seed-reviews.ts                    # Seed sample reviews
 │   ├── setup-db.ts
 │   ├── show-lessons.ts
 │   ├── sync-instructors.ts
+│   ├── sync-reviews-count.ts              # Sync reviewsCount with actual review counts
+│   ├── test-empty-reviews.ts              # Test empty reviews scenario
 │   ├── update-blogs-batch1.ts
 │   ├── update-blogs-batch2.ts
 │   └── verify-lesson-progress-table.ts
-│   └── sync-reviews-count.ts              # Database & utility scripts - Sync reviewsCount with actual review counts
 │
 ├── 📂 server/                             # Backend (Nitro server)
 │   ├── 📂 api/                            # API routes (endpoints)
@@ -424,6 +435,11 @@ online-learning-platform/
 │   │   │                                  # - Payment simulation
 │   │   │                                  # - Creates order + enrollments
 │   │   │                                  # - Server-side validation
+│   │   ├── 📂 course-by-slug/              # Public course-by-slug endpoints
+│   │   │   ├── [courseSlug].get.ts         # GET /api/course-by-slug/:courseSlug
+│   │   │   └── [courseSlug]/               # Dynamic course slug routes
+│   │   │       └── lessons/
+│   │   │           └── [lessonSlug].get.ts # GET /api/course-by-slug/:courseSlug/lessons/:lessonSlug
 │   │   ├── 📂 courses/                    # Course endpoints
 │   │   │   ├── [courseId]/
 │   │   │   │   └── related.get.ts
