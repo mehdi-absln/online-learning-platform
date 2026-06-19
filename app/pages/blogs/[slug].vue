@@ -81,21 +81,13 @@
               <!-- Author & Date -->
               <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-dark-surface border border-dark-divider overflow-hidden flex-shrink-0">
-                  <NuxtImg
-                    v-if="blog.author?.avatar"
-                    :src="blog.author.avatar"
+                  <AvatarImage
+                    :src="blog.author?.avatar"
                     :alt="`Avatar of ${blog.author?.name || 'Author'}`"
                     width="48"
                     height="48"
                     class="w-full h-full object-cover"
                   />
-                  <div
-                    v-else
-                    class="w-full h-full flex items-center justify-center text-white text-lg font-bold bg-primary/20"
-                    aria-hidden="true"
-                  >
-                    {{ blog.author?.name?.charAt(0) || 'A' }}
-                  </div>
                 </div>
                 <div>
                   <dt class="sr-only">
@@ -154,10 +146,9 @@
       <div class="container py-12">
         <!-- Cover Image -->
         <figure
-          v-if="blog.coverImage"
           class="mb-12 rounded-2xl overflow-hidden shadow-2xl border border-dark-divider"
         >
-          <NuxtImg
+          <BlogImage
             :src="blog.coverImage"
             :alt="`Cover image for ${blog.title}`"
             width="1200"
@@ -419,7 +410,7 @@ useSeoMeta({
   // Open Graph
   ogTitle: () => blog.value?.title || 'Blog',
   ogDescription: () => blog.value?.excerpt || blog.value?.content?.slice(0, 160) || '',
-  ogImage: () => blog.value?.coverImage || '/images/default-blog-og.jpg',
+  ogImage: () => blog.value?.coverImage || '/images/placeholder-blog.svg',
   ogType: 'article',
 
   // Twitter
@@ -450,7 +441,7 @@ useHead({
     },
     {
       name: 'twitter:image',
-      content: () => blog.value?.coverImage || '/images/default-blog-og.jpg',
+      content: () => blog.value?.coverImage || '/images/placeholder-blog.svg',
     },
   ],
 
@@ -463,7 +454,7 @@ useHead({
         '@type': 'BlogPosting',
         'headline': blog.value?.title,
         'description': blog.value?.excerpt,
-        'image': blog.value?.coverImage,
+        'image': blog.value?.coverImage || '/images/placeholder-blog.svg',
         'datePublished': blog.value?.publishedAt || blog.value?.createdAt,
         'author': {
           '@type': 'Person',

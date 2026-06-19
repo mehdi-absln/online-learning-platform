@@ -21,8 +21,7 @@
           :key="trainer.id"
           class="relative overflow-hidden group rounded-xl aspect-[3/4]"
         >
-          <!-- Using NuxtImg for trainers -->
-          <NuxtImg
+          <AvatarImage
             :src="trainer.image"
             :alt="trainer.name"
             loading="lazy"

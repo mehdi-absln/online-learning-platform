@@ -11,9 +11,9 @@
         class="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-dark-surface"
         tabindex="-1"
       >
-        <NuxtImg
-          :src="blog.coverImage || '/images/default-blog.jpg'"
-          :alt="blog.coverImage ? `Cover image for ${blog.title}` : ''"
+        <BlogImage
+          :src="blog.coverImage"
+          :alt="`Cover image for ${blog.title}`"
           width="400"
           height="225"
           loading="lazy"
@@ -56,23 +56,15 @@
             role="img"
             :aria-label="`${blog.author?.name || 'Anonymous'}'s avatar`"
           >
-            <NuxtImg
-              v-if="blog.author?.avatar"
-              :src="blog.author.avatar"
-              :alt="''"
+            <AvatarImage
+              :src="blog.author?.avatar"
+              :alt="blog.author?.name || 'Anonymous'"
               width="32"
               height="32"
               loading="lazy"
               class="w-full h-full object-cover"
               aria-hidden="true"
             />
-            <div
-              v-else
-              class="w-full h-full flex items-center justify-center text-white text-sm font-medium"
-              aria-hidden="true"
-            >
-              {{ authorInitials }}
-            </div>
           </div>
           <span class="text-gray-400 text-sm">
             <span class="sr-only">Written by </span>
@@ -168,12 +160,6 @@ const readTime = computed(() => {
 const truncatedContent = computed(() => {
   if (!props.blog?.content) return ''
   return truncateText(props.blog.content, 120)
-})
-
-// Author initials
-const authorInitials = computed(() => {
-  const name = props.blog.author?.name || 'A'
-  return name.charAt(0).toUpperCase()
 })
 
 // Formatted date

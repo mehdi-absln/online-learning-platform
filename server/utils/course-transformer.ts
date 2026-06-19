@@ -1,5 +1,5 @@
 import type { Course as CourseType, DetailedCourse, Review } from '~/types/course'
-import { processCourseImage } from './image-processor'
+import { processCourseImage, processInstructorAvatar } from './image-processor'
 import type { InstructorInfo } from './instructor-service'
 
 export interface RawCourse {
@@ -38,7 +38,7 @@ export function transformCourseForClient(course: RawCourse): CourseType {
     updatedAt: course.updatedAt,
     instructor: {
       name: course.instructor?.name || 'Unknown Instructor',
-      avatar: course.instructor?.avatar || '/images/placeholder-avatar.svg',
+      avatar: processInstructorAvatar(course.instructor?.avatar, course.instructor?.name || 'Unknown'),
     },
     stats: {
       students: course.studentCount || 0,

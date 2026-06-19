@@ -118,7 +118,7 @@ export async function getCourseReviews(courseId: number) {
     user: {
       id: review.userId,
       name: review.userName || review.userUsername || 'Anonymous',
-      avatar: review.userAvatar || '/images/default-avatar.png',
+      avatar: review.userAvatar || '/images/placeholder-avatar.svg',
     },
   }))
 }

@@ -68,3 +68,5 @@ export const SITE_NAME = 'Online Learning Platform' as const
 
 // Assets
 export const PLACEHOLDER_COURSE_IMAGE = '/images/placeholder-course.svg' as const
+export const PLACEHOLDER_AVATAR = '/images/placeholder-avatar.svg' as const
+export const PLACEHOLDER_BLOG_COVER = '/images/placeholder-blog.svg' as const
