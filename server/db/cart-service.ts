@@ -11,13 +11,13 @@ export async function getCartItems(userId: number) {
       thumbnail: courses.thumbnail,
       slug: courses.slug,
       instructor: {
-        name: instructors.name,
+        name: instructorsTable.name,
       },
       isPublished: courses.isPublished,
     })
     .from(cartItems)
     .innerJoin(courses, eq(cartItems.courseId, courses.id))
-    .leftJoin(instructors, eq(courses.instructorId, instructors.id))
+    .leftJoin(instructorsTable, eq(courses.instructorId, instructorsTable.id))
     .where(eq(cartItems.userId, userId))
 }
 
