@@ -2,7 +2,7 @@ import { eq, and, ne, or, like, isNull } from 'drizzle-orm'
 import { db } from '../db'
 import { courses, reviews, categories } from '../db/schema'
 import { enrichCoursesWithInstructors } from './instructor-service'
-import { processCourseImage } from './image-processor'
+import { processCourseImage, DEFAULT_COURSE_IMAGE, DEFAULT_INSTRUCTOR_AVATAR } from './image-processor'
 
 export interface RelatedCourseResult {
   id: number
@@ -163,13 +163,13 @@ export async function getRelatedCourses(
         price: course.price / 100,
         rating: avgRating,
         studentCount: course.studentCount || 0,
-        thumbnail: processCourseImage(course.thumbnail) || '/images/placeholder-course.svg',
+        thumbnail: processCourseImage(course.thumbnail) || DEFAULT_COURSE_IMAGE,
         level: course.level,
         instructorId: course.instructorId || 0,
         instructor: course.instructor || {
           id: 0,
           name: 'Unknown',
-          avatar: '/images/placeholder-avatar.svg',
+          avatar: DEFAULT_INSTRUCTOR_AVATAR,
         },
         stats: {
           students: course.studentCount || 0,

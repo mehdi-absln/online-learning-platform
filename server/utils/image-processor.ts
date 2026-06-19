@@ -41,11 +41,11 @@ export function generateAvatarUrl(name: string, size: number = 64): string {
 // Function to process and validate course image
 export function processCourseImage(imageUrl: string | null | undefined): string {
   if (!imageUrl) {
-    return '/images/default-course-image.jpg'
+    return DEFAULT_COURSE_IMAGE
   }
 
   const validatedUrl = validateAndProcessImageUrl(imageUrl)
-  return validatedUrl || '/images/default-course-image.jpg'
+  return validatedUrl || DEFAULT_COURSE_IMAGE
 }
 
 // Function to process and validate instructor avatar
@@ -60,10 +60,10 @@ export function processInstructorAvatar(
     }
   }
 
-  // Generate avatar based on instructor name if no image provided
-  return generateAvatarUrl(instructorName)
+  // Return placeholder avatar if no image provided
+  return DEFAULT_INSTRUCTOR_AVATAR
 }
 
 // Default image URL to use when no image is provided
-export const DEFAULT_COURSE_IMAGE = '/images/default-course-image.jpg'
-export const DEFAULT_INSTRUCTOR_AVATAR = '/images/default-avatar.jpg'
+export const DEFAULT_COURSE_IMAGE = '/images/placeholder-course.svg'
+export const DEFAULT_INSTRUCTOR_AVATAR = '/images/placeholder-avatar.svg'

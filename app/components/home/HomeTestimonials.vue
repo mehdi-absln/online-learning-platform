@@ -34,8 +34,7 @@
           >
             <div class="bg-transparent p-4 md:p-8 border-2 border-dark-divider rounded-2xl text-center mx-2 md:mx-4 relative overflow-hidden before:content-['\201C'] before:absolute before:top-4 before:right-4 before:text-[#3a3a3a] before:text-6xl md:before:text-9xl before:font-serif before:leading-none before:opacity-20 before:pointer-events-none w-full">
               <div class="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-full overflow-hidden border-2 border-primary">
-                <!-- Using NuxtImg for testimonial avatars -->
-                <NuxtImg
+                <AvatarImage
                   :src="testimonial.avatar"
                   :alt="testimonial.name"
                   loading="lazy"

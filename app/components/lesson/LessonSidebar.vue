@@ -293,11 +293,11 @@
           Course Instructor
         </h2>
         <div class="flex items-center gap-3">
-          <img
-            :src="course.instructor.avatar || '/images/default-avatar.png'"
+          <AvatarImage
+            :src="course.instructor.avatar"
             :alt="`${course.instructor.name} profile picture`"
             class="w-12 h-12 rounded-full object-cover bg-dark-bg"
-          >
+          />
           <div>
             <p class="font-medium text-white">
               {{ course.instructor.name }}
