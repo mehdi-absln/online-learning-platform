@@ -14,10 +14,24 @@
       panel-class="p-6"
     >
       <template #content>
-        <div
+        <MarkdownRenderer
           v-if="lesson?.content"
-          class="prose prose-invert prose-lg max-w-none text-white"
-          v-html="renderedContent"
+          :content="lesson.content"
+          class="prose prose-invert prose-lg max-w-none text-white
+            prose-code:text-cyan-300
+            prose-code:bg-dark-bg
+            prose-code:px-2
+            prose-code:py-1
+            prose-code:rounded-md
+            prose-code:border
+            prose-code:border-dark-divider
+            prose-code:before:content-none
+            prose-code:after:content-none
+            prose-pre:bg-dark-bg
+            prose-pre:border
+            prose-pre:border-dark-divider
+            prose-pre:rounded-xl
+            prose-pre:shadow-lg"
         />
         <EmptyState
           v-else
@@ -145,10 +159,8 @@
 </template>
 
 <script setup lang="ts">
-import { marked } from 'marked'
 import Tabs from '~/components/ui/Tabs.vue'
-import type { DetailedLesson } from '~/types/lesson'
-import type { LessonAttachment } from '~/types/lesson'
+import type { DetailedLesson, LessonAttachment } from '~/types/lesson'
 
 interface Props {
   lesson: DetailedLesson | null
@@ -184,12 +196,6 @@ async function saveNotes() {
     isSaving.value = false
   }
 }
-
-// ───── Content ─────
-const renderedContent = computed(() => {
-  if (!props.lesson?.content) return ''
-  return marked.parse(props.lesson.content)
-})
 
 const sampleResources: LessonAttachment[] = [
   { id: 1, name: 'Project Source Code', url: '#', size: '2.4 MB', type: 'zip', createdAt: new Date() },
