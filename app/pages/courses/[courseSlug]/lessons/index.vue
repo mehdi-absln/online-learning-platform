@@ -33,6 +33,7 @@
 </template>
 
 <script setup lang="ts">
+import type { CourseContentSection } from '~/types/course'
 import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 
 const route = useRoute()
@@ -52,7 +53,7 @@ watch(
     if (courseData.slug !== courseSlug) return
 
     // Extract lessons from courseContent
-    const lessons = courseData.courseContent?.flatMap(section => section.content || []) || []
+    const lessons = courseData.courseContent?.flatMap((section: CourseContentSection) => section.content || []) || []
 
     // Redirect to first lesson if available
     if (lessons.length > 0 && lessons[0]?.slug) {
@@ -76,7 +77,7 @@ const hasNoLessons = computed(() => {
   if (isLoading.value || error.value) return false
   if (!course.value?.courseContent) return true
 
-  const lessons = course.value.courseContent.flatMap(s => s.content || [])
+  const lessons = course.value.courseContent.flatMap((s: CourseContentSection) => s.content || [])
   return lessons.length === 0
 })
 </script>

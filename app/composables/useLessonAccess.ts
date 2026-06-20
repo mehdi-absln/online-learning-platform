@@ -17,7 +17,7 @@ interface LessonAccessData {
 
 interface LessonAccessResponse {
   success: boolean
-  data: {
+  data?: {
     currentLesson: LessonAccessData
   }
   hasAccess: boolean
@@ -40,7 +40,11 @@ export const useLessonAccess = (
     () => `/api/course-by-slug/${normalizedCourseSlug.value}/lessons/${normalizedLessonSlug.value}`,
     {
       key: fetchKey,
-      default: () => null,
+      default: (): LessonAccessResponse => ({
+        success: false,
+        data: { currentLesson: { id: 0, title: '', slug: '', description: null, duration: null, isFree: false, isLocked: false, videoUrl: null, content: null, createdAt: null, updatedAt: null } },
+        hasAccess: false,
+      }),
       dedupe: 'cancel',
       immediate: true,
       watch: [normalizedCourseSlug, normalizedLessonSlug],

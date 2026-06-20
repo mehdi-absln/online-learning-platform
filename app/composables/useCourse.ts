@@ -25,7 +25,7 @@ export const useCourse = (slug: MaybeRefOrGetter<string>) => {
     () => `/api/course-by-slug/${normalizedSlug.value}`,
     {
       key: fetchKey,
-      default: () => null,
+      default: (): CourseDetailResponse => ({ success: false }),
       dedupe: 'cancel',
       watch: [normalizedSlug],
       immediate: true,

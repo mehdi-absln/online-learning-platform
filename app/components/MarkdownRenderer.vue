@@ -20,6 +20,7 @@ const { $purify } = useNuxtApp()
 const sanitizedHtml = computed(() => {
   if (!props.content) return ''
   const rawHtml = marked.parse(props.content)
+  if (typeof rawHtml !== 'string') return ''
   return $purify(rawHtml)
 })
 </script>
