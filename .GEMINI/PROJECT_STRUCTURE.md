@@ -78,7 +78,9 @@ online-learning-platform/
 │   │   │   └── BlogsGrid.vue
 │   │   ├── 📂 courses/                    # Course components
 │   │   │   ├── CourseCard.vue
+│   │   │   ├── CourseDetailSidebar.vue    # Course detail sidebar with pricing & tags
 │   │   │   ├── CourseImage.vue            # Reusable course image with reactive fallback
+│   │   │   ├── CourseInfoTab.vue          # Course info tab (about, objectives, content)
 │   │   │   ├── CourseReviews.vue          # Display ratings & reviews
 │   │   │   ├── CoursesGrid.vue
 │   │   │   ├── CourseSidebarFilters.vue   # Search + filters sidebar
@@ -166,18 +168,21 @@ online-learning-platform/
 │   │   │   ├── SubmitButton.vue
 │   │   │   ├── Tabs.vue
 │   │   │   └── Toast.vue                  # Enhanced toast notifications
+│   │   ├── AvatarImage.vue                # Avatar with fallback
+│   │   ├── BlogImage.vue                  # Blog image with fallback
 │   │   ├── MainFooter.vue                 # Site-wide footer
 │   │   │                                  # - Responsive grid layout
 │   │   │                                  # - Border-top separator
 │   │   │                                  # - Role‑based quick links from useNavigationLinks
 │   │   │                                  # - Improved accessibility (sections, aria-labelledby)
-│   │   └── MainNav.vue                    # Main navigation
-│   │                                      # - Responsive hamburger menu with backdrop
-│   │                                      # - Mobile menu teleported to body for full coverage
-│   │                                      # - Active link detection with nested routes
-│   │                                      # - Dynamic dropdown menu items
-│   │                                      # - Sticky background on scroll
-│   │                                      # - No `any` types in template refs
+│   │   ├── MainNav.vue                    # Main navigation
+│   │   │                                  # - Responsive hamburger menu with backdrop
+│   │   │                                  # - Mobile menu teleported to body for full coverage
+│   │   │                                  # - Active link detection with nested routes
+│   │   │                                  # - Dynamic dropdown menu items
+│   │   │                                  # - Sticky background on scroll
+│   │   │                                  # - No `any` types in template refs
+│   │   └── MarkdownRenderer.vue           # Markdown content renderer
 │   │
 │   ├── 📂 composables/                    # Vue composables (reusable logic)
 │   │   ├── useAccordion.ts

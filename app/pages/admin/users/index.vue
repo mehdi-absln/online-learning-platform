@@ -5,7 +5,7 @@
   >
     <AdminTabs />
     <!-- سربرگ + جستجو -->
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
       <h1
         id="user-management-heading"
         class="text-2xl font-bold text-white flex items-center gap-2"
@@ -18,7 +18,7 @@
       </h1>
       <SearchInput
         v-model="searchQuery"
-        wrapper-class="w-64"
+        wrapper-class="w-full sm:w-64"
         placeholder="Search by username..."
         label="Search users by username"
         :debounce="0"
@@ -69,7 +69,7 @@
       </div>
 
       <!-- جدول کاربران -->
-      <div v-else>
+      <div v-else class="overflow-x-auto">
         <table
           class="w-full text-left text-sm text-gray-300"
           aria-label="User list"

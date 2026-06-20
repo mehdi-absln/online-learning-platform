@@ -4,7 +4,7 @@
     aria-labelledby="admin-panel-heading"
   >
     <AdminTabs />
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
       <h1
         id="admin-panel-heading"
         class="text-2xl font-bold text-white flex items-center gap-2"
@@ -82,7 +82,7 @@
       </div>
 
       <!-- جدول دوره‌ها -->
-      <div v-else>
+      <div v-else class="overflow-x-auto">
         <table
           class="w-full text-left text-sm text-gray-300"
           aria-label="Course list"

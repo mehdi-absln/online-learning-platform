@@ -65,7 +65,7 @@
             aria-required="true"
             aria-describedby="slug-hint"
             minlength="3"
-            class="w-full bg-dark-bg border rounded-md px-4 py-2 text-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/50 transition-colors"
+class="w-full min-w-0 bg-dark-bg border rounded-md px-4 py-2 text-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/50 transition-colors"
             :class="getError('slug') ? 'border-red-500' : 'border-dark-divider'"
             placeholder="e.g. vue-mastery"
             @input="onSlugInput($event)"
@@ -73,7 +73,7 @@
           >
           <span
             id="slug-hint"
-            class="text-xs text-gray-500 whitespace-nowrap"
+            class="text-xs text-gray-500 whitespace-nowrap hidden sm:inline"
           >
             {{ initialData ? '(enter custom slug)' : '(auto-generate)' }}
           </span>
