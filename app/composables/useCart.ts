@@ -55,9 +55,9 @@ export const useCart = () => {
     removeItem: cartStore.removeItem,
     clearCart: cartStore.clearCart,
     isInCart: cartStore.isInCart,
-    checkout: async () => {
-      if (!ensureCanPurchase()) return false
-      return await cartStore.checkout()
+    checkout: async (simulationType?: 'success' | 'fail') => {
+      if (!ensureCanPurchase()) return { success: false, message: 'Admin/superadmin accounts cannot purchase courses.' }
+      return await cartStore.checkout(simulationType)
     },
   }
 }

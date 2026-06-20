@@ -503,13 +503,7 @@
                   class="mt-4"
                 >
                   <Accordion
-                    :items="
-                      courseAccordionItems.map((item) => ({
-                        title: item.title,
-                        description: item.description,
-                        content: item.lessons,
-                      }))
-                    "
+                    :items="accordionItems"
                   >
                     <template #default="{ item }">
                       <ul class="p-2 sm:p-4 space-y-2 divide-y divide-dark-divider">
@@ -648,7 +642,7 @@ import RelatedCourses from '~/components/courses/RelatedCourses.vue'
 import CourseImage from '~/components/courses/CourseImage.vue'
 import { useUserStore } from '~/stores/user'
 import { useCart } from '~/composables/useCart'
-import type { CourseContentLesson } from '~/types/course'
+import type { CourseContentLesson, CourseContentSection } from '~/types/course'
 
 import { SITE_NAME } from '~/constants'
 
@@ -694,15 +688,29 @@ const breadcrumbCrumbs = computed(() => [
 ])
 
 // Create properly typed Accordion items for course content sections
-const courseAccordionItems = computed(() => {
+interface AccordionSection {
+  title: string
+  description: string | undefined
+  lessons: CourseContentLesson[]
+}
+
+const courseAccordionItems = computed<AccordionSection[]>(() => {
   if (!course.value?.courseContent) return []
 
-  return course.value.courseContent.map(section => ({
+  return course.value.courseContent.map((section: CourseContentSection) => ({
     title: section.title,
     description: section.description || undefined,
     lessons: section.content || [],
   }))
 })
+
+const accordionItems = computed(() =>
+  courseAccordionItems.value.map((item: AccordionSection) => ({
+    title: item.title,
+    description: item.description,
+    content: item.lessons,
+  })),
+)
 
 const goToLessonPage = async (lesson: CourseContentLesson) => {
   if (!lesson.slug || !courseSlug.value) {
@@ -721,7 +729,7 @@ const goToLessonPage = async (lesson: CourseContentLesson) => {
 
 const courseTags = computed(() => {
   if (!course.value?.tags) return []
-  return course.value.tags.split(',').map(t => t.trim())
+  return course.value.tags.split(',').map((t: string) => t.trim())
 })
 
 const handleAddToCart = async () => {

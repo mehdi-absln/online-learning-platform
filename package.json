@@ -16,7 +16,8 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "seed": "tsx scripts/seed.ts",
-    "add-tags-to-existing": "tsx scripts/add-tags-to-existing-courses.ts"
+    "add-tags-to-existing": "tsx scripts/add-tags-to-existing-courses.ts",
+    "typecheck": "nuxi typecheck"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.8.0",
@@ -46,6 +47,7 @@
     "@types/bcrypt": "^6.0.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/dompurify": "^3.0.5",
+    "@types/jsdom": "^28.0.3",
     "@types/lodash-es": "^4.17.12",
     "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.1",
@@ -61,6 +63,7 @@
     "tsx": "^4.20.6",
     "vitest": "^3.2.4",
     "vitest-mock-extended": "^3.1.0",
-    "vue-eslint-parser": "^10.2.0"
+    "vue-eslint-parser": "^10.2.0",
+    "vue-tsc": "^3.3.5"
   }
 }

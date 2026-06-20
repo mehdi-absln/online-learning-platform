@@ -12,7 +12,7 @@
     class="py-36 flex flex-col items-center justify-center"
   >
     <ErrorState
-      :message="errorMessage"
+      :message="errorMessage ?? undefined"
       :hide-retry="true"
     />
   </div>

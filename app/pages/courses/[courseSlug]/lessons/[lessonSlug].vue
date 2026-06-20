@@ -390,7 +390,8 @@ onMounted(() => {
 const combinedError = computed(() => {
   const err = courseError.value || accessError.value
   if (!err) return null
-  return err instanceof Error ? err.message : String(err)
+  if (typeof err === 'string') return err
+  return String(err)
 })
 const combinedLoading = computed(() =>
   isLoading.value

@@ -341,6 +341,8 @@ export async function getDetailedCourseBySlug(slug: string) {
         slug: lesson.slug?.trim().toLowerCase() || generateLessonSlug(lesson.title),
         duration: lesson.duration || '00:00',
         isFree: lesson.isFree || false,
+        videoUrl: lesson.videoUrl,
+        description: lesson.description,
       }))
 
     return {
@@ -367,6 +369,8 @@ export async function getDetailedCourseBySlug(slug: string) {
           slug: lesson.slug?.trim().toLowerCase() || generateLessonSlug(lesson.title),
           duration: lesson.duration || '00:00',
           isFree: lesson.isFree || false,
+          videoUrl: lesson.videoUrl,
+          description: lesson.description,
         })),
       })
     }
