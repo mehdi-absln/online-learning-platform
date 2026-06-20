@@ -200,7 +200,7 @@
             prose-ol:pl-6
             prose-li:mb-2
             prose-li:marker:text-primary
-            prose-code:text-primary/90
+            prose-code:text-cyan-300
             prose-code:bg-dark-bg
             prose-code:px-2
             prose-code:py-1
@@ -251,8 +251,7 @@
           >
             Article Content
           </h2>
-          <!-- eslint-disable-next-line vue/no-v-html -->
-          <div v-html="renderedContent" />
+          <MarkdownRenderer :content="blog.content" />
         </section>
       </div>
 
@@ -385,8 +384,6 @@
 </template>
 
 <script setup lang="ts">
-import { marked } from 'marked'
-
 const route = useRoute()
 const toast = useToast()
 const liveRegion = ref<HTMLElement | null>(null)
@@ -483,11 +480,6 @@ const formattedDate = computed(() => {
 const readTime = computed(() => {
   if (!blog.value?.readingTime) return '1 min read'
   return `${blog.value.readingTime} min read`
-})
-
-const renderedContent = computed(() => {
-  if (!blog.value?.content) return ''
-  return marked.parse(blog.value.content)
 })
 
 const breadcrumbCrumbs = computed(() => [
