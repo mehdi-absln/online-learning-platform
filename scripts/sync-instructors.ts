@@ -39,7 +39,8 @@ async function syncInstructors() {
           .set({ role: 'instructor' })
           .where(eq(users.id, userId))
         console.log(`   ✅ Updated existing user (id: ${userId})`)
-      } else {
+      }
+      else {
         // User جدید بساز
         const email = instructor.name
           .toLowerCase()
@@ -75,7 +76,7 @@ async function syncInstructors() {
 
     // 4. نمایش نتیجه
     console.log('\n📊 Final Result:\n')
-    
+
     const result = sqlite.prepare(`
       SELECT 
         u.id as user_id,
@@ -92,11 +93,12 @@ async function syncInstructors() {
     console.table(result)
 
     console.log('\n🎉 Sync completed successfully!')
-
-  } catch (error) {
+  }
+  catch (error) {
     console.error('❌ Error:', error)
     process.exit(1)
-  } finally {
+  }
+  finally {
     sqlite.close()
   }
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import { ref, nextTick } from 'vue'
+import { ref } from 'vue'
 import { useCoursesStore } from '~/stores/courses'
 import type { CoursesFilter } from '~/types/courses-filter'
 import { extractParamsFromUrl } from '~/utils/course-helpers'

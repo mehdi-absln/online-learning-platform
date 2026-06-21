@@ -18,7 +18,7 @@ describe('useLessonProgressStore', () => {
   describe('initial state', () => {
     it('should have empty progress on init', () => {
       const store = useLessonProgressStore()
-      
+
       expect(store.progress).toEqual({})
       expect(store.isLoading).toBe(false)
       expect(store.isInitialized).toBe(false)
@@ -26,26 +26,26 @@ describe('useLessonProgressStore', () => {
 
     it('should return false for isCompleted when no progress', () => {
       const store = useLessonProgressStore()
-      
+
       expect(store.isCompleted(1)).toBe(false)
       expect(store.isCompleted(999)).toBe(false)
     })
 
     it('should return false for isBookmarked when no progress', () => {
       const store = useLessonProgressStore()
-      
+
       expect(store.isBookmarked(1)).toBe(false)
     })
 
     it('should return empty string for getNote when no progress', () => {
       const store = useLessonProgressStore()
-      
+
       expect(store.getNote(1)).toBe('')
     })
 
     it('should have empty completedLessonIds', () => {
       const store = useLessonProgressStore()
-      
+
       expect(store.completedLessonIds).toEqual([])
       expect(store.completedCount).toBe(0)
     })
@@ -57,7 +57,7 @@ describe('useLessonProgressStore', () => {
   describe('fetchProgress', () => {
     it('should fetch and transform progress data', async () => {
       const store = useLessonProgressStore()
-      
+
       mockFetch.mockResolvedValueOnce({
         success: true,
         data: {
@@ -77,7 +77,7 @@ describe('useLessonProgressStore', () => {
 
     it('should not fetch twice if already initialized', async () => {
       const store = useLessonProgressStore()
-      
+
       mockFetch.mockResolvedValueOnce({
         success: true,
         data: { progress: [] },
@@ -91,7 +91,7 @@ describe('useLessonProgressStore', () => {
 
     it('should set isLoading during fetch', async () => {
       const store = useLessonProgressStore()
-      
+
       let loadingDuringFetch = false
       mockFetch.mockImplementationOnce(async () => {
         loadingDuringFetch = store.isLoading
@@ -107,7 +107,7 @@ describe('useLessonProgressStore', () => {
     it('should handle fetch error gracefully', async () => {
       const store = useLessonProgressStore()
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-      
+
       mockFetch.mockRejectedValueOnce(new Error('Network error'))
 
       await store.fetchProgress()
@@ -115,7 +115,7 @@ describe('useLessonProgressStore', () => {
       expect(consoleSpy).toHaveBeenCalled()
       expect(store.isLoading).toBe(false)
       expect(store.isInitialized).toBe(false)
-      
+
       consoleSpy.mockRestore()
     })
   })
@@ -126,24 +126,24 @@ describe('useLessonProgressStore', () => {
   describe('toggleComplete', () => {
     it('should optimistically update completion status', async () => {
       const store = useLessonProgressStore()
-      
+
       mockFetch.mockResolvedValueOnce({
         success: true,
         data: { progress: { lessonId: 1, isCompleted: true } },
       })
 
       const promise = store.toggleComplete(1)
-      
+
       // Optimistic update should happen immediately
       expect(store.isCompleted(1)).toBe(true)
-      
+
       await promise
     })
 
     it('should toggle from completed to incomplete', async () => {
       const store = useLessonProgressStore()
       store.progress[1] = { lessonId: 1, isCompleted: true, isBookmarked: false, progressPercentage: 100 }
-      
+
       mockFetch.mockResolvedValueOnce({
         success: true,
         data: { progress: { lessonId: 1, isCompleted: false } },
@@ -157,7 +157,7 @@ describe('useLessonProgressStore', () => {
     it('should revert on API error', async () => {
       const store = useLessonProgressStore()
       store.progress[1] = { lessonId: 1, isCompleted: false, isBookmarked: false, progressPercentage: 0 }
-      
+
       mockFetch.mockRejectedValueOnce(new Error('API error'))
 
       await store.toggleComplete(1)
@@ -168,7 +168,7 @@ describe('useLessonProgressStore', () => {
 
     it('should set progressPercentage to 100 when completed', async () => {
       const store = useLessonProgressStore()
-      
+
       mockFetch.mockResolvedValueOnce({
         success: true,
         data: { progress: { lessonId: 1, isCompleted: true, progressPercentage: 100 } },
@@ -181,7 +181,7 @@ describe('useLessonProgressStore', () => {
 
     it('should call correct API endpoint', async () => {
       const store = useLessonProgressStore()
-      
+
       mockFetch.mockResolvedValueOnce({ success: true, data: { progress: {} } })
 
       await store.toggleComplete(5)
@@ -199,23 +199,23 @@ describe('useLessonProgressStore', () => {
   describe('toggleBookmark', () => {
     it('should optimistically update bookmark status', async () => {
       const store = useLessonProgressStore()
-      
+
       mockFetch.mockResolvedValueOnce({
         success: true,
         data: { progress: { lessonId: 1, isBookmarked: true } },
       })
 
       const promise = store.toggleBookmark(1)
-      
+
       expect(store.isBookmarked(1)).toBe(true)
-      
+
       await promise
     })
 
     it('should toggle from bookmarked to unbookmarked', async () => {
       const store = useLessonProgressStore()
       store.progress[1] = { lessonId: 1, isCompleted: false, isBookmarked: true, progressPercentage: 0 }
-      
+
       mockFetch.mockResolvedValueOnce({
         success: true,
         data: { progress: { lessonId: 1, isBookmarked: false } },
@@ -229,7 +229,7 @@ describe('useLessonProgressStore', () => {
     it('should revert on API error', async () => {
       const store = useLessonProgressStore()
       store.progress[1] = { lessonId: 1, isCompleted: false, isBookmarked: true, progressPercentage: 0 }
-      
+
       mockFetch.mockRejectedValueOnce(new Error('API error'))
 
       await store.toggleBookmark(1)
@@ -239,14 +239,14 @@ describe('useLessonProgressStore', () => {
 
     it('should preserve other properties when toggling bookmark', async () => {
       const store = useLessonProgressStore()
-      store.progress[1] = { 
-        lessonId: 1, 
-        isCompleted: true, 
-        isBookmarked: false, 
+      store.progress[1] = {
+        lessonId: 1,
+        isCompleted: true,
+        isBookmarked: false,
         notes: 'my notes',
-        progressPercentage: 100 
+        progressPercentage: 100,
       }
-      
+
       mockFetch.mockResolvedValueOnce({
         success: true,
         data: { progress: { lessonId: 1, isCompleted: true, isBookmarked: true, notes: 'my notes' } },
@@ -265,23 +265,23 @@ describe('useLessonProgressStore', () => {
   describe('saveNote', () => {
     it('should save note optimistically', async () => {
       const store = useLessonProgressStore()
-      
+
       mockFetch.mockResolvedValueOnce({
         success: true,
         data: { progress: { lessonId: 1, notes: 'Test note' } },
       })
 
       const promise = store.saveNote(1, 'Test note')
-      
+
       expect(store.getNote(1)).toBe('Test note')
-      
+
       await promise
     })
 
     it('should update existing note', async () => {
       const store = useLessonProgressStore()
       store.progress[1] = { lessonId: 1, isCompleted: false, isBookmarked: false, notes: 'Old note', progressPercentage: 0 }
-      
+
       mockFetch.mockResolvedValueOnce({
         success: true,
         data: { progress: { lessonId: 1, notes: 'New note' } },
@@ -295,7 +295,7 @@ describe('useLessonProgressStore', () => {
     it('should revert on API error', async () => {
       const store = useLessonProgressStore()
       store.progress[1] = { lessonId: 1, isCompleted: false, isBookmarked: false, notes: 'Original note', progressPercentage: 0 }
-      
+
       mockFetch.mockRejectedValueOnce(new Error('API error'))
 
       await store.saveNote(1, 'New note')
@@ -305,7 +305,7 @@ describe('useLessonProgressStore', () => {
 
     it('should call correct API endpoint with notes', async () => {
       const store = useLessonProgressStore()
-      
+
       mockFetch.mockResolvedValueOnce({ success: true, data: { progress: {} } })
 
       await store.saveNote(5, 'My lesson notes')

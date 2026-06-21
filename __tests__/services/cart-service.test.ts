@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { db } from '../../server/db'
-import { users, courses, instructors, cartItems } from '../../server/db/schema'
+import { users, courses, instructors } from '../../server/db/schema'
 import {
   getCartItems,
   addToCart,

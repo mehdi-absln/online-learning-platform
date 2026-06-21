@@ -7,15 +7,15 @@ describe('LessonHeader', () => {
     const mockCourse = {
       id: 1,
       title: 'Test Course',
-      slug: 'test-course'
+      slug: 'test-course',
     }
-    
+
     const mockLesson = {
       id: 1,
       title: 'Test Lesson',
-      createdAt: new Date()
+      createdAt: new Date(),
     }
-    
+
     const wrapper = mount(LessonHeader, {
       props: {
         course: mockCourse,
@@ -25,10 +25,10 @@ describe('LessonHeader', () => {
         progressPercentage: 20,
         prevLesson: null,
         nextLesson: null,
-        isScrolled: false
-      }
+        isScrolled: false,
+      },
     })
-    
+
     expect(wrapper.text()).toContain('Test Lesson')
     expect(wrapper.text()).toContain('Lesson 2 of 5')
   })

@@ -30,7 +30,7 @@ interface RawInstructor {
  */
 export function transformInstructor(
   instructorId: number | null | undefined,
-  rawInstructor: RawInstructor | null | undefined
+  rawInstructor: RawInstructor | null | undefined,
 ): InstructorInfo | null {
   if (!instructorId) return null
 
@@ -41,7 +41,7 @@ export function transformInstructor(
   return {
     id: instructorId,
     name,
-    avatar: rawInstructor?.avatar || processInstructorAvatar(undefined, name),  // ✅ اول DB بعد generate
+    avatar: rawInstructor?.avatar || processInstructorAvatar(undefined, name), // ✅ اول DB بعد generate
   }
 }
 
@@ -49,7 +49,7 @@ export function transformInstructor(
  * Get single instructor by ID
  */
 export async function getInstructorById(
-  instructorId: number | null | undefined
+  instructorId: number | null | undefined,
 ): Promise<RawInstructor | null> {
   if (!instructorId) return null
 
@@ -69,7 +69,7 @@ export async function getInstructorById(
  * Get multiple instructors by IDs (efficient batch query)
  */
 export async function getInstructorsByIds(
-  instructorIds: number[]
+  instructorIds: number[],
 ): Promise<Map<number, RawInstructor>> {
   if (!instructorIds.length) return new Map()
 
@@ -79,7 +79,7 @@ export async function getInstructorsByIds(
     .select({
       id: instructors.id,
       name: instructors.name,
-      avatar: instructors.avatar,  // ✅ اضافه شد
+      avatar: instructors.avatar, // ✅ اضافه شد
     })
     .from(instructors)
     .where(inArray(instructors.id, uniqueIds))
@@ -91,7 +91,7 @@ export async function getInstructorsByIds(
  * Enrich a single course with instructor info
  */
 export async function enrichCourseWithInstructor<T extends { instructorId: number | null }>(
-  course: T
+  course: T,
 ): Promise<T & { instructor: InstructorInfo | null }> {
   const rawInstructor = await getInstructorById(course.instructorId)
   const instructor = transformInstructor(course.instructorId, rawInstructor)
@@ -103,7 +103,7 @@ export async function enrichCourseWithInstructor<T extends { instructorId: numbe
  * Enrich multiple courses with instructor info (batch)
  */
 export async function enrichCoursesWithInstructors<T extends { instructorId: number | null }>(
-  courses: T[]
+  courses: T[],
 ): Promise<(T & { instructor: InstructorInfo | null })[]> {
   if (!courses.length) return []
 
@@ -117,7 +117,7 @@ export async function enrichCoursesWithInstructors<T extends { instructorId: num
     ...course,
     instructor: transformInstructor(
       course.instructorId,
-      course.instructorId ? instructorMap.get(course.instructorId) : null
+      course.instructorId ? instructorMap.get(course.instructorId) : null,
     ),
   }))
 }

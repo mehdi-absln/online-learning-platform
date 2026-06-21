@@ -42,7 +42,8 @@ export default defineEventHandler(async (event) => {
     const progress = await saveNotes(payload.userId, lessonId, notes)
 
     return successResponse('Notes saved', { progress })
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     if (typeof error === 'object' && error !== null && 'statusCode' in error) {
       const nuxtError = error as { statusCode?: number, statusMessage?: string }
       throw createError({

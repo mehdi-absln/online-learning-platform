@@ -8,7 +8,7 @@ console.log('🗄️  Setting up database at:', DB_PATH)
 
 // Create database
 const sqlite = new Database(DB_PATH)
-const db = drizzle(sqlite)
+const _db = drizzle(sqlite)
 
 // Create tables directly with SQL
 const createTablesSQL = `
@@ -132,7 +132,7 @@ const instructorResult = insertInstructor.run(
   'Senior Full-Stack Developer',
   'Senior developer with over 10 years of experience in web development',
   '/images/instructors/ali.jpg',
-  now
+  now,
 )
 const instructorId = instructorResult.lastInsertRowid
 
@@ -166,7 +166,7 @@ const courseResult = insertCourse.run(
   1,
   1,
   now,
-  now
+  now,
 )
 const courseId = courseResult.lastInsertRowid
 
@@ -193,7 +193,7 @@ for (const section of sections) {
     section.description,
     section.order,
     now,
-    now
+    now,
   )
   sectionIds.push(Number(result.lastInsertRowid))
 }
@@ -213,17 +213,17 @@ const lessonsData = [
   { sectionIndex: 0, title: 'What is Vue.js and why should you learn it?', slug: 'what-is-vue', duration: '08:30', order: 1, isFree: true },
   { sectionIndex: 0, title: 'Installing and setting up development environment', slug: 'installation-setup', duration: '12:45', order: 2, isFree: true },
   { sectionIndex: 0, title: 'Vue project structure', slug: 'project-structure', duration: '10:20', order: 3, isFree: false },
-  
+
   // Section 2
   { sectionIndex: 1, title: 'Creating your first component', slug: 'first-component', duration: '15:00', order: 1, isFree: false },
   { sectionIndex: 1, title: 'Props and passing data to component', slug: 'props-data-passing', duration: '18:30', order: 2, isFree: false },
   { sectionIndex: 1, title: 'Events and parent-child communication', slug: 'events-communication', duration: '14:15', order: 3, isFree: false },
-  
+
   // Section 3
   { sectionIndex: 2, title: 'Introduction to Composition API', slug: 'composition-api-intro', duration: '20:00', order: 1, isFree: false },
   { sectionIndex: 2, title: 'ref and reactive', slug: 'ref-reactive', duration: '16:45', order: 2, isFree: false },
   { sectionIndex: 2, title: 'computed and watch', slug: 'computed-watch', duration: '22:30', order: 3, isFree: false },
-  
+
   // Section 4
   { sectionIndex: 3, title: 'Installing and setting up Nuxt 3', slug: 'nuxt-3-setup', duration: '14:00', order: 1, isFree: false },
   { sectionIndex: 3, title: 'Folder structure in Nuxt', slug: 'nuxt-folder-structure', duration: '11:30', order: 2, isFree: false },
@@ -244,7 +244,7 @@ for (const lesson of lessonsData) {
     lesson.order,
     lesson.isFree ? 1 : 0,
     now,
-    now
+    now,
   )
   lessonCount++
 }
@@ -284,7 +284,7 @@ const userResult = insertUser.run(
   '/images/users/default.jpg',
   'student',
   now,
-  now
+  now,
 )
 
 console.log('👤 Test user created')

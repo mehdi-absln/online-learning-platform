@@ -131,7 +131,7 @@ export async function canUserReview(userId: number, courseId: number): Promise<b
   const enrollment = await db.query.enrollments.findFirst({
     where: (enrollments, { and, eq }) => and(
       eq(enrollments.userId, userId),
-      eq(enrollments.courseId, courseId)
+      eq(enrollments.courseId, courseId),
     ),
   })
 
@@ -141,7 +141,7 @@ export async function canUserReview(userId: number, courseId: number): Promise<b
   const existingReview = await db.query.reviews.findFirst({
     where: (reviews, { and, eq }) => and(
       eq(reviews.userId, userId),
-      eq(reviews.courseId, courseId)
+      eq(reviews.courseId, courseId),
     ),
   })
 

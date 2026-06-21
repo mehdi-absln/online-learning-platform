@@ -12,7 +12,7 @@ async function testEmptyReviews() {
 
   for (const slug of courses) {
     const course = await getDetailedCourseBySlug(slug)
-    
+
     if (!course) {
       console.log(`❌ Course not found: ${slug}`)
       continue

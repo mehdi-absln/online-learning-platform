@@ -25,7 +25,8 @@ export default defineEventHandler(async (event) => {
     const progress = await getProgressByUserId(payload.userId)
 
     return successResponse('Progress retrieved successfully', { progress })
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     if (typeof error === 'object' && error !== null && 'statusCode' in error) {
       const nuxtError = error as { statusCode?: number, statusMessage?: string }
       throw createError({

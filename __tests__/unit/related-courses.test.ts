@@ -1,11 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { mockDeep, mockReset } from 'vitest-mock-extended'
 
-// Mock the database before importing the module
-vi.mock('../../server/db', () => ({
-  db: mockDeep(),
-}))
-
 import { db } from '../../server/db'
 import {
   getRelatedCourses,
@@ -13,6 +8,11 @@ import {
   calculateTagMatchScore,
   parseTags,
 } from '../../server/utils/related-courses'
+
+// Mock the database before importing the module
+vi.mock('../../server/db', () => ({
+  db: mockDeep(),
+}))
 
 describe('Related Courses Utils', () => {
   beforeEach(() => {
@@ -73,7 +73,7 @@ describe('Related Courses Utils', () => {
     it('should count matching tags', () => {
       const score = calculateTagMatchScore(
         ['javascript', 'react', 'vue'],
-        ['javascript', 'react', 'angular']
+        ['javascript', 'react', 'angular'],
       )
       expect(score).toBe(2)
     })
@@ -81,7 +81,7 @@ describe('Related Courses Utils', () => {
     it('should return 0 for no matches', () => {
       const score = calculateTagMatchScore(
         ['python', 'django'],
-        ['javascript', 'react']
+        ['javascript', 'react'],
       )
       expect(score).toBe(0)
     })
@@ -94,7 +94,7 @@ describe('Related Courses Utils', () => {
     it('should be case insensitive', () => {
       const score = calculateTagMatchScore(
         ['JavaScript', 'React'],
-        ['javascript', 'react']
+        ['javascript', 'react'],
       )
       expect(score).toBe(2)
     })
@@ -102,7 +102,7 @@ describe('Related Courses Utils', () => {
     it('should return full count when all tags match', () => {
       const score = calculateTagMatchScore(
         ['javascript', 'react'],
-        ['javascript', 'react']
+        ['javascript', 'react'],
       )
       expect(score).toBe(2)
     })
@@ -110,7 +110,7 @@ describe('Related Courses Utils', () => {
     it('should handle duplicate tags correctly', () => {
       const score = calculateTagMatchScore(
         ['javascript', 'javascript', 'react'],
-        ['javascript', 'vue']
+        ['javascript', 'vue'],
       )
       // Should count each occurrence
       expect(score).toBeGreaterThanOrEqual(1)

@@ -15,7 +15,10 @@
       role="img"
       :aria-label="`Icon for ${label}`"
     >
-      <span class="text-xl" aria-hidden="true">{{ icon }}</span>
+      <span
+        class="text-xl"
+        aria-hidden="true"
+      >{{ icon }}</span>
     </div>
 
     <!-- Value -->

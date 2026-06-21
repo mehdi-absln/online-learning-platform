@@ -1,7 +1,7 @@
 // scripts/update-blogs-batch2.ts
-import { db } from '../server/db';
-import { blogs } from '../server/db/schema';
-import { eq } from 'drizzle-orm';
+import { db } from '../server/db'
+import { blogs } from '../server/db/schema'
+import { eq } from 'drizzle-orm'
 
 const BLOG_CONTENTS = {
   17: `# Database Design Best Practices: From Schema to Performance
@@ -2113,27 +2113,28 @@ onUnmounted(() => {
 
 Performance optimization is iterative. Measure first, optimize bottlenecks, then measure again. Focus on user-perceived performance: fast initial load, smooth interactions, and responsive UI.
 
-Most importantly: don't prematurely optimize. Build features first, profile in production-like conditions, then optimize what actually matters to your users.`
-};
+Most importantly: don't prematurely optimize. Build features first, profile in production-like conditions, then optimize what actually matters to your users.`,
+}
 
 async function updateBatch2() {
-  console.log('🚀 Starting batch 2 update (5 blogs)...\n');
+  console.log('🚀 Starting batch 2 update (5 blogs)...\n')
 
   for (const [id, content] of Object.entries(BLOG_CONTENTS)) {
     try {
       await db.update(blogs)
         .set({ content })
-        .where(eq(blogs.id, Number(id)));
+        .where(eq(blogs.id, Number(id)))
 
-      console.log(`✅ Updated blog ${id}`);
-    } catch (error) {
-      console.error(`❌ Failed to update blog ${id}:`, error);
+      console.log(`✅ Updated blog ${id}`)
+    }
+    catch (error) {
+      console.error(`❌ Failed to update blog ${id}:`, error)
     }
   }
 
-  console.log('\n🎉 Batch 2 complete! All blogs updated.');
-  console.log('Run: npx tsx scripts/check-blogs.ts to verify\n');
-  process.exit(0);
+  console.log('\n🎉 Batch 2 complete! All blogs updated.')
+  console.log('Run: npx tsx scripts/check-blogs.ts to verify\n')
+  process.exit(0)
 }
 
-updateBatch2();
+updateBatch2()

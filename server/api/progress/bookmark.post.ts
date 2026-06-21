@@ -35,7 +35,8 @@ export default defineEventHandler(async (event) => {
     const progress = await toggleBookmark(payload.userId, lessonId)
 
     return successResponse('Bookmark toggled', { progress })
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     if (typeof error === 'object' && error !== null && 'statusCode' in error) {
       const nuxtError = error as { statusCode?: number, statusMessage?: string }
       throw createError({

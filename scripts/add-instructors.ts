@@ -61,7 +61,8 @@ async function main() {
         },
       })
       console.log(`✅ Added/Updated: ${instructor.name}`)
-    } catch (error) {
+    }
+    catch (error) {
       console.error(`❌ Error adding ${instructor.name}:`, error)
     }
   }

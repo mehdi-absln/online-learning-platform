@@ -3,7 +3,7 @@ import { lessons } from '../server/db/schema'
 
 async function showLessons() {
   const allLessons = await db.select().from(lessons)
-  
+
   console.log('\n📚 All Lessons:\n')
   console.log(JSON.stringify(allLessons, null, 2))
   console.log(`\n✅ Total: ${allLessons.length} lessons`)

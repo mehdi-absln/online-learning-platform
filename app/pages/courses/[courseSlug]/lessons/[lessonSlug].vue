@@ -38,7 +38,10 @@
                 <p class="text-sm text-gray-400">
                   Lesson {{ currentIndex + 1 }} of {{ totalLessons }}
                 </p>
-                <h1 id="lesson-title" class="font-bold text-white truncate">
+                <h1
+                  id="lesson-title"
+                  class="font-bold text-white truncate"
+                >
                   {{ lesson.title }}
                 </h1>
               </div>
@@ -81,7 +84,10 @@
       <div class="container py-6">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <!-- Main Content -->
-          <section class="lg:col-span-3 space-y-6" aria-labelledby="lesson-title">
+          <section
+            class="lg:col-span-3 space-y-6"
+            aria-labelledby="lesson-title"
+          >
             <ClientOnly>
               <LessonVideo
                 :video-url="lessonData?.isLocked ? undefined : (lesson.videoUrl || undefined)"
@@ -291,6 +297,19 @@
 <script setup lang="ts">
 import type { DetailedLesson } from '~/types/lesson'
 import ErrorState from '~/components/ui/ErrorState.vue'
+import Breadcrumb from '~/components/ui/Breadcrumb.vue'
+import LessonVideo from '~/components/lesson/LessonVideo.vue'
+import LessonContent from '~/components/lesson/LessonContent.vue'
+import LessonSidebar from '~/components/lesson/LessonSidebar.vue'
+import LessonNav from '~/components/lesson/LessonNav.vue'
+import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
+import IconClock from '~/components/icons/IconClock.vue'
+import IconCalendar from '~/components/icons/IconCalendar.vue'
+import IconBookmark from '~/components/icons/IconBookmark.vue'
+import IconShare from '~/components/icons/IconShare.vue'
+import IconCheckCircle from '~/components/icons/IconCheckCircle.vue'
+import IconLock from '~/components/icons/IconLock.vue'
+import IconChevronRight from '~/components/icons/IconChevronRight.vue'
 
 definePageMeta({
   key: route => `${String(route.params.courseSlug ?? '')}:${String(route.params.lessonSlug ?? '')}`,
@@ -308,19 +327,6 @@ function safeFormatDate(date: string | Date | null | undefined) {
   if (Number.isNaN(d.getTime())) return 'N/A'
   return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(d)
 }
-import Breadcrumb from '~/components/ui/Breadcrumb.vue'
-import LessonVideo from '~/components/lesson/LessonVideo.vue'
-import LessonContent from '~/components/lesson/LessonContent.vue'
-import LessonSidebar from '~/components/lesson/LessonSidebar.vue'
-import LessonNav from '~/components/lesson/LessonNav.vue'
-import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
-import IconClock from '~/components/icons/IconClock.vue'
-import IconCalendar from '~/components/icons/IconCalendar.vue'
-import IconBookmark from '~/components/icons/IconBookmark.vue'
-import IconShare from '~/components/icons/IconShare.vue'
-import IconCheckCircle from '~/components/icons/IconCheckCircle.vue'
-import IconLock from '~/components/icons/IconLock.vue'
-import IconChevronRight from '~/components/icons/IconChevronRight.vue'
 
 const route = useRoute()
 const normalizeSlug = (value: string | null | undefined) => value?.trim().toLowerCase() ?? ''
@@ -423,7 +429,7 @@ const courseLink = computed(() => `/courses/${courseSlug.value}`)
 async function handleRetry() {
   await Promise.allSettled([
     refreshCourse?.(),
-    fetchLessonAccess()
+    fetchLessonAccess(),
   ])
 }
 
@@ -435,14 +441,6 @@ async function handleToggleComplete() {
   finally {
     isCompletingLesson.value = false
   }
-}
-
-function formatDate(date: Date) {
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(new Date(date))
 }
 
 // ───── Keyboard Shortcuts ─────

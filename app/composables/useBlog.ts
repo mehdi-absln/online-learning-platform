@@ -1,5 +1,8 @@
-import type { ApiResponse } from '~/types/api'; import type { Blog } from '~/types/blog'; type BlogResponse = ApiResponse<Blog>
+import type { ApiResponse } from '~/types/api'
+import type { Blog } from '~/types/blog'
 import { useApiError } from '~/composables/useApiError'
+
+type BlogResponse = ApiResponse<Blog>
 
 export const useBlog = (slug: string) => {
   const store = useBlogsStore()

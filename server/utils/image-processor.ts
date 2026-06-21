@@ -51,7 +51,7 @@ export function processCourseImage(imageUrl: string | null | undefined): string 
 // Function to process and validate instructor avatar
 export function processInstructorAvatar(
   avatarUrl: string | null | undefined,
-  instructorName: string,
+  _instructorName: string,
 ): string {
   if (avatarUrl) {
     const validatedUrl = validateAndProcessImageUrl(avatarUrl)

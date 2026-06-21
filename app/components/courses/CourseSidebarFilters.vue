@@ -24,7 +24,8 @@
           v-model="searchQuery"
           placeholder="Search courses..."
           :debounce="400"
-          @search="handleSearch" @clear="handleClear"
+          @search="handleSearch"
+          @clear="handleClear"
         />
       </div>
 
