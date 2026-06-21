@@ -1,6 +1,10 @@
 // app/composables/useCourses.ts
-import type { ApiResponse } from '~/types/api'; import type { Course } from '~/types/course'; type CourseListResponse = ApiResponse<Course[]>
+import type { ApiResponse } from '~/types/api'
+import type { Course } from '~/types/course'
 import { useApiError } from '~/composables/useApiError'
+
+type CourseListResponse = ApiResponse<Course[]>
+type QueryParamValue = string | null | Array<string | null> | undefined
 
 interface CourseQueryParams {
   page: number
@@ -25,15 +29,17 @@ export const useCourses = () => {
     const query = route.query
 
     // Normalize and parse query parameters to ensure type safety
-    const parseNumber = (val: any): number | undefined => {
-      if (!val) return undefined
-      const parsed = Number(val)
+    const parseNumber = (val: QueryParamValue): number | undefined => {
+      const normalized = Array.isArray(val) ? val[0] : val
+      if (!normalized) return undefined
+      const parsed = Number(normalized)
       return isNaN(parsed) ? undefined : parsed
     }
 
-    const parseString = (val: any): string | undefined => {
-      if (!val) return undefined
-      return Array.isArray(val) ? String(val[0]) : String(val)
+    const parseString = (val: QueryParamValue): string | undefined => {
+      const normalized = Array.isArray(val) ? val[0] : val
+      if (!normalized) return undefined
+      return String(normalized)
     }
 
     const params: CourseQueryParams = {
@@ -44,7 +50,7 @@ export const useCourses = () => {
     if (query.categories) params.categories = query.categories as string | string[]
     if (query.levels) params.levels = query.levels as string | string[]
     const rawTags = query.tags ?? query.tag
-  if (rawTags) params.tags = rawTags as string | string[]
+    if (rawTags) params.tags = rawTags as string | string[]
     if (query.freeOnly === 'true') params.freeOnly = true
     if (query.paidOnly === 'true') params.paidOnly = true
 

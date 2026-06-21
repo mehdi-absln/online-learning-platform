@@ -35,15 +35,17 @@ export default defineEventHandler(async (event) => {
       data: blog,
     }
   }
-  catch (error: any) {
-    if (error.statusCode) {
+  catch (error: unknown) {
+    if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }
+
+    const message = error instanceof Error ? error.message : 'Unknown error'
 
     throw createError({
       statusCode: 500,
       statusMessage: 'Failed to fetch blog',
-      data: { message: error.message },
+      data: { message },
     })
   }
 })

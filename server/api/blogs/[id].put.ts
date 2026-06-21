@@ -1,6 +1,6 @@
 // server/api/blogs/[id].put.ts
 import { z } from 'zod'
-import { getBlogById, updateBlog, isSlugExists } from '../../db/blog-service'
+import { getBlogById, updateBlog, isSlugExists, type UpdateBlogInput } from '../../db/blog-service'
 import { requireInstructor } from '../../utils/auth-helpers'
 import { calculateReadingTime } from '../../utils/blog-helpers' // ✨ جدید
 
@@ -107,7 +107,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // ✨ اگر content تغییر کرد، readingTime رو دوباره محاسبه کن
-    const updateData: any = { ...data }
+    const updateData: UpdateBlogInput = { ...data }
     if (data.content) {
       updateData.readingTime = calculateReadingTime(data.content)
     }

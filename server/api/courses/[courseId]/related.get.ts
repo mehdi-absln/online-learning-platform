@@ -32,8 +32,9 @@ export default cachedEventHandler(
         data: result.data,
         meta: result.meta,
       }
-    } catch (error: any) {
-      if (error.message === 'Course not found') {
+    }
+    catch (error: unknown) {
+      if (error instanceof Error && error.message === 'Course not found') {
         throw createError({
           statusCode: 404,
           statusMessage: 'Course not found',
@@ -53,5 +54,5 @@ export default cachedEventHandler(
       const courseId = getRouterParam(event, 'courseId')
       return `related-courses-${courseId}`
     },
-  }
+  },
 )

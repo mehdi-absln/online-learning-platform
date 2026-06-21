@@ -1,14 +1,17 @@
 // scripts/check-tables.ts
-import { db } from '../server/db'
-import { sql } from 'drizzle-orm'
+import { sqlite } from '../server/db'
+
+interface TableRow {
+  name: string
+}
 
 async function checkTables() {
-  const tables = await db.all(sql`
-    SELECT name FROM sqlite_master WHERE type='table' ORDER BY name
-  `)
-  
+  const tables = sqlite
+    .prepare('SELECT name FROM sqlite_master WHERE type=\'table\' ORDER BY name')
+    .all() as TableRow[]
+
   console.log('📋 Tables in database:')
-  tables.forEach((t: any) => console.log(`  - ${t.name}`))
+  tables.forEach(table => console.log(`  - ${table.name}`))
 }
 
 checkTables()

@@ -12,7 +12,7 @@ export interface TabItem {
 export interface TabsProps {
   modelValue?: number
   ariaLabel?: string
-  tabs?: Array<{ name: string; title: string; disabled?: boolean }>
+  tabs?: Array<{ name: string, title: string, disabled?: boolean }>
   tabListClass?: string
   tabClass?: string
   activeTabClass?: string

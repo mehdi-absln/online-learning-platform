@@ -18,10 +18,10 @@ export default defineEventHandler(async (event) => {
     let filteredBlogs = allBlogs
     if (searchQuery) {
       const searchTerm = searchQuery.toLowerCase()
-      filteredBlogs = allBlogs.filter(blog => 
-        blog.title.toLowerCase().includes(searchTerm) ||
-        blog.content?.toLowerCase().includes(searchTerm) ||
-        blog.excerpt?.toLowerCase().includes(searchTerm)
+      filteredBlogs = allBlogs.filter(blog =>
+        blog.title.toLowerCase().includes(searchTerm)
+        || blog.content?.toLowerCase().includes(searchTerm)
+        || blog.excerpt?.toLowerCase().includes(searchTerm),
       )
     }
 
@@ -45,11 +45,13 @@ export default defineEventHandler(async (event) => {
       },
     }
   }
-  catch (error: any) {
+  catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+
     throw createError({
       statusCode: 500,
       statusMessage: 'Failed to fetch blogs',
-      data: { message: error.message },
+      data: { message },
     })
   }
 })

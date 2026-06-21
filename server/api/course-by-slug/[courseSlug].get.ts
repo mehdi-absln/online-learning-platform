@@ -65,10 +65,12 @@ export default defineEventHandler(async (event) => {
       },
     }
   }
-  catch (error: any) {
-    console.error('Error fetching course:', error.message)
+  catch (error: unknown) {
+    console.error('Error fetching course:', error)
 
-    if (error.statusCode) throw error
+    if (error && typeof error === 'object' && 'statusCode' in error) {
+      throw error
+    }
 
     throw createError({
       statusCode: 500,

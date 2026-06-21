@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     const items = await getCartItems(user.id)
 
     // Calculate total price server-side
-    const totalPrice = items.reduce((sum: number, item: any) => {
+    const totalPrice = items.reduce((sum, item) => {
       // Only include published courses in total
       if (item.isPublished) {
         return sum + (Number(item.price) || 0)
