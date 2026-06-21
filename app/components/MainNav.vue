@@ -27,7 +27,11 @@
     >
       <div
         v-if="isMobileMenuOpen"
+        ref="mobileMenuRef"
         class="lg:hidden scrollbar-hide fixed top-20 left-4 right-4 z-50 bg-dark-surface/95 backdrop-blur-xl border border-dark-divider rounded-2xl shadow-2xl max-h-[calc(100vh-6rem)] overflow-y-auto pb-4"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile navigation menu"
       >
         <ul
           class="py-2"
@@ -472,6 +476,7 @@
 import type { ComponentPublicInstance } from 'vue'
 import { useWindowScroll } from '@vueuse/core'
 import { useCart } from '~/composables/useCart'
+import { useFocusTrap } from '~/composables/useFocusTrap'
 import { useKeyboardFocus } from '~/composables/useKeyboardFocus'
 import { useNavigationLinks } from '~/composables/useNavigationLinks'
 import { useUserStore } from '~/stores/user'
@@ -499,6 +504,7 @@ const focusedItemIndex = ref(-1)
 
 // Mobile menu state
 const isMobileMenuOpen = ref(false)
+const mobileMenuRef = ref<HTMLElement | null>(null)
 
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
@@ -507,6 +513,21 @@ const toggleMobileMenu = () => {
 const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
 }
+
+// Focus trap + Escape handling for the mobile menu (a11y).
+// When the menu is open, Tab cycles only within the menu and Escape closes it,
+// returning focus to the hamburger button.
+useFocusTrap({
+  isActive: isMobileMenuOpen,
+  target: mobileMenuRef,
+  onEscape: closeMobileMenu,
+})
+
+// Lock body scroll while the mobile menu is open so the page behind it stays put.
+watch(isMobileMenuOpen, (open) => {
+  if (typeof document === 'undefined') return
+  document.body.style.overflow = open ? 'hidden' : ''
+})
 
 // Shared navigation links
 const { mainLinks } = useNavigationLinks()
@@ -610,5 +631,9 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('mousedown', handleClickOutside)
+  // Ensure body scroll is restored if the component unmounts mid-menu
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = ''
+  }
 })
 </script>
