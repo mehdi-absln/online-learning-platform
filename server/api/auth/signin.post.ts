@@ -1,3 +1,4 @@
+import { ZodError } from 'zod'
 import { findByUsernameOrEmail, verifyPassword } from '../../db/user-service'
 import { generateToken, generateRefreshToken } from '../../utils/jwt'
 import { AUTH_ERRORS } from '../../../app/constants'
@@ -65,8 +66,8 @@ export default defineEventHandler(async (event) => {
   }
   catch (error: unknown) {
     // Handle Zod validation errors
-    if (error instanceof Error && error.name === 'ZodError') {
-      const firstIssue = (error as any).issues?.[0]
+    if (error instanceof ZodError) {
+      const firstIssue = error.issues[0]
       return errorResponse(firstIssue?.message || 'Validation failed', 'Invalid input')
     }
 
@@ -77,6 +78,7 @@ export default defineEventHandler(async (event) => {
     }
 
     console.error('Sign in error:', error)
-    return errorResponse('Internal server error', (error as Error).message)
+    const message = error instanceof Error ? error.message : undefined
+    return errorResponse('Internal server error', message)
   }
 })

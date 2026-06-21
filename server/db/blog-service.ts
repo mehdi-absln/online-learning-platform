@@ -1,19 +1,20 @@
 import { db } from './index'
 import { blogs, users } from './schema'
 import { eq, desc } from 'drizzle-orm'
-import type { Blog, NewBlog } from './schema'
+import type { Blog } from './schema'
+import type { BlogStatus } from '../../app/types/blog'
 
 // تایپ برای ایجاد بلاگ
 export interface CreateBlogInput {
   title: string
   slug: string
   content: string
-  excerpt?: string
-  coverImage?: string
-  status?: string
+  excerpt?: string | null
+  coverImage?: string | null
+  status?: BlogStatus
   authorId: number
   readingTime?: number // ✅ اضافه شد
-  publishedAt?: Date
+  publishedAt?: Date | null
 }
 
 // تایپ برای آپدیت بلاگ
@@ -21,11 +22,11 @@ export interface UpdateBlogInput {
   title?: string
   slug?: string
   content?: string
-  excerpt?: string
-  coverImage?: string
-  status?: string
+  excerpt?: string | null
+  coverImage?: string | null
+  status?: BlogStatus
   readingTime?: number // ✅ اضافه شد
-  publishedAt?: Date
+  publishedAt?: Date | null
 }
 
 // دریافت همه بلاگ‌ها
@@ -49,7 +50,7 @@ export async function getAllBlogs() {
         id: users.id,
         name: users.name,
         email: users.email,
-        avatar: users.avatar,  // ✅ اضافه شد
+        avatar: users.avatar, // ✅ اضافه شد
       },
     })
     .from(blogs)
@@ -185,7 +186,7 @@ export async function deleteBlog(id: number): Promise<boolean> {
 // بررسی وجود slug تکراری
 export async function isSlugExists(
   slug: string,
-  excludeId?: number
+  excludeId?: number,
 ): Promise<boolean> {
   const query = db
     .select({ id: blogs.id })
