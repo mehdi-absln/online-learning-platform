@@ -20,7 +20,7 @@ interface Props {
   showEmpty?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   maxStars: 5,
   showEmpty: false,
 })

@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { readonly } from 'vue'
 import { getErrorMessage } from '~/utils/error-helpers'
 import { useCartStore } from './cart'
 import { useToast } from '~/composables/useToast'

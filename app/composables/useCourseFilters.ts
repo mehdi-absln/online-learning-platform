@@ -2,8 +2,9 @@
 import { debounce } from 'lodash-es'
 import type { CourseFilters, FilterOptions } from '~/types/course'
 import type { ApiResponse } from '~/types/api'
-type FilterOptionsResponse = ApiResponse<FilterOptions>
 import { extractParamsFromUrl, buildQueryParams } from '~/utils/course-helpers'
+
+type FilterOptionsResponse = ApiResponse<FilterOptions>
 
 const COURSE_LIMIT = 12
 
@@ -12,8 +13,8 @@ export const useCourseFilters = () => {
   const router = useRouter()
 
   // ───── Fetch filter options ─────
-  const { data: optionsData, pending: optionsLoading, error: optionsError } =
-    useFetch<FilterOptionsResponse>('/api/courses/filter-options', {
+  const { data: optionsData, pending: optionsLoading, error: optionsError }
+    = useFetch<FilterOptionsResponse>('/api/courses/filter-options', {
       key: 'filter-options',
     })
 
@@ -43,33 +44,32 @@ export const useCourseFilters = () => {
   // ✅ Update URL helper
   const updateFilters = (newFilter: CourseFilters, page: number = 1) => {
     const queryParams = buildQueryParams(newFilter, page, COURSE_LIMIT)
-    const queryString = queryParams.toString()
 
     const searchParamsToQueryObject = (params: URLSearchParams) => {
-    const query: Record<string, string | string[]> = {}
+      const query: Record<string, string | string[]> = {}
 
-    for (const [key, value] of params.entries()) {
-      const existing = query[key]
+      for (const [key, value] of params.entries()) {
+        const existing = query[key]
 
-      if (!existing) {
-        query[key] = value
+        if (!existing) {
+          query[key] = value
+        }
+        else if (Array.isArray(existing)) {
+          existing.push(value)
+        }
+        else {
+          query[key] = [existing, value]
+        }
       }
-      else if (Array.isArray(existing)) {
-        existing.push(value)
-      }
-      else {
-        query[key] = [existing, value]
-      }
+      return query
     }
-    return query
-  }
 
-  const queryObject = searchParamsToQueryObject(queryParams)
+    const queryObject = searchParamsToQueryObject(queryParams)
 
-  router.push({
-    path: '/courses',
-    query: Object.keys(queryObject).length ? queryObject : undefined,
-  })
+    router.push({
+      path: '/courses',
+      query: Object.keys(queryObject).length ? queryObject : undefined,
+    })
   }
 
   const applyFilters = debounce((newFilter: CourseFilters) => {
@@ -115,7 +115,7 @@ export const useCourseFilters = () => {
   return {
     // Filter
     filter,
-    hasActiveFilters,  // ✅ از اینجا expose میشه
+    hasActiveFilters, // ✅ از اینجا expose میشه
     categories,
     levels,
     tags,
@@ -126,7 +126,7 @@ export const useCourseFilters = () => {
 
     // Pagination
     currentPage,
-    limit: COURSE_LIMIT,  // ✅ بدون computed
+    limit: COURSE_LIMIT, // ✅ بدون computed
     totalPages,
     pagination: computed(() => ({
       currentPage: currentPage.value,

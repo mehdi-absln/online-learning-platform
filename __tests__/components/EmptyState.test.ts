@@ -6,10 +6,10 @@ describe('EmptyState', () => {
   it('renders title correctly', () => {
     const wrapper = mount(EmptyState, {
       props: {
-        title: 'No Courses Found'
-      }
+        title: 'No Courses Found',
+      },
     })
-    
+
     expect(wrapper.text()).toContain('No Courses Found')
   })
 
@@ -17,10 +17,10 @@ describe('EmptyState', () => {
     const wrapper = mount(EmptyState, {
       props: {
         title: 'Empty Cart',
-        message: 'Your cart is empty'
-      }
+        message: 'Your cart is empty',
+      },
     })
-    
+
     expect(wrapper.text()).toContain('Your cart is empty')
   })
 
@@ -29,10 +29,10 @@ describe('EmptyState', () => {
       props: {
         title: 'Get Started',
         actionTo: '/courses',
-        actionLabel: 'Browse Courses'
-      }
+        actionLabel: 'Browse Courses',
+      },
     })
-    
+
     // Component should render without crashing
     expect(wrapper.exists()).toBe(true)
     expect(wrapper.text()).toContain('Get Started')
@@ -43,14 +43,14 @@ describe('EmptyState', () => {
     const wrapper = mount(EmptyState, {
       props: {
         title: 'No Results',
-        actionLabel: 'Clear Filters'
-      }
+        actionLabel: 'Clear Filters',
+      },
     })
-    
+
     const button = wrapper.find('button')
     expect(button.exists()).toBe(true)
     expect(button.text()).toContain('Clear Filters')
-    
+
     // Test emit
     await button.trigger('click')
     expect(wrapper.emitted('action')).toBeTruthy()
@@ -60,10 +60,10 @@ describe('EmptyState', () => {
   it('uses default icon when no icon slot provided', () => {
     const wrapper = mount(EmptyState, {
       props: {
-        title: 'Default Icon Test'
-      }
+        title: 'Default Icon Test',
+      },
     })
-    
+
     // Check that icon container exists
     expect(wrapper.find('[aria-hidden="true"]').exists()).toBe(true)
   })
@@ -71,29 +71,29 @@ describe('EmptyState', () => {
   it('accepts custom icon via slot', () => {
     const wrapper = mount(EmptyState, {
       props: {
-        title: 'Custom Icon'
+        title: 'Custom Icon',
       },
       slots: {
-        icon: '<span class="custom-icon">🎯</span>'
-      }
+        icon: '<span class="custom-icon">🎯</span>',
+      },
     })
-    
+
     expect(wrapper.find('.custom-icon').exists()).toBe(true)
   })
 
   it('has proper accessibility attributes', () => {
     const wrapper = mount(EmptyState, {
       props: {
-        title: 'Accessibility Test'
-      }
+        title: 'Accessibility Test',
+      },
     })
-    
+
     // Check for role="status"
     expect(wrapper.attributes('role')).toBe('status')
-    
+
     // Check for aria-live
     expect(wrapper.attributes('aria-live')).toBe('polite')
-    
+
     // Check for aria-labelledby
     expect(wrapper.attributes('aria-labelledby')).toBe('empty-state-title')
   })

@@ -45,8 +45,8 @@ function updateReadingTimes() {
 
     console.log('\n🎉 All reading times updated!')
     console.log('Total blogs updated:', allBlogs.length)
-
-  } catch (error) {
+  }
+  catch (error) {
     console.error('❌ Error:', error)
     process.exit(1)
   }

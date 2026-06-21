@@ -5,9 +5,7 @@ import {
   courseContentSections,
   lessons,
   courseLearningObjectives,
-  reviews,
   instructors,
-  users,
   categories,
   type Course as DbCourse,
 } from './schema'

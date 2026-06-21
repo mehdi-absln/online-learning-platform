@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
     return successResponse('Course deleted successfully')
   }
   catch (error: unknown) {
-    const err = error as { statusCode?: number; statusMessage?: string; message?: string }
+    const err = error as { statusCode?: number, statusMessage?: string, message?: string }
 
     if (err.statusCode) {
       setResponseStatus(event, err.statusCode)

@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
     return successResponse('Course retrieved', course)
   }
   catch (error: unknown) {
-    const err = error as { statusCode?: number; statusMessage?: string; message?: string }
+    const err = error as { statusCode?: number, statusMessage?: string, message?: string }
 
     if (err.statusCode) {
       setResponseStatus(event, err.statusCode)

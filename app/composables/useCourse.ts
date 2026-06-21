@@ -35,7 +35,7 @@ export const useCourse = (slug: MaybeRefOrGetter<string>) => {
         }
         return response
       },
-    }
+    },
   )
 
   watch(data, (newData) => {

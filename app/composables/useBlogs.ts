@@ -1,5 +1,8 @@
-import type { ApiResponse } from '~/types/api'; import type { Blog } from '~/types/blog'; type BlogsResponse = ApiResponse<Blog[]>
+import type { ApiResponse } from '~/types/api'
+import type { Blog } from '~/types/blog'
 import { useApiError } from '~/composables/useApiError'
+
+type BlogsResponse = ApiResponse<Blog[]>
 
 export function useBlogs() {
   const route = useRoute()

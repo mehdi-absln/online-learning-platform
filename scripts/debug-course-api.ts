@@ -26,7 +26,8 @@ async function debugCourseAPI() {
     console.log('\n✅ Reviews found:', course.reviews.length)
     console.log('\n📋 First review:')
     console.log(JSON.stringify(course.reviews[0], null, 2))
-  } else {
+  }
+  else {
     console.log('\n⚠️  No reviews in response!')
   }
 

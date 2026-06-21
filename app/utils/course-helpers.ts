@@ -1,5 +1,4 @@
 import type { CourseFilters } from '~/types/course'
-import type { Course } from '~/types/course'
 
 export interface UrlQueryParams {
   category?: string

@@ -29,7 +29,7 @@ async function syncReviewsCount() {
       // Update the course
       await db
         .update(courses)
-        .set({ 
+        .set({
           reviewsCount: actualCount,
           updatedAt: new Date(),
         })
@@ -38,7 +38,8 @@ async function syncReviewsCount() {
       console.log(`✅ Updated: "${course.title}"`)
       console.log(`   Old count: ${currentCount} → New count: ${actualCount}`)
       updatedCount++
-    } else {
+    }
+    else {
       console.log(`⏭️  Skipped: "${course.title}" (already correct: ${actualCount})`)
       unchangedCount++
     }

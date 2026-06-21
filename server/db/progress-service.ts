@@ -19,11 +19,11 @@ export async function getProgress(userId: number, lessonId: number) {
     .where(
       and(
         eq(lessonProgress.userId, userId),
-        eq(lessonProgress.lessonId, lessonId)
-      )
+        eq(lessonProgress.lessonId, lessonId),
+      ),
     )
     .limit(1)
-  
+
   return result[0] || null
 }
 
@@ -31,7 +31,7 @@ export async function getProgress(userId: number, lessonId: number) {
 export async function upsertProgress(
   userId: number,
   lessonId: number,
-  data: Partial<NewLessonProgress>
+  data: Partial<NewLessonProgress>,
 ) {
   const existing = await getProgress(userId, lessonId)
   const now = new Date()
@@ -45,9 +45,10 @@ export async function upsertProgress(
         updatedAt: now,
       })
       .where(eq(lessonProgress.id, existing.id))
-    
+
     return await getProgress(userId, lessonId)
-  } else {
+  }
+  else {
     // Insert
     const result = await db
       .insert(lessonProgress)
@@ -62,7 +63,7 @@ export async function upsertProgress(
         updatedAt: now,
       })
       .returning()
-    
+
     return result[0]
   }
 }
@@ -71,7 +72,7 @@ export async function upsertProgress(
 export async function toggleComplete(userId: number, lessonId: number) {
   const existing = await getProgress(userId, lessonId)
   const isCompleted = !existing?.isCompleted
-  
+
   return await upsertProgress(userId, lessonId, {
     isCompleted,
     completedAt: isCompleted ? new Date() : null,
@@ -82,7 +83,7 @@ export async function toggleComplete(userId: number, lessonId: number) {
 // Toggle bookmark
 export async function toggleBookmark(userId: number, lessonId: number) {
   const existing = await getProgress(userId, lessonId)
-  
+
   return await upsertProgress(userId, lessonId, {
     isBookmarked: !existing?.isBookmarked,
   })
@@ -96,11 +97,11 @@ export async function saveNotes(userId: number, lessonId: number, notes: string)
 // Get progress for multiple lessons (for course progress)
 export async function getProgressByLessonIds(userId: number, lessonIds: number[]) {
   if (lessonIds.length === 0) return []
-  
+
   const results = await db
     .select()
     .from(lessonProgress)
     .where(eq(lessonProgress.userId, userId))
-  
+
   return results.filter(p => lessonIds.includes(p.lessonId))
 }

@@ -8,10 +8,10 @@ describe('DashboardStatsCard', () => {
       props: {
         icon: '📚',
         label: 'Enrolled Courses',
-        value: 5
-      }
+        value: 5,
+      },
     })
-    
+
     expect(wrapper.text()).toContain('📚')
     // Animated counter starts at 0, so we check for the label
     expect(wrapper.text()).toContain('Enrolled Courses')
@@ -24,10 +24,10 @@ describe('DashboardStatsCard', () => {
       props: {
         icon: '✅',
         label: 'Completed',
-        value: 10
-      }
+        value: 10,
+      },
     })
-    
+
     // Animation starts at 0, which is expected behavior
     expect(wrapper.text()).toContain('0')
     expect(wrapper.text()).toContain('Completed')
@@ -40,10 +40,10 @@ describe('DashboardStatsCard', () => {
         icon: '📚',
         label: 'Courses',
         value: 3,
-        color: 'primary'
-      }
+        color: 'primary',
+      },
     })
-    
+
     const iconContainer = wrapper.find('[role="img"]')
     expect(iconContainer.classes()).toContain('bg-primary/15')
     expect(iconContainer.classes()).toContain('text-primary')
@@ -55,10 +55,10 @@ describe('DashboardStatsCard', () => {
         icon: '✅',
         label: 'Completed',
         value: 5,
-        color: 'green'
-      }
+        color: 'green',
+      },
     })
-    
+
     const iconContainer = wrapper.find('[role="img"]')
     expect(iconContainer.classes()).toContain('bg-emerald-500/15')
     expect(iconContainer.classes()).toContain('text-emerald-400')
@@ -70,10 +70,10 @@ describe('DashboardStatsCard', () => {
         icon: '🔄',
         label: 'In Progress',
         value: 2,
-        color: 'blue'
-      }
+        color: 'blue',
+      },
     })
-    
+
     const iconContainer = wrapper.find('[role="img"]')
     expect(iconContainer.classes()).toContain('bg-blue-500/15')
     expect(iconContainer.classes()).toContain('text-blue-400')
@@ -85,10 +85,10 @@ describe('DashboardStatsCard', () => {
         icon: '🔖',
         label: 'Bookmarked',
         value: 8,
-        color: 'amber'
-      }
+        color: 'amber',
+      },
     })
-    
+
     const iconContainer = wrapper.find('[role="img"]')
     expect(iconContainer.classes()).toContain('bg-amber-500/15')
     expect(iconContainer.classes()).toContain('text-amber-400')
@@ -99,10 +99,10 @@ describe('DashboardStatsCard', () => {
       props: {
         icon: '📚',
         label: 'Enrolled Courses',
-        value: 5
-      }
+        value: 5,
+      },
     })
-    
+
     const iconContainer = wrapper.find('[role="img"]')
     expect(iconContainer.exists()).toBe(true)
     expect(iconContainer.attributes('aria-label')).toContain('Icon for Enrolled Courses')
@@ -113,10 +113,10 @@ describe('DashboardStatsCard', () => {
       props: {
         icon: '📚',
         label: 'Courses',
-        value: 3
-      }
+        value: 3,
+      },
     })
-    
+
     // Check that the icon container has the transition class
     const iconContainer = wrapper.find('[role="img"]')
     expect(iconContainer.classes()).toContain('transition-transform')

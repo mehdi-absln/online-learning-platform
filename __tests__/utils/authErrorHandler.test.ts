@@ -19,7 +19,7 @@ describe('Authentication Error Handler', () => {
 
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'password',
-        'Sign in failed. Please try again.'
+        'Sign in failed. Please try again.',
       )
     })
 
@@ -28,7 +28,7 @@ describe('Authentication Error Handler', () => {
 
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'password',
-        SHARED_AUTH_ERRORS.INVALID_CREDENTIALS
+        SHARED_AUTH_ERRORS.INVALID_CREDENTIALS,
       )
     })
 
@@ -38,11 +38,11 @@ describe('Authentication Error Handler', () => {
 
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'username',
-        SHARED_AUTH_ERRORS.USERNAME_REQUIRED
+        SHARED_AUTH_ERRORS.USERNAME_REQUIRED,
       )
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'password',
-        SHARED_AUTH_ERRORS.PASSWORD_REQUIRED
+        SHARED_AUTH_ERRORS.PASSWORD_REQUIRED,
       )
     })
   })
@@ -56,7 +56,7 @@ describe('Authentication Error Handler', () => {
 
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'email',
-        'Sign up failed. Please try again.'
+        'Sign up failed. Please try again.',
       )
     })
 
@@ -68,23 +68,23 @@ describe('Authentication Error Handler', () => {
       // طبق منطق کد، چون "email" در پیام هست، خروجی EMAIL_ALREADY_EXISTS است
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'email',
-        AUTH_ERRORS.EMAIL_ALREADY_EXISTS
+        AUTH_ERRORS.EMAIL_ALREADY_EXISTS,
       )
     })
 
     // ✅ تست جدید: وقتی پیام فقط شامل "username" است
     it('handles username exists error (contains username only)', () => {
       // پیامی که فقط username دارد و email ندارد
-      const usernameOnlyError = `${SHARED_AUTH_ERRORS.USERNAME_OR_EMAIL_EXISTS} - username`
+      const _usernameOnlyError = `${SHARED_AUTH_ERRORS.USERNAME_OR_EMAIL_EXISTS} - username`
         .replace('email', 'e-mail') // حذف کلمه email
-      
+
       // یا بهتر: مستقیم تست کنیم
       handleSignUpError('Username or email already exists', mockSetFieldError)
-      
+
       // چون "email" در پیام هست، به branch اول می‌رود
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'email',
-        AUTH_ERRORS.EMAIL_ALREADY_EXISTS
+        AUTH_ERRORS.EMAIL_ALREADY_EXISTS,
       )
     })
 
@@ -95,7 +95,7 @@ describe('Authentication Error Handler', () => {
       // این به else نهایی می‌رود و همان پیام را ست می‌کند
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'email',
-        'Email is already registered'
+        'Email is already registered',
       )
     })
 
@@ -106,7 +106,7 @@ describe('Authentication Error Handler', () => {
       // این به else نهایی می‌رود و روی email ست می‌شود
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'email',
-        'Username is already taken'
+        'Username is already taken',
       )
     })
 
@@ -115,7 +115,7 @@ describe('Authentication Error Handler', () => {
 
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'password',
-        AUTH_ERRORS.PASSWORD_TOO_WEAK
+        AUTH_ERRORS.PASSWORD_TOO_WEAK,
       )
     })
 
@@ -124,7 +124,7 @@ describe('Authentication Error Handler', () => {
 
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'password',
-        SHARED_AUTH_ERRORS.PASSWORD_TOO_SHORT
+        SHARED_AUTH_ERRORS.PASSWORD_TOO_SHORT,
       )
     })
 
@@ -133,7 +133,7 @@ describe('Authentication Error Handler', () => {
 
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'confirmPassword',
-        SHARED_AUTH_ERRORS.PASSWORDS_DONT_MATCH
+        SHARED_AUTH_ERRORS.PASSWORDS_DONT_MATCH,
       )
     })
 
@@ -142,7 +142,7 @@ describe('Authentication Error Handler', () => {
 
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'termsAccepted',
-        SHARED_AUTH_ERRORS.TERMS_NOT_ACCEPTED
+        SHARED_AUTH_ERRORS.TERMS_NOT_ACCEPTED,
       )
     })
 
@@ -151,7 +151,7 @@ describe('Authentication Error Handler', () => {
 
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'email',
-        SHARED_AUTH_ERRORS.EMAIL_INVALID
+        SHARED_AUTH_ERRORS.EMAIL_INVALID,
       )
     })
 
@@ -160,19 +160,19 @@ describe('Authentication Error Handler', () => {
 
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'username',
-        SHARED_AUTH_ERRORS.USERNAME_REQUIRED
+        SHARED_AUTH_ERRORS.USERNAME_REQUIRED,
       )
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'email',
-        SHARED_AUTH_ERRORS.EMAIL_REQUIRED
+        SHARED_AUTH_ERRORS.EMAIL_REQUIRED,
       )
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'password',
-        SHARED_AUTH_ERRORS.PASSWORD_REQUIRED
+        SHARED_AUTH_ERRORS.PASSWORD_REQUIRED,
       )
       expect(mockSetFieldError).toHaveBeenCalledWith(
         'confirmPassword',
-        AUTH_ERRORS.CONFIRM_PASSWORD_REQUIRED
+        AUTH_ERRORS.CONFIRM_PASSWORD_REQUIRED,
       )
     })
   })

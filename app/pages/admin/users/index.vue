@@ -69,7 +69,10 @@
       </div>
 
       <!-- جدول کاربران -->
-      <div v-else class="overflow-x-auto">
+      <div
+        v-else
+        class="overflow-x-auto"
+      >
         <table
           class="w-full text-left text-sm text-gray-300"
           aria-label="User list"

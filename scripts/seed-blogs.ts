@@ -694,27 +694,28 @@ async function seedBlogs() {
       status: blog.status,
       authorId: author.id,
       publishedAt: blog.status === 'published'
-        ? new Date(now.getTime() - index * 24 * 60 * 60 * 1000)  // ✅ Date object
+        ? new Date(now.getTime() - index * 24 * 60 * 60 * 1000) // ✅ Date object
         : null,
-      createdAt: new Date(now.getTime() - index * 24 * 60 * 60 * 1000),  // ✅ Date object
-      updatedAt: now,  // ✅ Date object
+      createdAt: new Date(now.getTime() - index * 24 * 60 * 60 * 1000), // ✅ Date object
+      updatedAt: now, // ✅ Date object
     }))
 
     const insertedBlogs = await db.insert(blogs).values(blogsToInsert).returning()
 
     console.log(`\n✅ Created ${insertedBlogs.length} blogs:\n`)
-    
+
     insertedBlogs.forEach((blog, i) => {
       console.log(`   ${i + 1}. ${blog.title}`)
       console.log(`      └─ /${blog.slug} [${blog.status}]`)
     })
 
     console.log('\n🎉 Blog seeding completed successfully!')
-
-  } catch (error) {
+  }
+  catch (error) {
     console.error('❌ Error seeding blogs:', error)
     process.exit(1)
-  } finally {
+  }
+  finally {
     sqlite.close()
   }
 }

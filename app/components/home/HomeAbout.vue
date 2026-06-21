@@ -60,12 +60,6 @@
   </section>
 </template>
 
-<style scoped lang="postcss">
-.clip-triangle {
-  clip-path: polygon(0 0, 100% 100%, 0 100%);
-}
-</style>
-
 <script setup lang="ts">
 const FEATURES = [
   { icon: '/icon/UPST0182.png', text: 'Supportive and inspiring learning' },
@@ -74,3 +68,9 @@ const FEATURES = [
   { icon: '/icon/UPST0179.png', text: 'We help you achieve your learning goals' },
 ] as const
 </script>
+
+<style scoped lang="postcss">
+.clip-triangle {
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+</style>

@@ -46,7 +46,7 @@ export async function clearDb() {
     try {
       sqlite.prepare(`DELETE FROM ${table}`).run()
     }
-    catch (e) {
+    catch {
       // Table might not exist yet if migrations failed
     }
   }

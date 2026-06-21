@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { setActivePinia, createPinia } from 'pinia'
+
+// ───── Import AFTER all mocks ─────
+import { useLesson } from '~/composables/useLesson'
 
 // ───── Mock Data ─────
 const mockLessons = [
@@ -45,7 +48,7 @@ vi.mock('#imports', () => ({
 }))
 
 // ───── Mock Stores ─────
-let mockCoursesStoreData = {
+const mockCoursesStoreData = {
   detailedCourse: mockCourse,
   allLessons: mockLessons,
   totalLessons: 3,
@@ -91,9 +94,6 @@ vi.mock('~/composables/useCourse', () => ({
     error: ref(null),
   }),
 }))
-
-// ───── Import AFTER all mocks ─────
-import { useLesson } from '~/composables/useLesson'
 
 describe('useLesson', () => {
   beforeEach(() => {

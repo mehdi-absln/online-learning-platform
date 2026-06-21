@@ -239,11 +239,11 @@ defineEmits<{
 }>()
 
 const handleAddToCart = async () => {
-    const added = await addItem(props.course)
-    if (added) {
-      openCart()
-    }
+  const added = await addItem(props.course)
+  if (added) {
+    openCart()
   }
+}
 
 const courseLink = computed(() => {
   if (!props.course.slug) {

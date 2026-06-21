@@ -74,7 +74,7 @@ export async function processCheckout(userId: number, simulationType: 'success' 
         and(
           inArray(courses.id, courseIds),
           eq(instructorsTable.userId, userId),
-        )
+        ),
       )
       .all()
 

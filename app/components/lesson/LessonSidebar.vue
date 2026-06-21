@@ -106,7 +106,10 @@
 
               <template #default="{ item }">
                 <nav aria-label="Section lessons">
-                  <template v-for="lesson in (item as SectionAccordionItem).lessons" :key="lesson.id || lesson.slug">
+                  <template
+                    v-for="lesson in (item as SectionAccordionItem).lessons"
+                    :key="lesson.id || lesson.slug"
+                  >
                     <!-- Accessible/Clickable Lesson -->
                     <template v-if="lesson.isFree || userStore.isEnrolled(props.courseId) || userStore.isAdminLike || isOwnCourse">
                       <NuxtLink
