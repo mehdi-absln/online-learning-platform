@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-dark-gray">
+  <div class="min-h-screen bg-dark-gray animate-fade-in">
     <UiPageHero
       title="About Us"
       subtitle="Learn more about our mission, values, and the team behind the platform"

@@ -2,7 +2,7 @@
   <!-- Loading state -->
   <div
     v-if="isLoading"
-    class="py-36 flex flex-col items-center justify-center"
+    class="py-36 flex flex-col items-center justify-center animate-fade-in"
     role="status"
     aria-label="Loading course details"
   >
@@ -12,7 +12,7 @@
   <!-- Error state -->
   <div
     v-else-if="error || !course"
-    class="py-36 flex flex-col items-center justify-center"
+    class="py-36 flex flex-col items-center justify-center animate-fade-in"
     role="alert"
   >
     <ErrorState
@@ -30,7 +30,10 @@
   </div>
 
   <!-- Course details -->
-  <div v-else>
+  <div
+    v-else
+    class="animate-fade-in"
+  >
     <!-- Hero Section -->
     <section
       aria-labelledby="course-title"

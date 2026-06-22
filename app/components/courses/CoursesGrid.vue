@@ -2,9 +2,20 @@
   <div>
     <div
       v-if="loading"
-      class="text-center py-10"
+      aria-busy="true"
+      aria-live="polite"
     >
-      <LoadingSpinner message="Updating results..." />
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 [grid-auto-rows:1fr]"
+      >
+        <article
+          v-for="i in 6"
+          :key="i"
+          class="flex"
+        >
+          <CourseCardSkeleton class="w-full h-full" />
+        </article>
+      </div>
     </div>
 
     <div v-else>
@@ -51,7 +62,7 @@
 
 <script setup lang="ts">
 import CourseCard from '~/components/courses/CourseCard.vue'
-import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
+import CourseCardSkeleton from '~/components/courses/CourseCardSkeleton.vue'
 import Pagination from '~/components/ui/Pagination.vue'
 import type { Course } from '~/types/course'
 

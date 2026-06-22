@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-dark-gray">
+  <div class="min-h-screen bg-dark-gray animate-fade-in">
     <UiPageHero
       title="Blogs"
       subtitle="Read our latest articles and tutorials"
@@ -89,11 +89,18 @@
         <!-- Loading State -->
         <div
           v-else-if="isLoading"
-          class="flex justify-center py-12"
-          role="status"
-          aria-label="Loading blog articles"
+          aria-busy="true"
+          aria-live="polite"
         >
-          <UiLoadingSpinner message="Loading articles..." />
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <article
+              v-for="i in 3"
+              :key="i"
+              class="flex"
+            >
+              <BlogCardSkeleton class="w-full h-full" />
+            </article>
+          </div>
         </div>
 
         <!-- Blogs Grid -->
