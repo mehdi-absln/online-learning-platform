@@ -23,27 +23,7 @@
         >
           {{ course.category }}
         </span>
-        <button
-          :aria-label="'Bookmark ' + course.title"
-          class="group/bookmark bg-white rounded-full p-1.5 shadow transition-all duration-300 ease-in-out hover:bg-primary hover:shadow-lg"
-          @click.prevent="$emit('bookmark', course.id)"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-[18px] w-[18px] text-primary transition-colors duration-300 group-hover/bookmark:text-white"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 5v14l7-4 7 4V5a2 2 0 00-2-2H7a2 2 0 00-2 2z"
-            />
-          </svg>
-        </button>
+
       </div>
 
       <!-- Instructor Info -->
@@ -234,9 +214,7 @@ const isOwnCourse = computed(() => {
   return userStore.user?.id === props.course.instructor?.userId
 })
 
-defineEmits<{
-  bookmark: [courseId: number]
-}>()
+
 
 const handleAddToCart = async () => {
   const added = await addItem(props.course)

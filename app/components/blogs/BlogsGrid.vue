@@ -3,12 +3,18 @@
     <!-- Loading -->
     <div
       v-if="loading"
-      class="text-center py-10"
-      role="status"
-      aria-live="polite"
       aria-busy="true"
+      aria-live="polite"
     >
-      <LoadingSpinner message="Loading articles..." />
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <article
+          v-for="i in 3"
+          :key="i"
+          class="flex"
+        >
+          <BlogCardSkeleton class="w-full h-full" />
+        </article>
+      </div>
     </div>
 
     <!-- Empty State -->
@@ -90,7 +96,7 @@
 <script setup lang="ts">
 import type { Blog } from '~/types/blog'
 import BlogCard from '~/components/blogs/BlogCard.vue'
-import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
+import BlogCardSkeleton from '~/components/blogs/BlogCardSkeleton.vue'
 import Pagination from '~/components/ui/Pagination.vue'
 
 interface Props {

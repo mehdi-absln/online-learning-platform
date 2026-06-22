@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="animate-fade-in">
     <HomeHero />
     <HomeAbout />
     <HomePopularClasses

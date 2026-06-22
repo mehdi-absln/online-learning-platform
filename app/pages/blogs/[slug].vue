@@ -2,7 +2,7 @@
   <!-- Loading State -->
   <div
     v-if="isLoading"
-    class="py-36 flex flex-col items-center justify-center"
+    class="py-36 flex flex-col items-center justify-center animate-fade-in"
     role="status"
     aria-label="Loading article details"
   >
@@ -12,7 +12,7 @@
   <!-- Error State -->
   <div
     v-else-if="error || !blog"
-    class="py-36 flex flex-col items-center justify-center"
+    class="py-36 flex flex-col items-center justify-center animate-fade-in"
     role="alert"
   >
     <ErrorState
@@ -47,7 +47,7 @@
   <!-- Article Content -->
   <div
     v-else
-    class="min-h-screen bg-dark-gray"
+    class="min-h-screen bg-dark-gray animate-fade-in"
   >
     <!-- Live Region for Announcements -->
     <div

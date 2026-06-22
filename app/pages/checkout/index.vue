@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-dark-bg py-16 px-4">
+  <div class="min-h-screen bg-dark-bg py-16 px-4 animate-fade-in">
     <section
       class="max-w-4xl mx-auto"
       aria-labelledby="checkout-heading"

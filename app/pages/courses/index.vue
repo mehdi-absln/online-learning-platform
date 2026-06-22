@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="animate-fade-in">
     <ErrorState
       v-if="error"
       message="Error loading courses"
