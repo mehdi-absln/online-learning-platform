@@ -96,7 +96,7 @@ const fetchCourse = async () => {
       await navigateTo('/admin')
     }
   }
-  catch (error: unknown) {
+  catch {
     course.value = undefined
   }
   finally {

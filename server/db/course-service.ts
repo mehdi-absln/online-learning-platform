@@ -157,7 +157,7 @@ export async function getAllCourses(
 
     return enrichedCourses
   }
-  catch (error) {
+  catch {
     throw new Error('Failed to fetch courses')
   }
 }
@@ -178,7 +178,7 @@ export async function getCoursesCount(
     const result = await query
     return result.length
   }
-  catch (error) {
+  catch {
     throw new Error('Failed to count courses')
   }
 }
@@ -498,7 +498,7 @@ export async function getAllCategories(): Promise<{ id: number, name: string }[]
 
     return result
   }
-  catch (error) {
+  catch {
     // If categories table doesn't exist, return empty
     return []
   }

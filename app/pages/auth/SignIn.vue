@@ -196,10 +196,7 @@ const handleSubmit = async () => {
       await navigateTo('/home')
     }
   }
-  catch (error) {
-    // Log unexpected errors in development mode
-    if (import.meta.dev) {
-    }
+  catch {
     // Set generic error message on password field
     setFieldError('password', 'An unexpected error occurred.')
     announcement.value = 'An unexpected error occurred. Please try again.'

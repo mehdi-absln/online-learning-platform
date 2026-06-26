@@ -98,7 +98,6 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
   catch (error: unknown) {
-
     setResponseStatus(event, 500)
     return {
       success: false,

@@ -387,7 +387,7 @@ const userStore = useUserStore()
 onMounted(() => {
   if (!userStore.isAuthenticated) return
 
-  progressStore.fetchProgress().catch((err) => {
+  progressStore.fetchProgress().catch((_err) => {
   })
 })
 

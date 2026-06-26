@@ -66,7 +66,6 @@ export default defineEventHandler(async (event) => {
     }
   }
   catch (error: unknown) {
-
     if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }

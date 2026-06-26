@@ -10,7 +10,6 @@ describe('Authentication Error Handler', () => {
     mockSetFieldError = vi.fn()
   })
 
-
   describe('handleSignInError', () => {
     it('sets generic error when no error message provided', () => {
       handleSignInError(undefined, mockSetFieldError)
@@ -44,7 +43,6 @@ describe('Authentication Error Handler', () => {
       )
     })
   })
-
 
   describe('handleSignUpError', () => {
     it('sets generic error when no error message provided', () => {

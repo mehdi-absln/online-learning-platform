@@ -1,5 +1,12 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 
+import {
+  getRelatedCourses,
+  calculatePopularityScore,
+  calculateTagMatchScore,
+  parseTags,
+} from '../../server/utils/related-courses'
+
 const mocks = vi.hoisted(() => {
   function createCurrentCourseChain(resolvedValue: any) {
     const limit = vi.fn().mockResolvedValue(resolvedValue)
@@ -53,13 +60,6 @@ vi.mock('../../server/utils/image-processor', () => ({
   DEFAULT_COURSE_IMAGE: '/images/placeholder-course.svg',
   DEFAULT_INSTRUCTOR_AVATAR: '/images/placeholder-avatar.svg',
 }))
-
-import {
-  getRelatedCourses,
-  calculatePopularityScore,
-  calculateTagMatchScore,
-  parseTags,
-} from '../../server/utils/related-courses'
 
 describe('Related Courses Utils', () => {
   beforeEach(() => {

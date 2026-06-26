@@ -227,7 +227,8 @@ const goToLessonPage = async (lesson: CourseContentLesson) => {
     const lessonUrl = `/courses/${courseSlug.value}/lessons/${lesson.slug}`
     await navigateTo(lessonUrl)
   }
-  catch (navigationError) {
+  catch {
+    // Navigation failed silently
   }
 }
 </script>
