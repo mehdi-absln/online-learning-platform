@@ -79,7 +79,7 @@ export const useUserStore = defineStore('user', () => {
       }
       enrollmentsFetched.value = true
     }
-    catch (err: unknown) {
+    catch {
       // Silent fail - don't block UI
       enrollmentsFetched.value = true
     }

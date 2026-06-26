@@ -15,8 +15,10 @@ logs
 
 # Misc
 .DS_Store
+Thumbs.db
 .fleet
 .idea
+.vscode
 
 # Local env files
 .env
@@ -24,12 +26,20 @@ logs
 !.env.example
 
 # Database
-server/data/db.sqlite
+server/data/
 
-# Qwen Code
-.qwen/
+# Test coverage
+coverage/
 
-QWEN.md
+# TypeScript cache
+*.tsbuildinfo
+
+# Deployment
+.vercel
+.output
+
+# Kilo Code
+.kilo/
 
 # Windows special device
 nul

@@ -67,7 +67,7 @@ export const useCartStore = defineStore('cart', () => {
         items.value = response.data
       }
     }
-    catch (error: unknown) {
+    catch {
       toast.error('Failed to load guest cart items')
     }
   }
@@ -87,7 +87,7 @@ export const useCartStore = defineStore('cart', () => {
         serverTotalPrice.value = response.data.totalPrice
       }
     }
-    catch (error: unknown) {
+    catch {
       toast.error('Failed to load your cart')
     }
     finally {
@@ -146,7 +146,7 @@ export const useCartStore = defineStore('cart', () => {
           toast.info('Course removed from cart')
         }
       }
-      catch (error: unknown) {
+      catch {
         toast.error('Failed to remove item')
       }
     }
@@ -178,7 +178,7 @@ export const useCartStore = defineStore('cart', () => {
         // Don't show toast - it's distracting during login flow
       }
     }
-    catch (error: unknown) {
+    catch {
       // Don't show error toast - merge is not critical and user is already logged in
     }
   }
@@ -249,7 +249,8 @@ export const useCartStore = defineStore('cart', () => {
       }
       isInitialized.value = true
     }
-    catch (error) {
+    catch {
+      // Initialization failed silently
     }
   }
 

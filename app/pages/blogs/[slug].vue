@@ -524,7 +524,7 @@ const copyToClipboard = async () => {
       liveRegion.value.textContent = 'Link copied to clipboard successfully'
     }
   }
-  catch (err: unknown) {
+  catch {
     toast.error('Failed to copy link')
 
     // Announce error to screen readers

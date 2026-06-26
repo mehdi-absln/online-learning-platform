@@ -5,7 +5,6 @@
     aria-label="Admin panel navigation"
     @update:model-value="handleTabChange"
   />
-
 </template>
 
 <script setup lang="ts">

@@ -74,7 +74,6 @@ describe('Authentication System', () => {
     }))
   })
 
-
   describe('Form Validation Schemas', () => {
     describe('Sign In Schema', () => {
       it('should validate valid username and password', () => {
@@ -202,7 +201,6 @@ describe('Authentication System', () => {
       })
     })
   })
-
 
   describe('Sign In Page', () => {
     const createWrapper = async () => {
@@ -349,7 +347,6 @@ describe('Authentication System', () => {
       expect(wrapper.text()).toContain(AUTH_ERRORS.INVALID_CREDENTIALS)
     })
   })
-
 
   describe('Sign Up Page', () => {
     const createWrapper = async () => {
@@ -510,7 +507,6 @@ describe('Authentication System', () => {
       expect(wrapper.text()).toContain(AUTH_ERRORS.EMAIL_ALREADY_EXISTS)
     })
   })
-
 
   describe('Form Components', () => {
     describe('FormInput', () => {

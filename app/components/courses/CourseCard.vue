@@ -23,7 +23,6 @@
         >
           {{ course.category }}
         </span>
-
       </div>
 
       <!-- Instructor Info -->
@@ -213,8 +212,6 @@ const isOwnCourse = computed(() => {
   if (userStore.user?.role !== 'instructor') return false
   return userStore.user?.id === props.course.instructor?.userId
 })
-
-
 
 const handleAddToCart = async () => {
   const added = await addItem(props.course)

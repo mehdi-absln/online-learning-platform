@@ -25,7 +25,7 @@ export function validateAndProcessImageUrl(imageUrl: string | null | undefined):
 
     return imageUrl
   }
-  catch (error) {
+  catch {
     return null
   }
 }
