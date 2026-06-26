@@ -35,7 +35,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    console.error('Get progress error:', error)
     return errorResponse('Internal server error', (error as Error).message)
   }
 })

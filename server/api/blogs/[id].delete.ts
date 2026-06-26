@@ -4,7 +4,6 @@ import { requireInstructor } from '../../utils/auth-helpers'
 
 export default defineEventHandler(async (event) => {
   try {
-    // ✅ چک instructor بودن
     const user = await requireInstructor(event)
 
     const idParam = getRouterParam(event, 'id')
@@ -17,7 +16,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // بررسی وجود بلاگ
     const existingBlog = await getBlogById(blogId)
     if (!existingBlog) {
       throw createError({
@@ -26,7 +24,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // ✅ چک کردن مالکیت (فقط نویسنده یا admin می‌تونه حذف کنه)
     if (existingBlog.authorId !== user.id && user.role !== 'admin') {
       throw createError({
         statusCode: 403,
@@ -34,7 +31,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // حذف بلاگ
     await deleteBlog(blogId)
 
     setResponseStatus(event, 204)

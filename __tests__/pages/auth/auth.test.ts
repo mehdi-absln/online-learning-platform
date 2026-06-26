@@ -74,9 +74,7 @@ describe('Authentication System', () => {
     }))
   })
 
-  // ═══════════════════════════════════════════════════════════════
-  // تست‌های Schema
-  // ═══════════════════════════════════════════════════════════════
+
   describe('Form Validation Schemas', () => {
     describe('Sign In Schema', () => {
       it('should validate valid username and password', () => {
@@ -205,9 +203,7 @@ describe('Authentication System', () => {
     })
   })
 
-  // ═══════════════════════════════════════════════════════════════
-  // تست‌های Sign In Page
-  // ═══════════════════════════════════════════════════════════════
+
   describe('Sign In Page', () => {
     const createWrapper = async () => {
       const { default: SignInPage } = await import('~/pages/auth/SignIn.vue')
@@ -354,9 +350,7 @@ describe('Authentication System', () => {
     })
   })
 
-  // ═══════════════════════════════════════════════════════════════
-  // تست‌های Sign Up Page
-  // ═══════════════════════════════════════════════════════════════
+
   describe('Sign Up Page', () => {
     const createWrapper = async () => {
       const { default: SignUpPage } = await import('~/pages/auth/SignUp.vue')
@@ -517,9 +511,7 @@ describe('Authentication System', () => {
     })
   })
 
-  // ═══════════════════════════════════════════════════════════════
-  // تست‌های Form Components
-  // ═══════════════════════════════════════════════════════════════
+
   describe('Form Components', () => {
     describe('FormInput', () => {
       it('renders correctly with props', () => {

@@ -80,7 +80,6 @@ export const useUserStore = defineStore('user', () => {
       enrollmentsFetched.value = true
     }
     catch (err: unknown) {
-      console.error('Failed to fetch enrollments:', err)
       // Silent fail - don't block UI
       enrollmentsFetched.value = true
     }
@@ -112,7 +111,6 @@ export const useUserStore = defineStore('user', () => {
       }
     }
     catch (err: unknown) {
-      console.error('Failed to fetch user:', err)
       setError(getErrorMessage(err))
       clearUser()
       // Silent fail for fetchUser - don't show toast on initial load
@@ -157,7 +155,6 @@ export const useUserStore = defineStore('user', () => {
       }
     }
     catch (err: unknown) {
-      console.error('Sign in error:', err)
       const errorMsg = getErrorMessage(err)
       setError(errorMsg)
       toast.error(errorMsg)
@@ -203,7 +200,6 @@ export const useUserStore = defineStore('user', () => {
       }
     }
     catch (err: unknown) {
-      console.error('Sign up error:', err)
       const errorMsg = getErrorMessage(err)
       setError(errorMsg)
       toast.error(errorMsg)
@@ -235,7 +231,6 @@ export const useUserStore = defineStore('user', () => {
       }
     }
     catch (err: unknown) {
-      console.error('Logout failed:', err)
       const errorMsg = getErrorMessage(err)
       setError(errorMsg)
       toast.error(errorMsg)

@@ -10,7 +10,6 @@ export default defineEventHandler(async (event) => {
     }
   }
   catch (error: unknown) {
-    console.error('Logout error:', error)
     return {
       success: false,
       message: 'Logout failed',

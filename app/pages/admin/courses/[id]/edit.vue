@@ -68,7 +68,7 @@ useHead({
 })
 
 definePageMeta({
-  middleware: ['admin'], // ← جایگزین middleware inline
+  middleware: ['admin'],
 })
 
 const route = useRoute()
@@ -97,7 +97,6 @@ const fetchCourse = async () => {
     }
   }
   catch (error: unknown) {
-    console.error(error)
     course.value = undefined
   }
   finally {

@@ -12,9 +12,7 @@ async function makeAdmin() {
     .where(eq(users.email, targetEmail))
     .run()
 
-  console.log(`✅ تغییرات: ${result.changes} ردیف به‌روز شد.`)
 
-  // نمایش کاربر بعد از تغییر
   const [user] = await db
     .select()
     .from(users)
@@ -22,15 +20,9 @@ async function makeAdmin() {
     .limit(1)
 
   if (user) {
-    console.log('👤 کاربر فعلی:', {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-    })
+
   }
   else {
-    console.log('⚠️ کاربری با این ایمیل پیدا نشد. ابتدا ثبت‌نام کن.')
   }
 }
 

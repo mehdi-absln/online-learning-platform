@@ -2,7 +2,7 @@
 import { z } from 'zod'
 import { createBlog, isSlugExists } from '../../db/blog-service'
 import { requireInstructor } from '../../utils/auth-helpers'
-import { calculateReadingTime } from '../../utils/blog-helpers' // ✨ جدید
+import { calculateReadingTime } from '../../utils/blog-helpers'
 
 const createBlogSchema = z.object({
   title: z
@@ -68,13 +68,12 @@ export default defineEventHandler(async (event) => {
       data.publishedAt = new Date()
     }
 
-    // ✨ محاسبه زمان مطالعه
     const readingTime = calculateReadingTime(data.content)
 
     const blog = await createBlog({
       ...data,
       authorId: user.id,
-      readingTime, // ✨ جدید
+      readingTime,
     })
 
     setResponseStatus(event, 201)

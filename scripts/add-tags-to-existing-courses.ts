@@ -32,8 +32,6 @@ async function addTagsToExistingCourses() {
     // Get all courses
     const allCourses = await db.select({ id: courses.id }).from(courses)
 
-    console.log(`Found ${allCourses.length} courses to update`)
-
     // Update each course with random tags
     for (const course of allCourses) {
       // Select 1-3 random tags for each course
@@ -59,13 +57,10 @@ async function addTagsToExistingCourses() {
       // Update the course with tags
       await db.update(courses).set({ tags: tagsString }).where(eq(courses.id, course.id))
 
-      console.log(`Updated course ${course.id} with tags: ${tagsString}`)
     }
 
-    console.log('Successfully updated all courses with tags')
   }
   catch (error) {
-    console.error('Error updating courses with tags:', error)
   }
   finally {
     sqlite.close()

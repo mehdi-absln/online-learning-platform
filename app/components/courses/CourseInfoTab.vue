@@ -220,7 +220,6 @@ const accordionItems = computed<AccordionItem[]>(() =>
 
 const goToLessonPage = async (lesson: CourseContentLesson) => {
   if (!lesson.slug || !courseSlug.value) {
-    console.warn('Invalid lesson or course slug')
     return
   }
 
@@ -229,7 +228,6 @@ const goToLessonPage = async (lesson: CourseContentLesson) => {
     await navigateTo(lessonUrl)
   }
   catch (navigationError) {
-    console.error('Navigation failed:', navigationError)
   }
 }
 </script>

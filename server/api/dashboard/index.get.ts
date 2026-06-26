@@ -11,7 +11,6 @@ export default defineEventHandler(async (event) => {
   }
   catch (error: unknown) {
     const err = error as { statusMessage?: string, message?: string }
-    console.error('Dashboard fetch error:', error)
     return errorResponse(err.statusMessage || 'Failed to fetch dashboard data', err.message)
   }
 })

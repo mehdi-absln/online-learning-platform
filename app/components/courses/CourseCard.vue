@@ -225,7 +225,6 @@ const handleAddToCart = async () => {
 
 const courseLink = computed(() => {
   if (!props.course.slug) {
-    console.warn(`Course slug is missing for: ${props.course.title}`)
     return ''
   }
   return `/courses/${props.course.slug}`

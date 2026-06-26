@@ -199,7 +199,6 @@ const handleSubmit = async () => {
   catch (error) {
     // Log unexpected errors in development mode
     if (import.meta.dev) {
-      console.error('Unexpected error:', error)
     }
     // Set generic error message on password field
     setFieldError('password', 'An unexpected error occurred.')

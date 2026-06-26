@@ -24,7 +24,6 @@ export default defineEventHandler(async (event) => {
   }
   catch (error: unknown) {
     const err = error as { statusMessage?: string, message?: string }
-    console.error('Fetch cart error:', error)
     return errorResponse(err.statusMessage || 'Failed to fetch cart', err.message)
   }
 })

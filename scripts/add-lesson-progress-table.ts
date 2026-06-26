@@ -2,8 +2,6 @@ import { db } from '../server/db'
 import { sql } from 'drizzle-orm'
 
 async function addLessonProgressTable() {
-  console.log('Creating lesson_progress table...')
-
   await db.run(sql`
     CREATE TABLE IF NOT EXISTS lesson_progress (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,8 +17,6 @@ async function addLessonProgressTable() {
     )
   `)
 
-  console.log('Creating indexes...')
-
   await db.run(sql`
     CREATE INDEX IF NOT EXISTS progress_user_id_idx ON lesson_progress(user_id)
   `)
@@ -33,12 +29,10 @@ async function addLessonProgressTable() {
     CREATE UNIQUE INDEX IF NOT EXISTS progress_user_lesson_idx ON lesson_progress(user_id, lesson_id)
   `)
 
-  console.log('✅ lesson_progress table created successfully!')
 }
 
 addLessonProgressTable()
   .then(() => process.exit(0))
   .catch((err) => {
-    console.error('Error:', err)
     process.exit(1)
   })

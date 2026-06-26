@@ -4,7 +4,6 @@ import { eq, desc } from 'drizzle-orm'
 import type { Blog } from './schema'
 import type { BlogStatus } from '../../app/types/blog'
 
-// تایپ برای ایجاد بلاگ
 export interface CreateBlogInput {
   title: string
   slug: string
@@ -13,11 +12,9 @@ export interface CreateBlogInput {
   coverImage?: string | null
   status?: BlogStatus
   authorId: number
-  readingTime?: number // ✅ اضافه شد
+  readingTime?: number
   publishedAt?: Date | null
 }
-
-// تایپ برای آپدیت بلاگ
 export interface UpdateBlogInput {
   title?: string
   slug?: string
@@ -25,11 +22,9 @@ export interface UpdateBlogInput {
   excerpt?: string | null
   coverImage?: string | null
   status?: BlogStatus
-  readingTime?: number // ✅ اضافه شد
+  readingTime?: number
   publishedAt?: Date | null
 }
-
-// دریافت همه بلاگ‌ها
 export async function getAllBlogs() {
   return db
     .select({
@@ -41,16 +36,15 @@ export async function getAllBlogs() {
       coverImage: blogs.coverImage,
       status: blogs.status,
       authorId: blogs.authorId,
-      readingTime: blogs.readingTime, // ✅ اضافه شد
+      readingTime: blogs.readingTime,
       publishedAt: blogs.publishedAt,
       createdAt: blogs.createdAt,
       updatedAt: blogs.updatedAt,
-      // اطلاعات نویسنده
       author: {
         id: users.id,
         name: users.name,
         email: users.email,
-        avatar: users.avatar, // ✅ اضافه شد
+        avatar: users.avatar,
       },
     })
     .from(blogs)
@@ -58,22 +52,21 @@ export async function getAllBlogs() {
     .orderBy(desc(blogs.createdAt))
 }
 
-// دریافت بلاگ‌های منتشر شده
 export async function getPublishedBlogs() {
   return db
     .select({
       id: blogs.id,
       title: blogs.title,
       slug: blogs.slug,
-      content: blogs.content, // ✅ اضافه شد - برای محاسبه excerpt در کلاینت
+      content: blogs.content,
       excerpt: blogs.excerpt,
       coverImage: blogs.coverImage,
-      status: blogs.status, // ✅ اضافه شد
-      authorId: blogs.authorId, // ✅ اضافه شد
-      readingTime: blogs.readingTime, // ✅ اضافه شد
+      status: blogs.status,
+      authorId: blogs.authorId,
+      readingTime: blogs.readingTime,
       publishedAt: blogs.publishedAt,
-      createdAt: blogs.createdAt, // ✅ اضافه شد
-      updatedAt: blogs.updatedAt, // ✅ اضافه شد
+      createdAt: blogs.createdAt,
+      updatedAt: blogs.updatedAt,
       author: {
         id: users.id,
         name: users.name,
@@ -86,7 +79,6 @@ export async function getPublishedBlogs() {
     .orderBy(desc(blogs.publishedAt))
 }
 
-// دریافت بلاگ با ID
 export async function getBlogById(id: number): Promise<Blog | null> {
   const result = await db
     .select()
@@ -97,7 +89,6 @@ export async function getBlogById(id: number): Promise<Blog | null> {
   return result[0] || null
 }
 
-// دریافت بلاگ با Slug
 export async function getBlogBySlug(slug: string) {
   const result = await db
     .select({
@@ -109,7 +100,7 @@ export async function getBlogBySlug(slug: string) {
       coverImage: blogs.coverImage,
       status: blogs.status,
       authorId: blogs.authorId,
-      readingTime: blogs.readingTime, // ✅ اضافه شد
+      readingTime: blogs.readingTime,
       publishedAt: blogs.publishedAt,
       createdAt: blogs.createdAt,
       updatedAt: blogs.updatedAt,
@@ -128,7 +119,6 @@ export async function getBlogBySlug(slug: string) {
   return result[0] || null
 }
 
-// ایجاد بلاگ جدید
 export async function createBlog(data: CreateBlogInput): Promise<Blog> {
   const now = new Date()
 
@@ -142,7 +132,7 @@ export async function createBlog(data: CreateBlogInput): Promise<Blog> {
       coverImage: data.coverImage || null,
       status: data.status || 'draft',
       authorId: data.authorId,
-      readingTime: data.readingTime || 1, // ✅ اضافه شد
+      readingTime: data.readingTime || 1,
       publishedAt: data.publishedAt || null,
       createdAt: now,
       updatedAt: now,
@@ -156,7 +146,6 @@ export async function createBlog(data: CreateBlogInput): Promise<Blog> {
   return createdBlog
 }
 
-// آپدیت بلاگ
 export async function updateBlog(
   id: number,
   data: UpdateBlogInput,
@@ -173,7 +162,6 @@ export async function updateBlog(
   return result[0] || null
 }
 
-// حذف بلاگ
 export async function deleteBlog(id: number): Promise<boolean> {
   const result = await db
     .delete(blogs)
@@ -183,7 +171,6 @@ export async function deleteBlog(id: number): Promise<boolean> {
   return result.length > 0
 }
 
-// بررسی وجود slug تکراری
 export async function isSlugExists(
   slug: string,
   excludeId?: number,

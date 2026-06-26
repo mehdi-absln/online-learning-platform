@@ -2,7 +2,6 @@ import { db } from '../server/db'
 import { reviews, courses, users } from '../server/db/schema'
 
 async function seedReviews() {
-  console.log('🌱 Seeding reviews...\n')
 
   // Get first 3 courses
   const allCourses = await db.select({ id: courses.id, title: courses.title }).from(courses).limit(3)
@@ -11,12 +10,10 @@ async function seedReviews() {
   const allUsers = await db.select({ id: users.id, name: users.name }).from(users).limit(5)
 
   if (allCourses.length === 0) {
-    console.log('❌ No courses found! Please seed courses first.')
     return
   }
 
   if (allUsers.length === 0) {
-    console.log('❌ No users found! Please seed users first.')
     return
   }
 
@@ -55,16 +52,12 @@ async function seedReviews() {
         createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000), // Random date within last 30 days
       })
       insertedCount++
-      console.log(`✅ Added review for course ${review.courseId} by user ${review.userId}`)
     }
     catch (error: unknown) {
-      console.error(`❌ Failed to insert review:`, error instanceof Error ? error.message : error)
     }
   }
 
-  console.log(`\n✨ Successfully seeded ${insertedCount} reviews!`)
 }
 
 seedReviews()
-  .catch(console.error)
   .finally(() => process.exit())

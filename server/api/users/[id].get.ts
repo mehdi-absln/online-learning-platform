@@ -36,7 +36,6 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
   catch (error: unknown) {
-    console.error(`Detailed error in GET /api/users/[id]:`, error)
     setResponseStatus(event, 500)
     return {
       success: false,

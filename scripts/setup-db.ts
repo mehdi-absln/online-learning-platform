@@ -4,7 +4,6 @@ import path from 'path'
 
 const DB_PATH = path.join(process.cwd(), 'db.sqlite')
 
-console.log('🗄️  Setting up database at:', DB_PATH)
 
 // Create database
 const sqlite = new Database(DB_PATH)
@@ -113,14 +112,11 @@ CREATE INDEX IF NOT EXISTS idx_lessons_section_id ON lessons(section_id);
 CREATE INDEX IF NOT EXISTS idx_sections_course_id ON course_content_sections(course_id);
 `
 
-console.log('📝 Creating tables...')
 sqlite.exec(createTablesSQL)
-console.log('✅ Tables created successfully!')
 
 // Seed data
 const now = Math.floor(Date.now() / 1000)
 
-console.log('🌱 Seeding database...')
 
 // Insert instructor
 const insertInstructor = sqlite.prepare(`
@@ -136,7 +132,6 @@ const instructorResult = insertInstructor.run(
 )
 const instructorId = instructorResult.lastInsertRowid
 
-console.log('👨‍🏫 Instructor created with ID:', instructorId)
 
 // Insert course
 const insertCourse = sqlite.prepare(`
@@ -170,7 +165,6 @@ const courseResult = insertCourse.run(
 )
 const courseId = courseResult.lastInsertRowid
 
-console.log('📚 Course created with ID:', courseId)
 
 // Insert sections
 const insertSection = sqlite.prepare(`
@@ -198,7 +192,6 @@ for (const section of sections) {
   sectionIds.push(Number(result.lastInsertRowid))
 }
 
-console.log('📂 Sections created:', sectionIds.length)
 
 // Insert lessons
 const insertLesson = sqlite.prepare(`
@@ -249,7 +242,6 @@ for (const lesson of lessonsData) {
   lessonCount++
 }
 
-console.log('📝 Lessons created:', lessonCount)
 
 // Insert learning objectives
 const insertObjective = sqlite.prepare(`
@@ -270,7 +262,6 @@ objectives.forEach((obj, index) => {
   insertObjective.run(courseId, obj, index + 1)
 })
 
-console.log('🎯 Learning objectives created:', objectives.length)
 
 // Insert a test user
 const insertUser = sqlite.prepare(`
@@ -287,7 +278,6 @@ const userResult = insertUser.run(
   now,
 )
 
-console.log('👤 Test user created')
 
 // Insert some reviews
 const insertReview = sqlite.prepare(`
@@ -298,18 +288,11 @@ const insertReview = sqlite.prepare(`
 insertReview.run(courseId, userResult.lastInsertRowid, 5, 'Great course! Learned a lot.', now)
 insertReview.run(courseId, userResult.lastInsertRowid, 4, 'Good explanations but could be more detailed.', now)
 
-console.log('⭐ Reviews created')
 
 // Verify data
 const courseCheck = sqlite.prepare('SELECT * FROM courses WHERE id = ?').get(courseId)
 const sectionsCheck = sqlite.prepare('SELECT COUNT(*) as count FROM course_content_sections WHERE course_id = ?').get(courseId)
 const lessonsCheck = sqlite.prepare('SELECT COUNT(*) as count FROM lessons WHERE course_id = ?').get(courseId)
 
-console.log('\n✅ Database setup complete!')
-console.log('📊 Summary:')
-console.log(`   - Course: "${courseCheck.title}" (slug: ${courseCheck.slug})`)
-console.log(`   - Sections: ${sectionsCheck.count}`)
-console.log(`   - Lessons: ${lessonsCheck.count}`)
 
 sqlite.close()
-console.log('\n🎉 Done! Database is ready at:', DB_PATH)

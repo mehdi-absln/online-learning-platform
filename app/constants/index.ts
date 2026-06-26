@@ -26,10 +26,8 @@ export const AUTH_ERRORS = {
   USERNAME_ALREADY_EXISTS: 'Username is already taken',
 } as const
 
-// Alias — برای فایل‌هایی که از SHARED_AUTH_ERRORS استفاده می‌کنن
 export const SHARED_AUTH_ERRORS = AUTH_ERRORS
 
-// Client-specific validation errors (برای فرم‌ها)
 export const CLIENT_VALIDATION_ERRORS = {
   USERNAME_REQUIRED: 'Username or email is required',
   USERNAME_INVALID: 'Please enter a valid email address',

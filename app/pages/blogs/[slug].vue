@@ -531,7 +531,6 @@ const copyToClipboard = async () => {
     if (liveRegion.value) {
       liveRegion.value.textContent = 'Failed to copy link to clipboard'
     }
-    console.error('Failed to copy:', err)
   }
 }
 </script>

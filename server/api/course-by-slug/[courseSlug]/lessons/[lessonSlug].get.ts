@@ -98,7 +98,6 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
   catch (error: unknown) {
-    console.error('Failed to fetch course or lesson:', error)
 
     setResponseStatus(event, 500)
     return {

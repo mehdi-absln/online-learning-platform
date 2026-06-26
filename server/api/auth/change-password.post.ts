@@ -22,13 +22,11 @@ export default defineEventHandler(async (event) => {
       return errorResponse('New password must be at least 6 characters.')
     }
 
-    // بررسی رمز فعلی با استفاده از تابع verifyPassword از user-service
     const isValid = await verifyPassword(body.currentPassword, user.password)
     if (!isValid) {
       return errorResponse('Current password is incorrect.')
     }
 
-    // هش کردن رمز جدید با تابع hashPassword از user-service
     const hashedPassword = await hashPassword(body.newPassword)
 
     await db.update(users)
@@ -46,7 +44,6 @@ export default defineEventHandler(async (event) => {
       )
     }
 
-    console.error('Change password error:', error)
     return errorResponse('Internal server error', (error as Error).message)
   }
 })

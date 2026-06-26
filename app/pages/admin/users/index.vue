@@ -4,7 +4,6 @@
     aria-labelledby="user-management-heading"
   >
     <AdminTabs />
-    <!-- سربرگ + جستجو -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
       <h1
         id="user-management-heading"
@@ -25,7 +24,6 @@
       />
     </div>
 
-    <!-- کانتینر داده -->
     <div class="bg-dark-surface rounded-lg border border-dark-divider overflow-hidden">
       <!-- Loading -->
       <div
@@ -68,7 +66,6 @@
         </p>
       </div>
 
-      <!-- جدول کاربران -->
       <div
         v-else
         class="overflow-x-auto"
@@ -139,7 +136,6 @@
               </td>
               <td class="px-6 py-4 text-right">
                 <div class="flex justify-end gap-4 items-center">
-                  <!-- دکمه‌ها فقط برای کاربرانی که می‌توان مدیریت کرد -->
                   <template v-if="canManageUser(user)">
                     <button
                       class="text-primary hover:text-primary/80 transition-colors underline-offset-2 hover:underline"
@@ -156,12 +152,10 @@
                       Delete
                     </button>
                   </template>
-                  <!-- ادمین دیگر (نه خودش) -->
                   <span
                     v-else-if="user.id !== currentAdminId && user.role === 'admin'"
                     class="text-gray-500 text-xs"
                   >(Admin)</span>
-                  <!-- خود کاربر جاری -->
                   <span
                     v-else
                     class="text-gray-500 text-xs"
@@ -174,7 +168,6 @@
       </div>
     </div>
 
-    <!-- مودال تأیید حذف (با پیام داینامیک) -->
     <ConfirmModal
       :is-open="isDeleteModalOpen"
       title="Delete User"
@@ -186,7 +179,6 @@
       @cancel="closeDeleteModal"
     />
 
-    <!-- مودال تغییر نقش (dropdown + تأیید) -->
     <Teleport to="body">
       <Transition name="fade">
         <div
@@ -305,7 +297,6 @@ const fetchUsers = async () => {
   }
   catch (error: unknown) {
     fetchError.value = getErrorMessage(error)
-    console.error(error)
   }
   finally {
     isLoading.value = false

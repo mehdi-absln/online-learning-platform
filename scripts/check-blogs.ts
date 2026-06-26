@@ -20,17 +20,11 @@ async function check() {
       }
     })
 
-    console.log('\n--- Blog Content Report ---\n')
-    console.table(report)
 
-    // نمایش بخشی از متن طولانی‌ترین بلاگ برای اطمینان
     if (allBlogs.length > 0) {
-      console.log('\n--- Sample Content (First 100 chars) ---')
-      console.log(`"${allBlogs[0].content?.substring(0, 100)}..."`)
     }
   }
   catch (error) {
-    console.error('Error:', error)
   }
 }
 
