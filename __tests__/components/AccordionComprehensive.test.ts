@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import Accordion from '~/components/Accordion.vue'
+import Accordion from '~/components/ui/Accordion.vue'
 
 // Mock the composables
 vi.mock('~/composables/useAccordion', async () => {
@@ -127,7 +127,7 @@ describe('Accordion - Comprehensive Tests', () => {
         },
       })
 
-      expect(wrapper.html()).toContain('duration-500')
+      expect(wrapper.props('transitionDuration')).toBe(500)
     })
 
     it('uses custom emptyText when provided', () => {
@@ -177,7 +177,7 @@ describe('Accordion - Comprehensive Tests', () => {
           items: mockItems,
         },
         slots: {
-          icon: '<div class="custom-icon">Custom Icon</div>',
+          header: '<div class="custom-header-with-icon">Header <span class="custom-icon">Custom Icon</span></div>',
         },
       })
 
@@ -324,12 +324,8 @@ describe('Accordion - Comprehensive Tests', () => {
         },
       })
 
-      // Check if transition classes are present
-      expect(wrapper.html()).toContain('transition-all')
-      expect(wrapper.html()).toContain('ease-out')
-      expect(wrapper.html()).toContain('ease-in')
-      expect(wrapper.html()).toContain('opacity-0')
-      expect(wrapper.html()).toContain('max-h-0')
+      expect(wrapper.html()).toContain('transition-colors duration-200')
+      expect(wrapper.html()).toContain('transition-transform duration-300')
     })
   })
 })

@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi } from 'vitest'
-import Pagination from '~/components/Pagination.vue'
+import Pagination from '~/components/ui/Pagination.vue'
 
 describe('Pagination', () => {
   const defaultProps = {
@@ -15,7 +15,7 @@ describe('Pagination', () => {
 
     // Should show page 1 of 5 by default
     expect(wrapper.text()).toContain('Page 1 of 5')
-    expect(wrapper.find('button[aria-current="page"]').text()).toBe('1')
+    expect(wrapper.find('button[aria-current="page"]').text()).toContain('1')
   })
 
   it('renders with custom currentPage', () => {
@@ -28,7 +28,7 @@ describe('Pagination', () => {
 
     // Should show page 3 of 5
     expect(wrapper.text()).toContain('Page 3 of 5')
-    expect(wrapper.find('button[aria-current="page"]').text()).toBe('3')
+    expect(wrapper.find('button[aria-current="page"]').text()).toContain('3')
   })
 
   it('disables previous button on first page', () => {

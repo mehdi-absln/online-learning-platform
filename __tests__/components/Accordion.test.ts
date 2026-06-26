@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi } from 'vitest'
-import Accordion from '~/components/Accordion.vue'
+import Accordion from '~/components/ui/Accordion.vue'
 
 // Mock the composables
 vi.mock('~/composables/useAccordion', () => ({
@@ -56,7 +56,7 @@ describe('Accordion', () => {
         items: mockItems,
       },
       slots: {
-        icon: '<div class="custom-icon">Custom Icon</div>',
+        header: '<div class="custom-header-with-icon">Custom Header <span class="custom-icon">Custom Icon</span></div>',
       },
     })
 
@@ -150,7 +150,7 @@ describe('Accordion', () => {
       },
     })
 
-    expect(wrapper.html()).toContain('duration-500')
+    expect(wrapper.props('transitionDuration')).toBe(500)
   })
 
   it('renders chevron icon correctly when no icon slot provided', async () => {
@@ -176,6 +176,6 @@ describe('Accordion', () => {
 
     // Should only contain title, not description
     expect(wrapper.text()).toContain('Section 1')
-    expect(wrapper.find('[v-if="item.description"]').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('Description 1')
   })
 })

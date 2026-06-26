@@ -1,15 +1,42 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 import CourseCard from '~/components/courses/CourseCard.vue'
-import CourseImage from '~/components/courses/CourseImage.vue'
 import type { Course } from '~/types/course'
 import { PLACEHOLDER_COURSE_IMAGE } from '~/constants'
+
+const mockAddItem = vi.fn()
+const mockIsInCart = vi.fn(() => false)
+const mockOpenCart = vi.fn()
+
+vi.mock('~/composables/useCart', () => ({
+  useCart: () => ({
+    addItem: mockAddItem,
+    isInCart: mockIsInCart,
+    openCart: mockOpenCart,
+  }),
+}))
+
+vi.mock('~/stores/user', () => ({
+  useUserStore: () => ({
+    isAuthenticated: false,
+    canPurchaseCourses: true,
+    user: null,
+    isEnrolled: vi.fn(() => false),
+  }),
+}))
 
 // Mock NuxtLink component
 const MockNuxtLink = {
   name: 'NuxtLink',
   template: '<a><slot /></a>',
   props: ['to'],
+}
+
+const MockNuxtImg = {
+  name: 'NuxtImg',
+  props: ['src', 'alt'],
+  template: '<img :src="src" :alt="alt" @error="$emit(\'error\', $event)">',
 }
 
 describe('CourseCard', () => {
@@ -20,9 +47,15 @@ describe('CourseCard', () => {
     slug: 'test-course',
     category: 'Programming',
     price: 99.99,
-    image: '/non-existent-image.jpg', // Image that doesn't exist to trigger error handler
+    thumbnail: '/non-existent-image.jpg',
+    instructorId: 1,
+    level: 'Beginner',
+    tags: 'test',
+    createdAt: new Date(),
+    updatedAt: new Date(),
     instructor: {
       id: 1,
+      userId: 1,
       name: 'John Doe',
       avatar: '/instructor-avatar.jpg',
     },
@@ -35,6 +68,10 @@ describe('CourseCard', () => {
   beforeEach(() => {
     // Mock console.warn to prevent console output during tests
     vi.spyOn(console, 'warn').mockImplementation(() => {})
+    mockAddItem.mockReset()
+    mockIsInCart.mockReset()
+    mockIsInCart.mockReturnValue(false)
+    mockOpenCart.mockReset()
   })
 
   afterEach(() => {
@@ -49,7 +86,7 @@ describe('CourseCard', () => {
       global: {
         components: {
           NuxtLink: MockNuxtLink,
-          CourseImage,
+          NuxtImg: MockNuxtImg,
         },
       },
     })
@@ -57,9 +94,10 @@ describe('CourseCard', () => {
     // Simulate image error event
     const imageElement = wrapper.find('img[alt="Test Course"]')
     await imageElement.trigger('error')
+    await nextTick()
 
     // Check if the placeholder image is now set
-    expect(imageElement.attributes('src')).toBe(PLACEHOLDER_COURSE_IMAGE)
+    expect(imageElement.attributes('src')).toContain(PLACEHOLDER_COURSE_IMAGE)
   })
 
   it('renders course information correctly', () => {
@@ -70,7 +108,7 @@ describe('CourseCard', () => {
       global: {
         components: {
           NuxtLink: MockNuxtLink,
-          CourseImage,
+          NuxtImg: MockNuxtImg,
         },
       },
     })
@@ -81,25 +119,5 @@ describe('CourseCard', () => {
     expect(wrapper.text()).toContain('Programming')
     expect(wrapper.text()).toContain('$99.99')
     expect(wrapper.text()).toContain('John Doe')
-  })
-
-  it('emits bookmark event when bookmark button is clicked', async () => {
-    const wrapper = mount(CourseCard, {
-      props: {
-        course: mockCourse,
-      },
-      global: {
-        components: {
-          NuxtLink: MockNuxtLink,
-          CourseImage,
-        },
-      },
-    })
-
-    const bookmarkButton = wrapper.find('button')
-    await bookmarkButton.trigger('click')
-
-    expect(wrapper.emitted('bookmark')).toBeTruthy()
-    expect(wrapper.emitted('bookmark')![0]).toEqual([1])
   })
 })

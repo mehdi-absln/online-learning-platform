@@ -4,6 +4,7 @@ import checkoutHandler from '../../server/api/checkout/index.post'
 import { courses, instructors, users, cartItems, orders, enrollments } from '../../server/db/schema'
 
 import { readBody } from 'h3'
+import { requirePurchaser } from '../../server/utils/auth-helpers'
 
 vi.hoisted(() => {
   const handlerStub = (fn: any) => fn
@@ -31,6 +32,10 @@ vi.mock('h3', async () => {
   }
 })
 
+vi.mock('../../server/utils/auth-helpers', () => ({
+  requirePurchaser: vi.fn(),
+}))
+
 describe('Checkout API Handlers', () => {
   let db: any
   let testUser: any
@@ -42,6 +47,7 @@ describe('Checkout API Handlers', () => {
 
     // Seed test data
     const [user] = await db.insert(users).values({
+      username: 'testuser',
       name: 'Test User',
       email: 'test@example.com',
       password: 'hashedpassword',
@@ -74,6 +80,8 @@ describe('Checkout API Handlers', () => {
       courseId: testCourse.id,
       createdAt: new Date(),
     })
+
+    vi.mocked(requirePurchaser).mockResolvedValue(testUser)
   })
 
   afterEach(async () => {
@@ -124,6 +132,7 @@ describe('Checkout API Handlers', () => {
   })
 
   it('POST /api/checkout should return 401 if unauthorized', async () => {
+    vi.mocked(requirePurchaser).mockRejectedValueOnce(new Error('Unauthorized'))
     const event = { context: { user: null } } as any
     await expect(checkoutHandler(event)).rejects.toThrow('Unauthorized')
   })

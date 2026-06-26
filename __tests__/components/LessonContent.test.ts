@@ -1,29 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 import { setActivePinia, createPinia } from 'pinia'
 import LessonContent from '~/components/lesson/LessonContent.vue'
-
-// Mock marked
-vi.mock('marked', () => ({
-  marked: {
-    parse: (content: string) => `<p>${content}</p>`,
-  },
-}))
-
-// Mock Tabs component - نمایش همه slot‌ها
-vi.mock('~/components/ui/Tabs.vue', () => ({
-  default: {
-    name: 'Tabs',
-    props: ['tabs', 'ariaLabel'],
-    template: `
-      <div class="tabs-mock" :aria-label="ariaLabel">
-        <div data-testid="tab-content"><slot name="content" /></div>
-        <div data-testid="tab-resources"><slot name="resources" /></div>
-        <div data-testid="tab-notes"><slot name="notes" /></div>
-      </div>
-    `,
-  },
-}))
 
 // Mock lesson progress store
 vi.mock('~/stores/lesson-progress', () => ({
@@ -38,6 +17,30 @@ describe('LessonContent', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   })
+
+  const createWrapper = (lesson = mockLesson) => mount(LessonContent, {
+    props: { lesson },
+    global: {
+      stubs: {
+        MarkdownRenderer: {
+          props: ['content'],
+          template: '<div data-testid="markdown">{{ content }}</div>',
+        },
+        EmptyState: {
+          props: ['title', 'message'],
+          template: '<div role="status">{{ message }}</div>',
+        },
+      },
+    },
+  })
+
+  const getActivePanel = (wrapper: ReturnType<typeof createWrapper>) =>
+    wrapper.find('[role="tabpanel"]:not([hidden])')
+
+  const clickTab = async (wrapper: ReturnType<typeof createWrapper>, index: number) => {
+    await wrapper.findAll('[role="tab"]')[index].trigger('click')
+    await nextTick()
+  }
 
   const mockLesson = {
     id: 1,
@@ -57,30 +60,21 @@ describe('LessonContent', () => {
   // ═══════════════════════════════════════
   describe('content tab', () => {
     it('should render lesson content', () => {
-      const wrapper = mount(LessonContent, {
-        props: { lesson: mockLesson },
-      })
+      const wrapper = createWrapper()
 
-      const contentTab = wrapper.find('[data-testid="tab-content"]')
-      expect(contentTab.html()).toContain('Hello World')
+      expect(getActivePanel(wrapper).text()).toContain('# Hello World')
     })
 
     it('should show placeholder when no content', () => {
-      const wrapper = mount(LessonContent, {
-        props: { lesson: { ...mockLesson, content: '' } },
-      })
+      const wrapper = createWrapper({ ...mockLesson, content: '' })
 
-      const contentTab = wrapper.find('[data-testid="tab-content"]')
-      expect(contentTab.text()).toContain('Content for this lesson will be added soon')
+      expect(getActivePanel(wrapper).text()).toContain('Content for this lesson will be added soon')
     })
 
     it('should render null lesson gracefully', () => {
-      const wrapper = mount(LessonContent, {
-        props: { lesson: null },
-      })
+      const wrapper = createWrapper(null)
 
-      const contentTab = wrapper.find('[data-testid="tab-content"]')
-      expect(contentTab.text()).toContain('Content for this lesson will be added soon')
+      expect(getActivePanel(wrapper).text()).toContain('Content for this lesson will be added soon')
     })
   })
 
@@ -88,26 +82,23 @@ describe('LessonContent', () => {
   // Notes Tab
   // ═══════════════════════════════════════
   describe('notes tab', () => {
-    it('should have a textarea for notes', () => {
-      const wrapper = mount(LessonContent, {
-        props: { lesson: mockLesson },
-      })
+    it('should have a textarea for notes', async () => {
+      const wrapper = createWrapper()
+      await clickTab(wrapper, 2)
 
       expect(wrapper.find('textarea').exists()).toBe(true)
     })
 
-    it('should have a save button', () => {
-      const wrapper = mount(LessonContent, {
-        props: { lesson: mockLesson },
-      })
+    it('should have a save button', async () => {
+      const wrapper = createWrapper()
+      await clickTab(wrapper, 2)
 
-      expect(wrapper.find('button').text()).toContain('Save Notes')
+      expect(wrapper.find('button:not([role="tab"])').text()).toContain('Save Notes')
     })
 
     it('should update textarea value on input', async () => {
-      const wrapper = mount(LessonContent, {
-        props: { lesson: mockLesson },
-      })
+      const wrapper = createWrapper()
+      await clickTab(wrapper, 2)
 
       const textarea = wrapper.find('textarea')
       await textarea.setValue('My test notes')
@@ -120,33 +111,29 @@ describe('LessonContent', () => {
   // Resources Tab
   // ═══════════════════════════════════════
   describe('resources tab', () => {
-    it('should show sample resources', () => {
-      // بر اساس کد کامپوننت، همیشه sampleResources نمایش داده می‌شود
-      const wrapper = mount(LessonContent, {
-        props: { lesson: mockLesson },
-      })
+    it('should show sample resources', async () => {
+      const wrapper = createWrapper()
+      await clickTab(wrapper, 1)
 
-      const resourcesTab = wrapper.find('[data-testid="tab-resources"]')
+      const resourcesTab = getActivePanel(wrapper)
       expect(resourcesTab.text()).toContain('Project Source Code')
       expect(resourcesTab.text()).toContain('Presentation Slides')
     })
 
-    it('should display resource sizes', () => {
-      const wrapper = mount(LessonContent, {
-        props: { lesson: mockLesson },
-      })
+    it('should display resource sizes', async () => {
+      const wrapper = createWrapper()
+      await clickTab(wrapper, 1)
 
-      const resourcesTab = wrapper.find('[data-testid="tab-resources"]')
+      const resourcesTab = getActivePanel(wrapper)
       expect(resourcesTab.text()).toContain('2.4 MB')
       expect(resourcesTab.text()).toContain('1.1 MB')
     })
 
-    it('should have download links for resources', () => {
-      const wrapper = mount(LessonContent, {
-        props: { lesson: mockLesson },
-      })
+    it('should have download links for resources', async () => {
+      const wrapper = createWrapper()
+      await clickTab(wrapper, 1)
 
-      const downloadLinks = wrapper.findAll('[data-testid="tab-resources"] a[download]')
+      const downloadLinks = getActivePanel(wrapper).findAll('a[download]')
       expect(downloadLinks.length).toBe(2)
     })
   })
@@ -155,10 +142,9 @@ describe('LessonContent', () => {
   // Accessibility
   // ═══════════════════════════════════════
   describe('accessibility', () => {
-    it('should have label for textarea', () => {
-      const wrapper = mount(LessonContent, {
-        props: { lesson: mockLesson },
-      })
+    it('should have label for textarea', async () => {
+      const wrapper = createWrapper()
+      await clickTab(wrapper, 2)
 
       const textarea = wrapper.find('textarea')
       const label = wrapper.find('label[for="lesson-notes"]')
@@ -168,18 +154,14 @@ describe('LessonContent', () => {
     })
 
     it('should have aria-label on tabs', () => {
-      const wrapper = mount(LessonContent, {
-        props: { lesson: mockLesson },
-      })
+      const wrapper = createWrapper()
 
-      // The Tabs component should have aria-label
-      expect(wrapper.html()).toContain('aria-label')
+      expect(wrapper.find('[role="tablist"]').attributes('aria-label')).toBe('Lesson content sections')
     })
 
-    it('should have aria-label on resources list', () => {
-      const wrapper = mount(LessonContent, {
-        props: { lesson: mockLesson },
-      })
+    it('should have aria-label on resources list', async () => {
+      const wrapper = createWrapper()
+      await clickTab(wrapper, 1)
 
       const resourcesList = wrapper.find('[aria-label="Downloadable resources"]')
       expect(resourcesList.exists()).toBe(true)
