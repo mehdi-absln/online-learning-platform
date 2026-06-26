@@ -9,20 +9,15 @@ const sqlite = new Database('./server/data/db.sqlite')
 const db = drizzle(sqlite)
 
 async function syncInstructors() {
-  console.log('🔄 Syncing instructors with users...\n')
 
   try {
-    // 1. گرفتن همه instructors
     const allInstructors = await db.select().from(instructors)
-    console.log(`📋 Found ${allInstructors.length} instructors\n`)
 
     const defaultPassword = await hash('password123', 10)
     const now = new Date()
 
     for (const instructor of allInstructors) {
-      console.log(`👤 Processing: ${instructor.name}`)
 
-      // 2. چک کن آیا user با این اسم وجود داره
       const existingUser = await db
         .select()
         .from(users)
@@ -32,22 +27,18 @@ async function syncInstructors() {
       let userId: number
 
       if (existingUser.length > 0) {
-        // User وجود داره، فقط role رو آپدیت کن
         userId = existingUser[0].id
         await db
           .update(users)
           .set({ role: 'instructor' })
           .where(eq(users.id, userId))
-        console.log(`   ✅ Updated existing user (id: ${userId})`)
       }
       else {
-        // User جدید بساز
         const email = instructor.name
           .toLowerCase()
           .replace(/\s+/g, '.')
           .concat('@example.com')
 
-        // ✅ اضافه کردن created_at و updated_at
         const [newUser] = await db
           .insert(users)
           .values({
@@ -63,19 +54,14 @@ async function syncInstructors() {
           .returning()
 
         userId = newUser.id
-        console.log(`   ✅ Created new user (id: ${userId}, email: ${email})`)
       }
 
-      // 3. آپدیت user_id در instructors
       await db
         .update(instructors)
         .set({ userId: userId })
         .where(eq(instructors.id, instructor.id))
-      console.log(`   ✅ Linked instructor.user_id = ${userId}\n`)
     }
 
-    // 4. نمایش نتیجه
-    console.log('\n📊 Final Result:\n')
 
     const result = sqlite.prepare(`
       SELECT 
@@ -90,12 +76,9 @@ async function syncInstructors() {
       WHERE u.role = 'instructor'
     `).all()
 
-    console.table(result)
 
-    console.log('\n🎉 Sync completed successfully!')
   }
   catch (error) {
-    console.error('❌ Error:', error)
     process.exit(1)
   }
   finally {

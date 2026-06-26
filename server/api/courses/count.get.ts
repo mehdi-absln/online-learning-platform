@@ -15,7 +15,6 @@ export default defineEventHandler(async (event) => {
     }
   }
   catch (error: unknown) {
-    console.error('Error fetching courses count:', error)
     setResponseStatus(event, 500)
     return {
       success: false,

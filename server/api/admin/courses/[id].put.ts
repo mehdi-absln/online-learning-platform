@@ -21,7 +21,6 @@ export default defineEventHandler(async (event) => {
 
     if (!course) throw createError({ statusCode: 404, statusMessage: 'Course not found' })
 
-    // مربی فقط دورهٔ خودش را می‌تواند ویرایش کند
     if (user.role === 'instructor') {
       const [instructor] = await db
         .select({ id: instructors.id })
@@ -40,7 +39,6 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const { title, slug, description, price, isPublished, instructorId: bodyInstructorId } = body
 
-    // مربی اجازه ندارد instructorId را تغییر دهد
     const finalInstructorId
       = user.role === 'admin' ? (bodyInstructorId ?? course.instructorId) : course.instructorId
 
@@ -67,7 +65,6 @@ export default defineEventHandler(async (event) => {
       return errorResponse(err.statusMessage || 'Request failed', err.message)
     }
 
-    console.error('Update Course Error:', error)
     setResponseStatus(event, 500)
     return errorResponse('Internal server error', err.message || 'Unknown error')
   }

@@ -41,7 +41,6 @@ export default cachedEventHandler(
         })
       }
 
-      console.error('Error fetching related courses:', error)
       throw createError({
         statusCode: 500,
         statusMessage: 'Failed to fetch related courses',

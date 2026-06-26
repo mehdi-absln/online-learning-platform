@@ -21,7 +21,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // فقط بلاگ‌های منتشر شده
     if (blog.status !== 'published') {
       throw createError({
         statusCode: 404,

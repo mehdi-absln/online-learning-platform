@@ -4,11 +4,9 @@ import Database from 'better-sqlite3'
 import { blogs, users } from '../server/db/schema'
 import { eq } from 'drizzle-orm'
 
-// ✅ مسیر صحیح دیتابیس
 const sqlite = new Database('./server/data/db.sqlite')
 const db = drizzle(sqlite)
 
-// بلاگ‌های واقعی و با کیفیت
 const sampleBlogs = [
   {
     title: 'Getting Started with Vue 3 Composition API',
@@ -120,7 +118,6 @@ interface HasLength {
 }
 
 function logLength<T extends HasLength>(arg: T): void {
-  console.log(arg.length)
 }
 
 logLength('hello')     // ✅ Works
@@ -665,26 +662,20 @@ Performance matters for user satisfaction!
 ]
 
 async function seedBlogs() {
-  console.log('🌱 Seeding blogs...\n')
 
   try {
-    // ✅ مستقیم John Smith رو بگیر
     const [author] = await db.select().from(users).where(eq(users.id, 2)).limit(1)
 
     if (!author) {
-      console.error('❌ John Smith not found!')
       process.exit(1)
     }
 
-    console.log(`📝 Using author: ${author.name} (${author.email})\n`)
 
     // Delete existing blogs (optional)
-    console.log('🗑️  Clearing existing blogs...')
     await db.delete(blogs)
 
     const now = new Date()
 
-    // ✅ استفاده از Date object
     const blogsToInsert = sampleBlogs.map((blog, index) => ({
       title: blog.title,
       slug: blog.slug,
@@ -694,25 +685,20 @@ async function seedBlogs() {
       status: blog.status,
       authorId: author.id,
       publishedAt: blog.status === 'published'
-        ? new Date(now.getTime() - index * 24 * 60 * 60 * 1000) // ✅ Date object
+        ? new Date(now.getTime() - index * 24 * 60 * 60 * 1000)
         : null,
-      createdAt: new Date(now.getTime() - index * 24 * 60 * 60 * 1000), // ✅ Date object
-      updatedAt: now, // ✅ Date object
+      createdAt: new Date(now.getTime() - index * 24 * 60 * 60 * 1000),
+      updatedAt: now,
     }))
 
     const insertedBlogs = await db.insert(blogs).values(blogsToInsert).returning()
 
-    console.log(`\n✅ Created ${insertedBlogs.length} blogs:\n`)
 
     insertedBlogs.forEach((blog, i) => {
-      console.log(`   ${i + 1}. ${blog.title}`)
-      console.log(`      └─ /${blog.slug} [${blog.status}]`)
     })
 
-    console.log('\n🎉 Blog seeding completed successfully!')
   }
   catch (error) {
-    console.error('❌ Error seeding blogs:', error)
     process.exit(1)
   }
   finally {

@@ -23,8 +23,6 @@ export default defineEventHandler(async (_event) => {
     }
   }
   catch (error: unknown) {
-    console.error('Error fetching filter options:', error)
-
     return {
       success: false,
       message: 'Failed to fetch filter options',

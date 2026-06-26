@@ -843,10 +843,8 @@ import { mount } from '@vue/test-utils'
 const wrapper = mount(Component)
 
 // Print HTML
-console.log(wrapper.html())
 
 // Print component data
-console.log(wrapper.vm.$data)
 
 // Interactive debugging
 await wrapper.vm.$nextTick()
@@ -1705,9 +1703,7 @@ Before optimizing anything, establish baselines.
 
 \`\`\`javascript
 // In your code
-console.time('component-render')
 // ... component logic
-console.timeEnd('component-render')
 \`\`\`
 
 ### Vue DevTools Performance
@@ -1912,7 +1908,6 @@ watch(() => bigObject.value.specificProp, () => {
 // ✅ Also good: Shallow watch
 watchEffect(() => {
   // Only tracks accessed properties
-  console.log(bigObject.value.prop)
 })
 \`\`\`
 
@@ -2117,7 +2112,6 @@ Most importantly: don't prematurely optimize. Build features first, profile in p
 }
 
 async function updateBatch2() {
-  console.log('🚀 Starting batch 2 update (5 blogs)...\n')
 
   for (const [id, content] of Object.entries(BLOG_CONTENTS)) {
     try {
@@ -2125,15 +2119,11 @@ async function updateBatch2() {
         .set({ content })
         .where(eq(blogs.id, Number(id)))
 
-      console.log(`✅ Updated blog ${id}`)
     }
     catch (error) {
-      console.error(`❌ Failed to update blog ${id}:`, error)
     }
   }
 
-  console.log('\n🎉 Batch 2 complete! All blogs updated.')
-  console.log('Run: npx tsx scripts/check-blogs.ts to verify\n')
   process.exit(0)
 }
 

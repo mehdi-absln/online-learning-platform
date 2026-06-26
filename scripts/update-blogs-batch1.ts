@@ -283,7 +283,6 @@ interface HasLength {
 }
 
 function logLength<T extends HasLength>(item: T): void {
-  console.log(item.length)
 }
 
 logLength("hello")        // OK - strings have length
@@ -729,7 +728,6 @@ export const handleApiError = (error: unknown) => {
   }
   
   // Log unexpected errors
-  console.error('Unexpected error:', error)
   
   throw createError({
     statusCode: 500,
@@ -1382,7 +1380,6 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       await $fetch('/api/auth/logout', { method: 'POST' })
     } catch (err) {
-      console.error('Logout error:', err)
     } finally {
       user.value = null
       token.value = null
@@ -1541,21 +1538,16 @@ const authStore = useAuthStore()
 
 // Subscribe to actions
 authStore.$onAction(({ name, args, after, onError }) => {
-  console.log(\`Action \${name} called with:\`, args)
   
   after((result) => {
-    console.log(\`Action \${name} finished with:\`, result)
   })
   
   onError((error) => {
-    console.error(\`Action \${name} failed:\`, error)
   })
 })
 
 // Subscribe to state changes
 authStore.$subscribe((mutation, state) => {
-  console.log('State changed:', mutation.type)
-  console.log('New state:', state)
 })
 \`\`\`
 
@@ -1670,7 +1662,6 @@ Start with simple stores, leverage composition as complexity grows, and don't be
 }
 
 async function updateBatch1() {
-  console.log('🚀 Starting batch 1 update (5 blogs)...\n')
 
   for (const [id, content] of Object.entries(BLOG_CONTENTS)) {
     try {
@@ -1678,14 +1669,11 @@ async function updateBatch1() {
         .set({ content })
         .where(eq(blogs.id, Number(id)))
 
-      console.log(`✅ Updated blog ${id}`)
     }
     catch (error) {
-      console.error(`❌ Failed to update blog ${id}:`, error)
     }
   }
 
-  console.log('\n🎉 Batch 1 complete! Run check-blogs.ts to verify.')
   process.exit(0)
 }
 

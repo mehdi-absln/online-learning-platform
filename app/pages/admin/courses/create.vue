@@ -42,7 +42,7 @@ useHead({
 })
 
 definePageMeta({
-  middleware: ['admin'], // ← جایگزین middleware inline
+  middleware: ['admin'],
 })
 
 const toast = useToast()

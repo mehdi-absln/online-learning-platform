@@ -388,7 +388,6 @@ onMounted(() => {
   if (!userStore.isAuthenticated) return
 
   progressStore.fetchProgress().catch((err) => {
-    console.error('Failed to fetch lesson progress:', err)
   })
 })
 

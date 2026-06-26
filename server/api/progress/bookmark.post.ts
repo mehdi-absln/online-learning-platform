@@ -45,7 +45,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    console.error('Toggle bookmark error:', error)
     return errorResponse('Internal server error', (error as Error).message)
   }
 })

@@ -5,7 +5,6 @@ export default withNuxt([
   {
     files: ['**/*.vue'],
     rules: {
-      // این قانون تگ img را باز نگه می‌دارد <img src="...">
       'vue/html-self-closing': ['error', {
         html: {
           void: 'never',
@@ -17,7 +16,6 @@ export default withNuxt([
         math: 'always',
       }],
 
-      // غیرفعال کردن خطای نام کامپوننت‌ها
       'vue/multi-word-component-names': 'off',
     },
   },

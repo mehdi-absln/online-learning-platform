@@ -81,7 +81,6 @@
         </NuxtLink>
       </div>
 
-      <!-- جدول دوره‌ها -->
       <div
         v-else
         class="overflow-x-auto"
@@ -198,7 +197,7 @@ import { useUserStore } from '~/stores/user'
 import { SITE_NAME } from '~/constants'
 
 definePageMeta({
-  middleware: ['admin'], // ← جایگزین middleware inline
+  middleware: ['admin'],
 })
 
 const toast = useToast()
@@ -246,7 +245,6 @@ const fetchCourses = async () => {
   }
   catch (error: unknown) {
     fetchError.value = getErrorMessage(error)
-    console.error(error)
   }
   finally {
     isLoading.value = false

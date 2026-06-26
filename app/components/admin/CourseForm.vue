@@ -336,7 +336,6 @@ watch(() => props.initialData, (newVal) => {
   else {
     reset()
   }
-  // اعتبارسنجی اولیه برای غیرفعال کردن دکمه ذخیره در فرم خالی
   nextTick(() => {
     validateAll()
   })
@@ -353,12 +352,12 @@ const handleSubmit = () => {
 input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
-  appearance: none;           /* ← اضافه شد */
+  appearance: none;
   margin: 0;
 }
 
 input[type='number'] {
   -moz-appearance: textfield;
-  appearance: textfield;      /* ← اضافه شد */
+  appearance: textfield;
 }
 </style>

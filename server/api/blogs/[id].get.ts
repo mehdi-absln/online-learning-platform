@@ -14,7 +14,6 @@ export default defineEventHandler(async (event) => {
 
     let blog
 
-    // اگر عدد باشد با ID جستجو کن، وگرنه با slug
     if (/^\d+$/.test(idParam)) {
       const blogId = parseInt(idParam, 10)
       blog = await getBlogById(blogId)

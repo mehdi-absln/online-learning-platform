@@ -21,7 +21,6 @@ export default defineEventHandler(async (event) => {
 
     if (!course) throw createError({ statusCode: 404, statusMessage: 'Course not found' })
 
-    // مربی فقط می‌تواند دورهٔ خودش را ببیند
     if (user.role === 'instructor') {
       const [instructor] = await db
         .select({ id: instructors.id })
@@ -47,7 +46,6 @@ export default defineEventHandler(async (event) => {
       return errorResponse(err.statusMessage || 'Request failed', err.message)
     }
 
-    console.error('Get Course Error:', error)
     setResponseStatus(event, 500)
     return errorResponse('Internal server error', err.message || 'Unknown error')
   }

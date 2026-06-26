@@ -102,7 +102,6 @@ export const useLessonProgressStore = defineStore('lesson-progress', () => {
     }
     catch (err: unknown) {
       error.value = getErrorMessage(err)
-      console.error('Failed to fetch progress:', err)
     }
     finally {
       isLoading.value = false

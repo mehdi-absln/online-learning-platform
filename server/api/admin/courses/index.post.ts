@@ -7,12 +7,11 @@ import { requireInstructor } from '../../../utils/auth-helpers'
 
 export default defineEventHandler(async (event) => {
   try {
-    const user = await requireInstructor(event) // ✅ هم ادمین هم مربی
+    const user = await requireInstructor(event)
 
     const body = await readBody(event)
     const { title, slug, description, price, isPublished } = body
 
-    // اگر کاربر نقش مربی دارد، شناسهٔ مدرسِ او را از جدول instructors پیدا کن
     let instructorId = null
     if (user.role === 'instructor') {
       const [instructor] = await db
@@ -55,7 +54,6 @@ export default defineEventHandler(async (event) => {
       return errorResponse(err.statusMessage || 'Request failed', err.message)
     }
 
-    console.error('Create Course Error:', error)
     setResponseStatus(event, 500)
     return errorResponse('Internal server error', err.message || 'Unknown error')
   }

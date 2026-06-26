@@ -5,8 +5,6 @@ import path from 'path'
 const dbPath = path.resolve(process.cwd(), 'server/data/db.sqlite')
 const sqlite = new Database(dbPath)
 
-console.log('📂 Database path:', dbPath)
-
 function calculateReadingTime(content: string): number {
   if (!content) return 1
 
@@ -18,8 +16,6 @@ function calculateReadingTime(content: string): number {
 }
 
 function updateReadingTimes() {
-  console.log('🔄 Calculating reading times for all blogs...\n')
-
   try {
     // Get all blogs
     const allBlogs = sqlite.prepare('SELECT id, title, content FROM blogs').all() as {
@@ -40,14 +36,10 @@ function updateReadingTimes() {
         ? blog.title.substring(0, 30) + '...'
         : blog.title
 
-      console.log(`✅ Blog ${blog.id} (${title}): ${readingTime} min`)
     }
 
-    console.log('\n🎉 All reading times updated!')
-    console.log('Total blogs updated:', allBlogs.length)
   }
   catch (error) {
-    console.error('❌ Error:', error)
     process.exit(1)
   }
 

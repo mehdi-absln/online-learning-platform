@@ -68,7 +68,6 @@ export const useCartStore = defineStore('cart', () => {
       }
     }
     catch (error: unknown) {
-      console.error('Failed to fetch guest cart details:', error)
       toast.error('Failed to load guest cart items')
     }
   }
@@ -89,7 +88,6 @@ export const useCartStore = defineStore('cart', () => {
       }
     }
     catch (error: unknown) {
-      console.error('Failed to fetch cart from server:', error)
       toast.error('Failed to load your cart')
     }
     finally {
@@ -124,7 +122,6 @@ export const useCartStore = defineStore('cart', () => {
       }
       catch (error: unknown) {
         const err = error as { statusMessage?: string }
-        console.error('Failed to add item to cart on server:', error)
         toast.error(err.statusMessage || 'Failed to add item to cart')
       }
     }
@@ -150,7 +147,6 @@ export const useCartStore = defineStore('cart', () => {
         }
       }
       catch (error: unknown) {
-        console.error('Failed to remove item from cart on server:', error)
         toast.error('Failed to remove item')
       }
     }
@@ -183,7 +179,6 @@ export const useCartStore = defineStore('cart', () => {
       }
     }
     catch (error: unknown) {
-      console.warn('Cart merge failed silently:', error)
       // Don't show error toast - merge is not critical and user is already logged in
     }
   }
@@ -229,7 +224,6 @@ export const useCartStore = defineStore('cart', () => {
     }
     catch (error: unknown) {
       const err = error as { statusMessage?: string, data?: { message?: string, orderId?: number } }
-      console.error('Checkout error:', error)
       const message = err.statusMessage || err.data?.message || 'Payment processing failed'
       if (simulationType === 'success') toast.error(message)
       return { success: false, message, orderId: err.data?.orderId }
@@ -256,7 +250,6 @@ export const useCartStore = defineStore('cart', () => {
       isInitialized.value = true
     }
     catch (error) {
-      console.error('Cart init error:', error)
     }
   }
 

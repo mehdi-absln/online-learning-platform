@@ -26,7 +26,6 @@ export function validateAndProcessImageUrl(imageUrl: string | null | undefined):
     return imageUrl
   }
   catch (error) {
-    console.error(`Invalid image URL: ${imageUrl}`, error)
     return null
   }
 }

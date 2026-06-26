@@ -2,7 +2,7 @@
 import { z } from 'zod'
 import { getBlogById, updateBlog, isSlugExists, type UpdateBlogInput } from '../../db/blog-service'
 import { requireInstructor } from '../../utils/auth-helpers'
-import { calculateReadingTime } from '../../utils/blog-helpers' // ✨ جدید
+import { calculateReadingTime } from '../../utils/blog-helpers'
 
 const updateBlogSchema = z.object({
   title: z
@@ -106,7 +106,6 @@ export default defineEventHandler(async (event) => {
       data.publishedAt = new Date()
     }
 
-    // ✨ اگر content تغییر کرد، readingTime رو دوباره محاسبه کن
     const updateData: UpdateBlogInput = { ...data }
     if (data.content) {
       updateData.readingTime = calculateReadingTime(data.content)

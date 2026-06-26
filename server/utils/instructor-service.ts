@@ -41,7 +41,7 @@ export function transformInstructor(
   return {
     id: instructorId,
     name,
-    avatar: rawInstructor?.avatar || processInstructorAvatar(undefined, name), // ✅ اول DB بعد generate
+    avatar: rawInstructor?.avatar || processInstructorAvatar(undefined, name),
   }
 }
 
@@ -79,7 +79,7 @@ export async function getInstructorsByIds(
     .select({
       id: instructors.id,
       name: instructors.name,
-      avatar: instructors.avatar, // ✅ اضافه شد
+      avatar: instructors.avatar,
     })
     .from(instructors)
     .where(inArray(instructors.id, uniqueIds))

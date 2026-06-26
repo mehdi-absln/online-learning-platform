@@ -48,7 +48,6 @@ export default defineEventHandler(async (event) => {
       return errorResponse(nuxtError.statusMessage || 'An error occurred', nuxtError.message)
     }
 
-    console.error('Sign up error:', error)
     const message = error instanceof Error ? error.message : undefined
     return errorResponse('Internal server error', message)
   }

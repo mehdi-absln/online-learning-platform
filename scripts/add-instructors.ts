@@ -37,8 +37,6 @@ const sampleInstructors = [
 ]
 
 async function main() {
-  console.log('Adding instructors...')
-
   for (const instructor of sampleInstructors) {
     try {
       await db.insert(instructors).values({
@@ -60,14 +58,11 @@ async function main() {
           updatedAt: new Date(),
         },
       })
-      console.log(`✅ Added/Updated: ${instructor.name}`)
     }
     catch (error) {
-      console.error(`❌ Error adding ${instructor.name}:`, error)
     }
   }
 
-  console.log('\nDone!')
 }
 
 main().then(() => process.exit(0))

@@ -5,7 +5,6 @@ import { db } from '../db/index'
 import { users } from '../db/schema'
 import { eq } from 'drizzle-orm'
 
-// اگر createError از قبل در این فایل import نشده، اضافه‌اش کن
 import { createError } from 'h3'
 
 export async function requireAuth(event: H3Event) {

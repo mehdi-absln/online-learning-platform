@@ -39,7 +39,6 @@ export default defineEventHandler(async (event) => {
       return errorResponse(err.statusMessage || 'Request failed', err.message)
     }
 
-    console.error('Admin Fetch Users Error:', error)
     setResponseStatus(event, 500)
     return errorResponse('Internal server error', err.message || 'Unknown error')
   }

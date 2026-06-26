@@ -21,7 +21,6 @@ const mockCourse = {
   ],
 }
 
-// ───── Mock Router - باید قبل از همه باشد ─────
 const mockPush = vi.fn()
 
 vi.mock('vue-router', () => ({
@@ -187,7 +186,6 @@ describe('useLesson', () => {
     it('should navigate to previous lesson', () => {
       const { goToPrev, prevLesson } = useLesson('vue-course', 'lesson-2')
 
-      // اطمینان از وجود درس قبلی
       expect(prevLesson.value).not.toBeNull()
 
       goToPrev()
@@ -199,7 +197,6 @@ describe('useLesson', () => {
     it('should navigate to next lesson', () => {
       const { goToNext, nextLesson } = useLesson('vue-course', 'lesson-2')
 
-      // اطمینان از وجود درس بعدی
       expect(nextLesson.value).not.toBeNull()
 
       goToNext()

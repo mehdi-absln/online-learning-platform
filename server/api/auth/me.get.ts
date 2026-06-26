@@ -50,7 +50,6 @@ export default defineEventHandler(async (event) => {
       return errorResponse(nuxtError.statusMessage || 'An error occurred', nuxtError.message)
     }
 
-    console.error('Get current user error:', error)
     return errorResponse('Internal server error', (error as Error).message)
   }
 })

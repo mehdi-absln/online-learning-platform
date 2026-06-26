@@ -310,7 +310,6 @@ const handleCheckout = async (type: 'success' | 'fail') => {
   }
   else {
     // Unexpected error before order creation
-    console.error('Checkout failed:', result.message)
   }
 }
 </script>

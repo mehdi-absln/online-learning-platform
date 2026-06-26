@@ -217,7 +217,6 @@ const handleSubmit = async () => {
   catch (error) {
     // Log unexpected errors in development mode
     if (import.meta.dev) {
-      console.error('Unexpected error:', error)
     }
     // Set generic error message on email field
     setFieldError('email', 'An unexpected error occurred.')

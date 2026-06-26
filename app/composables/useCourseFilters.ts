@@ -29,7 +29,6 @@ export const useCourseFilters = () => {
   // ✅ Current filter from URL
   const filter = computed(() => urlParams.value.filter)
 
-  // ✅ hasActiveFilters از URL، نه از Store
   const hasActiveFilters = computed(() => {
     const f = filter.value
     return !!(
@@ -115,7 +114,7 @@ export const useCourseFilters = () => {
   return {
     // Filter
     filter,
-    hasActiveFilters, // ✅ از اینجا expose میشه
+    hasActiveFilters,
     categories,
     levels,
     tags,
@@ -126,7 +125,7 @@ export const useCourseFilters = () => {
 
     // Pagination
     currentPage,
-    limit: COURSE_LIMIT, // ✅ بدون computed
+    limit: COURSE_LIMIT,
     totalPages,
     pagination: computed(() => ({
       currentPage: currentPage.value,

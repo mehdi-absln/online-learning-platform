@@ -13,7 +13,6 @@ export default defineEventHandler(async (event) => {
   }
   catch (error: unknown) {
     const err = error as { statusMessage?: string, message?: string }
-    console.error('Fetch orders error:', error)
     return errorResponse(err.statusMessage || 'Failed to fetch orders', err.message)
   }
 })

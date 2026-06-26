@@ -24,12 +24,12 @@ interface Props {
   disabled?: boolean
   text: string
   loadingText: string
-  block?: boolean // true = تمام عرض، false = عرض محتوا (حداقل 140px)
+  block?: boolean
 }
 
 withDefaults(defineProps<Props>(), {
   loading: false,
   disabled: false,
-  block: true, // رفتار پیش‌فرض مانند قبل (w-full)
+  block: true,
 })
 </script>

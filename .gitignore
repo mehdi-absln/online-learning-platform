@@ -29,4 +29,7 @@ server/data/db.sqlite
 # Qwen Code
 .qwen/
 
-QWEN.md 
+QWEN.md
+
+# Windows special device
+nul

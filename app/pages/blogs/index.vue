@@ -175,7 +175,6 @@ const noResultsMessage = computed(() => {
   return `No articles found for "${searchQuery.value}"`
 })
 
-// Event handlers - بدون تغییر
 const handleSearch = (query: string) => {
   searchBlogs(query)
 }

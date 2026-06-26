@@ -32,7 +32,6 @@ export default defineEventHandler(async (event) => {
     }
   }
   catch (error: unknown) {
-    console.error('Checkout error:', error)
     throw createError(error as Error)
   }
 })

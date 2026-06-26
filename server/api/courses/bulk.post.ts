@@ -32,7 +32,6 @@ export default defineEventHandler(async (event) => {
   }
   catch (error: unknown) {
     const err = error as { message?: string }
-    console.error('Bulk fetch courses error:', error)
     return errorResponse('Failed to fetch courses', err.message)
   }
 })

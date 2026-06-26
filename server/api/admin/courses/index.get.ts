@@ -29,7 +29,6 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
     }
 
-    // اگر کاربر فقط مدرّس است، دوره‌های خودش را برگردان
     if (user.role === 'instructor') {
       const [instructor] = await db
         .select({ id: instructors.id })
@@ -49,7 +48,6 @@ export default defineEventHandler(async (event) => {
       return successResponse('Courses retrieved', ownCourses)
     }
 
-    // در غیر این صورت (admin, superadmin) همهٔ دوره‌ها
     const allCourses = await db.query.courses.findMany({
       orderBy: [desc(courses.createdAt)],
     })
@@ -64,7 +62,6 @@ export default defineEventHandler(async (event) => {
       return errorResponse(err.statusMessage || 'Request failed', err.message)
     }
 
-    console.error('Admin Fetch Courses Error:', error)
     setResponseStatus(event, 500)
     return errorResponse('Internal server error', err.message || 'Unknown error')
   }
