@@ -7,9 +7,9 @@ import { useLesson } from '~/composables/useLesson'
 
 // ───── Mock Data ─────
 const mockLessons = [
-  { id: 1, title: 'Lesson 1', slug: 'lesson-1', duration: '10:00', description: 'Lesson 1 content' },
-  { id: 2, title: 'Lesson 2', slug: 'lesson-2', duration: '15:00', description: 'Lesson 2 content' },
-  { id: 3, title: 'Lesson 3', slug: 'lesson-3', duration: '20:00', description: 'Lesson 3 content' },
+  { id: 1, title: 'Lesson 1', slug: 'lesson-1', duration: '10:00', description: 'Lesson 1 content', isFree: true },
+  { id: 2, title: 'Lesson 2', slug: 'lesson-2', duration: '15:00', description: 'Lesson 2 content', isFree: true },
+  { id: 3, title: 'Lesson 3', slug: 'lesson-3', duration: '20:00', description: 'Lesson 3 content', isFree: true },
 ]
 
 const mockCourse = {
@@ -47,6 +47,15 @@ vi.mock('#imports', () => ({
   }),
 }))
 
+vi.mock('#app/composables/router', () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+  useRoute: () => ({
+    params: {},
+  }),
+}))
+
 // ───── Mock Stores ─────
 const mockCoursesStoreData = {
   detailedCourse: mockCourse,
@@ -54,6 +63,15 @@ const mockCoursesStoreData = {
   totalLessons: 3,
   allLessonIds: [1, 2, 3],
 }
+
+vi.mock('~/stores/user', () => ({
+  useUserStore: () => ({
+    user: null,
+    isAuthenticated: false,
+    isEnrolled: () => false,
+    isAdminLike: false,
+  }),
+}))
 
 vi.mock('~/stores/courses', () => ({
   useCoursesStore: () => ({

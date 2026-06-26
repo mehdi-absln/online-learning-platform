@@ -4,6 +4,7 @@ import orderDetailsHandler from '../../server/api/orders/[id].get'
 import { courses, instructors, users, orders, orderItems } from '../../server/db/schema'
 
 import { getRouterParam } from 'h3'
+import { requireAuth } from '../../server/utils/auth-helpers'
 
 vi.hoisted(() => {
   const handlerStub = (fn: any) => fn
@@ -31,6 +32,10 @@ vi.mock('h3', async () => {
   }
 })
 
+vi.mock('../../server/utils/auth-helpers', () => ({
+  requireAuth: vi.fn(),
+}))
+
 describe('Orders API Handlers', () => {
   let db: any
   let testUser: any
@@ -42,6 +47,7 @@ describe('Orders API Handlers', () => {
 
     // Seed test data
     const [user] = await db.insert(users).values({
+      username: 'testuser',
       name: 'Test User',
       email: 'test@example.com',
       password: 'hashedpassword',
@@ -80,6 +86,8 @@ describe('Orders API Handlers', () => {
       courseId: course.id,
       price: 100,
     })
+
+    vi.mocked(requireAuth).mockResolvedValue(testUser)
   })
 
   afterEach(async () => {
@@ -114,6 +122,7 @@ describe('Orders API Handlers', () => {
 
   it('GET /api/orders/:id should return 404 if order belongs to another user', async () => {
     const [otherUser] = await db.insert(users).values({
+      username: 'otheruser',
       name: 'Other User',
       email: 'other@test.com',
       password: 'pass',
@@ -122,6 +131,7 @@ describe('Orders API Handlers', () => {
     }).returning()
 
     vi.mocked(getRouterParam).mockReturnValue(testOrder.id.toString())
+    vi.mocked(requireAuth).mockResolvedValue(otherUser)
     const event = { context: { user: otherUser } } as any
 
     await expect(orderDetailsHandler(event)).rejects.toThrow('Order not found')

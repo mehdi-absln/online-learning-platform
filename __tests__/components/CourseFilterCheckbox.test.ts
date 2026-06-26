@@ -1,84 +1,85 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect } from 'vitest'
-import CourseFilterCheckbox from '@/components/courses/CourseFilterCheckbox.vue'
+import FilterCheckboxGroup from '~/components/courses/FilterCheckboxGroup.vue'
 
 describe('CourseFilterCheckbox', () => {
-  // Test with boolean model (single selection)
-  it('renders correctly with boolean model', () => {
-    const wrapper = mount(CourseFilterCheckbox, {
+  const options = [
+    { label: 'Option 1', value: 'option1' },
+    { label: 'Option 2', value: 'option2' },
+  ]
+
+  it('renders checkbox options', () => {
+    const wrapper = mount(FilterCheckboxGroup, {
       props: {
-        id: 'test-checkbox',
-        label: 'Test Label',
-        modelValue: true,
-      },
-    })
-
-    expect(wrapper.find('input[type="checkbox"]').exists()).toBe(true)
-    expect(wrapper.text()).toContain('Test Label')
-    expect(wrapper.find('input[type="checkbox"]').element.checked).toBe(true)
-  })
-
-  it('emits update:modelValue event with boolean value', async () => {
-    const wrapper = mount(CourseFilterCheckbox, {
-      props: {
-        id: 'test-checkbox',
-        label: 'Test Label',
-        modelValue: false,
-      },
-    })
-
-    const checkbox = wrapper.find('input[type="checkbox"]')
-    await checkbox.setValue(true)
-
-    expect(wrapper.emitted('update:modelValue')).toHaveLength(1)
-    expect(wrapper.emitted('update:modelValue')![0]).toEqual([true])
-  })
-
-  // Test with string array model (multi-selection)
-  it('renders correctly with string array model', () => {
-    const wrapper = mount(CourseFilterCheckbox, {
-      props: {
-        id: 'test-checkbox',
-        label: 'Test Label',
-        modelValue: ['option1', 'option2'],
-        value: 'option1',
-      },
-    })
-
-    expect(wrapper.find('input[type="checkbox"]').exists()).toBe(true)
-    expect(wrapper.text()).toContain('Test Label')
-    expect(wrapper.find('input[type="checkbox"]').element.checked).toBe(true)
-  })
-
-  it('emits update:modelValue event with string array value', async () => {
-    const wrapper = mount(CourseFilterCheckbox, {
-      props: {
-        id: 'test-checkbox',
-        label: 'Test Label',
+        name: 'test-checkbox',
+        options,
         modelValue: ['option1'],
-        value: 'option2',
       },
     })
 
-    await wrapper.find('input[type="checkbox"]').setValue()
+    expect(wrapper.findAll('input[type="checkbox"]')).toHaveLength(2)
+    expect(wrapper.text()).toContain('Option 1')
+    expect(wrapper.text()).toContain('Option 2')
+    expect(wrapper.find('input[type="checkbox"]').element.checked).toBe(true)
+  })
+
+  it('emits update:modelValue when checking a new value', async () => {
+    const wrapper = mount(FilterCheckboxGroup, {
+      props: {
+        name: 'test-checkbox',
+        options,
+        modelValue: ['option1'],
+      },
+    })
+
+    const checkbox = wrapper.findAll('input[type="checkbox"]')[1]
+    await checkbox.setValue(true)
 
     expect(wrapper.emitted('update:modelValue')).toHaveLength(1)
     expect(wrapper.emitted('update:modelValue')![0]).toEqual([['option1', 'option2']])
   })
 
-  it('removes value from array when unchecked in string array model', async () => {
-    const wrapper = mount(CourseFilterCheckbox, {
+  it('renders checked state from modelValue array', () => {
+    const wrapper = mount(FilterCheckboxGroup, {
       props: {
-        id: 'test-checkbox',
-        label: 'Test Label',
+        name: 'test-checkbox',
+        options,
         modelValue: ['option1', 'option2'],
-        value: 'option1',
       },
     })
 
-    await wrapper.find('input[type="checkbox"]').setValue(false)
+    const checkboxes = wrapper.findAll('input[type="checkbox"]')
+    expect(checkboxes[0].element.checked).toBe(true)
+    expect(checkboxes[1].element.checked).toBe(true)
+  })
+
+  it('emits update:modelValue when unchecking a selected value', async () => {
+    const wrapper = mount(FilterCheckboxGroup, {
+      props: {
+        name: 'test-checkbox',
+        options,
+        modelValue: ['option1', 'option2'],
+      },
+    })
+
+    await wrapper.findAll('input[type="checkbox"]')[0].setValue(false)
 
     expect(wrapper.emitted('update:modelValue')).toHaveLength(1)
     expect(wrapper.emitted('update:modelValue')![0]).toEqual([['option2']])
+  })
+
+  it('treats undefined modelValue as empty selection', async () => {
+    const wrapper = mount(FilterCheckboxGroup, {
+      props: {
+        name: 'test-checkbox',
+        options,
+        modelValue: undefined,
+      },
+    })
+
+    await wrapper.findAll('input[type="checkbox"]')[0].setValue(true)
+
+    expect(wrapper.emitted('update:modelValue')).toHaveLength(1)
+    expect(wrapper.emitted('update:modelValue')![0]).toEqual([['option1']])
   })
 })

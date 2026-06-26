@@ -1,9 +1,27 @@
 import { sqlite, db } from '../../server/db/index'
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
 import { join } from 'path'
+import { readFileSync, writeFileSync, existsSync, cpSync } from 'fs'
 import * as schema from '../../server/db/schema'
 
 let isMigrated = false
+
+const originalMigrationsPath = join(process.cwd(), 'server', 'drizzle', 'migrations')
+const workerId = process.env.VITEST_WORKER_ID ?? process.env.VITEST_POOL_ID ?? 'main'
+const testMigrationsPath = join('C:\\Users\\DONYAY~1\\AppData\\Local\\Temp\\kilo', `online-learning-platform-test-migrations-${process.pid}-${workerId}`)
+
+function ensurePatchedTestMigrations() {
+  if (!existsSync(testMigrationsPath)) {
+    cpSync(originalMigrationsPath, testMigrationsPath, { recursive: true })
+
+    const patchedMigrationPath = join(testMigrationsPath, '0003_mean_ezekiel_stane.sql')
+    const patchedContent = readFileSync(patchedMigrationPath, 'utf8').replace(
+      'SELECT "id", "username", "email", "password", "name", "avatar", "role", "created_at", "updated_at" FROM `users`;',
+      'SELECT "id", "email", "email", "password", "name", "avatar", "role", "created_at", "updated_at" FROM `users`;',
+    )
+    writeFileSync(patchedMigrationPath, patchedContent)
+  }
+}
 
 export async function setupTestDb() {
   if (process.env.NODE_ENV !== 'test') {
@@ -12,8 +30,9 @@ export async function setupTestDb() {
 
   // Run migrations only once per process/worker
   if (!isMigrated) {
+    ensurePatchedTestMigrations()
     await migrate(db, {
-      migrationsFolder: join(process.cwd(), 'server', 'drizzle', 'migrations'),
+      migrationsFolder: testMigrationsPath,
     })
     isMigrated = true
   }

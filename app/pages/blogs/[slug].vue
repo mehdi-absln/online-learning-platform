@@ -148,7 +148,7 @@
         <figure
           class="mb-12 rounded-2xl overflow-hidden shadow-2xl border border-dark-divider"
         >
-          <BlogImage
+          <BlogsBlogImage
             :src="blog.coverImage"
             :alt="`Cover image for ${blog.title}`"
             width="1200"

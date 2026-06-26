@@ -7,7 +7,7 @@ import cartMergeHandler from '../../server/api/cart/merge.post'
 import { courses, instructors, users, cartItems, enrollments } from '../../server/db/schema'
 
 import { readBody } from 'h3'
-import { requireAuth } from '../../server/utils/auth-helpers'
+import { requireAuth, requirePurchaser, isPurchasingRestrictedRole } from '../../server/utils/auth-helpers'
 
 vi.hoisted(() => {
   const handlerStub = (fn: any) => fn
@@ -40,6 +40,8 @@ vi.mock('h3', async () => {
 
 vi.mock('../../server/utils/auth-helpers', () => ({
   requireAuth: vi.fn(),
+  requirePurchaser: vi.fn(),
+  isPurchasingRestrictedRole: vi.fn(() => false),
 }))
 
 describe('Cart API Handlers', () => {
@@ -53,6 +55,7 @@ describe('Cart API Handlers', () => {
 
     // Seed test data
     const [user] = await db.insert(users).values({
+      username: 'testuser',
       name: 'Test User',
       email: 'test@example.com',
       password: 'hashedpassword',
@@ -81,6 +84,8 @@ describe('Cart API Handlers', () => {
 
     // Default mock: authenticated user
     vi.mocked(requireAuth).mockResolvedValue(testUser)
+    vi.mocked(requirePurchaser).mockResolvedValue(testUser)
+    vi.mocked(isPurchasingRestrictedRole).mockReturnValue(false)
   })
 
   afterEach(async () => {
@@ -153,10 +158,8 @@ describe('Cart API Handlers', () => {
 
       vi.mocked(readBody).mockResolvedValue({ courseId: unpublished.id })
       const event = {} as any
-      const result = await cartPostHandler(event)
 
-      expect(result.success).toBe(false)
-      expect(result.message).toBe('This course is not currently available')
+      await expect(cartPostHandler(event)).rejects.toThrow('This course is not currently available')
     })
 
     it('should error if user already enrolled', async () => {
@@ -168,10 +171,8 @@ describe('Cart API Handlers', () => {
 
       vi.mocked(readBody).mockResolvedValue({ courseId: testCourse.id })
       const event = {} as any
-      const result = await cartPostHandler(event)
 
-      expect(result.success).toBe(false)
-      expect(result.message).toBe('You are already enrolled in this course')
+      await expect(cartPostHandler(event)).rejects.toThrow('You are already enrolled in this course')
     })
   })
 

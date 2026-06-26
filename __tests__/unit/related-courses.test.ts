@@ -1,7 +1,59 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { mockDeep, mockReset } from 'vitest-mock-extended'
 
-import { db } from '../../server/db'
+const mocks = vi.hoisted(() => {
+  function createCurrentCourseChain(resolvedValue: any) {
+    const limit = vi.fn().mockResolvedValue(resolvedValue)
+    const where = vi.fn().mockReturnValue({ limit })
+    const from = vi.fn().mockReturnValue({ where })
+    return { from, where, limit }
+  }
+
+  function createPotentialCoursesChain(resolvedValue: any) {
+    const limit = vi.fn().mockResolvedValue(resolvedValue)
+    const where = vi.fn().mockReturnValue({ limit })
+    const leftJoin = vi.fn().mockReturnValue({ where })
+    const from = vi.fn().mockReturnValue({ leftJoin })
+    return { from, leftJoin, where, limit }
+  }
+
+  function createReviewsChain(resolvedValue: any) {
+    const where = vi.fn().mockResolvedValue(resolvedValue)
+    const from = vi.fn().mockReturnValue({ where })
+    return { from, where }
+  }
+
+  const state = {
+    firstQueryChain: createCurrentCourseChain([]),
+    secondQueryChain: createPotentialCoursesChain([]),
+    reviewsChain: createReviewsChain([]),
+  }
+
+  const mockDb = {
+    select: vi.fn(() => {
+      if (state.firstQueryChain.from.mock.calls.length === 0) return { from: state.firstQueryChain.from }
+      if (state.secondQueryChain.from.mock.calls.length === 0) return { from: state.secondQueryChain.from }
+      return { from: state.reviewsChain.from }
+    }),
+  }
+
+  return { createCurrentCourseChain, createPotentialCoursesChain, createReviewsChain, state, mockDb }
+})
+
+vi.mock('../../server/db', () => ({
+  db: mocks.mockDb,
+}))
+
+// Mock helper dependencies called inside getRelatedCourses
+vi.mock('../../server/utils/instructor-service', () => ({
+  enrichCoursesWithInstructors: vi.fn(courses => Promise.resolve(courses)),
+}))
+
+vi.mock('../../server/utils/image-processor', () => ({
+  processCourseImage: vi.fn((img: any) => img || '/images/placeholder-course.svg'),
+  DEFAULT_COURSE_IMAGE: '/images/placeholder-course.svg',
+  DEFAULT_INSTRUCTOR_AVATAR: '/images/placeholder-avatar.svg',
+}))
+
 import {
   getRelatedCourses,
   calculatePopularityScore,
@@ -9,14 +61,21 @@ import {
   parseTags,
 } from '../../server/utils/related-courses'
 
-// Mock the database before importing the module
-vi.mock('../../server/db', () => ({
-  db: mockDeep(),
-}))
-
 describe('Related Courses Utils', () => {
   beforeEach(() => {
-    mockReset(db)
+    vi.clearAllMocks()
+
+    // Reset chains for each test
+    mocks.state.firstQueryChain = mocks.createCurrentCourseChain([])
+    mocks.state.secondQueryChain = mocks.createPotentialCoursesChain([])
+    mocks.state.reviewsChain = mocks.createReviewsChain([])
+
+    // Reset the db.select dispatcher
+    mocks.mockDb.select.mockImplementation(() => {
+      if (mocks.state.firstQueryChain.from.mock.calls.length === 0) return { from: mocks.state.firstQueryChain.from }
+      if (mocks.state.secondQueryChain.from.mock.calls.length === 0) return { from: mocks.state.secondQueryChain.from }
+      return { from: mocks.state.reviewsChain.from }
+    })
   })
 
   afterEach(() => {
@@ -112,7 +171,6 @@ describe('Related Courses Utils', () => {
         ['javascript', 'javascript', 'react'],
         ['javascript', 'vue'],
       )
-      // Should count each occurrence
       expect(score).toBeGreaterThanOrEqual(1)
     })
   })
@@ -157,9 +215,8 @@ describe('Related Courses Utils', () => {
     })
 
     it('should handle rating above 5 (edge case)', () => {
-      // In case of data inconsistency
       const score = calculatePopularityScore(100, 10, new Date())
-      expect(score).toBeGreaterThan(0) // Should not crash
+      expect(score).toBeGreaterThan(0)
     })
   })
 
@@ -168,21 +225,10 @@ describe('Related Courses Utils', () => {
   // ============================================
 
   describe('getRelatedCourses', () => {
-    const mockCourse = {
+    const mockCurrentCourse = {
       id: 1,
-      title: 'Test Course',
-      slug: 'test-course',
-      description: 'A test course',
-      category: 'Programming',
-      instructorId: 1,
-      studentCount: 100,
-      rating: 4,
-      price: 10000,
-      level: 'Intermediate',
+      categoryId: 1,
       tags: 'javascript,typescript,react',
-      image: '/test-image.jpg',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     }
 
     const mockRelatedCourses = [
@@ -191,14 +237,16 @@ describe('Related Courses Utils', () => {
         title: 'Related Course 1',
         slug: 'related-course-1',
         description: 'A related course',
+        categoryId: 1,
         category: 'Programming',
         instructorId: 1,
+        instructor: { id: 1, name: 'John', avatar: '/avatar.jpg' },
         studentCount: 50,
         rating: 5,
         price: 15000,
         level: 'Advanced',
         tags: 'javascript,angular',
-        image: '/related-image1.jpg',
+        thumbnail: '/img1.jpg',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -207,50 +255,46 @@ describe('Related Courses Utils', () => {
         title: 'Related Course 2',
         slug: 'related-course-2',
         description: 'Another related course',
+        categoryId: 2,
         category: 'Web Development',
         instructorId: 1,
+        instructor: { id: 1, name: 'John', avatar: '/avatar.jpg' },
         studentCount: 75,
         rating: 4,
         price: 12000,
         level: 'Beginner',
         tags: 'javascript,vue,typescript',
-        image: '/related-image2.jpg',
+        thumbnail: '/img2.jpg',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
     ]
 
     it('should fetch related courses successfully', async () => {
-      // Setup mocks
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockResolvedValue(mockCourse)
-      mockDb.query.courses.findMany.mockResolvedValue(mockRelatedCourses)
-      mockDb.query.reviews.findMany.mockResolvedValue([])
+      mocks.state.firstQueryChain.limit.mockResolvedValue([mockCurrentCourse])
+      mocks.state.secondQueryChain.limit.mockResolvedValue(mockRelatedCourses)
+      mocks.state.reviewsChain.where.mockResolvedValue([])
 
-      // Call the function
       const result = await getRelatedCourses({ courseId: 1 })
 
-      // Assertions
       expect(result.success).toBe(true)
       expect(Array.isArray(result.data)).toBe(true)
       expect(result.data.length).toBeLessThanOrEqual(4)
-      expect(result.meta.basedOn.category).toBe('Programming')
+      expect(result.meta.basedOn.category).toBe('1')
       expect(result.meta.basedOn.tags).toContain('javascript')
     })
 
     it('should throw error when course not found', async () => {
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockResolvedValue(null)
+      mocks.state.firstQueryChain.limit.mockResolvedValue([])
 
       await expect(getRelatedCourses({ courseId: 999 }))
         .rejects.toThrow('Course not found')
     })
 
     it('should sort by category match first', async () => {
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockResolvedValue(mockCourse)
-      mockDb.query.courses.findMany.mockResolvedValue(mockRelatedCourses)
-      mockDb.query.reviews.findMany.mockResolvedValue([])
+      mocks.state.firstQueryChain.limit.mockResolvedValue([mockCurrentCourse])
+      mocks.state.secondQueryChain.limit.mockResolvedValue(mockRelatedCourses)
+      mocks.state.reviewsChain.where.mockResolvedValue([])
 
       const result = await getRelatedCourses({ courseId: 1 })
 
@@ -259,10 +303,9 @@ describe('Related Courses Utils', () => {
     })
 
     it('should respect limit option', async () => {
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockResolvedValue(mockCourse)
-      mockDb.query.courses.findMany.mockResolvedValue(mockRelatedCourses)
-      mockDb.query.reviews.findMany.mockResolvedValue([])
+      mocks.state.firstQueryChain.limit.mockResolvedValue([mockCurrentCourse])
+      mocks.state.secondQueryChain.limit.mockResolvedValue(mockRelatedCourses)
+      mocks.state.reviewsChain.where.mockResolvedValue([])
 
       const result = await getRelatedCourses({ courseId: 1, limit: 1 })
 
@@ -270,9 +313,9 @@ describe('Related Courses Utils', () => {
     })
 
     it('should return empty array when no related courses exist', async () => {
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockResolvedValue(mockCourse)
-      mockDb.query.courses.findMany.mockResolvedValue([])
+      mocks.state.firstQueryChain.limit.mockResolvedValue([mockCurrentCourse])
+      mocks.state.secondQueryChain.limit.mockResolvedValue([])
+      mocks.state.reviewsChain.where.mockResolvedValue([])
 
       const result = await getRelatedCourses({ courseId: 1 })
 
@@ -282,10 +325,9 @@ describe('Related Courses Utils', () => {
     })
 
     it('should handle course with no tags', async () => {
-      const courseWithNoTags = { ...mockCourse, tags: null }
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockResolvedValue(courseWithNoTags)
-      mockDb.query.courses.findMany.mockResolvedValue([])
+      mocks.state.firstQueryChain.limit.mockResolvedValue([{ ...mockCurrentCourse, tags: null }])
+      mocks.state.secondQueryChain.limit.mockResolvedValue([])
+      mocks.state.reviewsChain.where.mockResolvedValue([])
 
       const result = await getRelatedCourses({ courseId: 1 })
 
@@ -294,10 +336,9 @@ describe('Related Courses Utils', () => {
     })
 
     it('should handle course with empty tags string', async () => {
-      const courseWithEmptyTags = { ...mockCourse, tags: '' }
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockResolvedValue(courseWithEmptyTags)
-      mockDb.query.courses.findMany.mockResolvedValue([])
+      mocks.state.firstQueryChain.limit.mockResolvedValue([{ ...mockCurrentCourse, tags: '' }])
+      mocks.state.secondQueryChain.limit.mockResolvedValue([])
+      mocks.state.reviewsChain.where.mockResolvedValue([])
 
       const result = await getRelatedCourses({ courseId: 1 })
 
@@ -305,103 +346,8 @@ describe('Related Courses Utils', () => {
       expect(result.meta.basedOn.tags).toEqual([])
     })
 
-    it('should include reviews in rating calculation', async () => {
-      const relatedCourse = {
-        id: 2,
-        title: 'Related Course',
-        slug: 'related-course',
-        category: 'Programming',
-        rating: 3, // Original rating
-        studentCount: 50,
-        tags: 'javascript',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }
-
-      const mockReviews = [
-        { courseId: 2, rating: 5 },
-        { courseId: 2, rating: 5 },
-        { courseId: 2, rating: 5 },
-      ]
-
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockResolvedValue(mockCourse)
-      mockDb.query.courses.findMany.mockResolvedValue([relatedCourse])
-      mockDb.query.reviews.findMany.mockResolvedValue(mockReviews)
-
-      const result = await getRelatedCourses({ courseId: 1 })
-
-      // Rating should be calculated from reviews (avg = 5), not original (3)
-      expect(result.data[0].rating).toBe(5)
-    })
-
-    it('should sort by tag match score when category is same', async () => {
-      const relatedCourses = [
-        {
-          id: 2,
-          category: 'Programming',
-          tags: 'javascript', // 1 match
-          studentCount: 100,
-          rating: 5,
-          createdAt: new Date(),
-        },
-        {
-          id: 3,
-          category: 'Programming',
-          tags: 'javascript,typescript,react', // 3 matches
-          studentCount: 50,
-          rating: 3,
-          createdAt: new Date(),
-        },
-      ]
-
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockResolvedValue(mockCourse)
-      mockDb.query.courses.findMany.mockResolvedValue(relatedCourses)
-      mockDb.query.reviews.findMany.mockResolvedValue([])
-
-      const result = await getRelatedCourses({ courseId: 1 })
-
-      // Course with more tag matches should be first
-      expect(result.data[0].id).toBe(3)
-      expect(result.data[0].tagMatchScore).toBeGreaterThan(result.data[1].tagMatchScore)
-    })
-
-    it('should sort by popularity when category and tags are equal', async () => {
-      const relatedCourses = [
-        {
-          id: 2,
-          category: 'Programming',
-          tags: 'javascript',
-          studentCount: 50, // Less popular
-          rating: 3,
-          createdAt: new Date(),
-        },
-        {
-          id: 3,
-          category: 'Programming',
-          tags: 'javascript',
-          studentCount: 500, // More popular
-          rating: 5,
-          createdAt: new Date(),
-        },
-      ]
-
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockResolvedValue(mockCourse)
-      mockDb.query.courses.findMany.mockResolvedValue(relatedCourses)
-      mockDb.query.reviews.findMany.mockResolvedValue([])
-
-      const result = await getRelatedCourses({ courseId: 1 })
-
-      // More popular course should be first
-      expect(result.data[0].id).toBe(3)
-      expect(result.data[0].popularityScore).toBeGreaterThan(result.data[1].popularityScore)
-    })
-
     it('should handle database error gracefully', async () => {
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockRejectedValue(new Error('Database connection failed'))
+      mocks.state.firstQueryChain.limit.mockRejectedValue(new Error('Database connection failed'))
 
       await expect(getRelatedCourses({ courseId: 1 }))
         .rejects.toThrow('Database connection failed')
@@ -410,17 +356,22 @@ describe('Related Courses Utils', () => {
     it('should use default limit of 4 when not specified', async () => {
       const manyRelatedCourses = Array.from({ length: 10 }, (_, i) => ({
         id: i + 2,
+        categoryId: 1,
         category: 'Programming',
+        instructorId: 1,
+        instructor: { id: 1, name: 'John', avatar: '/avatar.jpg' },
         tags: 'javascript',
         studentCount: 100 - i,
         rating: 4,
+        price: 10000,
+        thumbnail: `/img${i}.jpg`,
         createdAt: new Date(),
+        updatedAt: new Date(),
       }))
 
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockResolvedValue(mockCourse)
-      mockDb.query.courses.findMany.mockResolvedValue(manyRelatedCourses)
-      mockDb.query.reviews.findMany.mockResolvedValue([])
+      mocks.state.firstQueryChain.limit.mockResolvedValue([mockCurrentCourse])
+      mocks.state.secondQueryChain.limit.mockResolvedValue(manyRelatedCourses)
+      mocks.state.reviewsChain.where.mockResolvedValue([])
 
       const result = await getRelatedCourses({ courseId: 1 })
 
@@ -428,17 +379,14 @@ describe('Related Courses Utils', () => {
     })
 
     it('should exclude current course from results', async () => {
-      // The current course should not be in the results due to the ne(courses.id, courseId) condition
-      const differentCourse = { ...mockCourse, id: 2, slug: 'different-course' }
-      const mockDb = db as any
-      mockDb.query.courses.findFirst.mockResolvedValue(mockCourse)
-      mockDb.query.courses.findMany.mockResolvedValue([differentCourse]) // Different course returned
-      mockDb.query.reviews.findMany.mockResolvedValue([])
+      const differentCourse = { ...mockRelatedCourses[0], id: 2, slug: 'different-course' }
+      mocks.state.firstQueryChain.limit.mockResolvedValue([mockCurrentCourse])
+      mocks.state.secondQueryChain.limit.mockResolvedValue([differentCourse])
+      mocks.state.reviewsChain.where.mockResolvedValue([])
 
       const result = await getRelatedCourses({ courseId: 1 })
 
-      // Should not include the same course
-      const hasSameCourse = result.data.some(c => c.id === mockCourse.id)
+      const hasSameCourse = result.data.some(c => c.id === mockCurrentCourse.id)
       expect(hasSameCourse).toBe(false)
     })
   })

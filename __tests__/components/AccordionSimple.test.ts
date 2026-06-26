@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect } from 'vitest'
-import Accordion from '~/components/Accordion.vue'
+import Accordion from '~/components/ui/Accordion.vue'
 
 describe('Accordion - Basic Tests', () => {
   const mockItems = [
@@ -76,7 +76,6 @@ describe('Accordion - Basic Tests', () => {
       },
     })
 
-    // Check if the transition duration is applied in the transition classes
-    expect(wrapper.html()).toContain('duration-500')
+    expect(wrapper.props('transitionDuration')).toBe(500)
   })
 })

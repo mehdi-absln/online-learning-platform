@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import Accordion from '~/components/Accordion.vue'
+import Accordion from '~/components/ui/Accordion.vue'
 
 describe('Accordion.vue', () => {
   beforeEach(() => {
@@ -8,8 +8,7 @@ describe('Accordion.vue', () => {
     vi.clearAllMocks()
   })
 
-  it('emits lesson-navigate event when lesson is clicked', async () => {
-    const lessonNavigateHandler = vi.fn()
+  it('renders lesson content through the default slot when an item is open', async () => {
     const items = [
       {
         title: 'Module 1: Introduction',
@@ -29,49 +28,23 @@ describe('Accordion.vue', () => {
     const wrapper = mount(Accordion, {
       props: {
         items,
+        modelValue: [0],
       },
-      emits: ['lesson-navigate'],
+      slots: {
+        default: '<button class="lesson-item">{{ item.lessons[0].title }}</button>',
+      },
     })
 
-    // Set up event listener
-    wrapper.vm.$emit = vi.fn((event, ...args) => {
-      if (event === 'lesson-navigate') {
-        lessonNavigateHandler(...args)
-      }
-    })
-
-    // Click to open accordion
-    const accordionHeader = wrapper.find('button[aria-controls^="accordion-content-"]')
-    await accordionHeader.trigger('click')
-
-    // Find and click the lesson item
-    const lessonElement = wrapper.find('.group.flex.items-center.p-3.rounded-md')
-    await lessonElement.trigger('click')
-
-    // Check that the lesson-navigate event was emitted
-    expect(lessonNavigateHandler).toHaveBeenCalledWith({
-      id: 1,
-      title: 'Lesson 1: Getting Started',
-      duration: '15 min',
-      slug: 'lesson-1-getting-started',
-    })
+    expect(wrapper.find('.lesson-item').exists()).toBe(true)
+    expect(wrapper.find('.lesson-item').text()).toContain('Lesson 1: Getting Started')
   })
 
-  it('does not emit event when lesson is disabled (no slug)', async () => {
-    const lessonNavigateHandler = vi.fn()
+  it('does not open disabled accordion items', async () => {
     const items = [
       {
         title: 'Module 1: Introduction',
         description: 'Basic concepts',
-        duration: '45 min',
-        lessons: [
-          {
-            id: 1,
-            title: 'Lesson 1: Getting Started',
-            duration: '15 min',
-            // No slug - lesson should be disabled
-          },
-        ],
+        disabled: true,
       },
     ]
 
@@ -79,25 +52,12 @@ describe('Accordion.vue', () => {
       props: {
         items,
       },
-      emits: ['lesson-navigate'],
     })
 
-    // Set up event listener
-    wrapper.vm.$emit = vi.fn((event, ...args) => {
-      if (event === 'lesson-navigate') {
-        lessonNavigateHandler(...args)
-      }
-    })
-
-    // Click to open accordion
     const accordionHeader = wrapper.find('button[aria-controls^="accordion-content-"]')
     await accordionHeader.trigger('click')
 
-    // Find and click the lesson item (should be disabled)
-    const lessonElement = wrapper.find('.group.flex.items-center.p-3.rounded-md')
-    await lessonElement.trigger('click')
-
-    // Check that the lesson-navigate event was not emitted
-    expect(lessonNavigateHandler).not.toHaveBeenCalled()
+    expect(accordionHeader.attributes('disabled')).toBeDefined()
+    expect(accordionHeader.attributes('aria-expanded')).toBe('false')
   })
 })

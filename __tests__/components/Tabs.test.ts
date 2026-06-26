@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
-import Tabs from '~/components/Tabs.vue'
+import Tabs from '~/components/ui/Tabs.vue'
 
 describe('Tabs.vue', () => {
   const tabsProp = [

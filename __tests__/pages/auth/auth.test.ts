@@ -4,46 +4,74 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { nextTick } from 'vue'
 import { signInSchema, signUpSchema } from '~/schemas/auth'
+import { AUTH_ERRORS } from '~/constants'
 import FormInput from '~/components/ui/FormInput.vue'
 import FormCheckbox from '~/components/ui/FormCheckbox.vue'
 import SubmitButton from '~/components/ui/SubmitButton.vue'
-import SignInPage from '~/pages/auth/SignIn.vue'
-import SignUpPage from '~/pages/auth/SignUp.vue'
 
-// ✅ استفاده از vi.hoisted برای رفع مشکل hoisting
-const { mockNavigateTo, mockFetch } = vi.hoisted(() => ({
+const { mockNavigateTo, mockFetch, mockRoute, mockToast } = vi.hoisted(() => ({
   mockNavigateTo: vi.fn(() => Promise.resolve()),
   mockFetch: vi.fn(),
+  mockRoute: {
+    query: {},
+  },
+  mockToast: {
+    success: vi.fn(),
+    error: vi.fn(),
+    showLoginRequired: vi.fn(),
+    show: vi.fn(),
+  },
 }))
 
-// ✅ Mock کردن ماژول‌های Nuxt با استفاده از mock های hoisted شده
-vi.mock('#app/composables/router', () => ({
-  navigateTo: mockNavigateTo,
-  useRouter: () => ({
-    push: mockNavigateTo,
-  }),
-}))
-
-vi.mock('#imports', () => ({
-  navigateTo: mockNavigateTo,
-  useRouter: () => ({
-    push: mockNavigateTo,
-  }),
-  ref: (val: any) => ({ value: val }),
-  reactive: (obj: any) => obj,
-  computed: (fn: any) => ({ value: fn() }),
-}))
-
-// ✅ تنظیم global stubs
 vi.stubGlobal('$fetch', mockFetch)
-vi.stubGlobal('navigateTo', mockNavigateTo)
 
 describe('Authentication System', () => {
   beforeEach(() => {
+    vi.resetModules()
     vi.clearAllMocks()
     mockFetch.mockReset()
+    mockFetch.mockImplementation(async (url: string) => {
+      if (url === '/api/auth/me') {
+        return { success: false }
+      }
+      return { success: false }
+    })
     mockNavigateTo.mockReset()
     mockNavigateTo.mockImplementation(() => Promise.resolve())
+    mockRoute.query = {}
+    mockToast.success.mockReset()
+    mockToast.error.mockReset()
+    mockToast.showLoginRequired.mockReset()
+    mockToast.show.mockReset()
+
+    vi.doMock('#imports', async () => {
+      const actual = await vi.importActual<Record<string, unknown>>('#imports')
+      return {
+        ...actual,
+        definePageMeta: vi.fn(),
+        navigateTo: mockNavigateTo,
+        useHead: vi.fn(),
+        useRoute: () => mockRoute,
+      }
+    })
+
+    vi.doMock('#app/composables/router', () => ({
+      navigateTo: mockNavigateTo,
+      useRoute: () => mockRoute,
+      useRouter: () => ({
+        push: mockNavigateTo,
+      }),
+    }))
+
+    vi.doMock('~/composables/useToast', () => ({
+      useToast: () => mockToast,
+    }))
+
+    vi.doMock('~/stores/cart', () => ({
+      useCartStore: () => ({
+        mergeGuestCart: vi.fn().mockResolvedValue(undefined),
+      }),
+    }))
   })
 
   // ═══════════════════════════════════════════════════════════════
@@ -77,7 +105,7 @@ describe('Authentication System', () => {
         })
         expect(result.success).toBe(false)
         if (!result.success) {
-          expect(result.error.issues[0].message).toBe('Username or email is required')
+          expect(result.error.issues[0].message).toBe(AUTH_ERRORS.USERNAME_REQUIRED)
         }
       })
 
@@ -89,7 +117,7 @@ describe('Authentication System', () => {
         })
         expect(result.success).toBe(false)
         if (!result.success) {
-          expect(result.error.issues[0].message).toBe('Password must be at least 6 characters')
+          expect(result.error.issues[0].message).toBe(AUTH_ERRORS.PASSWORD_TOO_SHORT)
         }
       })
 
@@ -181,49 +209,36 @@ describe('Authentication System', () => {
   // تست‌های Sign In Page
   // ═══════════════════════════════════════════════════════════════
   describe('Sign In Page', () => {
-    const createWrapper = (options = {}) => {
+    const createWrapper = async () => {
+      const { default: SignInPage } = await import('~/pages/auth/SignIn.vue')
       return mount(SignInPage, {
         global: {
           plugins: [
             createTestingPinia({
               createSpy: vi.fn,
               stubActions: false,
-              ...options,
             }),
           ],
-          components: {
-            FormInput,
-            FormCheckbox,
-            SubmitButton,
-          },
-          mocks: {
-            $fetch: mockFetch,
-            navigateTo: mockNavigateTo,
-          },
           stubs: {
             NuxtLink: {
               template: '<a><slot /></a>',
             },
           },
-          provide: {
-            $fetch: mockFetch,
-            navigateTo: mockNavigateTo,
-          },
         },
       })
     }
 
-    it('renders correctly', () => {
-      const wrapper = createWrapper()
+    it('renders correctly', async () => {
+      const wrapper = await createWrapper()
 
-      expect(wrapper.find('h3').text()).toBe('Sign In')
-      expect(wrapper.findAllComponents(FormInput)).toHaveLength(2)
-      expect(wrapper.findComponent(SubmitButton).exists()).toBe(true)
-      expect(wrapper.findComponent(FormCheckbox).exists()).toBe(true)
+      expect(wrapper.find('h1').text()).toBe('Sign In')
+      expect(wrapper.findAll('input')).toHaveLength(3)
+      expect(wrapper.find('button[type="submit"]').exists()).toBe(true)
+      expect(wrapper.find('input[type="checkbox"]').exists()).toBe(true)
     })
 
     it('initializes form data correctly', async () => {
-      const wrapper = createWrapper()
+      const wrapper = await createWrapper()
 
       await nextTick()
 
@@ -235,7 +250,7 @@ describe('Authentication System', () => {
     })
 
     it('validates form correctly', async () => {
-      const wrapper = createWrapper()
+      const wrapper = await createWrapper()
 
       const usernameInput = wrapper.find('input[name="username"]')
       await usernameInput.setValue('testuser')
@@ -250,7 +265,7 @@ describe('Authentication System', () => {
     })
 
     it('shows errors on invalid input', async () => {
-      const wrapper = createWrapper()
+      const wrapper = await createWrapper()
 
       const usernameInput = wrapper.find('input[name="username"]')
       await usernameInput.setValue('')
@@ -275,7 +290,7 @@ describe('Authentication System', () => {
         },
       })
 
-      const wrapper = createWrapper()
+      const wrapper = await createWrapper()
 
       await wrapper.find('input[name="username"]').setValue('testuser')
       await wrapper.find('input[name="password"]').setValue('Password123')
@@ -283,7 +298,6 @@ describe('Authentication System', () => {
       await flushPromises()
 
       await wrapper.find('form').trigger('submit')
-
       await flushPromises()
 
       expect(mockFetch).toHaveBeenCalledWith('/api/auth/signin', {
@@ -304,17 +318,15 @@ describe('Authentication System', () => {
         },
       })
 
-      const wrapper = createWrapper()
+      const wrapper = await createWrapper()
 
       await wrapper.find('input[name="username"]').setValue('testuser')
       await wrapper.find('input[name="password"]').setValue('Password123')
 
       await flushPromises()
 
-      // ✅ دسترسی مستقیم به متد submit کامپوننت
       const vm = wrapper.vm as any
       await vm.handleSubmit()
-
       await flushPromises()
 
       expect(mockNavigateTo).toHaveBeenCalledWith('/home')
@@ -323,10 +335,10 @@ describe('Authentication System', () => {
     it('handles sign in failure', async () => {
       mockFetch.mockResolvedValueOnce({
         success: false,
-        error: 'Incorrect username or password',
+        message: AUTH_ERRORS.INVALID_CREDENTIALS,
       })
 
-      const wrapper = createWrapper()
+      const wrapper = await createWrapper()
 
       await wrapper.find('input[name="username"]').setValue('testuser')
       await wrapper.find('input[name="password"]').setValue('Password123')
@@ -335,10 +347,10 @@ describe('Authentication System', () => {
 
       const vm = wrapper.vm as any
       await vm.handleSubmit()
-
       await flushPromises()
 
       expect(wrapper.find('.text-red-500').exists()).toBe(true)
+      expect(wrapper.text()).toContain(AUTH_ERRORS.INVALID_CREDENTIALS)
     })
   })
 
@@ -346,49 +358,36 @@ describe('Authentication System', () => {
   // تست‌های Sign Up Page
   // ═══════════════════════════════════════════════════════════════
   describe('Sign Up Page', () => {
-    const createWrapper = (options = {}) => {
+    const createWrapper = async () => {
+      const { default: SignUpPage } = await import('~/pages/auth/SignUp.vue')
       return mount(SignUpPage, {
         global: {
           plugins: [
             createTestingPinia({
               createSpy: vi.fn,
               stubActions: false,
-              ...options,
             }),
           ],
-          components: {
-            FormInput,
-            FormCheckbox,
-            SubmitButton,
-          },
-          mocks: {
-            $fetch: mockFetch,
-            navigateTo: mockNavigateTo,
-          },
           stubs: {
             NuxtLink: {
               template: '<a><slot /></a>',
             },
           },
-          provide: {
-            $fetch: mockFetch,
-            navigateTo: mockNavigateTo,
-          },
         },
       })
     }
 
-    it('renders correctly', () => {
-      const wrapper = createWrapper()
+    it('renders correctly', async () => {
+      const wrapper = await createWrapper()
 
-      expect(wrapper.find('h3').text()).toBe('Sign Up')
-      expect(wrapper.findAllComponents(FormInput)).toHaveLength(4)
-      expect(wrapper.findComponent(SubmitButton).exists()).toBe(true)
-      expect(wrapper.findComponent(FormCheckbox).exists()).toBe(true)
+      expect(wrapper.find('h1').text()).toBe('Sign Up')
+      expect(wrapper.findAll('input')).toHaveLength(5)
+      expect(wrapper.find('button[type="submit"]').exists()).toBe(true)
+      expect(wrapper.find('input[type="checkbox"]').exists()).toBe(true)
     })
 
     it('initializes form data correctly', async () => {
-      const wrapper = createWrapper()
+      const wrapper = await createWrapper()
 
       await nextTick()
 
@@ -402,7 +401,7 @@ describe('Authentication System', () => {
     })
 
     it('validates form correctly', async () => {
-      const wrapper = createWrapper()
+      const wrapper = await createWrapper()
 
       await wrapper.find('input[name="username"]').setValue('newuser')
       await wrapper.find('input[name="email"]').setValue('newuser@example.com')
@@ -417,7 +416,7 @@ describe('Authentication System', () => {
     })
 
     it('shows errors on invalid input', async () => {
-      const wrapper = createWrapper()
+      const wrapper = await createWrapper()
 
       await wrapper.find('input[name="username"]').setValue('ab')
       await wrapper.find('input[name="email"]').setValue('invalid-email')
@@ -443,7 +442,7 @@ describe('Authentication System', () => {
         },
       })
 
-      const wrapper = createWrapper()
+      const wrapper = await createWrapper()
 
       await wrapper.find('input[name="username"]').setValue('newuser')
       await wrapper.find('input[name="email"]').setValue('newuser@example.com')
@@ -454,7 +453,6 @@ describe('Authentication System', () => {
       await flushPromises()
 
       await wrapper.find('form').trigger('submit')
-
       await flushPromises()
 
       expect(mockFetch).toHaveBeenCalledWith('/api/auth/signup', {
@@ -477,7 +475,7 @@ describe('Authentication System', () => {
         },
       })
 
-      const wrapper = createWrapper()
+      const wrapper = await createWrapper()
 
       await wrapper.find('input[name="username"]').setValue('newuser')
       await wrapper.find('input[name="email"]').setValue('newuser@example.com')
@@ -487,10 +485,8 @@ describe('Authentication System', () => {
 
       await flushPromises()
 
-      // ✅ دسترسی مستقیم به متد submit کامپوننت
       const vm = wrapper.vm as any
       await vm.handleSubmit()
-
       await flushPromises()
 
       expect(mockNavigateTo).toHaveBeenCalledWith('/home')
@@ -499,10 +495,10 @@ describe('Authentication System', () => {
     it('handles sign up failure', async () => {
       mockFetch.mockResolvedValueOnce({
         success: false,
-        error: 'Username or email already exists',
+        message: AUTH_ERRORS.USERNAME_OR_EMAIL_EXISTS,
       })
 
-      const wrapper = createWrapper()
+      const wrapper = await createWrapper()
 
       await wrapper.find('input[name="username"]').setValue('newuser')
       await wrapper.find('input[name="email"]').setValue('newuser@example.com')
@@ -514,10 +510,10 @@ describe('Authentication System', () => {
 
       const vm = wrapper.vm as any
       await vm.handleSubmit()
-
       await flushPromises()
 
       expect(wrapper.find('.text-red-500').exists()).toBe(true)
+      expect(wrapper.text()).toContain(AUTH_ERRORS.EMAIL_ALREADY_EXISTS)
     })
   })
 
@@ -670,7 +666,6 @@ describe('Authentication System', () => {
           },
         })
 
-        // ✅ روش صحیح بررسی disabled
         const button = wrapper.find('button')
         expect((button.element as HTMLButtonElement).disabled).toBe(true)
       })
@@ -685,7 +680,6 @@ describe('Authentication System', () => {
           },
         })
 
-        // ✅ روش صحیح بررسی disabled
         const button = wrapper.find('button')
         expect((button.element as HTMLButtonElement).disabled).toBe(true)
       })

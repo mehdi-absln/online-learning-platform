@@ -2,12 +2,25 @@ import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import EmptyState from '~/components/ui/EmptyState.vue'
 
+// `EmptyState.vue` uses Nuxt auto-imported components (`IconBookOpen` from
+// `@nuxt/icon` and `NuxtLink`), which are not registered under plain
+// `@vue/test-utils`. Stub them so Vue doesn't emit
+// "Failed to resolve component" warnings. Matches the pattern used in
+// `CourseCard.test.ts` and `lesson-page.test.ts`.
+const globalStubs = {
+  stubs: {
+    NuxtLink: { template: '<a><slot /></a>', props: ['to'] },
+    IconBookOpen: true,
+  },
+}
+
 describe('EmptyState', () => {
   it('renders title correctly', () => {
     const wrapper = mount(EmptyState, {
       props: {
         title: 'No Courses Found',
       },
+      global: globalStubs,
     })
 
     expect(wrapper.text()).toContain('No Courses Found')
@@ -19,6 +32,7 @@ describe('EmptyState', () => {
         title: 'Empty Cart',
         message: 'Your cart is empty',
       },
+      global: globalStubs,
     })
 
     expect(wrapper.text()).toContain('Your cart is empty')
@@ -31,6 +45,7 @@ describe('EmptyState', () => {
         actionTo: '/courses',
         actionLabel: 'Browse Courses',
       },
+      global: globalStubs,
     })
 
     // Component should render without crashing
@@ -45,6 +60,7 @@ describe('EmptyState', () => {
         title: 'No Results',
         actionLabel: 'Clear Filters',
       },
+      global: globalStubs,
     })
 
     const button = wrapper.find('button')
@@ -62,6 +78,7 @@ describe('EmptyState', () => {
       props: {
         title: 'Default Icon Test',
       },
+      global: globalStubs,
     })
 
     // Check that icon container exists
@@ -76,6 +93,7 @@ describe('EmptyState', () => {
       slots: {
         icon: '<span class="custom-icon">🎯</span>',
       },
+      global: globalStubs,
     })
 
     expect(wrapper.find('.custom-icon').exists()).toBe(true)
@@ -86,6 +104,7 @@ describe('EmptyState', () => {
       props: {
         title: 'Accessibility Test',
       },
+      global: globalStubs,
     })
 
     // Check for role="status"

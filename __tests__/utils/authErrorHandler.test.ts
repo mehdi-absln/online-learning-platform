@@ -1,6 +1,6 @@
 // tests/authErrorHandler.test.ts
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { handleSignInError, handleSignUpError } from '~/utils/authErrorHandler'
+import { handleSignInError, handleSignUpError } from '~/utils/auth-error-handler-helpers'
 import { SHARED_AUTH_ERRORS, AUTH_ERRORS } from '~/constants'
 
 describe('Authentication Error Handler', () => {

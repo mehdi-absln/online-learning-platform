@@ -19,6 +19,7 @@ describe('Order Service', () => {
     await clearDb()
 
     const [user] = await db.insert(users).values({
+      username: 'testuser',
       name: 'Test User',
       email: 'test@example.com',
       password: 'password',
