@@ -2,10 +2,10 @@ import { eq, desc, inArray, and } from 'drizzle-orm'
 import { db } from './index'
 import { orders, orderItems, enrollments, cartItems, courses, instructors as instructorsTable } from './schema'
 
-export async function processCheckout(userId: number, simulationType: 'success' | 'fail') {
+export async function processCheckout(userId: number, simulationType: 'success' | 'fail'): Promise<{ success: boolean, orderId: number }> {
   if (simulationType === 'fail') {
-    return db.transaction((tx) => {
-      const userCartItems = tx
+    return db.transaction(async (tx) => {
+      const userCartItems = await tx
         .select({ courseId: cartItems.courseId })
         .from(cartItems)
         .where(eq(cartItems.userId, userId))
@@ -16,7 +16,7 @@ export async function processCheckout(userId: number, simulationType: 'success' 
       }
 
       const courseIds = userCartItems.map(item => item.courseId)
-      const dbCourses = tx
+      const dbCourses = await tx
         .select({ price: courses.price })
         .from(courses)
         .where(inArray(courses.id, courseIds))
@@ -24,7 +24,7 @@ export async function processCheckout(userId: number, simulationType: 'success' 
 
       const totalAmount = dbCourses.reduce((sum, course) => sum + (course.price || 0), 0)
 
-      const insertedOrders = tx
+      const insertedOrders = await tx
         .insert(orders)
         .values({
           userId,
@@ -44,8 +44,8 @@ export async function processCheckout(userId: number, simulationType: 'success' 
     })
   }
 
-  return db.transaction((tx) => {
-    const userCartItems = tx
+  return db.transaction(async (tx) => {
+    const userCartItems = await tx
       .select({ courseId: cartItems.courseId })
       .from(cartItems)
       .where(eq(cartItems.userId, userId))
@@ -59,14 +59,14 @@ export async function processCheckout(userId: number, simulationType: 'success' 
     }
 
     const courseIds = userCartItems.map(item => item.courseId)
-    const dbCourses = tx
+    const dbCourses = await tx
       .select({ id: courses.id, price: courses.price })
       .from(courses)
       .where(inArray(courses.id, courseIds))
       .all()
 
     // Check if user is instructor of any course in cart
-    const ownedCourses = tx
+    const ownedCourses = await tx
       .select({ courseId: courses.id })
       .from(courses)
       .innerJoin(instructorsTable, eq(courses.instructorId, instructorsTable.id))
@@ -87,7 +87,7 @@ export async function processCheckout(userId: number, simulationType: 'success' 
 
     const totalAmount = dbCourses.reduce((sum, course) => sum + (course.price || 0), 0)
 
-    const insertedOrders = tx
+    const insertedOrders = await tx
       .insert(orders)
       .values({
         userId,
@@ -105,13 +105,13 @@ export async function processCheckout(userId: number, simulationType: 'success' 
     }
 
     for (const course of dbCourses) {
-      tx.insert(orderItems).values({
+      await tx.insert(orderItems).values({
         orderId: newOrder.id,
         courseId: course.id,
         price: course.price,
       }).run()
 
-      tx.insert(enrollments).values({
+      await tx.insert(enrollments).values({
         userId,
         courseId: course.id,
         orderId: newOrder.id,
@@ -119,7 +119,7 @@ export async function processCheckout(userId: number, simulationType: 'success' 
       }).run()
     }
 
-    tx.delete(cartItems).where(eq(cartItems.userId, userId)).run()
+    await tx.delete(cartItems).where(eq(cartItems.userId, userId)).run()
 
     return { success: true, orderId: newOrder.id }
   })

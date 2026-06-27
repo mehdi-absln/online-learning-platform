@@ -1,13 +1,17 @@
-import Database from 'better-sqlite3'
-import { drizzle } from 'drizzle-orm/better-sqlite3'
-import { join } from 'path'
+import { createClient } from '@libsql/client'
+import { drizzle } from 'drizzle-orm/libsql'
 import * as schema from './schema'
 
-// Database path in server/data folder
-const isTest = process.env.NODE_ENV === 'test'
-const DB_PATH = isTest ? ':memory:' : join(process.cwd(), 'server', 'data', 'db.sqlite')
+const tursoUrl = process.env.TURSO_DATABASE_URL as string
+const tursoAuthToken = process.env.TURSO_AUTH_TOKEN as string
 
-const sqlite = new Database(DB_PATH)
-export const db = drizzle(sqlite, { schema })
+if (!tursoUrl) {
+  throw new Error('TURSO_DATABASE_URL is not set in .env')
+}
 
-export { sqlite }
+const client = createClient({
+  url: tursoUrl,
+  authToken: tursoAuthToken,
+})
+
+export const db = drizzle(client, { schema })

@@ -29,7 +29,6 @@ useSeoMeta({
     'Empowering learners worldwide with quality education and innovative learning solutions.',
   ogImage: '/images/banner.jpg',
   ogType: 'website',
-  ogUrl: 'https://your-learning-platform.com',
   twitterCard: 'summary_large_image',
 })
 </script>
