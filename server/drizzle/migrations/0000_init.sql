@@ -7,6 +7,7 @@ CREATE TABLE `blogs` (
 	`cover_image` text,
 	`status` text DEFAULT 'draft' NOT NULL,
 	`author_id` integer NOT NULL,
+	`reading_time` integer DEFAULT 1 NOT NULL,
 	`published_at` integer,
 	`created_at` integer NOT NULL,
 	`updated_at` integer NOT NULL,
@@ -17,6 +18,17 @@ CREATE UNIQUE INDEX `blogs_slug_unique` ON `blogs` (`slug`);--> statement-breakp
 CREATE INDEX `blogs_slug_idx` ON `blogs` (`slug`);--> statement-breakpoint
 CREATE INDEX `blogs_author_id_idx` ON `blogs` (`author_id`);--> statement-breakpoint
 CREATE INDEX `blogs_status_idx` ON `blogs` (`status`);--> statement-breakpoint
+CREATE TABLE `cart_items` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`user_id` integer NOT NULL,
+	`course_id` integer NOT NULL,
+	`created_at` integer NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`course_id`) REFERENCES `courses`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE INDEX `cart_user_id_idx` ON `cart_items` (`user_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `cart_user_course_idx` ON `cart_items` (`user_id`,`course_id`);--> statement-breakpoint
 CREATE TABLE `categories` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`name` text NOT NULL,
@@ -75,6 +87,19 @@ CREATE TABLE `courses` (
 --> statement-breakpoint
 CREATE UNIQUE INDEX `courses_slug_unique` ON `courses` (`slug`);--> statement-breakpoint
 CREATE INDEX `courses_slug_idx` ON `courses` (`slug`);--> statement-breakpoint
+CREATE TABLE `enrollments` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`user_id` integer NOT NULL,
+	`course_id` integer NOT NULL,
+	`order_id` integer,
+	`enrolled_at` integer NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`course_id`) REFERENCES `courses`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON UPDATE no action ON DELETE set null
+);
+--> statement-breakpoint
+CREATE INDEX `enrollments_user_id_idx` ON `enrollments` (`user_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `enrollments_user_course_idx` ON `enrollments` (`user_id`,`course_id`);--> statement-breakpoint
 CREATE TABLE `instructors` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`user_id` integer,
@@ -104,7 +129,7 @@ CREATE TABLE `lesson_progress` (
 --> statement-breakpoint
 CREATE INDEX `progress_user_id_idx` ON `lesson_progress` (`user_id`);--> statement-breakpoint
 CREATE INDEX `progress_lesson_id_idx` ON `lesson_progress` (`lesson_id`);--> statement-breakpoint
-CREATE INDEX `progress_user_lesson_idx` ON `lesson_progress` (`user_id`,`lesson_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `progress_user_lesson_idx` ON `lesson_progress` (`user_id`,`lesson_id`);--> statement-breakpoint
 CREATE TABLE `lessons` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`course_id` integer NOT NULL,
@@ -125,6 +150,28 @@ CREATE TABLE `lessons` (
 --> statement-breakpoint
 CREATE INDEX `lessons_course_id_idx` ON `lessons` (`course_id`);--> statement-breakpoint
 CREATE INDEX `lessons_section_id_idx` ON `lessons` (`section_id`);--> statement-breakpoint
+CREATE TABLE `order_items` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`order_id` integer NOT NULL,
+	`course_id` integer NOT NULL,
+	`price` real NOT NULL,
+	FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`course_id`) REFERENCES `courses`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE INDEX `order_items_order_id_idx` ON `order_items` (`order_id`);--> statement-breakpoint
+CREATE TABLE `orders` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`user_id` integer NOT NULL,
+	`total_amount` real NOT NULL,
+	`status` text DEFAULT 'pending' NOT NULL,
+	`payment_ref` text,
+	`completed_at` integer,
+	`created_at` integer NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE INDEX `orders_user_id_idx` ON `orders` (`user_id`);--> statement-breakpoint
 CREATE TABLE `reviews` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`course_id` integer NOT NULL,
@@ -138,14 +185,17 @@ CREATE TABLE `reviews` (
 --> statement-breakpoint
 CREATE TABLE `users` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`username` text NOT NULL,
 	`email` text NOT NULL,
 	`password` text NOT NULL,
-	`name` text NOT NULL,
+	`name` text,
 	`avatar` text,
 	`role` text DEFAULT 'student',
 	`created_at` integer NOT NULL,
 	`updated_at` integer NOT NULL
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX `users_username_unique` ON `users` (`username`);--> statement-breakpoint
 CREATE UNIQUE INDEX `users_email_unique` ON `users` (`email`);--> statement-breakpoint
+CREATE INDEX `users_username_idx` ON `users` (`username`);--> statement-breakpoint
 CREATE INDEX `users_email_idx` ON `users` (`email`);

@@ -154,7 +154,7 @@ export const lessonProgress = sqliteTable('lesson_progress', {
 }, table => ({
   userIdIdx: index('progress_user_id_idx').on(table.userId),
   lessonIdIdx: index('progress_lesson_id_idx').on(table.lessonId),
-  uniqueUserLesson: index('progress_user_lesson_idx').on(table.userId, table.lessonId),
+  uniqueUserLesson: uniqueIndex('progress_user_lesson_idx').on(table.userId, table.lessonId),
 }))
 // =====================
 // Blogs Table

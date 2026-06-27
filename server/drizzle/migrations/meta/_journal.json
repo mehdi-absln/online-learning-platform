@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1769900304753,
-      "tag": "0000_lean_preak",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1771294014828,
-      "tag": "0001_sync_schema",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1771294797699,
-      "tag": "0002_unique_cart_enrollments_fixed",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1771544824024,
-      "tag": "0003_mean_ezekiel_stane",
+      "when": 1782601372455,
+      "tag": "0000_init",
       "breakpoints": true
     }
   ]
