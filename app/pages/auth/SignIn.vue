@@ -71,12 +71,6 @@
         >
           Remember me
         </FormCheckbox>
-        <NuxtLink
-          to="/auth/forgot-password"
-          class="text-sm font-medium text-primary"
-        >
-          Forgot your password?
-        </NuxtLink>
       </div>
 
       <SubmitButton

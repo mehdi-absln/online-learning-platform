@@ -1,4 +1,4 @@
-# {{ SITE_NAME }}
+# Online Learning Platform
 
 A comprehensive online learning platform built with Nuxt.js, featuring user authentication, course browsing, and a responsive UI.
 
@@ -102,19 +102,35 @@ NODE_ENV=development
 ## Project Structure
 
 ```
-├── app/                 # Nuxt application files
-│   ├── components/      # Vue components
-│   ├── composables/     # Vue composables
-│   ├── layouts/         # Layout components
-│   ├── pages/          # Route components
-│   └── public/         # Static assets
-├── server/             # Server-side code
-│   ├── api/            # API routes
-│   ├── db/             # Database related code
-│   └── utils/          # Utility functions
-├── stores/             # Pinia stores
-├── __tests__/          # Test files
-└── drizzle/            # Database migration files
+├── app/                      # Nuxt application files
+│   ├── assets/               # CSS & static assets
+│   ├── components/           # Vue components
+│   │   ├── admin/            # Admin panel components
+│   │   ├── blogs/            # Blog components
+│   │   ├── courses/          # Course components
+│   │   ├── dashboard/        # Dashboard components
+│   │   ├── home/             # Homepage sections
+│   │   ├── icons/            # Icon components
+│   │   ├── lesson/           # Lesson viewer components
+│   │   └── ui/               # Reusable UI primitives
+│   ├── composables/          # Vue composables
+│   ├── constants/            # App constants
+│   ├── layouts/              # Layout components
+│   ├── middleware/            # Route middleware
+│   ├── pages/                # Route pages
+│   ├── plugins/              # Nuxt plugins
+│   ├── schemas/              # Zod validation schemas
+│   ├── stores/               # Pinia stores
+│   ├── types/                # TypeScript types
+│   └── utils/                # Utility functions
+├── server/                   # Server-side code
+│   ├── api/                  # API routes
+│   ├── db/                   # Database schema & services
+│   ├── drizzle/              # Database migrations
+│   └── utils/                # Server utility functions
+├── public/                   # Static assets
+├── __tests__/                # Test files
+└── drizzle.config.ts         # Drizzle ORM config
 ```
 
 ## Contributing
