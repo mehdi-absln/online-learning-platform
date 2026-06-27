@@ -12,9 +12,13 @@
     :action-text="toast.state.actionText"
     :duration="toast.state.duration"
   />
+
+  <!-- Vercel Speed Insights -->
+  <SpeedInsights />
 </template>
 
 <script setup lang="ts">
+import { SpeedInsights } from '@vercel/speed-insights/nuxt'
 import Toast from '~/components/ui/Toast.vue'
 import { SITE_NAME } from '~/constants/index'
 
