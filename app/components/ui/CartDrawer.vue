@@ -90,6 +90,7 @@
                 title="Your cart is empty"
                 message="Looks like you haven't added anything yet."
                 action-label="Start Learning"
+                action-to="/courses"
                 @action="closeCart"
               >
                 <template #icon>
@@ -139,7 +140,7 @@
                     </p>
                   </div>
                   <div class="flex items-center justify-between mt-2">
-                    <span class="text-primary font-bold">${{ item.price }}</span>
+                    <span class="text-primary font-bold">{{ '$' + formatPrice(item.price) }}</span>
                     <button
                       class="text-xs text-red-500 hover:text-red-400 focus-visible:text-red-400 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:rounded transition-colors flex items-center gap-1 focus:outline-none"
                       :aria-label="`Remove ${item.title}`"

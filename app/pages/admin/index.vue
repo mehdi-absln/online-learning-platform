@@ -130,7 +130,7 @@
                 {{ course.title }}
               </td>
               <td class="px-6 py-4">
-                ${{ course.price }}
+                {{ '$' + formatPrice(course.price) }}
               </td>
               <td class="px-6 py-4">
                 <span

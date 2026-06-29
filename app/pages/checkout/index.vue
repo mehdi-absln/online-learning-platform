@@ -87,9 +87,9 @@
                 </div>
                 <div
                   class="text-white font-bold whitespace-nowrap"
-                  aria-label="Price: ${{ item.price }}"
+                  :aria-label="`Price: $${formatPrice(item.price)}`"
                 >
-                  ${{ item.price }}
+                  {{ '$' + formatPrice(item.price) }}
                 </div>
               </li>
             </ul>

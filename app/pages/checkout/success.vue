@@ -190,9 +190,9 @@
               </div>
               <div
                 class="text-white font-black text-xl whitespace-nowrap"
-                aria-label="Price: ${{ item.price }}"
+                :aria-label="`Price: $${formatPrice(item.price)}`"
               >
-                ${{ item.price }}
+                {{ '$' + formatPrice(item.price) }}
               </div>
             </li>
           </ul>

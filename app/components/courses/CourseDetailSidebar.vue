@@ -39,7 +39,7 @@
               <span class="text-gray-300">Price</span>
             </dt>
             <dd class="text-white font-medium">
-              ${{ course.price }}
+              {{ '$' + formatPrice(course.price) }}
             </dd>
           </div>
 

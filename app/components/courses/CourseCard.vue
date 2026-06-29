@@ -70,7 +70,7 @@
         <!-- ✅ ENROLLED -->
         <template v-if="userStore.isAuthenticated && userStore.isEnrolled(course.id)">
           <span class="text-sm text-white/50 line-through">
-            ${{ course.price }}
+            {{ '$' + formatPrice(course.price) }}
           </span>
           <NuxtLink
             :to="`/courses/${course.slug}/lessons`"
@@ -101,7 +101,7 @@
         <!-- 🚫 Admin/Superadmin: no purchase actions -->
         <template v-else-if="userStore.isAuthenticated && !userStore.canPurchaseCourses">
           <span class="text-base font-semibold text-primary-alt">
-            ${{ course.price }}
+            {{ '$' + formatPrice(course.price) }}
           </span>
           <NuxtLink
             v-if="courseLink"
@@ -115,7 +115,7 @@
         <!-- 🎓 Instructor viewing own course -->
         <template v-else-if="isOwnCourse">
           <span class="text-base font-semibold text-primary-alt">
-            ${{ course.price }}
+            {{ '$' + formatPrice(course.price) }}
           </span>
           <NuxtLink
             :to="`/admin/courses/${course.id}/edit`"
@@ -128,7 +128,7 @@
         <!-- ❌ Normal not-enrolled state -->
         <template v-else>
           <span class="text-base font-semibold text-primary-alt">
-            ${{ course.price }}
+            {{ '$' + formatPrice(course.price) }}
           </span>
           <div class="flex items-center gap-2">
             <button
