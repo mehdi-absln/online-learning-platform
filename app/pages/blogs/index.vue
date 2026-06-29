@@ -61,7 +61,7 @@
           v-if="!isLoading && searchQuery && blogs.length === 0"
           role="status"
         >
-          <EmptyState
+          <UiEmptyState
             title="No articles found"
             :message="noResultsMessage"
             action-label="Clear search"
@@ -83,7 +83,7 @@
                 />
               </svg>
             </template>
-          </EmptyState>
+          </UiEmptyState>
         </div>
 
         <!-- Loading State -->

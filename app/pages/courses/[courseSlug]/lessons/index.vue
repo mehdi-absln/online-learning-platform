@@ -2,7 +2,7 @@
   <div class="py-36 flex flex-col items-center justify-center">
     <!-- Error state -->
     <template v-if="errorMessage">
-      <ErrorState
+      <UiErrorState
         :message="errorMessage"
         :hide-retry="true"
       />
@@ -16,7 +16,7 @@
 
     <!-- Empty state: only show when confirmed no lessons -->
     <template v-else-if="hasNoLessons">
-      <EmptyState
+      <UiEmptyState
         title="No lessons available"
         message="No lessons available yet."
         action-to="`/courses/${courseSlug}`"
@@ -25,7 +25,7 @@
     </template>
 
     <!-- Default: show spinner for all other cases (loading or redirecting) -->
-    <LoadingSpinner
+    <UiLoadingSpinner
       v-else
       message="Loading lessons..."
     />
@@ -34,7 +34,6 @@
 
 <script setup lang="ts">
 import type { CourseContentSection } from '~/types/course'
-import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 
 const route = useRoute()
 const courseSlug = route.params.courseSlug as string

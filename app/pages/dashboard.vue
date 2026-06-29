@@ -247,7 +247,7 @@
           v-if="enrolledCourses.length === 0"
           aria-label="No enrolled courses"
         >
-          <EmptyState
+          <UiEmptyState
             title="Start Your Learning Journey!"
             message="Explore our courses and begin your path to mastery."
             action-to="/courses"
@@ -267,7 +267,7 @@
       </template>
 
       <!-- Error State -->
-      <ErrorState
+      <UiErrorState
         v-else-if="error"
         message="Failed to load dashboard data."
         @retry="() => refresh()"

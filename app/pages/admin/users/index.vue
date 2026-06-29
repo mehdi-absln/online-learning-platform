@@ -15,7 +15,7 @@
         />
         User Management
       </h1>
-      <SearchInput
+      <UiSearchInput
         v-model="searchQuery"
         wrapper-class="w-full sm:w-64"
         placeholder="Search by username..."
@@ -30,7 +30,7 @@
         v-if="isLoading"
         class="py-36 flex flex-col items-center justify-center"
       >
-        <LoadingSpinner
+        <UiLoadingSpinner
           message="Loading users..."
           label="Loading users"
         />
@@ -41,7 +41,7 @@
         v-else-if="fetchError"
         class="py-16"
       >
-        <ErrorState
+        <UiErrorState
           :message="fetchError"
           @retry="fetchUsers"
         />
@@ -168,7 +168,7 @@
       </div>
     </div>
 
-    <ConfirmModal
+    <UiConfirmModal
       :is-open="isDeleteModalOpen"
       title="Delete User"
       :message="deleteWarningMessage"
@@ -239,12 +239,8 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted, watch } from 'vue'
-import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 import AdminTabs from '~/components/admin/AdminTabs.vue'
-import ErrorState from '~/components/ui/ErrorState.vue'
-import ConfirmModal from '~/components/ui/ConfirmModal.vue'
 import IconUsers from '~/components/icons/IconUsers.vue'
-import SearchInput from '~/components/ui/SearchInput.vue'
 import { useToast } from '~/composables/useToast'
 import { getErrorMessage } from '~/utils/error-helpers'
 import { useUserStore } from '~/stores/user'

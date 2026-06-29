@@ -69,7 +69,7 @@
 
         <div class="max-h-[500px] overflow-y-auto custom-scrollbar">
           <template v-if="hasContent">
-            <Accordion
+            <UiAccordion
               v-model="expandedSections"
               :items="accordionItems"
               :exclusive="false"
@@ -253,7 +253,7 @@
                   No lessons in this section
                 </p>
               </template>
-            </Accordion>
+            </UiAccordion>
           </template>
 
           <!-- Empty State -->
@@ -261,7 +261,7 @@
             v-else
             role="status"
           >
-            <EmptyState
+            <UiEmptyState
               title="No content available"
               message="Course content will be added soon."
             >
@@ -281,7 +281,7 @@
                   />
                 </svg>
               </template>
-            </EmptyState>
+            </UiEmptyState>
           </div>
         </div>
       </section>
@@ -316,7 +316,6 @@
 </template>
 
 <script setup lang="ts">
-import Accordion from '~/components/ui/Accordion.vue'
 import { useUserStore } from '~/stores/user'
 import type { CourseContentLesson } from '~/types/course'
 import type { AccordionItem } from '~/types/components/accordion'

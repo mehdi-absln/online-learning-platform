@@ -66,7 +66,7 @@
         v-if="course.courseContent"
         class="mt-4"
       >
-        <Accordion :items="accordionItems">
+        <UiAccordion :items="accordionItems">
           <template #default="{ item }">
             <ul class="p-2 sm:p-4 space-y-2 divide-y divide-dark-divider">
               <template
@@ -163,9 +163,9 @@
               </template>
             </ul>
           </template>
-        </Accordion>
+        </UiAccordion>
       </div>
-      <EmptyState
+      <UiEmptyState
         v-else
         title="Course content not available"
         message="Course content is not available yet."
@@ -175,8 +175,6 @@
 </template>
 
 <script setup lang="ts">
-import Accordion from '~/components/ui/Accordion.vue'
-import EmptyState from '~/components/ui/EmptyState.vue'
 import type { CourseContentLesson, CourseContentSection, DetailedCourse } from '~/types/course'
 import type { AccordionItem } from '~/types/components/accordion'
 

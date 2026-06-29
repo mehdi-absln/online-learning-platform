@@ -1,5 +1,5 @@
 <template>
-  <Tabs
+  <UiTabs
     :model-value="activeTabIndex"
     :tabs="adminTabs"
     aria-label="Admin panel navigation"
@@ -9,7 +9,6 @@
 
 <script setup lang="ts">
 import { useUserStore } from '~/stores/user'
-import Tabs from '~/components/ui/Tabs.vue'
 
 const userStore = useUserStore()
 const route = useRoute()

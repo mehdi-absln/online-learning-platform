@@ -6,7 +6,7 @@
     role="status"
     aria-label="Loading course details"
   >
-    <LoadingSpinner message="Loading course details..." />
+    <UiLoadingSpinner message="Loading course details..." />
   </div>
 
   <!-- Error state -->
@@ -15,7 +15,7 @@
     class="py-36 flex flex-col items-center justify-center animate-fade-in"
     role="alert"
   >
-    <ErrorState
+    <UiErrorState
       message="Error: Course not found"
       :hide-retry="true"
     />
@@ -43,7 +43,7 @@
         <div class="relative flex flex-col lg:flex-row lg:justify-between gap-6">
           <!-- Course Header Info -->
           <header class="w-full lg:w-2/3">
-            <Breadcrumb
+            <UiBreadcrumb
               :crumbs="breadcrumbCrumbs"
               class="block mb-6"
             />
@@ -118,7 +118,7 @@
     <!-- Content -->
     <section class="py-10 container">
       <div class="w-full lg:w-[65%]">
-        <Tabs
+        <UiTabs
           v-if="course"
           :tabs="[
             { title: 'Course Info', name: 'course-info' },
@@ -132,7 +132,7 @@
           <template #reviews>
             <CourseReviews :reviews="course?.reviews" />
           </template>
-        </Tabs>
+        </UiTabs>
       </div>
 
       <!-- Related Courses -->
@@ -148,10 +148,6 @@
 </template>
 
 <script setup lang="ts">
-import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
-import ErrorState from '~/components/ui/ErrorState.vue'
-import Breadcrumb from '~/components/ui/Breadcrumb.vue'
-import Tabs from '~/components/ui/Tabs.vue'
 import CourseReviews from '~/components/courses/CourseReviews.vue'
 import RelatedCourses from '~/components/courses/RelatedCourses.vue'
 import CourseInfoTab from '~/components/courses/CourseInfoTab.vue'

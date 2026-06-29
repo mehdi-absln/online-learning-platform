@@ -16,7 +16,7 @@
             {{ averageRating }}
           </div>
           <div class="flex items-center mt-4">
-            <StarRating :rating="parseFloat(averageRating)" />
+            <UiStarRating :rating="parseFloat(averageRating)" />
           </div>
           <div class="text-base text-white/90 mt-2 capitalize">
             total {{ reviews?.length }} ratings
@@ -30,7 +30,7 @@
             :key="star"
             class="flex items-center"
           >
-            <StarRating
+            <UiStarRating
               :rating="0"
               :max-stars="1"
               :show-empty="true"
@@ -76,7 +76,7 @@
             <!-- Review Content -->
             <div class="flex-1">
               <div class="flex items-center mb-2">
-                <StarRating :rating="review.rating" />
+                <UiStarRating :rating="review.rating" />
               </div>
               <p class="text-white/90 leading-relaxed">
                 {{ review.comment }}
@@ -89,7 +89,7 @@
 
     <!-- Empty State -->
     <template v-else>
-      <EmptyState
+      <UiEmptyState
         title="No reviews yet"
         message="Be the first to share your experience!"
       >
@@ -109,14 +109,12 @@
             />
           </svg>
         </template>
-      </EmptyState>
+      </UiEmptyState>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import StarRating from '~/components/ui/StarRating.vue'
-import EmptyState from '~/components/ui/EmptyState.vue'
 import type { Review } from '~/types/course'
 
 interface Props {

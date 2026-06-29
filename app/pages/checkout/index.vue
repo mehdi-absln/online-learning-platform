@@ -17,7 +17,7 @@
         role="status"
         aria-live="polite"
       >
-        <EmptyState
+        <UiEmptyState
           title="Your cart is empty"
           message="Add courses to your cart to begin checkout."
           action-to="/courses"
@@ -39,7 +39,7 @@
               />
             </svg>
           </template>
-        </EmptyState>
+        </UiEmptyState>
       </div>
 
       <!-- Checkout Content -->

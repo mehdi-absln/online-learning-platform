@@ -240,7 +240,7 @@
         >
           Cancel
         </button>
-        <SubmitButton
+        <UiSubmitButton
           :loading="isLoading"
           :disabled="isLoading || !isValid"
           text="Save Course"
@@ -255,7 +255,6 @@
 <script setup lang="ts">
 import type { CourseFormInitialData } from '~/types/forms/course-form'
 import IconBookOpen from '~/components/icons/IconBookOpen.vue'
-import SubmitButton from '~/components/ui/SubmitButton.vue'
 import { useZodValidation } from '~/composables/useZodValidation'
 import { courseSchema, type CourseFormData } from '~/schemas/admin'
 

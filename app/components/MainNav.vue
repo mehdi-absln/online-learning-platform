@@ -468,7 +468,7 @@
       </div>
     </div>
 
-    <CartDrawer />
+    <UiCartDrawer />
   </nav>
 </template>
 
@@ -480,7 +480,6 @@ import { useFocusTrap } from '~/composables/useFocusTrap'
 import { useKeyboardFocus } from '~/composables/useKeyboardFocus'
 import { useNavigationLinks } from '~/composables/useNavigationLinks'
 import { useUserStore } from '~/stores/user'
-import CartDrawer from '~/components/ui/CartDrawer.vue'
 import { SITE_NAME } from '~/constants/index'
 
 const route = useRoute()

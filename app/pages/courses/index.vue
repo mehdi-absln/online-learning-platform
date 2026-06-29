@@ -1,6 +1,6 @@
 <template>
   <div class="animate-fade-in">
-    <ErrorState
+    <UiErrorState
       v-if="error"
       message="Error loading courses"
       :hide-retry="true"

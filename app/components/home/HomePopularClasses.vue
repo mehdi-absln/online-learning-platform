@@ -30,7 +30,7 @@
         role="status"
         aria-live="polite"
       >
-        <LoadingSpinner message="Loading popular courses..." />
+        <UiLoadingSpinner message="Loading popular courses..." />
       </div>
 
       <!-- Error State -->
@@ -39,7 +39,7 @@
         class="py-10"
         role="alert"
       >
-        <ErrorState
+        <UiErrorState
           :message="errorMessage"
           @retry="$emit('retry')"
         />
@@ -51,7 +51,7 @@
         role="status"
         aria-live="polite"
       >
-        <EmptyState
+        <UiEmptyState
           title="No courses available"
           message="Check back soon for new courses"
         />

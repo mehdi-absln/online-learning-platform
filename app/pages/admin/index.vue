@@ -29,7 +29,7 @@
         v-if="isLoading"
         class="py-36 flex flex-col items-center justify-center"
       >
-        <LoadingSpinner
+        <UiLoadingSpinner
           message="Loading courses..."
           label="Loading courses"
         />
@@ -40,7 +40,7 @@
         v-else-if="fetchError"
         class="py-16"
       >
-        <ErrorState
+        <UiErrorState
           :message="fetchError"
           @retry="fetchCourses"
         />
@@ -169,7 +169,7 @@
     </div>
 
     <!-- Delete Confirm Modal -->
-    <ConfirmModal
+    <UiConfirmModal
       :is-open="isDeleteModalOpen"
       title="Delete Course"
       :message="`Are you sure you want to delete ${selectedCourseTitle}? This action cannot be undone.`"
@@ -184,11 +184,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 import AdminTabs from '~/components/admin/AdminTabs.vue'
-import ErrorState from '~/components/ui/ErrorState.vue'
 import IconLock from '~/components/icons/IconLock.vue'
-import ConfirmModal from '~/components/ui/ConfirmModal.vue'
 import { useToast } from '~/composables/useToast'
 import type { CourseApiResponse } from '~/types/course'
 import { getErrorMessage } from '~/utils/error-helpers'

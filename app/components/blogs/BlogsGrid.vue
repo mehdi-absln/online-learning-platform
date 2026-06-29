@@ -23,7 +23,7 @@
       role="status"
       aria-live="polite"
     >
-      <EmptyState
+      <UiEmptyState
         title="No articles found"
         message="Try adjusting your search or filters"
       >
@@ -43,7 +43,7 @@
             />
           </svg>
         </template>
-      </EmptyState>
+      </UiEmptyState>
     </div>
 
     <!-- Grid -->
@@ -84,7 +84,7 @@
       aria-label="Blog pagination"
       class="mt-12"
     >
-      <Pagination
+      <UiPagination
         :current-page="currentPage"
         :total-pages="totalPages"
         :on-page-change="onPageChange"
@@ -97,7 +97,6 @@
 import type { Blog } from '~/types/blog'
 import BlogCard from '~/components/blogs/BlogCard.vue'
 import BlogCardSkeleton from '~/components/blogs/BlogCardSkeleton.vue'
-import Pagination from '~/components/ui/Pagination.vue'
 
 interface Props {
   blogs: Blog[]

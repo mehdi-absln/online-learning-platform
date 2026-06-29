@@ -4,7 +4,7 @@
     aria-labelledby="edit-course-heading"
   >
     <div class="mb-2">
-      <Breadcrumb
+      <UiBreadcrumb
         :crumbs="[
           { name: 'Admin', path: '/admin' },
           { name: 'Edit Course', path: '' },
@@ -18,7 +18,7 @@
         v-if="isFetching"
         class="flex justify-center items-center min-h-[calc(100vh-200px)]"
       >
-        <LoadingSpinner message="Loading course..." />
+        <UiLoadingSpinner message="Loading course..." />
       </div>
 
       <!-- Edit Form -->
@@ -42,7 +42,7 @@
         v-else
         class="py-16"
       >
-        <ErrorState
+        <UiErrorState
           message="Failed to load course details."
           @retry="fetchCourse"
         />
@@ -57,9 +57,6 @@ import type { CourseFormInitialData } from '~/types/forms/course-form'
 import { useToast } from '~/composables/useToast'
 import CourseForm from '~/components/admin/CourseForm.vue'
 import type { CourseFormData } from '~/schemas/admin'
-import Breadcrumb from '~/components/ui/Breadcrumb.vue'
-import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
-import ErrorState from '~/components/ui/ErrorState.vue'
 import { getErrorMessage } from '~/utils/error-helpers'
 
 useHead({

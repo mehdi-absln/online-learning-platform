@@ -34,7 +34,7 @@
       </div>
 
       <div class="rounded-md shadow-sm space-y-6 pt-4">
-        <FormInput
+        <UiFormInput
           id="username"
           v-model="form.username"
           label="Username"
@@ -47,7 +47,7 @@
           @blur="handleBlur('username')"
         />
 
-        <FormInput
+        <UiFormInput
           id="email"
           v-model="form.email"
           type="email"
@@ -61,7 +61,7 @@
           @blur="handleBlur('email')"
         />
 
-        <FormInput
+        <UiFormInput
           id="password"
           v-model="form.password"
           type="password"
@@ -75,7 +75,7 @@
           @blur="handleBlur('password')"
         />
 
-        <FormInput
+        <UiFormInput
           id="confirmPassword"
           v-model="form.confirmPassword"
           type="password"
@@ -90,7 +90,7 @@
         />
       </div>
 
-      <FormCheckbox
+      <UiFormCheckbox
         id="terms"
         v-model="form.termsAccepted"
         name="terms"
@@ -102,9 +102,9 @@
           to="/terms"
           class="text-primary hover:underline"
         >Terms and Conditions</NuxtLink>
-      </FormCheckbox>
+      </UiFormCheckbox>
 
-      <SubmitButton
+      <UiSubmitButton
         :loading="isLoading"
         :disabled="!isFormValid || isLoading"
         text="Sign up"
@@ -134,11 +134,6 @@ import type { ApiResponse } from '~/types/api'
 import type { User } from '~/types/auth'
 import { signUpSchema, type SignUpFormData } from '~/schemas/auth'
 import { handleSignUpError } from '~/utils/auth-error-handler-helpers'
-
-// Import custom form components
-import SubmitButton from '~/components/ui/SubmitButton.vue'
-import FormCheckbox from '~/components/ui/FormCheckbox.vue'
-import FormInput from '~/components/ui/FormInput.vue'
 
 import { SITE_NAME } from '~/constants'
 

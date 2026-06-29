@@ -10,7 +10,7 @@
       aria-label="Loading order information"
       aria-live="polite"
     >
-      <LoadingSpinner message="Verifying order details..." />
+      <UiLoadingSpinner message="Verifying order details..." />
     </div>
 
     <!-- Error State -->
@@ -249,7 +249,6 @@
 
 <script setup lang="ts">
 import { useApiError } from '~/composables/useApiError'
-import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 import CourseImage from '~/components/courses/CourseImage.vue'
 import { SITE_NAME } from '~/constants'
 

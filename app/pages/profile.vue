@@ -71,7 +71,7 @@
           class="space-y-4"
           @submit.prevent="onSubmit"
         >
-          <FormInput
+          <UiFormInput
             id="currentPassword"
             v-model="form.currentPassword"
             label="Current Password"
@@ -81,7 +81,7 @@
             @blur="handleBlur('currentPassword')"
           />
 
-          <FormInput
+          <UiFormInput
             id="newPassword"
             v-model="form.newPassword"
             label="New Password"
@@ -91,7 +91,7 @@
             @blur="handleBlur('newPassword')"
           />
 
-          <FormInput
+          <UiFormInput
             id="confirmPassword"
             v-model="form.confirmPassword"
             label="Confirm New Password"
@@ -119,7 +119,7 @@
             {{ errorMessage }}
           </div>
 
-          <SubmitButton
+          <UiSubmitButton
             text="Update Password"
             :loading="isChangingPassword"
             :disabled="!isFormValid || isChangingPassword"
@@ -138,8 +138,6 @@ import { getErrorMessage } from '~/utils/error-helpers'
 import { useZodValidation } from '~/composables/useZodValidation'
 import { changePasswordSchema } from '~/schemas/auth'
 import type { ChangePasswordFormData } from '~/schemas/auth'
-import FormInput from '~/components/ui/FormInput.vue'
-import SubmitButton from '~/components/ui/SubmitButton.vue'
 
 import { SITE_NAME } from '~/constants'
 

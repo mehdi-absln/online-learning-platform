@@ -9,12 +9,12 @@
         aria-label="Loading Lesson"
         aria-live="polite"
       >
-        <LoadingSpinner :message="loadingMessage" />
+        <UiLoadingSpinner :message="loadingMessage" />
       </div>
     </template>
 
     <!-- Combined Error State -->
-    <ErrorState
+    <UiErrorState
       v-else-if="combinedError"
       :message="combinedError"
       @retry="handleRetry"
@@ -26,7 +26,7 @@
         class="py-10 bg-hero-shimmer border-dark-divider"
       >
         <div class="container">
-          <Breadcrumb
+          <UiBreadcrumb
             :crumbs="breadcrumbs"
             class="py-2"
           />
@@ -95,7 +95,7 @@
               />
               <template #fallback>
                 <div class="rounded-xl border border-dark-divider bg-dark-surface aspect-video flex items-center justify-center">
-                  <LoadingSpinner message="Loading video..." />
+                  <UiLoadingSpinner message="Loading video..." />
                 </div>
               </template>
             </ClientOnly>
@@ -286,7 +286,7 @@
       </div>
     </template>
 
-    <ErrorState
+    <UiErrorState
       v-else
       message="Lesson could not be loaded."
       @retry="handleRetry"
@@ -296,13 +296,10 @@
 
 <script setup lang="ts">
 import type { DetailedLesson } from '~/types/lesson'
-import ErrorState from '~/components/ui/ErrorState.vue'
-import Breadcrumb from '~/components/ui/Breadcrumb.vue'
 import LessonVideo from '~/components/lesson/LessonVideo.vue'
 import LessonContent from '~/components/lesson/LessonContent.vue'
 import LessonSidebar from '~/components/lesson/LessonSidebar.vue'
 import LessonNav from '~/components/lesson/LessonNav.vue'
-import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
 import IconClock from '~/components/icons/IconClock.vue'
 import IconCalendar from '~/components/icons/IconCalendar.vue'
 import IconBookmark from '~/components/icons/IconBookmark.vue'

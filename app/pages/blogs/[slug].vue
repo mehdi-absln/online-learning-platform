@@ -15,7 +15,7 @@
     class="py-36 flex flex-col items-center justify-center animate-fade-in"
     role="alert"
   >
-    <ErrorState
+    <UiErrorState
       message="Error: Article not found"
       :hide-retry="true"
     />

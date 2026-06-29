@@ -4,7 +4,7 @@
     aria-labelledby="create-course-heading"
   >
     <div class="mb-2">
-      <Breadcrumb
+      <UiBreadcrumb
         :crumbs="[
           { name: 'Admin', path: '/admin' },
           { name: 'Create Course', path: '' },
@@ -34,7 +34,6 @@ import { useToast } from '~/composables/useToast'
 import CourseForm from '~/components/admin/CourseForm.vue'
 import type { CourseFormData } from '~/schemas/admin'
 import { getErrorMessage } from '~/utils/error-helpers'
-import Breadcrumb from '~/components/ui/Breadcrumb.vue'
 
 useHead({
   title: 'Create Course - Admin Panel',

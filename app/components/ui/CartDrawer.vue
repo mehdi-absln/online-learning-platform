@@ -86,7 +86,7 @@
             <div
               v-if="items.length === 0"
             >
-              <EmptyState
+              <UiEmptyState
                 title="Your cart is empty"
                 message="Looks like you haven't added anything yet."
                 action-label="Start Learning"
@@ -108,7 +108,7 @@
                     />
                   </svg>
                 </template>
-              </EmptyState>
+              </UiEmptyState>
             </div>
 
             <ul
@@ -235,7 +235,6 @@
 
 <script setup lang="ts">
 import { useCart } from '~/composables/useCart'
-import EmptyState from '~/components/ui/EmptyState.vue'
 import { onKeyStroke } from '@vueuse/core'
 import CourseImage from '~/components/courses/CourseImage.vue'
 

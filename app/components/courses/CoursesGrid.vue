@@ -22,7 +22,7 @@
       <div
         v-if="courses.length === 0"
       >
-        <EmptyState
+        <UiEmptyState
           title="No courses found"
           message="No courses found matching your filters."
         />
@@ -50,7 +50,7 @@
         aria-label="Courses pagination"
         class="mt-12"
       >
-        <Pagination
+        <UiPagination
           :current-page="currentPage"
           :total-pages="totalPages"
           :on-page-change="onPageChange"
@@ -63,7 +63,6 @@
 <script setup lang="ts">
 import CourseCard from '~/components/courses/CourseCard.vue'
 import CourseCardSkeleton from '~/components/courses/CourseCardSkeleton.vue'
-import Pagination from '~/components/ui/Pagination.vue'
 import type { Course } from '~/types/course'
 
 interface CoursesGridProps {

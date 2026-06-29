@@ -4,7 +4,7 @@
   </NuxtLayout>
 
   <!-- Global Toast -->
-  <Toast
+  <UiToast
     v-model="toast.state.isVisible"
     :message="toast.state.message"
     :type="toast.state.type"
@@ -15,7 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import Toast from '~/components/ui/Toast.vue'
 import { SITE_NAME } from '~/constants/index'
 
 const toast = useToast()

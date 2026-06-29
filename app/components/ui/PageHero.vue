@@ -17,13 +17,11 @@
       {{ subtitle }}
     </p>
 
-    <Breadcrumb :crumbs="breadcrumbCrumbs" />
+    <UiBreadcrumb :crumbs="breadcrumbCrumbs" />
   </section>
 </template>
 
 <script setup lang="ts">
-import Breadcrumb from '~/components/ui/Breadcrumb.vue'
-
 interface Props {
   title: string
   subtitle?: string

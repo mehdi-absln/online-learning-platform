@@ -1,6 +1,6 @@
 <template>
   <div class="bg-dark-surface rounded-xl border border-dark-divider overflow-hidden">
-    <Tabs
+    <UiTabs
       :tabs="[
         { name: 'content', title: 'Lesson Content' },
         { name: 'resources', title: 'Attachments' },
@@ -33,7 +33,7 @@
             prose-pre:rounded-xl
             prose-pre:shadow-lg"
         />
-        <EmptyState
+        <UiEmptyState
           v-else
           title="No content yet"
           message="Content for this lesson will be added soon..."
@@ -100,7 +100,7 @@
           v-else
           role="status"
         >
-          <EmptyState
+          <UiEmptyState
             title="No resources available"
             message="No resources available for this lesson"
           >
@@ -120,7 +120,7 @@
                 />
               </svg>
             </template>
-          </EmptyState>
+          </UiEmptyState>
         </div>
       </template>
 
@@ -154,12 +154,11 @@
           </div>
         </div>
       </template>
-    </Tabs>
+    </UiTabs>
   </div>
 </template>
 
 <script setup lang="ts">
-import Tabs from '~/components/ui/Tabs.vue'
 import type { DetailedLesson, LessonAttachment } from '~/types/lesson'
 
 interface Props {

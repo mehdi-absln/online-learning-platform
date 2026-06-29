@@ -34,7 +34,7 @@
       </div>
 
       <div class="rounded-md shadow-sm space-y-6 pt-4">
-        <FormInput
+        <UiFormInput
           id="username"
           v-model="form.username"
           label="Email or username"
@@ -47,7 +47,7 @@
           @blur="handleBlur('username')"
         />
 
-        <FormInput
+        <UiFormInput
           id="password"
           v-model="form.password"
           type="password"
@@ -63,17 +63,17 @@
       </div>
 
       <div class="flex items-center justify-between">
-        <FormCheckbox
+        <UiFormCheckbox
           id="remember-me"
           v-model="form.rememberMe"
           name="remember-me"
           :label-class="'ml-2 block text-sm text-gray-200'"
         >
           Remember me
-        </FormCheckbox>
+        </UiFormCheckbox>
       </div>
 
-      <SubmitButton
+      <UiSubmitButton
         :loading="isLoading"
         :disabled="!isFormValid || isLoading"
         text="Sign in"
@@ -103,11 +103,6 @@ import type { ApiResponse } from '~/types/api'
 import type { User } from '~/types/auth'
 import { signInSchema, type SignInFormData } from '~/schemas/auth'
 import { handleSignInError } from '~/utils/auth-error-handler-helpers'
-
-// Import custom form components
-import FormInput from '~/components/ui/FormInput.vue'
-import FormCheckbox from '~/components/ui/FormCheckbox.vue'
-import SubmitButton from '~/components/ui/SubmitButton.vue'
 
 import { SITE_NAME } from '~/constants'
 

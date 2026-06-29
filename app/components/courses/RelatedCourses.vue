@@ -4,14 +4,14 @@
     v-if="loading"
     class="py-36 flex flex-col items-center justify-center"
   >
-    <LoadingSpinner message="Loading course related..." />
+    <UiLoadingSpinner message="Loading course related..." />
   </div>
   <!-- Error State -->
   <div
     v-else-if="hasError"
     class="py-36 flex flex-col items-center justify-center"
   >
-    <ErrorState
+    <UiErrorState
       :message="errorMessage ?? undefined"
       :hide-retry="true"
     />
@@ -48,8 +48,6 @@
 <script setup lang="ts">
 import { useRelatedCourses } from '~/composables/useRelatedCourses'
 import CourseCard from '~/components/courses/CourseCard.vue'
-import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
-import ErrorState from '~/components/ui/ErrorState.vue'
 
 interface Props {
   courseId: string

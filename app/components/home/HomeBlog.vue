@@ -22,14 +22,14 @@
         role="status"
         aria-live="polite"
       >
-        <LoadingSpinner message="Loading latest articles..." />
+        <UiLoadingSpinner message="Loading latest articles..." />
       </div>
       <div
         v-else-if="hasError"
         class="py-10"
         role="alert"
       >
-        <ErrorState
+        <UiErrorState
           :message="errorMessage"
           @retry="$emit('retry')"
         />
@@ -39,7 +39,7 @@
         role="status"
         aria-live="polite"
       >
-        <EmptyState
+        <UiEmptyState
           title="No articles yet"
           message="Check back soon for new articles"
         />
@@ -69,9 +69,6 @@
 
 <script setup lang="ts">
 import BlogCard from '~/components/blogs/BlogCard.vue'
-import LoadingSpinner from '~/components/ui/LoadingSpinner.vue'
-import ErrorState from '~/components/ui/ErrorState.vue'
-import EmptyState from '~/components/ui/EmptyState.vue'
 import type { Blog } from '~/types/blog'
 
 defineProps<{
