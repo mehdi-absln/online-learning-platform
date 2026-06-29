@@ -2,9 +2,29 @@
   <div class="bg-dark-bg rounded-xl p-6 border border-dark-divider h-full">
     <div
       v-if="loading"
-      class="text-center py-10"
+      class="animate-pulse space-y-6"
+      aria-hidden="true"
     >
-      <UiLoadingSpinner message="Loading filters..." />
+      <!-- Search skeleton -->
+      <div>
+        <div class="h-5 w-16 bg-dark-divider rounded mb-4" />
+        <div class="h-10 w-full bg-dark-divider rounded-lg" />
+      </div>
+      <!-- Filter sections -->
+      <div
+        v-for="i in 4"
+        :key="i"
+        class="pb-6 border-b border-dark-divider space-y-3"
+      >
+        <div class="h-5 w-20 bg-dark-divider rounded" />
+        <div class="space-y-2">
+          <div class="h-4 w-24 bg-dark-divider rounded" />
+          <div class="h-4 w-20 bg-dark-divider rounded" />
+          <div class="h-4 w-28 bg-dark-divider rounded" />
+        </div>
+      </div>
+      <!-- Button skeleton -->
+      <div class="h-12 w-full bg-dark-divider rounded" />
     </div>
 
     <!-- Error message -->

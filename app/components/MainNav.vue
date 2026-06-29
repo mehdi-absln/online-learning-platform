@@ -541,7 +541,8 @@ const dropdownMenuItems = computed(() => {
 })
 
 const isActiveLink = (path: string) => {
-  const current = route.path
+  const current = route?.path
+  if (!current) return false
   return current === path || current.startsWith(path + '/')
 }
 

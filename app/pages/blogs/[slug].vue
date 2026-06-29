@@ -1,13 +1,6 @@
 <template>
   <!-- Loading State -->
-  <div
-    v-if="isLoading"
-    class="py-36 flex flex-col items-center justify-center animate-fade-in"
-    role="status"
-    aria-label="Loading article details"
-  >
-    <UiLoadingSpinner message="Loading article details..." />
-  </div>
+  <BlogsBlogDetailSkeleton v-if="isLoading" />
 
   <!-- Error State -->
   <div

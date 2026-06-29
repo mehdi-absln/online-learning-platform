@@ -1,11 +1,18 @@
 <template>
   <!-- Loading State -->
-  <div
+  <section
     v-if="loading"
-    class="py-36 flex flex-col items-center justify-center"
+    class="mt-16"
+    aria-hidden="true"
   >
-    <UiLoadingSpinner message="Loading course related..." />
-  </div>
+    <div class="h-7 w-48 bg-dark-divider rounded mb-8 animate-pulse" />
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <CoursesCourseCardSkeleton
+        v-for="i in 3"
+        :key="i"
+      />
+    </div>
+  </section>
   <!-- Error State -->
   <div
     v-else-if="hasError"
@@ -47,7 +54,6 @@
 
 <script setup lang="ts">
 import { useRelatedCourses } from '~/composables/useRelatedCourses'
-import CourseCard from '~/components/courses/CourseCard.vue'
 
 interface Props {
   courseId: string
