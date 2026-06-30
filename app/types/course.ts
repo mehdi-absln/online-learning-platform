@@ -14,7 +14,7 @@ export interface Course {
   id: number
   title: string
   slug: string
-  description: string | null
+  description: string
   category: string
   instructor: CourseInstructor
   stats: {
@@ -66,8 +66,8 @@ export interface CourseApiResponse {
 
 export interface DetailedCourse extends Course {
   lessons: string[]
-  learningObjectives?: string[]
-  courseContent?: CourseContentSection[]
+  learningObjectives: string[]
+  courseContent: CourseContentSection[]
   reviews?: CourseReview[]
 }
 

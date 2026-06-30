@@ -43,7 +43,7 @@
     <div
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
     >
-      <CourseCard
+      <CoursesCourseCard
         v-for="relatedCourse in relatedCourses"
         :key="relatedCourse.id"
         :course="relatedCourse"

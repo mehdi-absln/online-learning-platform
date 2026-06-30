@@ -39,6 +39,10 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const { title, slug, description, price, isPublished, instructorId: bodyInstructorId } = body
 
+    if (description !== undefined && (typeof description !== 'string' || description.trim().length === 0)) {
+      throw createError({ statusCode: 400, statusMessage: 'Description cannot be empty' })
+    }
+
     const finalInstructorId
       = user.role === 'admin' ? (bodyInstructorId ?? course.instructorId) : course.instructorId
 

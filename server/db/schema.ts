@@ -55,7 +55,7 @@ export const courses = sqliteTable('courses', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   title: text('title').notNull(),
   slug: text('slug').notNull().unique(),
-  description: text('description'),
+  description: text('description').notNull(),
   shortDescription: text('short_description'),
   price: real('price').notNull().default(0),
   originalPrice: real('original_price'),

@@ -26,7 +26,6 @@ export default cachedEventHandler(
         limit: 4,
       })
 
-      // Data is already formatted correctly from related-courses.ts
       return {
         success: result.success,
         data: result.data,

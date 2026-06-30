@@ -12,6 +12,13 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const { title, slug, description, price, isPublished } = body
 
+    if (!title || typeof title !== 'string' || title.trim().length === 0) {
+      throw createError({ statusCode: 400, statusMessage: 'Title is required' })
+    }
+    if (!description || typeof description !== 'string' || description.trim().length === 0) {
+      throw createError({ statusCode: 400, statusMessage: 'Description is required' })
+    }
+
     let instructorId = null
     if (user.role === 'instructor') {
       const [instructor] = await db
@@ -33,9 +40,9 @@ export default defineEventHandler(async (event) => {
     const newCourse = await db
       .insert(courses)
       .values({
-        title,
+        title: title.trim(),
         slug,
-        description: description || '',
+        description: description.trim(),
         price: price || 0,
         isPublished: isPublished ?? true,
         instructorId,

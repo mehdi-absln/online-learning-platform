@@ -194,84 +194,240 @@ async function seed() {
     if (record) insertedCourses.push(record)
   }
 
-  // ───── Sections & Lessons (for first course) ─────
-  const firstCourse = insertedCourses[0]
-  if (firstCourse) {
-    const [section1] = await db
-      .insert(courseContentSections)
-      .values({
-        courseId: firstCourse.id,
-        title: 'Getting Started',
-        description: 'Introduction to Nuxt.js and project setup',
-        orderVal: 0,
-        createdAt: now,
-        updatedAt: now,
-      })
-      .onConflictDoNothing()
-      .returning()
-
-    const section1Record = section1
-      ?? await db.query.courseContentSections.findFirst({
-        where: (s, { eq, and }) => and(
-          eq(s.courseId, firstCourse.id),
-          eq(s.title, 'Getting Started'),
-        ),
-      })
-
-    if (section1Record) {
-      const lessonData = [
-        {
+    // ───── Sections & Lessons (for first course) ─────
+    const firstCourse = insertedCourses[0]
+    if (firstCourse) {
+      const [section1] = await db
+        .insert(courseContentSections)
+        .values({
           courseId: firstCourse.id,
-          sectionId: section1Record.id,
-          title: 'Introduction to Nuxt.js',
-          slug: 'introduction-to-nuxtjs',
-          description: 'What is Nuxt.js and why use it?',
-          content: 'Nuxt.js is a powerful Vue.js framework...',
-          duration: '15:30',
+          title: 'Getting Started',
+          description: 'Introduction to Nuxt.js and project setup',
           orderVal: 0,
-          isFree: true,
           createdAt: now,
           updatedAt: now,
-        },
-        {
-          courseId: firstCourse.id,
-          sectionId: section1Record.id,
-          title: 'Project Setup',
-          slug: 'project-setup',
-          description: 'Setting up your first Nuxt project',
-          content: 'Let\'s create a new Nuxt project...',
-          duration: '22:15',
-          orderVal: 1,
-          isFree: true,
-          createdAt: now,
-          updatedAt: now,
-        },
+        })
+        .onConflictDoNothing()
+        .returning()
+
+      const section1Record = section1
+        ?? await db.query.courseContentSections.findFirst({
+          where: (s, { eq, and }) => and(
+            eq(s.courseId, firstCourse.id),
+            eq(s.title, 'Getting Started'),
+          ),
+        })
+
+      if (section1Record) {
+        const lessonData = [
+          {
+            courseId: firstCourse.id,
+            sectionId: section1Record.id,
+            title: 'Introduction to Nuxt.js',
+            slug: 'introduction-to-nuxtjs',
+            description: 'What is Nuxt.js and why use it?',
+            content: 'Nuxt.js is a powerful Vue.js framework...',
+            duration: '15:30',
+            orderVal: 0,
+            isFree: true,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            courseId: firstCourse.id,
+            sectionId: section1Record.id,
+            title: 'Project Setup',
+            slug: 'project-setup',
+            description: 'Setting up your first Nuxt project',
+            content: 'Let\'s create a new Nuxt project...',
+            duration: '22:15',
+            orderVal: 1,
+            isFree: true,
+            createdAt: now,
+            updatedAt: now,
+          },
+        ]
+
+        for (const lesson of lessonData) {
+          await db.insert(lessons).values(lesson).onConflictDoNothing()
+        }
+      }
+
+      // ───── Learning Objectives (first course) ─────
+      const objectives = [
+        'Build full-stack applications with Nuxt.js',
+        'Understand server-side rendering (SSR)',
+        'Implement authentication and authorization',
+        'Deploy to production with confidence',
       ]
 
-      for (const lesson of lessonData) {
-        await db.insert(lessons).values(lesson).onConflictDoNothing()
+      for (const [i, objective] of objectives.entries()) {
+        await db
+          .insert(courseLearningObjectives)
+          .values({
+            courseId: firstCourse.id,
+            objective,
+            orderVal: i,
+          })
+          .onConflictDoNothing()
       }
     }
 
-    // ───── Learning Objectives ─────
-    const objectives = [
-      'Build full-stack applications with Nuxt.js',
-      'Understand server-side rendering (SSR)',
-      'Implement authentication and authorization',
-      'Deploy to production with confidence',
-    ]
-
-    for (const [i, objective] of objectives.entries()) {
-      await db
-        .insert(courseLearningObjectives)
+    // ───── Sections & Lessons (for second course - TypeScript) ─────
+    const secondCourse = insertedCourses[1]
+    if (secondCourse) {
+      const [tsSection1] = await db
+        .insert(courseContentSections)
         .values({
-          courseId: firstCourse.id,
-          objective,
-          orderVal: i,
+          courseId: secondCourse.id,
+          title: 'TypeScript Basics',
+          description: 'Getting started with TypeScript fundamentals',
+          orderVal: 0,
+          createdAt: now,
+          updatedAt: now,
         })
         .onConflictDoNothing()
+        .returning()
+
+      const tsSection1Record = tsSection1
+        ?? await db.query.courseContentSections.findFirst({
+          where: (s, { eq, and }) => and(
+            eq(s.courseId, secondCourse.id),
+            eq(s.title, 'TypeScript Basics'),
+          ),
+        })
+
+      if (tsSection1Record) {
+        const tsLessonData = [
+          {
+            courseId: secondCourse.id,
+            sectionId: tsSection1Record.id,
+            title: 'Why TypeScript?',
+            slug: 'why-typescript',
+            description: 'Understanding the benefits of TypeScript over JavaScript',
+            content: 'TypeScript adds static typing to JavaScript...',
+            duration: '12:00',
+            orderVal: 0,
+            isFree: true,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            courseId: secondCourse.id,
+            sectionId: tsSection1Record.id,
+            title: 'Types and Interfaces',
+            slug: 'types-and-interfaces',
+            description: 'Learn about basic types and interfaces in TypeScript',
+            content: 'Types and interfaces are core concepts...',
+            duration: '25:30',
+            orderVal: 1,
+            isFree: false,
+            createdAt: now,
+            updatedAt: now,
+          },
+        ]
+
+        for (const lesson of tsLessonData) {
+          await db.insert(lessons).values(lesson).onConflictDoNothing()
+        }
+      }
+
+      const tsObjectives = [
+        'Understand TypeScript type system and static typing',
+        'Work with interfaces, generics, and advanced types',
+        'Configure TypeScript for real-world projects',
+        'Apply TypeScript best practices in web development',
+      ]
+
+      for (const [i, objective] of tsObjectives.entries()) {
+        await db
+          .insert(courseLearningObjectives)
+          .values({
+            courseId: secondCourse.id,
+            objective,
+            orderVal: i,
+          })
+          .onConflictDoNothing()
+      }
     }
-  }
+
+    // ───── Sections & Lessons (for third course - Tailwind) ─────
+    const thirdCourse = insertedCourses[2]
+    if (thirdCourse) {
+      const [twSection1] = await db
+        .insert(courseContentSections)
+        .values({
+          courseId: thirdCourse.id,
+          title: 'Tailwind CSS Fundamentals',
+          description: 'Core concepts of utility-first CSS',
+          orderVal: 0,
+          createdAt: now,
+          updatedAt: now,
+        })
+        .onConflictDoNothing()
+        .returning()
+
+      const twSection1Record = twSection1
+        ?? await db.query.courseContentSections.findFirst({
+          where: (s, { eq, and }) => and(
+            eq(s.courseId, thirdCourse.id),
+            eq(s.title, 'Tailwind CSS Fundamentals'),
+          ),
+        })
+
+      if (twSection1Record) {
+        const twLessonData = [
+          {
+            courseId: thirdCourse.id,
+            sectionId: twSection1Record.id,
+            title: 'Introduction to Tailwind CSS',
+            slug: 'introduction-to-tailwind',
+            description: 'What is utility-first CSS and why Tailwind?',
+            content: 'Tailwind CSS is a utility-first CSS framework...',
+            duration: '10:15',
+            orderVal: 0,
+            isFree: true,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            courseId: thirdCourse.id,
+            sectionId: twSection1Record.id,
+            title: 'Responsive Design with Tailwind',
+            slug: 'responsive-design-tailwind',
+            description: 'Build responsive layouts using Tailwind breakpoints',
+            content: 'Tailwind makes responsive design simple...',
+            duration: '20:45',
+            orderVal: 1,
+            isFree: false,
+            createdAt: now,
+            updatedAt: now,
+          },
+        ]
+
+        for (const lesson of twLessonData) {
+          await db.insert(lessons).values(lesson).onConflictDoNothing()
+        }
+      }
+
+      const twObjectives = [
+        'Build responsive UIs with utility-first CSS',
+        'Customize Tailwind themes and configuration',
+        'Create reusable component patterns',
+        'Implement animations and transitions with Tailwind',
+      ]
+
+      for (const [i, objective] of twObjectives.entries()) {
+        await db
+          .insert(courseLearningObjectives)
+          .values({
+            courseId: thirdCourse.id,
+            objective,
+            orderVal: i,
+          })
+          .onConflictDoNothing()
+      }
+    }
 
   // ───── Blogs ─────
   if (adminUser) {

@@ -5,7 +5,7 @@ import type { InstructorInfo } from './instructor-service'
 export interface RawCourse {
   id: number
   title: string
-  description: string | null
+  description: string
   categoryId: number | null
   category: string | null
   instructorId: number | null
