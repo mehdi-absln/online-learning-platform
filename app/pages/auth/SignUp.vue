@@ -98,10 +98,7 @@
         @blur="handleBlur('termsAccepted')"
       >
         I accept the
-        <NuxtLink
-          to="/terms"
-          class="text-primary hover:underline"
-        >Terms and Conditions</NuxtLink>
+        <span class="text-gray-500">Terms and Conditions</span>
       </UiFormCheckbox>
 
       <UiSubmitButton
