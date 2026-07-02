@@ -46,6 +46,8 @@ export default defineNuxtConfig({
     '/api/course-by-slug/**/lessons/**': { swr: false },
     // User progress - no cache (personal data)
     '/api/progress/**': { swr: false },
+    // Dashboard - no cache (personal data)
+    '/api/dashboard': { swr: false },
   },
 
   devServer: {

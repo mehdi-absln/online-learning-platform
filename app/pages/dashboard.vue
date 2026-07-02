@@ -89,158 +89,23 @@
           <ContinueLearningCard :course="continueLearnCourse" />
         </section>
 
-        <!-- ═══ 4. My Courses ═══ -->
-        <section
+        <!-- ═══ 4. My Courses (Lazy loaded - below fold) ═══ -->
+        <LazyDashboardMyCourses
           v-if="enrolledCourses.length > 0"
-          aria-labelledby="courses-heading"
-        >
-          <h2
-            id="courses-heading"
-            class="text-xl font-bold text-white mb-4"
-          >
-            My Courses
-          </h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-            <DashboardCourseCard
-              v-for="course in enrolledCourses"
-              :key="course.id"
-              :course="course"
-            />
-          </div>
-        </section>
+          :enrolled-courses="enrolledCourses"
+        />
 
-        <!-- ═══ 5. Bookmarked Lessons ═══ -->
-        <section
+        <!-- ═══ 5. Bookmarked Lessons (Lazy loaded - below fold) ═══ -->
+        <LazyDashboardBookmarks
           v-if="bookmarkedLessons.length > 0"
-          aria-labelledby="bookmarks-heading"
-        >
-          <h2
-            id="bookmarks-heading"
-            class="text-xl font-bold text-white mb-4"
-          >
-            <span aria-hidden="true">🔖</span> Bookmarked Lessons
-          </h2>
-          <div class="bg-dark-surface border border-dark-divider/50 rounded-2xl divide-y divide-dark-divider/50 overflow-hidden">
-            <NuxtLink
-              v-for="bookmark in bookmarkedLessons"
-              :key="bookmark.lessonId"
-              :to="`/courses/${bookmark.courseSlug}/lessons/${bookmark.lessonSlug}`"
-              class="flex items-center gap-4 px-5 py-4 hover:bg-dark-bg/50 transition-colors group"
-            >
-              <span
-                class="w-8 h-8 bg-amber-500/15 rounded-lg flex items-center justify-center text-amber-400 flex-shrink-0 group-hover:scale-110 transition-transform"
-                aria-hidden="true"
-              >
-                📖
-              </span>
-              <div class="min-w-0 flex-1">
-                <p class="text-sm font-medium text-white truncate group-hover:text-primary transition-colors">
-                  {{ bookmark.lessonTitle }}
-                </p>
-                <p class="text-xs text-gray-400 truncate">
-                  {{ bookmark.courseTitle }}
-                </p>
-              </div>
-              <span
-                class="text-gray-400 group-hover:text-primary transition-colors flex-shrink-0"
-                aria-hidden="true"
-              >
-                →
-              </span>
-            </NuxtLink>
-          </div>
-        </section>
+          :bookmarked-lessons="bookmarkedLessons"
+        />
 
-        <!-- ═══ 6. Recent Orders ═══ -->
-        <section
+        <!-- ═══ 6. Recent Orders (Lazy loaded - below fold) ═══ -->
+        <LazyDashboardOrders
           v-if="recentOrders.length > 0"
-          aria-labelledby="orders-heading"
-        >
-          <h2
-            id="orders-heading"
-            class="text-xl font-bold text-white mb-4"
-          >
-            Recent Orders
-          </h2>
-          <div class="bg-dark-surface border border-dark-divider/50 rounded-2xl overflow-hidden">
-            <!-- Desktop table -->
-            <div class="hidden sm:block overflow-x-auto">
-              <table class="w-full text-left">
-                <caption class="sr-only">
-                  List of recent orders
-                </caption>
-                <thead>
-                  <tr class="border-b border-dark-divider/50">
-                    <th class="px-5 py-3.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Order
-                    </th>
-                    <th class="px-5 py-3.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th class="px-5 py-3.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Amount
-                    </th>
-                    <th class="px-5 py-3.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-dark-divider/30">
-                  <tr
-                    v-for="order in recentOrders"
-                    :key="order.id"
-                    class="hover:bg-dark-bg/30 transition-colors"
-                  >
-                    <td class="px-5 py-4 text-sm font-medium text-white">
-                      #{{ order.id }}
-                    </td>
-                    <td class="px-5 py-4 text-sm text-gray-400">
-                      {{ formatDate(order.createdAt) }}
-                    </td>
-                    <td class="px-5 py-4 text-sm font-semibold text-white tabular-nums">
-                      ${{ Number(order.totalAmount).toFixed(2) }}
-                    </td>
-                    <td class="px-5 py-4">
-                      <span
-                        class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full"
-                        :class="statusClass(order.status)"
-                      >
-                        <span aria-hidden="true">{{ statusIcon(order.status) }}</span>
-                        {{ order.status }}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Mobile cards -->
-            <div class="sm:hidden divide-y divide-dark-divider/50">
-              <div
-                v-for="order in recentOrders"
-                :key="`mobile-${order.id}`"
-                class="px-5 py-4 space-y-2"
-              >
-                <div class="flex items-center justify-between">
-                  <span class="text-sm font-medium text-white">Order #{{ order.id }}</span>
-                  <span
-                    class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full"
-                    :class="statusClass(order.status)"
-                  >
-                    <span aria-hidden="true">{{ statusIcon(order.status) }}</span>
-                    {{ order.status }}
-                  </span>
-                </div>
-                <div class="flex items-center justify-between">
-                  <span class="text-xs text-gray-500">{{ formatDate(order.createdAt) }}</span>
-                  <span class="text-sm font-semibold text-white tabular-nums">
-                    ${{ Number(order.totalAmount).toFixed(2) }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+          :recent-orders="recentOrders"
+        />
 
         <!-- ═══ Empty State ═══ -->
         <section

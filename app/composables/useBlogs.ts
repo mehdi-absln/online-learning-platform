@@ -8,6 +8,7 @@ export function useBlogs() {
   const route = useRoute()
   const store = useBlogsStore()
   const { setTotalItems, limit } = useBlogFilters()
+  const nuxtApp = useNuxtApp()
 
   const queryParams = computed(() => ({
     q: route.query.q as string || '',
@@ -15,8 +16,27 @@ export function useBlogs() {
     limit,
   }))
 
+  // Generate unique cache key based on query params (pagination & search)
+  const cacheKey = computed(() => {
+    const params = queryParams.value
+    return `blogs-${JSON.stringify(params)}`
+  })
+
   const { data, pending, error, refresh } = useFetch<BlogsResponse>('/api/blogs', {
+    key: cacheKey,
     query: queryParams,
+    // Client-side cache for 5 minutes (300000ms)
+    getCachedData(key) {
+      const data = nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+      if (!data) return
+
+      const expirationDate = new Date(data.fetchedAt)
+      expirationDate.setTime(expirationDate.getTime() + 300000) // 5 minutes
+      const isExpired = expirationDate.getTime() < Date.now()
+      if (isExpired) return
+
+      return data
+    },
     onResponse({ response }) {
       if (response._data?.success) {
         store.setBlogs(response._data.data)

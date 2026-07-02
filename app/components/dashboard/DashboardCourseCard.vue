@@ -2,11 +2,13 @@
   <div class="bg-dark-surface border border-dark-divider/50 rounded-2xl overflow-hidden transition-all duration-300 hover:border-dark-divider hover:shadow-lg hover:shadow-black/20 group">
     <!-- Thumbnail -->
     <div class="aspect-video overflow-hidden bg-dark-bg relative">
-      <CourseImage
-        :src="course.thumbnail"
+      <NuxtImg
+        :src="course.thumbnail || '/images/placeholder-course.jpg'"
         :alt="course.title"
+        width="400"
+        height="225"
+        sizes="100vw sm:50vw lg:33vw"
         loading="lazy"
-        sizes="100vw sm:50vw md:33vw"
         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
       />
 
@@ -63,7 +65,6 @@
 
 <script setup lang="ts">
 import type { DashboardEnrolledCourse } from '~/types/dashboard'
-import CourseImage from '~/components/courses/CourseImage.vue'
 
 interface Props {
   course: DashboardEnrolledCourse
