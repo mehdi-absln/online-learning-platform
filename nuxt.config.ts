@@ -37,7 +37,7 @@ export default defineNuxtConfig({
     '/home': { prerender: true },
     // Courses list API - no server-side cache due to dynamic query params
     // Caching handled client-side with useFetch key
-    '/api/courses/filter-options': { cache: { maxAge: 3600 } }, // Static filter options
+    '/api/courses/filter-options': { cache: { maxAge: 3600 } },
     '/api/blogs': { cache: { maxAge: 3600 } },
     '/api/blog-by-slug/**': { cache: { maxAge: 3600 } },
     '/api/course-by-slug/**': { cache: { maxAge: 3600 } },
@@ -64,11 +64,6 @@ export default defineNuxtConfig({
         maxDuration: 60,
       },
     },
-    compressPublicAssets: true,
-    minify: true,
-  },
-    },
-    // بهینه‌سازی برای محیط Production
     compressPublicAssets: true,
     minify: true,
   },
@@ -101,7 +96,6 @@ export default defineNuxtConfig({
       exclude: ['fsevents'],
     },
     // Fix for Windows path handling with virtual modules
-    // https://github.com/nuxt/nuxt/issues/25941
     resolve: {
       preserveSymlinks: true,
     },
