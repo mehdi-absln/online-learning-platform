@@ -37,17 +37,21 @@ export default defineNuxtConfig({
     '/home': { prerender: true },
     // Courses list API - no server-side cache due to dynamic query params
     // Caching handled client-side with useFetch key
-    '/api/courses/filter-options': { swr: 3600 }, // Static filter options
-    '/api/blogs': { swr: 3600 },
-    '/api/blog-by-slug/**': { swr: 3600 },
-    '/api/course-by-slug/**': { swr: 3600 },
-    '/api/related-courses/**': { swr: 3600 },
+    '/api/courses/filter-options': { cache: { maxAge: 3600 } }, // Static filter options
+    '/api/blogs': { cache: { maxAge: 3600 } },
+    '/api/blog-by-slug/**': { cache: { maxAge: 3600 } },
+    '/api/course-by-slug/**': { cache: { maxAge: 3600 } },
+    '/api/related-courses/**': { cache: { maxAge: 3600 } },
     // Lesson access check - no cache (user-specific access control)
-    '/api/course-by-slug/**/lessons/**': { swr: false },
+    '/api/course-by-slug/**/lessons/**': { cache: false },
     // User progress - no cache (personal data)
-    '/api/progress/**': { swr: false },
+    '/api/progress/**': { cache: false },
     // Dashboard - no cache (personal data)
-    '/api/dashboard': { swr: false },
+    '/api/dashboard': { cache: false },
+  },
+
+  nitro: {
+    preset: 'vercel',
   },
 
   devServer: {
