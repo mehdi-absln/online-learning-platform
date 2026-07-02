@@ -9,6 +9,8 @@
         <NuxtImg
           src="/images/laptop-near-whilte-book.jpg"
           alt="Laptop near a white book"
+          width="800"
+          height="600"
           class="h-auto xl:h-full w-full xl:w-[95%] object-cover z-20 ml-auto block relative"
           sizes="100vw sm:100vw md:50vw"
         />

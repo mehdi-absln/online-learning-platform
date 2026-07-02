@@ -25,6 +25,8 @@
             :src="trainer.image"
             :alt="trainer.name"
             loading="lazy"
+            width="300"
+            height="400"
             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="100vw sm:50vw lg:25vw"
           />

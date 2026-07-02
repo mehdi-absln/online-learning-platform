@@ -26,11 +26,14 @@
       <!-- Loading State -->
       <div
         v-if="isLoading"
-        class="text-center py-10"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         role="status"
         aria-live="polite"
       >
-        <UiLoadingSpinner message="Loading popular courses..." />
+        <CoursesCourseCardSkeleton
+          v-for="i in 3"
+          :key="i"
+        />
       </div>
 
       <!-- Error State -->
@@ -91,7 +94,6 @@
 
 <script setup lang="ts">
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
-import 'vue3-carousel/dist/carousel.css'
 import type { Course } from '~/types/course'
 import CourseCard from '~/components/courses/CourseCard.vue'
 

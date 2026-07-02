@@ -299,6 +299,8 @@
           <AvatarImage
             :src="course.instructor.avatar"
             :alt="`${course.instructor.name} profile picture`"
+            width="48"
+            height="48"
             class="w-12 h-12 rounded-full object-cover bg-dark-bg"
           />
           <div>

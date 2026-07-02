@@ -11,6 +11,9 @@
         <CourseImage
           :src="course.thumbnail"
           :alt="course.title"
+          :width="400"
+          :height="300"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           loading="lazy"
           class="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
         />
@@ -33,6 +36,9 @@
           :src="avatarSrc"
           :alt="course.instructor.name"
           loading="lazy"
+          width="40"
+          height="40"
+          sizes="40px"
           class="w-10 h-10 rounded-full border-2 border-solid border-white"
           @error="handleAvatarError"
         />

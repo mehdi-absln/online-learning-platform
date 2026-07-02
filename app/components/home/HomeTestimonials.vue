@@ -38,6 +38,8 @@
                   :src="testimonial.avatar"
                   :alt="testimonial.name"
                   loading="lazy"
+                  width="80"
+                  height="80"
                   class="w-full h-full object-cover"
                   sizes="80px"
                 />
@@ -67,7 +69,6 @@
 
 <script setup lang="ts">
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
-import 'vue3-carousel/dist/carousel.css'
 import { TESTIMONIALS } from '~/constants/home'
 </script>
 

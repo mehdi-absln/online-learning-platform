@@ -14,11 +14,17 @@
 
     <div class="relative min-h-[450px] w-full overflow-hidden aspect-video md:min-h-0">
       <div class="absolute inset-0">
-        <img
+        <NuxtImg
           src="/images/banner.jpg"
           alt="Students learning online"
+          width="1920"
+          height="1080"
+          sizes="100vw xl:1920px"
+          loading="eager"
+          fetchpriority="high"
+          preload
           class="absolute inset-0 h-full w-full object-cover object-center"
-        >
+        />
         <div
           aria-hidden="true"
           class="absolute inset-0 bg-black/80"

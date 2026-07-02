@@ -79,6 +79,7 @@
                     :alt="`Avatar of ${blog.author?.name || 'Author'}`"
                     width="48"
                     height="48"
+                    loading="lazy"
                     class="w-full h-full object-cover"
                   />
                 </div>
@@ -146,6 +147,7 @@
             :alt="`Cover image for ${blog.title}`"
             width="1200"
             height="600"
+            sizes="100vw lg:1200px"
             class="w-full h-auto max-h-[500px] object-cover"
             loading="lazy"
           />
@@ -244,134 +246,17 @@
           >
             Article Content
           </h2>
-          <MarkdownRenderer :content="blog.content" />
+          <LazyMarkdownRenderer :content="blog.content" />
         </section>
       </div>
 
       <!-- Article Footer -->
-      <footer
-        class="container mt-16 py-8 border-t border-dark-divider"
-        aria-label="Article footer"
-      >
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
-          <!-- Back to Blog -->
-          <NuxtLink
-            to="/blogs"
-            class="group flex items-center space-x-2 text-gray-400 hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark-gray rounded-lg p-2"
-          >
-            <div class="p-2 rounded-full bg-dark-surface group-hover:bg-primary/10 transition-colors">
-              <svg
-                class="w-5 h-5 group-hover:text-primary transition-colors"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </div>
-            <span class="font-medium">Back to Blog</span>
-          </NuxtLink>
-
-          <!-- Social Share -->
-          <div class="flex items-center gap-4">
-            <span class="text-gray-500 text-sm font-medium uppercase tracking-wide">
-              Share
-            </span>
-            <ul
-              class="flex gap-2 list-none"
-              aria-label="Share on social media"
-            >
-              <li>
-                <a
-                  :href="twitterShareUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="p-2 rounded-full bg-dark-surface text-gray-400 hover:bg-[#1DA1F2] hover:text-white transition-all duration-300 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#1DA1F2] focus:ring-offset-2 focus:ring-offset-dark-gray"
-                  aria-label="Share on Twitter (opens in new tab)"
-                >
-                  <svg
-                    class="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                  </svg>
-                </a>
-              </li>
-              <li>
-                <a
-                  :href="linkedinShareUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="p-2 rounded-full bg-dark-surface text-gray-400 hover:bg-[#0077B5] hover:text-white transition-all duration-300 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#0077B5] focus:ring-offset-2 focus:ring-offset-dark-gray"
-                  aria-label="Share on LinkedIn (opens in new tab)"
-                >
-                  <svg
-                    class="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                  </svg>
-                </a>
-              </li>
-              <li>
-                <a
-                  :href="facebookShareUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="p-2 rounded-full bg-dark-surface text-gray-400 hover:bg-[#1877F2] hover:text-white transition-all duration-300 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:ring-offset-2 focus:ring-offset-dark-gray"
-                  aria-label="Share on Facebook (opens in new tab)"
-                >
-                  <svg
-                    class="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </a>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  class="p-2 rounded-full bg-dark-surface text-gray-400 hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-dark-gray"
-                  aria-label="Copy link to clipboard"
-                  @click="copyToClipboard"
-                >
-                  <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                    />
-                  </svg>
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </footer>
+      <LazyBlogsArticleFooter
+        :twitter-share-url="twitterShareUrl"
+        :linkedin-share-url="linkedinShareUrl"
+        :facebook-share-url="facebookShareUrl"
+        @copy="copyToClipboard"
+      />
     </article>
   </div>
 </template>

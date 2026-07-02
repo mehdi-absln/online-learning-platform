@@ -9,10 +9,10 @@
       :error-message="coursesErrorMessage"
       @retry="refreshCourses"
     />
-    <HomeStats />
-    <HomeTrainers />
-    <HomeTestimonials />
-    <HomeBlog
+    <LazyHomeStats />
+    <LazyHomeTrainers />
+    <LazyHomeTestimonials />
+    <LazyHomeBlog
       :posts="latestPosts"
       :is-loading="isBlogLoading"
       :has-error="hasBlogError"
@@ -40,20 +40,21 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 })
 
-// Parallel data fetching for better performance
-const [coursesResult, blogResult] = await Promise.all([
-  useFetch<{ success: boolean, data: Course[] }>('/api/courses', {
-    query: { limit: 10, page: 1 },
-    default: () => ({ success: false, data: [] }),
-  }),
-  useFetch<{ success: boolean, data: Blog[], message?: string }>('/api/blogs', {
-    query: { limit: 3, page: 1 },
-    default: () => ({ success: false, data: [] }),
-  }),
-])
+// Courses: fetched eagerly (above the fold)
+const {
+  data: coursesData, pending: isCoursesLoading, error: coursesError, refresh: refreshCourses,
+} = useFetch<{ success: boolean, data: Course[] }>('/api/courses', {
+  query: { limit: 10, page: 1 },
+  default: () => ({ success: false, data: [] }),
+})
 
-const { data: coursesData, pending: isCoursesLoading, error: coursesError, refresh: refreshCourses } = coursesResult
-const { data: blogData, pending: isBlogLoading, error: blogError, refresh: refreshBlog } = blogResult
+// Blog: lazy — doesn't block SSR, fetches on client after mount
+const {
+  data: blogData, pending: isBlogLoading, error: blogError, refresh: refreshBlog,
+} = useLazyFetch<{ success: boolean, data: Blog[], message?: string }>('/api/blogs', {
+  query: { limit: 3, page: 1 },
+  default: () => ({ success: false, data: [] }),
+})
 
 const hasCoursesError = computed(() => !!coursesError.value)
 const coursesErrorMessage = computed(() =>

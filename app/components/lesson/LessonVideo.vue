@@ -7,12 +7,52 @@
       role="group"
       :aria-label="`Video player: ${title || 'Lesson video'}`"
     >
+      <!-- Video Facade (shown before user clicks) -->
+      <button
+        v-if="!isVideoLoaded"
+        type="button"
+        class="absolute inset-0 w-full h-full bg-black cursor-pointer group"
+        :aria-label="`Load and play video: ${title || 'Lesson video'}`"
+        @click="loadVideo"
+      >
+        <!-- YouTube Thumbnail Background -->
+        <img
+          v-if="thumbnailUrl"
+          :src="thumbnailUrl"
+          :alt="`${title || 'Lesson video'} thumbnail`"
+          class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+        >
+        <!-- Play button overlay -->
+        <div class="absolute inset-0 flex items-center justify-center z-10">
+          <div
+            class="w-20 h-20 bg-primary rounded-full flex items-center justify-center
+                   shadow-2xl transition-transform duration-300 group-hover:scale-110"
+          >
+            <svg
+              class="w-10 h-10 text-white ml-1"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+        </div>
+        <!-- Thumbnail overlay (optional dark gradient) -->
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-[5]"
+          aria-hidden="true"
+        />
+      </button>
+
+      <!-- Actual iframe (loaded on demand) -->
       <iframe
+        v-if="isVideoLoaded"
         :src="embedUrl"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen
-        loading="lazy"
         class="absolute inset-0 w-full h-full"
         :title="title || 'Lesson video'"
       />
@@ -56,9 +96,12 @@ interface Props {
 
 const props = defineProps<Props>()
 
+// ───── State ─────
+const isVideoLoaded = ref(false)
+
 // ───── Constants ─────
 const YOUTUBE_EMBED_BASE = 'https://www.youtube.com/embed'
-const YOUTUBE_PARAMS = '?rel=0&modestbranding=1'
+const YOUTUBE_PARAMS = '?rel=0&modestbranding=1&autoplay=1'
 
 // ───── Helpers ─────
 function extractYouTubeId(url: string): string | null {
@@ -78,6 +121,11 @@ function extractYouTubeId(url: string): string | null {
   return null
 }
 
+// ───── Methods ─────
+function loadVideo() {
+  isVideoLoaded.value = true
+}
+
 // ───── Computed ─────
 const embedUrl = computed(() => {
   if (!props.videoUrl) return ''
@@ -89,5 +137,17 @@ const embedUrl = computed(() => {
   }
 
   return props.videoUrl
+})
+
+const thumbnailUrl = computed(() => {
+  if (!props.videoUrl) return ''
+
+  const videoId = extractYouTubeId(props.videoUrl)
+
+  if (videoId) {
+    return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+  }
+
+  return ''
 })
 </script>

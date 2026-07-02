@@ -328,6 +328,15 @@ function safeFormatDate(date: string | Date | null | undefined) {
 const route = useRoute()
 const normalizeSlug = (value: string | null | undefined) => value?.trim().toLowerCase() ?? ''
 
+// ───── Client-side check ─────
+const isClient = ref(false)
+onMounted(() => {
+  isClient.value = true
+})
+
+// ───── Show sidebar: always on desktop, only after mount on mobile ─────
+const shouldShowSidebar = computed(() => isDesktop.value || isClient.value)
+
 // ───── Route Params ─────
 const courseSlug = computed(() => route.params.courseSlug as string)
 const lessonSlug = computed(() => route.params.lessonSlug as string)

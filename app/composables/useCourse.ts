@@ -29,6 +29,9 @@ export const useCourse = (slug: MaybeRefOrGetter<string>) => {
       dedupe: 'cancel',
       watch: [normalizedSlug],
       immediate: true,
+      getCachedData(key, nuxtApp) {
+        return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+      },
       transform: (response: CourseDetailResponse): CourseDetailResponse => {
         if (response.success && response.data) {
           coursesStore.setDetailedCourse(response.data)

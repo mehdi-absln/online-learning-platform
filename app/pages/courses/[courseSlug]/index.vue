@@ -130,7 +130,7 @@
 
       <!-- Related Courses -->
       <aside class="mt-10">
-        <RelatedCourses
+        <LazyCoursesRelatedCourses
           v-if="course?.id"
           :course-id="course.id.toString()"
           title="Similar Courses"
@@ -141,12 +141,10 @@
 </template>
 
 <script setup lang="ts">
-import CourseReviews from '~/components/courses/CourseReviews.vue'
-import RelatedCourses from '~/components/courses/RelatedCourses.vue'
-import CourseInfoTab from '~/components/courses/CourseInfoTab.vue'
-import CourseDetailSidebar from '~/components/courses/CourseDetailSidebar.vue'
-
 import { SITE_NAME } from '~/constants'
+import CourseDetailSidebar from '~/components/courses/CourseDetailSidebar.vue'
+import CourseInfoTab from '~/components/courses/CourseInfoTab.vue'
+import CourseReviews from '~/components/courses/CourseReviews.vue'
 
 const route = useRoute()
 

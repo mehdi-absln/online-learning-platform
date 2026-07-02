@@ -24,6 +24,7 @@ export const useCourses = () => {
   const route = useRoute()
   const coursesStore = useCoursesStore()
   const { setPagination } = useCourseFilters()
+  const nuxtApp = useNuxtApp()
 
   const queryParams = computed<CourseQueryParams>(() => {
     const query = route.query
@@ -69,8 +70,27 @@ export const useCourses = () => {
     return params
   })
 
+  // Generate unique cache key based on all query params
+  const cacheKey = computed(() => {
+    const params = queryParams.value
+    return `courses-${JSON.stringify(params)}`
+  })
+
   const { data, pending, error } = useFetch<CourseListResponse>('/api/courses', {
+    key: cacheKey,
     query: queryParams,
+    // Client-side cache for 5 minutes (300000ms)
+    getCachedData(key) {
+      const data = nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+      if (!data) return
+
+      const expirationDate = new Date(data.fetchedAt)
+      expirationDate.setTime(expirationDate.getTime() + 300000) // 5 minutes
+      const isExpired = expirationDate.getTime() < Date.now()
+      if (isExpired) return
+
+      return data
+    },
     onResponse: ({ response }) => {
       if (response._data?.success && response._data.data) {
         coursesStore.setCourses(response._data.data)

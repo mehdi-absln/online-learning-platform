@@ -18,11 +18,14 @@
 
       <div
         v-if="isLoading"
-        class="text-center py-10"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
         role="status"
         aria-live="polite"
       >
-        <UiLoadingSpinner message="Loading latest articles..." />
+        <BlogsBlogCardSkeleton
+          v-for="i in 3"
+          :key="i"
+        />
       </div>
       <div
         v-else-if="hasError"

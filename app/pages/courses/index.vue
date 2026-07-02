@@ -91,11 +91,13 @@
 </template>
 
 <script setup lang="ts">
-import CourseSidebarFilters from '~/components/courses/CourseSidebarFilters.vue'
 import CoursesGrid from '~/components/courses/CoursesGrid.vue'
 import IconChevronRight from '~/components/icons/IconChevronRight.vue'
 
 import { SITE_NAME } from '~/constants'
+
+// Lazy load sidebar for mobile (hidden by default)
+const CourseSidebarFilters = defineAsyncComponent(() => import('~/components/courses/CourseSidebarFilters.vue'))
 
 const route = useRoute()
 const { courses, isLoading, error } = useCourses()
