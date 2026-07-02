@@ -59,6 +59,18 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'vercel',
+    vercel: {
+      functions: {
+        maxDuration: 60,
+      },
+    },
+    compressPublicAssets: true,
+    minify: true,
+  },
+    },
+    // بهینه‌سازی برای محیط Production
+    compressPublicAssets: true,
+    minify: true,
   },
 
   vite: {
