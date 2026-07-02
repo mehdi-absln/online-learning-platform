@@ -180,7 +180,7 @@ const greeting = computed(() => {
 })
 
 // Order helpers
-const formatDate = (date: Date | string) => {
+const _formatDate = (date: Date | string) => {
   return new Date(date).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
@@ -188,7 +188,7 @@ const formatDate = (date: Date | string) => {
   })
 }
 
-const statusClass = (status: string) => {
+const _statusClass = (status: string) => {
   switch (status) {
     case 'completed':
       return 'bg-emerald-500/15 text-emerald-400'
@@ -201,7 +201,7 @@ const statusClass = (status: string) => {
   }
 }
 
-const statusIcon = (status: string) => {
+const _statusIcon = (status: string) => {
   switch (status) {
     case 'completed':
       return '✅'

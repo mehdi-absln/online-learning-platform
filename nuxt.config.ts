@@ -50,16 +50,16 @@ export default defineNuxtConfig({
     '/api/dashboard': { cache: false },
   },
 
-  nitro: {
-    preset: 'vercel',
-  },
-
   devServer: {
     host: 'localhost',
     port: 3000,
   },
 
   compatibilityDate: '2025-07-15',
+
+  nitro: {
+    preset: 'vercel',
+  },
 
   vite: {
     build: {

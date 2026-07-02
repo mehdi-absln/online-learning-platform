@@ -70,26 +70,24 @@ export const useCourses = () => {
     return params
   })
 
-  // Generate unique cache key based on all query params
-  const cacheKey = computed(() => {
-    const params = queryParams.value
-    return `courses-${JSON.stringify(params)}`
-  })
-
+  // FIX FOR INFINITE LOOP:
+  // Root cause: Using computed/reactive key caused useFetch to re-trigger infinitely
+  // Solution: Use a static string key and let useFetch handle query reactivity naturally
   const { data, pending, error } = useFetch<CourseListResponse>('/api/courses', {
-    key: cacheKey,
+    // Static key - useFetch will handle query param changes automatically
+    key: 'courses-list',
     query: queryParams,
     // Client-side cache for 5 minutes (300000ms)
     getCachedData(key) {
-      const data = nuxtApp.payload.data[key] || nuxtApp.static.data[key]
-      if (!data) return
+      const cachedData = nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+      if (!cachedData) return
 
-      const expirationDate = new Date(data.fetchedAt)
+      const expirationDate = new Date(cachedData.fetchedAt)
       expirationDate.setTime(expirationDate.getTime() + 300000) // 5 minutes
       const isExpired = expirationDate.getTime() < Date.now()
       if (isExpired) return
 
-      return data
+      return cachedData
     },
     onResponse: ({ response }) => {
       if (response._data?.success && response._data.data) {

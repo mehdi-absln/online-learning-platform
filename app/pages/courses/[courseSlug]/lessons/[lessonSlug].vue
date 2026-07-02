@@ -335,7 +335,7 @@ onMounted(() => {
 })
 
 // ───── Show sidebar: always on desktop, only after mount on mobile ─────
-const shouldShowSidebar = computed(() => isDesktop.value || isClient.value)
+const _shouldShowSidebar = computed(() => isDesktop.value || isClient.value)
 
 // ───── Route Params ─────
 const courseSlug = computed(() => route.params.courseSlug as string)
