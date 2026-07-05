@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": ".vercel/output",
-  "framework": "nuxt",
-  "installCommand": "npm install"
+  "framework": "nuxtjs",
+  "installCommand": "npm install",
+  "outputDirectory": ".vercel/output"
 }
