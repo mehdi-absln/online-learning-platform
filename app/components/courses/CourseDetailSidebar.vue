@@ -6,8 +6,8 @@
         <CourseImage
           :src="course.thumbnail"
           :alt="course.title"
-          width="600"
-          height="400"
+          :width="600"
+          :height="400"
           class="w-full h-auto object-cover"
           sizes="100vw lg:33vw"
           priority

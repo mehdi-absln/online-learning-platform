@@ -145,8 +145,8 @@
           <BlogsBlogImage
             :src="blog.coverImage"
             :alt="`Cover image for ${blog.title}`"
-            width="1200"
-            height="600"
+            :width="1200"
+            :height="600"
             sizes="100vw lg:1200px"
             class="w-full h-auto max-h-[500px] object-cover"
             loading="lazy"

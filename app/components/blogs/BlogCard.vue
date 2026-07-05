@@ -14,8 +14,8 @@
         <BlogsBlogImage
           :src="blog.coverImage"
           :alt="`Cover image for ${blog.title}`"
-          width="400"
-          height="225"
+          :width="400"
+          :height="225"
           loading="lazy"
           class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
         />
