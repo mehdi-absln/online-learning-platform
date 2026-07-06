@@ -10,7 +10,7 @@ import {
   courseLearningObjectives,
   blogs,
 } from '../server/db/schema'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 
 async function seed() {
   console.log('Seeding database...')
