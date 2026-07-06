@@ -35,20 +35,17 @@ export default defineNuxtConfig({
     '/auth': { redirect: '/auth/signin' },
     '/': { redirect: '/home' },
     '/home': { prerender: true },
-    // Courses list API - no server-side cache due to dynamic query params
-    // Caching handled client-side with useFetch key
     '/api/courses/filter-options': { cache: { maxAge: 3600 } },
     '/api/blogs': { cache: { maxAge: 3600 } },
     '/api/blog-by-slug/**': { cache: { maxAge: 3600 } },
     '/api/course-by-slug/**': { cache: { maxAge: 3600 } },
     '/api/related-courses/**': { cache: { maxAge: 3600 } },
-    // Lesson access check - no cache (user-specific access control)
     '/api/course-by-slug/**/lessons/**': { cache: false },
-    // User progress - no cache (personal data)
     '/api/progress/**': { cache: false },
-    // Dashboard - no cache (personal data)
     '/api/dashboard': { cache: false },
   },
+
+  ssr: true,
 
   devServer: {
     host: 'localhost',
@@ -58,7 +55,6 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
 
   nitro: {
-    preset: 'vercel',
     vercel: {
       functions: {
         maxDuration: 60,
@@ -66,6 +62,7 @@ export default defineNuxtConfig({
     },
     compressPublicAssets: true,
     minify: true,
+    sourceMap: false,
   },
 
   vite: {
