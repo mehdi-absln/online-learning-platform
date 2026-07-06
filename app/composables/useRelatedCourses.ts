@@ -29,6 +29,7 @@ export const useRelatedCourses = (
   options: UseRelatedCoursesOptions = {},
 ) => {
   const { immediate = true } = options
+  const nuxtApp = useNuxtApp()
 
   // Resolve the courseId ref to a raw value
   const resolvedCourseId = computed(() => toValue(courseId))
@@ -45,6 +46,9 @@ export const useRelatedCourses = (
       key: () => `related-courses-${resolvedCourseId.value}`,
       immediate: immediate && !!resolvedCourseId.value,
       watch: [resolvedCourseId],
+      getCachedData(key) {
+        return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
+      },
       default: () => ({
         success: false,
         data: [],

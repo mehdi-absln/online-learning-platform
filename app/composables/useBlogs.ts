@@ -25,17 +25,9 @@ export function useBlogs() {
   const { data, pending, error, refresh } = useFetch<BlogsResponse>('/api/blogs', {
     key: cacheKey,
     query: queryParams,
-    // Client-side cache for 5 minutes (300000ms)
+    // Client-side cache
     getCachedData(key) {
-      const data = nuxtApp.payload.data[key] || nuxtApp.static.data[key]
-      if (!data) return
-
-      const expirationDate = new Date(data.fetchedAt)
-      expirationDate.setTime(expirationDate.getTime() + 300000) // 5 minutes
-      const isExpired = expirationDate.getTime() < Date.now()
-      if (isExpired) return
-
-      return data
+      return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
     },
     onResponse({ response }) {
       if (response._data?.success) {

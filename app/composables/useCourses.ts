@@ -77,17 +77,9 @@ export const useCourses = () => {
     // Static key - useFetch will handle query param changes automatically
     key: 'courses-list',
     query: queryParams,
-    // Client-side cache for 5 minutes (300000ms)
+    // Client-side cache
     getCachedData(key) {
-      const cachedData = nuxtApp.payload.data[key] || nuxtApp.static.data[key]
-      if (!cachedData) return
-
-      const expirationDate = new Date(cachedData.fetchedAt)
-      expirationDate.setTime(expirationDate.getTime() + 300000) // 5 minutes
-      const isExpired = expirationDate.getTime() < Date.now()
-      if (isExpired) return
-
-      return cachedData
+      return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
     },
     onResponse: ({ response }) => {
       if (response._data?.success && response._data.data) {

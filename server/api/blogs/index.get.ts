@@ -3,6 +3,7 @@ import { getAllBlogs, getPublishedBlogs } from '../../db/blog-service'
 
 export default defineEventHandler(async (event) => {
   try {
+    setHeader(event, 'Cache-Control', 's-maxage=3600, stale-while-revalidate=60')
     const query = getQuery(event)
     const showAll = query.all === 'true'
     const searchQuery = query.q as string || ''

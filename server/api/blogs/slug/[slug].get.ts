@@ -3,6 +3,7 @@ import { getBlogBySlug } from '../../../db/blog-service'
 
 export default defineEventHandler(async (event) => {
   try {
+    setHeader(event, 'Cache-Control', 's-maxage=3600, stale-while-revalidate=60')
     const slug = getRouterParam(event, 'slug')
 
     if (!slug) {

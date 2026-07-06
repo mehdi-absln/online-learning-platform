@@ -22,6 +22,12 @@ export default defineEventHandler(async (event) => {
     }
 
     const user = await getOptionalUser(event)
+    if (!user) {
+      setHeader(event, 'Cache-Control', 's-maxage=3600, stale-while-revalidate=60')
+    }
+    else {
+      setHeader(event, 'Cache-Control', 'no-store, no-cache, must-revalidate, private')
+    }
     const userForAccess = user ? { id: user.id, role: user.role ?? 'student' } : null
 
     let courseAccessGranted = false

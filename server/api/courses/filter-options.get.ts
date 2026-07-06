@@ -1,7 +1,8 @@
 import { getAllCategories, getAllLevels, getAllTags } from '../../db/course-service'
 
-export default defineEventHandler(async (_event) => {
+export default defineEventHandler(async (event) => {
   try {
+    setHeader(event, 'Cache-Control', 's-maxage=3600, stale-while-revalidate=60')
     // Get all available filter options from the database
     const [categories, levels, tags] = await Promise.all([
       getAllCategories(),
