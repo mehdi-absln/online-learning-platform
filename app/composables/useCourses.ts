@@ -24,7 +24,6 @@ export const useCourses = () => {
   const route = useRoute()
   const coursesStore = useCoursesStore()
   const { setPagination } = useCourseFilters()
-  const nuxtApp = useNuxtApp()
 
   const queryParams = computed<CourseQueryParams>(() => {
     const query = route.query
@@ -77,10 +76,6 @@ export const useCourses = () => {
     // Static key - useFetch will handle query param changes automatically
     key: 'courses-list',
     query: queryParams,
-    // Client-side cache
-    getCachedData(key) {
-      return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
-    },
     onResponse: ({ response }) => {
       if (response._data?.success && response._data.data) {
         coursesStore.setCourses(response._data.data)
