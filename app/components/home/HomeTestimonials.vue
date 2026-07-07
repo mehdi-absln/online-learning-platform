@@ -69,6 +69,7 @@
 
 <script setup lang="ts">
 import { Carousel, Slide, Pagination } from 'vue3-carousel'
+import 'vue3-carousel/carousel.css'
 import { TESTIMONIALS } from '~/constants/home'
 </script>
 
