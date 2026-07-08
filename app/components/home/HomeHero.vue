@@ -31,7 +31,7 @@
         />
       </div>
       <div class="container relative z-20 flex h-full items-center pt-32 lg:pt-40 xl:pt-44">
-        <div class="mx-auto w-full max-w-full space-y-6 px-4 text-center md:space-y-10 md:px-0 md:text-start lg:w-[60%]">
+        <div class="mx-auto w-full max-w-full space-y-6 px-4 text-center md:mx-0 md:space-y-10 md:px-0 md:text-start lg:w-[60%]">
           <h1
             id="main-heading"
             class="font-antonio text-3xl font-bold text-white md:text-6xl lg:text-7xl xl:text-8xl"
