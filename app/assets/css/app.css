@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+}
+
 @layer components {
     .bg-hero-shimmer {
         @apply bg-gradient-to-r from-dark-surface via-dark-bg to-primary/60 backdrop-blur-sm rounded-2xl;

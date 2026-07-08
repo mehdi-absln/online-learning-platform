@@ -35,6 +35,7 @@ export default defineNuxtConfig({
   routeRules: {
     '/auth': { redirect: '/auth/signin' },
     '/': { redirect: '/home' },
+    '/home': { headers: { 'Cache-Control': 'no-store' } },
   },
 
   devServer: {
