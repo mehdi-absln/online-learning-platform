@@ -4,7 +4,8 @@
       to="/home"
       class="text-xl font-bold text-white drop-shadow-lg absolute top-4 left-4 z-50 uppercase"
     >
-      {{ SITE_NAME }}
+      <span class="hidden xxs:inline">{{ SITE_NAME }}</span>
+      <span class="xxs:hidden">OLP</span>
     </NuxtLink>
     <div class="max-w-md w-full">
       <div class="bg-[#1F1F1F] rounded-2xl shadow-xl p-8">
