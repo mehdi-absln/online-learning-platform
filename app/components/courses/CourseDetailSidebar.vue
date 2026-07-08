@@ -2,7 +2,7 @@
   <aside class="w-full lg:w-1/3 lg:absolute lg:right-0 lg:top-5 space-y-6 lg:space-y-10">
     <!-- Pricing Card -->
     <div class="rounded-2xl bg-dark-gray border border-gray-700">
-      <figure class="relative overflow-hidden">
+      <figure class="relative overflow-hidden rounded-t-2xl">
         <CourseImage
           :src="course.thumbnail"
           :alt="course.title"
