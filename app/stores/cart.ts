@@ -1,4 +1,3 @@
-// app/stores/cart.ts
 import { defineStore } from 'pinia'
 import { useUserStore } from './user'
 import { useToast } from '~/composables/useToast'

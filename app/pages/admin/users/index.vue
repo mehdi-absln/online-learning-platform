@@ -314,7 +314,7 @@ onMounted(() => {
   }
 })
 
-// ================== Helper: canManageUser ==================
+// ───── Helper: canManageUser ─────
 function canManageUser(user: UserItem) {
   if (user.id === currentAdminId.value) return false
   // Only superadmin can manage other admins (including superadmin? we'll block via API anyway)
@@ -323,7 +323,7 @@ function canManageUser(user: UserItem) {
   return true
 }
 
-// ================== Delete user ==================
+// ───── Delete user ─────
 const isDeleteModalOpen = ref(false)
 const selectedUserId = ref<number | null>(null)
 const selectedUsername = ref('')
@@ -373,7 +373,7 @@ const confirmDelete = async () => {
   }
 }
 
-// ================== Role change ==================
+// ───── Role change ─────
 const availableRoles = ['admin', 'instructor', 'student'] as const
 
 const isRoleModalOpen = ref(false)

@@ -1,11 +1,11 @@
 import type { Blog } from '~/types/blog'
 
 export const useBlogsStore = defineStore('blogs', () => {
-  // ============== State ==============
+  // ───── State ─────
   const blogs = ref<Blog[]>([])
   const currentBlog = ref<Blog | null>(null)
 
-  // ============== Getters ==============
+  // ───── Getters ─────
   const getBlogBySlug = computed(() =>
     (slug: string) => blogs.value.find(blog => blog.slug === slug),
   )
@@ -16,7 +16,7 @@ export const useBlogsStore = defineStore('blogs', () => {
 
   const hasBlogs = computed(() => blogs.value.length > 0)
 
-  // ============== Actions ==============
+  // ───── Actions ─────
   function setBlogs(data: Blog[]) {
     blogs.value = data
   }

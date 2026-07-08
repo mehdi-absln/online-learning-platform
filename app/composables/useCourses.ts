@@ -1,4 +1,3 @@
-// app/composables/useCourses.ts
 import type { ApiResponse } from '~/types/api'
 import type { Course } from '~/types/course'
 import { useApiError } from '~/composables/useApiError'

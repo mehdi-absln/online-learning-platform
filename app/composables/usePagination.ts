@@ -16,12 +16,12 @@ export function usePagination(options: PaginationOptions = {}) {
     initialLimit = 12,
   } = options
 
-  // ============== State ==============
+  // ───── State ─────
   const currentPage = ref(initialPage)
   const limit = ref(initialLimit)
   const totalItems = ref(0)
 
-  // ============== Computed ==============
+  // ───── Computed ─────
   const totalPages = computed(() =>
     Math.ceil(totalItems.value / limit.value) || 1,
   )
@@ -47,7 +47,7 @@ export function usePagination(options: PaginationOptions = {}) {
     limit: limit.value,
   }))
 
-  // ============== Actions ==============
+  // ───── Actions ─────
 
   function goToPage(page: number): void {
     currentPage.value = Math.max(1, Math.min(page, totalPages.value || 1))
@@ -97,7 +97,7 @@ export function usePagination(options: PaginationOptions = {}) {
     totalItems.value = 0
   }
 
-  // ============== Return ==============
+  // ───── Return ─────
   return {
     // State
     currentPage,

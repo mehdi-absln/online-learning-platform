@@ -1,4 +1,3 @@
-// app/composables/useCourseFilters.ts
 import { debounce } from 'lodash-es'
 import type { CourseFilters, FilterOptions } from '~/types/course'
 import type { ApiResponse } from '~/types/api'

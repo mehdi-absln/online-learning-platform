@@ -1,4 +1,3 @@
-// app/stores/courses.ts
 import type { Course, DetailedCourse, CourseContentLesson } from '~/types/course'
 
 export const useCoursesStore = defineStore('courses', () => {

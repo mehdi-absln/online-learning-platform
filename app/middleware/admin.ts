@@ -1,4 +1,3 @@
-// app/middleware/admin.ts
 export default defineNuxtRouteMiddleware((to) => {
   const userStore = useUserStore()
 

@@ -1,4 +1,3 @@
-<!-- components/ui/SearchInput.vue -->
 <template>
   <div
     class="relative"

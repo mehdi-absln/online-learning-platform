@@ -1,4 +1,3 @@
-// app/composables/useCart.ts
 import { useCartStore } from '~/stores/cart'
 import { useUserStore } from '~/stores/user'
 import { useToast } from '~/composables/useToast'
