@@ -3,7 +3,7 @@
     class="flex px-4 py-2 text-sm"
     aria-label="Breadcrumb"
   >
-    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+    <ol class="flex flex-wrap items-center space-x-1 md:space-x-3 min-w-0">
       <!-- Home Link -->
       <li class="inline-flex items-center">
         <NuxtLink
