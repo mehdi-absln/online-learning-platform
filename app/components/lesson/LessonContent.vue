@@ -174,11 +174,14 @@ const progressStore = useLessonProgressStore()
 const localNotes = ref('')
 const isSaving = ref(false)
 
+// Load notes from the store whenever the lesson changes OR the stored note updates
+// (e.g. after fetchProgress resolves on refresh). We guard against overwriting the
+// textarea while the user is actively typing.
 watch(
-  () => props.lesson?.id,
-  (lessonId) => {
-    if (lessonId) {
-      localNotes.value = progressStore.getNote(lessonId)
+  () => [props.lesson?.id, progressStore.getNote(props.lesson?.id ?? -1)],
+  ([id]) => {
+    if (id) {
+      localNotes.value = progressStore.getNote(id as number)
     }
   },
   { immediate: true },
