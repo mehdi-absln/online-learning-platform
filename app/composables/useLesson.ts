@@ -73,9 +73,7 @@ export const useLesson = (
   const isNextLessonAccessible = computed(() => isLessonAccessible(nextLesson.value ?? null))
 
   const progressPercentage = computed(() =>
-    totalLessons.value > 0
-      ? ((currentIndex.value + 1) / totalLessons.value) * 100
-      : 0,
+    courseProgress.value?.percentage ?? 0,
   )
 
   // ───── Error ─────

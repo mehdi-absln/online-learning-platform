@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
 
     const user = await findById(payload.userId)
     // Accept admin and superadmin
-    if (!user || (user.role !== 'admin' && user.role !== 'ADMIN' && user.role !== 'superadmin')) {
+    if (!user || (user.role !== 'admin' && user.role !== 'superadmin')) {
       throw createError({ statusCode: 403, statusMessage: 'Forbidden: Admins only' })
     }
 

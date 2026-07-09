@@ -21,7 +21,6 @@ interface CourseQueryParams {
 
 export const useCourses = () => {
   const route = useRoute()
-  const coursesStore = useCoursesStore()
   const { setPagination } = useCourseFilters()
 
   const queryParams = computed<CourseQueryParams>(() => {
@@ -77,8 +76,6 @@ export const useCourses = () => {
     query: queryParams,
     onResponse: ({ response }) => {
       if (response._data?.success && response._data.data) {
-        coursesStore.setCourses(response._data.data)
-
         if (response._data.pagination) {
           setPagination({
             currentPage: response._data.pagination.currentPage,

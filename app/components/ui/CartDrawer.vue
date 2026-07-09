@@ -236,7 +236,7 @@
 
 <script setup lang="ts">
 import { useCart } from '~/composables/useCart'
-import { onKeyStroke } from '@vueuse/core'
+import { useFocusTrap } from '~/composables/useFocusTrap'
 import CourseImage from '~/components/courses/CourseImage.vue'
 
 const drawerRef = ref<HTMLElement | null>(null)
@@ -256,44 +256,16 @@ const handleCheckout = () => {
   navigateTo('/checkout')
 }
 
-// Prevent body scroll and manage focus
-watch(isCartDrawerOpen, async (isOpen) => {
+// Lock body scroll + trap focus inside the drawer while it is open (a11y)
+useFocusTrap({
+  isActive: isCartDrawerOpen,
+  target: drawerRef,
+  onEscape: closeCart,
+})
+
+watch(isCartDrawerOpen, (isOpen) => {
   if (import.meta.client) {
     document.body.style.overflow = isOpen ? 'hidden' : ''
-    if (isOpen) {
-      await nextTick()
-      // Simple focus management: focus the close button or container
-      const focusable = drawerRef.value?.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') as HTMLElement
-      if (focusable) focusable.focus()
-    }
-  }
-})
-
-// Close on Escape
-onKeyStroke('Escape', (e) => {
-  if (isCartDrawerOpen.value) {
-    e.preventDefault()
-    closeCart()
-  }
-})
-
-// Focus trap for Tab key
-onKeyStroke('Tab', (e) => {
-  if (!isCartDrawerOpen.value || !drawerRef.value) return
-
-  const focusableElements = drawerRef.value.querySelectorAll(
-    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-  )
-  const first = focusableElements[0] as HTMLElement
-  const last = focusableElements[focusableElements.length - 1] as HTMLElement
-
-  if (e.shiftKey && document.activeElement === first) {
-    e.preventDefault()
-    last.focus()
-  }
-  else if (!e.shiftKey && document.activeElement === last) {
-    e.preventDefault()
-    first.focus()
   }
 })
 </script>

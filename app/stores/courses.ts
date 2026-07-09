@@ -39,10 +39,6 @@ export const useCoursesStore = defineStore('courses', () => {
   }
 
   // ───── Actions ─────
-  const setCourses = (newCourses: Course[]) => {
-    courses.value = newCourses
-  }
-
   const setDetailedCourse = (course: DetailedCourse | null) => {
     detailedCourse.value = course
   }
@@ -69,7 +65,6 @@ export const useCoursesStore = defineStore('courses', () => {
     findLessonSection,
 
     // Actions
-    setCourses,
     setDetailedCourse,
     $reset,
   }
