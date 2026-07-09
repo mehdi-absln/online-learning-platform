@@ -139,11 +139,6 @@ export const useUserStore = defineStore('user', () => {
           // Silently ignore merge errors on sign in
         })
 
-        // Fetch enrollments in background (don't block sign-in)
-        fetchEnrollments().catch(() => {
-          // Silently ignore enrollment fetch errors on sign in
-        })
-
         toast.success(response.message || 'Signed in successfully')
         return { success: true, user: response.data.user }
       }
@@ -182,11 +177,6 @@ export const useUserStore = defineStore('user', () => {
         const cartStore = useCartStore()
         cartStore.mergeGuestCart().catch(() => {
           // Silently ignore merge errors on sign up
-        })
-
-        // Fetch enrollments in background (don't block sign-up)
-        fetchEnrollments().catch(() => {
-          // Silently ignore enrollment fetch errors on sign up
         })
 
         toast.success(response.message || 'Account created successfully! Welcome aboard')

@@ -2,7 +2,6 @@ export default defineEventHandler(async (event) => {
   try {
     // Clear cookies
     deleteCookie(event, 'accessToken')
-    deleteCookie(event, 'refreshToken')
 
     return {
       success: true,

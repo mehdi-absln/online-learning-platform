@@ -26,11 +26,3 @@ export async function verifyToken(token: string): Promise<JWTPayload | null> {
     return null
   }
 }
-
-export async function generateRefreshToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): Promise<string> {
-  return new SignJWT(payload)
-    .setProtectedHeader({ alg: 'HS256' })
-    .setIssuedAt()
-    .setExpirationTime('30d') // Refresh token expires in 30 days
-    .sign(JWT_SECRET)
-}

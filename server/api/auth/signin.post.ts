@@ -1,6 +1,6 @@
 import { ZodError } from 'zod'
 import { findByUsernameOrEmail, verifyPassword } from '../../db/user-service'
-import { generateToken, generateRefreshToken } from '../../utils/jwt'
+import { generateToken } from '../../utils/jwt'
 import { AUTH_ERRORS } from '../../../app/constants'
 import { signInSchema } from '../../../app/schemas/auth'
 import { errorResponse, successResponse } from '../../utils/response'
@@ -39,7 +39,6 @@ export default defineEventHandler(async (event) => {
     }
 
     const accessToken = await generateToken(tokenPayload)
-    const refreshToken = await generateRefreshToken(tokenPayload)
 
     // Set cookies
     const cookieOptions = {
@@ -50,10 +49,6 @@ export default defineEventHandler(async (event) => {
     }
 
     setCookie(event, 'accessToken', accessToken, cookieOptions)
-    setCookie(event, 'refreshToken', refreshToken, {
-      ...cookieOptions,
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-    })
 
     return successResponse(AUTH_ERRORS.SIGNIN_SUCCESS, {
       user: {
