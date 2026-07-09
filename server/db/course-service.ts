@@ -5,7 +5,6 @@ import {
   courseContentSections,
   lessons,
   courseLearningObjectives,
-  instructors,
   categories,
   type Course as DbCourse,
 } from './schema'
@@ -228,17 +227,6 @@ export async function getCourseBySlug(slug: string) {
 }
 
 // =====================
-// Get course sections
-// =====================
-export async function getCourseSections(courseId: number) {
-  return await db
-    .select()
-    .from(courseContentSections)
-    .where(eq(courseContentSections.courseId, courseId))
-    .orderBy(asc(courseContentSections.orderVal))
-}
-
-// =====================
 // Get all lessons for a course
 // =====================
 export async function getCourseLessons(courseId: number) {
@@ -250,86 +238,53 @@ export async function getCourseLessons(courseId: number) {
 }
 
 // =====================
-// Get learning objectives
-// =====================
-export async function getCourseLearningObjectives(courseId: number) {
-  const result = await db
-    .select()
-    .from(courseLearningObjectives)
-    .where(eq(courseLearningObjectives.courseId, courseId))
-    .orderBy(asc(courseLearningObjectives.orderVal))
-
-  return result.map(obj => obj.objective)
-}
-
-// =====================
 // Get reviews with user info
 // =====================
 // Uses getCourseReviews from review-service.ts for enhanced functionality
 
 // =====================
-// Get instructor
-// =====================
-export async function getInstructor(instructorId: number) {
-  const result = await db
-    .select()
-    .from(instructors)
-    .where(eq(instructors.id, instructorId))
-    .limit(1)
-
-  return result[0] || null
-}
-
-// =====================
 // Get detailed course by slug (MAIN FUNCTION)
 // =====================
 export async function getDetailedCourseBySlug(slug: string) {
-  // 1. Get course
-  const courseResult = await db
-    .select()
-    .from(courses)
-    .where(eq(courses.slug, slug))
-    .limit(1)
+  // Course tree in one relation query (course + instructor + sections → lessons + objectives)
+  const course = await db.query.courses.findFirst({
+    where: eq(courses.slug, slug),
+    with: {
+      instructor: true,
+      sections: {
+        orderBy: asc(courseContentSections.orderVal),
+        with: {
+          lessons: {
+            orderBy: asc(lessons.orderVal),
+          },
+        },
+      },
+      objectives: {
+        orderBy: asc(courseLearningObjectives.orderVal),
+      },
+    },
+  })
 
-  if (!courseResult[0]) {
+  if (!course) {
     return null
   }
 
-  const course = courseResult[0]
-
-  // 2. Get category name
-  let categoryName: string | null = null
-  if (course.categoryId) {
-    const categoryResult = await db
-      .select({ name: categories.name })
-      .from(categories)
-      .where(eq(categories.id, course.categoryId))
-      .limit(1)
-
-    categoryName = categoryResult[0]?.name || null
-  }
-
-  // 3. Get sections
-  const sections = await getCourseSections(course.id)
-
-  // 4. Get all lessons
-  const allLessons = await getCourseLessons(course.id)
-
-  // 5. Get learning objectives
-  const learningObjectives = await getCourseLearningObjectives(course.id)
-
-  // 6. Get reviews
+  // Reviews with user info (existing service keeps the join to users table)
   const courseReviews = await getCourseReviewsFromService(course.id)
 
-  // 7. Get instructor
-  const instructor = course.instructorId
-    ? await getInstructor(course.instructorId)
-    : null
+  // Category name (course has no relation defined, single lightweight lookup)
+  let categoryName: string | null = null
+  if (course.categoryId) {
+    const category = await db.query.categories.findFirst({
+      where: eq(categories.id, course.categoryId),
+      columns: { name: true },
+    })
+    categoryName = category?.name || null
+  }
 
-  // 8. Build courseContent structure
-  const courseContent = sections.map((section) => {
-    const sectionLessons = allLessons
-      .filter(lesson => lesson.sectionId === section.id)
+  // Build courseContent structure (group lessons under their sections)
+  const courseContent = course.sections.map((section) => {
+    const sectionLessons = section.lessons
       .sort((a, b) => a.orderVal - b.orderVal)
       .map(lesson => ({
         id: lesson.id,
@@ -350,16 +305,19 @@ export async function getDetailedCourseBySlug(slug: string) {
     }
   })
 
-  // 9. Handle orphan lessons (lessons without section)
-  const orphanLessons = allLessons.filter(lesson => !lesson.sectionId)
-  if (orphanLessons.length > 0) {
-    if (sections.length === 0) {
-      courseContent.push({
-        id: 0,
-        title: 'Course Lessons',
-        description: null,
-        lessonsCount: orphanLessons.length,
-        content: orphanLessons.map(lesson => ({
+  // Handle orphan lessons (lessons whose section was not returned / has no sectionId)
+  const orphanLessons = course.sections
+    .flatMap(s => s.lessons)
+    .filter(lesson => !lesson.sectionId)
+  if (orphanLessons.length > 0 && courseContent.length === 0) {
+    courseContent.push({
+      id: 0,
+      title: 'Course Lessons',
+      description: null,
+      lessonsCount: orphanLessons.length,
+      content: orphanLessons
+        .sort((a, b) => a.orderVal - b.orderVal)
+        .map(lesson => ({
           id: lesson.id,
           title: lesson.title,
           slug: lesson.slug?.trim().toLowerCase() || generateLessonSlug(lesson.title),
@@ -368,8 +326,7 @@ export async function getDetailedCourseBySlug(slug: string) {
           videoUrl: lesson.videoUrl,
           description: lesson.description,
         })),
-      })
-    }
+    })
   }
 
   return {
@@ -395,17 +352,17 @@ export async function getDetailedCourseBySlug(slug: string) {
     tags: course.tags,
     categoryId: course.categoryId,
     categoryName,
-    instructor: instructor
+    instructor: course.instructor
       ? {
-          id: instructor.id,
-          userId: instructor.userId,
-          name: instructor.name,
-          title: instructor.title,
-          avatar: instructor.avatar,
-          bio: instructor.bio,
+          id: course.instructor.id,
+          userId: course.instructor.userId,
+          name: course.instructor.name,
+          title: course.instructor.title,
+          avatar: course.instructor.avatar,
+          bio: course.instructor.bio,
         }
       : null,
-    learningObjectives,
+    learningObjectives: course.objectives.map(obj => obj.objective),
     courseContent,
     reviews: courseReviews || [],
   }

@@ -36,6 +36,11 @@ export default defineNuxtConfig({
     '/auth': { redirect: '/auth/signin' },
     '/': { redirect: '/home' },
     '/home': { headers: { 'Cache-Control': 'no-store' } },
+    // Course detail pages are static-friendly (no URL-driven filters) → safe to ISR.
+    // The /courses list itself is intentionally NOT cached: its content is driven by
+    // query-string filters (?categories=..&q=..), and an ISR/cache key on the path alone
+    // would serve a stale filtered list. See course-service caching strategy.
+    '/courses/**': { isr: true },
   },
 
   devServer: {

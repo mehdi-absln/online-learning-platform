@@ -252,9 +252,22 @@ export const coursesRelations = relations(courses, ({ one, many }) => ({
   }),
   sections: many(courseContentSections),
   lessons: many(lessons),
-  objectives: many(courseLearningObjectives),
+  objectives: many(courseLearningObjectives, {
+    relationName: 'courseObjectives',
+  }),
   reviews: many(reviews),
 }))
+
+export const courseLearningObjectivesRelations = relations(
+  courseLearningObjectives,
+  ({ one }) => ({
+    course: one(courses, {
+      fields: [courseLearningObjectives.courseId],
+      references: [courses.id],
+      relationName: 'courseObjectives',
+    }),
+  }),
+)
 
 export const sectionsRelations = relations(courseContentSections, ({ one, many }) => ({
   course: one(courses, {
