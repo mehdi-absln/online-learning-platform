@@ -90,7 +90,7 @@
           >
             <ClientOnly>
               <LessonVideo
-                :video-url="lessonData?.isLocked ? undefined : (lesson.videoUrl || undefined)"
+                :video-url="isLocked ? undefined : (lesson.videoUrl || undefined)"
                 :title="lesson.title"
               />
               <template #fallback>
@@ -339,9 +339,6 @@ const courseSlug = computed(() => route.params.courseSlug as string)
 const lessonSlug = computed(() => route.params.lessonSlug as string)
 const normalizedLessonSlug = computed(() => normalizeSlug(lessonSlug.value))
 
-// ───── Fetch Lesson Access (isLocked check) ─────
-const { lessonData, isLoading: isAccessLoading, error: accessError, fetchLessonAccess } = useLessonAccess(courseSlug, lessonSlug)
-
 // ───── Composable ─────
 const {
   course,
@@ -365,22 +362,42 @@ const {
   refreshCourse,
 } = useLesson(courseSlug, lessonSlug)
 
-// Use lessonData from API instead of store
-const lesson = computed(() => {
+// Lesson data derived from the course response (single fetch — no extra request)
+const lessonData = computed(() => {
+  if (!course.value?.courseContent) return null
+  for (const section of course.value.courseContent) {
+    const found = section.content?.find(
+      l => normalizeSlug(l.slug) === normalizedLessonSlug.value,
+    )
+    if (found) return found
+  }
+  return null
+})
+
+const hasResolvedLesson = computed(() => normalizeSlug(lessonData.value?.slug) === normalizedLessonSlug.value)
+
+// Build DetailedLesson from the course-derived lesson data
+const lesson = computed((): DetailedLesson | null => {
   if (!lessonData.value) return null
+  const l = lessonData.value
   return {
-    ...lessonData.value,
-    id: lessonData.value.id,
+    id: l.id ?? 0,
     courseId: courseId.value,
-    content: lessonData.value.content || lessonData.value.description || '',
-    sectionId: 0, // Not available from API, will be 0
+    title: l.title,
+    slug: l.slug,
+    content: l.description || '',
+    sectionId: 0,
     order: currentIndex.value >= 0 ? currentIndex.value : 0,
-    createdAt: lessonData.value.createdAt ? new Date(lessonData.value.createdAt) : new Date(0),
-    updatedAt: lessonData.value.updatedAt ? new Date(lessonData.value.updatedAt) : new Date(0),
+    duration: l.duration,
+    isFree: l.isFree || false,
+    videoUrl: l.videoUrl ?? undefined,
+    description: l.description ?? null,
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
   } as DetailedLesson
 })
 
-const hasResolvedLesson = computed(() => normalizeSlug(lesson.value?.slug) === normalizedLessonSlug.value)
+const isLocked = computed(() => !!lesson.value && !lesson.value.isFree && !lesson.value.videoUrl)
 
 // ───── Fetch Progress (non-blocking) ─────
 const progressStore = useLessonProgressStore()
@@ -396,25 +413,24 @@ onMounted(() => {
 
 // ───── Combined Loading & Error States ─────
 const combinedError = computed(() => {
-  const err = courseError.value || accessError.value
+  const err = courseError.value
   if (!err) return null
   if (typeof err === 'string') return err
   return String(err)
 })
 const combinedLoading = computed(() =>
   isLoading.value
-  || isAccessLoading.value
   || (!combinedError.value && !hasResolvedLesson.value),
 )
-const loadingMessage = computed(() => isLoading.value ? 'Loading Lesson...' : 'Checking access...')
+const loadingMessage = computed(() => 'Loading Lesson...')
 
 // ───── Redirect if lesson is locked ─────
 watch(
-  () => lessonData.value,
+  () => lesson.value,
   async (resolvedLesson) => {
     if (!import.meta.client || !resolvedLesson) return
     if (normalizeSlug(resolvedLesson.slug) !== normalizedLessonSlug.value) return
-    if (!resolvedLesson.isLocked) return
+    if (!isLocked.value) return
 
     await navigateTo(`/courses/${courseSlug.value}`, { replace: true })
   },
@@ -429,10 +445,7 @@ const courseLink = computed(() => `/courses/${courseSlug.value}`)
 
 // ───── Methods ─────
 async function handleRetry() {
-  await Promise.allSettled([
-    refreshCourse?.(),
-    fetchLessonAccess(),
-  ])
+  await refreshCourse?.()
 }
 
 async function handleToggleComplete() {
