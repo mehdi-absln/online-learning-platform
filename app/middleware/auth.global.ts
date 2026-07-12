@@ -1,9 +1,14 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   const userStore = useUserStore()
 
-  // ───── Ensure user state is loaded first ─────
+  // ───── Hydrate user state only when there is a real session to verify ─────
+  // Skip the fetch entirely for visitors that have no accessToken cookie and no
+  // previously-hydrated store state — saves one round-trip per navigation.
   if (!userStore.isAuthenticated) {
-    await userStore.fetchUser()
+    const accessToken = useCookie('accessToken')
+    if (accessToken.value) {
+      await userStore.fetchUser()
+    }
   }
 
   // ───── Fast path for unauthenticated users trying to access protected pages ─────
