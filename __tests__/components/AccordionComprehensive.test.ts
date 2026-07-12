@@ -2,6 +2,13 @@ import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import Accordion from '~/components/ui/Accordion.vue'
 
+// Nuxt's test environment auto-imports a route validation middleware that
+// depends on `#app/composables/router`. Provide a harmless stub so every
+// component mount succeeds even when no page-level route mock is set up.
+vi.mock('#app/composables/router', () => ({
+  defineNuxtRouteMiddleware: vi.fn(),
+}))
+
 // Mock the composables
 vi.mock('~/composables/useAccordion', async () => {
   const actual = await vi.importActual('~/composables/useAccordion')

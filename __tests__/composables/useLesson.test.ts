@@ -227,6 +227,13 @@ describe('useLesson', () => {
   // ═══════════════════════════════════════
   describe('progress', () => {
     it('should calculate progress percentage', () => {
+      // Seed: 2 of 3 lessons completed → 66.67%
+      mockProgressData = {
+        1: { lessonId: 1, isCompleted: true },
+        2: { lessonId: 2, isCompleted: true },
+        3: { lessonId: 3, isCompleted: false },
+      }
+
       const { progressPercentage } = useLesson('vue-course', 'lesson-2')
 
       expect(progressPercentage.value).toBeCloseTo(66.67, 0)

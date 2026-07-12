@@ -106,17 +106,17 @@ describe('useLessonProgressStore', () => {
 
     it('should handle fetch error gracefully', async () => {
       const store = useLessonProgressStore()
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
       mockFetch.mockRejectedValueOnce(new Error('Network error'))
 
       await store.fetchProgress()
 
-      expect(consoleSpy).toHaveBeenCalled()
+      // Current behavior: error is captured into state (no console.error).
+      // isInitialized stays false so the caller can retry; isLoading clears.
+      expect(store.error).toBe('Network error')
+      expect(store.hasError).toBe(true)
       expect(store.isLoading).toBe(false)
       expect(store.isInitialized).toBe(false)
-
-      consoleSpy.mockRestore()
     })
   })
 

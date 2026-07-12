@@ -2,7 +2,8 @@ import Database from 'better-sqlite3'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
 import { join } from 'path'
-import { readFileSync, writeFileSync, existsSync, cpSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync, cpSync, mkdirSync } from 'fs'
+import { tmpdir } from 'os'
 import * as schema from '../../server/db/schema'
 
 const sqlite = new Database(':memory:')
@@ -12,18 +13,27 @@ let isMigrated = false
 
 const originalMigrationsPath = join(process.cwd(), 'server', 'drizzle', 'migrations')
 const workerId = process.env.VITEST_WORKER_ID ?? process.env.VITEST_POOL_ID ?? 'main'
-const testMigrationsPath = join('C:\\Users\\DONYAY~1\\AppData\\Local\\Temp\\kilo', `online-learning-platform-test-migrations-${process.pid}-${workerId}`)
+// Use OS temp dir so the same helper works on Linux, macOS, and Windows.
+// (Earlier versions had a Windows-specific path that broke CI on Linux.)
+const testMigrationsPath = join(
+  tmpdir(),
+  'online-learning-platform-test-migrations',
+  `${process.pid}-${workerId}`,
+)
 
 function ensurePatchedTestMigrations() {
   if (!existsSync(testMigrationsPath)) {
+    mkdirSync(testMigrationsPath, { recursive: true })
     cpSync(originalMigrationsPath, testMigrationsPath, { recursive: true })
 
     const patchedMigrationPath = join(testMigrationsPath, '0003_mean_ezekiel_stane.sql')
-    const patchedContent = readFileSync(patchedMigrationPath, 'utf8').replace(
-      'SELECT "id", "username", "email", "password", "name", "avatar", "role", "created_at", "updated_at" FROM `users`;',
-      'SELECT "id", "email", "email", "password", "name", "avatar", "role", "created_at", "updated_at" FROM `users`;',
-    )
-    writeFileSync(patchedMigrationPath, patchedContent)
+    if (existsSync(patchedMigrationPath)) {
+      const patchedContent = readFileSync(patchedMigrationPath, 'utf8').replace(
+        'SELECT "id", "username", "email", "password", "name", "avatar", "role", "created_at", "updated_at" FROM `users`;',
+        'SELECT "id", "email", "email", "password", "name", "avatar", "role", "created_at", "updated_at" FROM `users`;',
+      )
+      writeFileSync(patchedMigrationPath, patchedContent)
+    }
   }
 }
 
