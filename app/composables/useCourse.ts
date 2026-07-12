@@ -3,6 +3,7 @@ import type { DetailedCourse } from '~/types/course'
 import { useApiError } from '~/composables/useApiError'
 import { useCoursesStore } from '~/stores/courses'
 import { computed, toValue, watch } from '#imports'
+import { normalizeSlug } from '~/utils/slug'
 
 type CourseDetailResponse = ApiResponse<DetailedCourse>
 
@@ -16,7 +17,6 @@ type CourseDetailResponse = ApiResponse<DetailedCourse>
 
 export const useCourse = (slug: MaybeRefOrGetter<string>) => {
   const coursesStore = useCoursesStore()
-  const normalizeSlug = (value: string | null | undefined) => value?.trim().toLowerCase() ?? ''
   const slugValue = computed(() => toValue(slug))
   const normalizedSlug = computed(() => normalizeSlug(slugValue.value))
   const fetchKey = computed(() => `course:${normalizedSlug.value}`)

@@ -11,6 +11,7 @@ import {
 import type { CreateCourseData, UpdateCourseData } from '~/types/course'
 import { enrichCoursesWithInstructors } from '../utils/instructor-service'
 import { getCourseReviews as getCourseReviewsFromService } from './review-service'
+import { generateSlug } from '~/utils/slug'
 
 // =====================
 // Types
@@ -32,15 +33,6 @@ export interface CourseFilter {
 // =====================
 // Helper: Build filter conditions
 // =====================
-
-function generateLessonSlug(title: string) {
-  return title
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-}
 
 function buildCourseWhereConditions(filter: CourseFilter = {}) {
   const whereConditions = []
@@ -289,7 +281,7 @@ export async function getDetailedCourseBySlug(slug: string) {
       .map(lesson => ({
         id: lesson.id,
         title: lesson.title,
-        slug: lesson.slug?.trim().toLowerCase() || generateLessonSlug(lesson.title),
+        slug: lesson.slug?.trim().toLowerCase() || generateSlug(lesson.title),
         duration: lesson.duration || '00:00',
         isFree: lesson.isFree || false,
         videoUrl: lesson.videoUrl,
@@ -320,7 +312,7 @@ export async function getDetailedCourseBySlug(slug: string) {
         .map(lesson => ({
           id: lesson.id,
           title: lesson.title,
-          slug: lesson.slug?.trim().toLowerCase() || generateLessonSlug(lesson.title),
+          slug: lesson.slug?.trim().toLowerCase() || generateSlug(lesson.title),
           duration: lesson.duration || '00:00',
           isFree: lesson.isFree || false,
           videoUrl: lesson.videoUrl,
@@ -379,12 +371,7 @@ export async function getCoursesByInstructorId(instructorId: number): Promise<Db
 }
 
 export async function createCourse(data: CreateCourseData) {
-  const slug = data.title
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+  const slug = generateSlug(data.title)
 
   const [newCourse] = await db
     .insert(courses)
@@ -412,12 +399,7 @@ export async function updateCourse(
   // If title is being updated, regenerate the slug
   let slug: string | undefined
   if (data.title !== undefined) {
-    slug = data.title
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '')
+    slug = generateSlug(data.title)
   }
 
   const updateData: UpdateCourseData & { slug?: string, updatedAt: Date } = {

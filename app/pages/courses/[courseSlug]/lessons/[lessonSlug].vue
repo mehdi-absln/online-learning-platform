@@ -307,6 +307,7 @@ import IconShare from '~/components/icons/IconShare.vue'
 import IconCheckCircle from '~/components/icons/IconCheckCircle.vue'
 import IconLock from '~/components/icons/IconLock.vue'
 import IconChevronRight from '~/components/icons/IconChevronRight.vue'
+import { normalizeSlug } from '~/utils/slug'
 
 definePageMeta({
   key: route => `${String(route.params.courseSlug ?? '')}:${String(route.params.lessonSlug ?? '')}`,
@@ -326,7 +327,6 @@ function safeFormatDate(date: string | Date | null | undefined) {
 }
 
 const route = useRoute()
-const normalizeSlug = (value: string | null | undefined) => value?.trim().toLowerCase() ?? ''
 
 // ───── Client-side check ─────
 const isClient = ref(false)

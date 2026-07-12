@@ -2,15 +2,7 @@ import type { H3Event } from 'h3'
 import { getRouterParam, setResponseStatus } from 'h3'
 import { getDetailedCourseBySlug, getCourseLessons } from '~~/server/db/course-service'
 import { getOptionalUser, hasLessonAccess } from '~~/server/utils/lesson-access'
-
-function generateLessonSlug(title: string) {
-  return title
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-}
+import { generateSlug } from '~/utils/slug'
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
@@ -40,7 +32,7 @@ export default defineEventHandler(async (event: H3Event) => {
     const lessons = rawLessons.map(lesson => ({
       id: lesson.id,
       title: lesson.title,
-      slug: lesson.slug?.trim().toLowerCase() || generateLessonSlug(lesson.title),
+      slug: lesson.slug?.trim().toLowerCase() || generateSlug(lesson.title),
       duration: lesson.duration || '00:00',
       videoUrl: lesson.videoUrl,
       content: lesson.description,
