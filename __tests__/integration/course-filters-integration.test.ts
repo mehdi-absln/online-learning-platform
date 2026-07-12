@@ -96,7 +96,7 @@ describe('Course Filters - Integration Tests', () => {
   // ========================================
 
   describe('extractParamsFromUrl', () => {
-    it('باید فیلتر خالی برای URL خالی برگرداند', () => {
+    it('should return an empty filter for an empty URL', () => {
       const params = extractParamsFromUrl({})
 
       expect(params.filter).toEqual({})
@@ -104,13 +104,13 @@ describe('Course Filters - Integration Tests', () => {
       expect(params.limit).toBe(12)
     })
 
-    it('باید category را به آرایه تبدیل کند', () => {
+    it('should convert a single category string into an array', () => {
       const params = extractParamsFromUrl({ categories: 'Design' })
 
       expect(params.filter.categories).toEqual(['Design'])
     })
 
-    it('باید آرایه categories را درست parse کند', () => {
+    it('should correctly parse an array of categories', () => {
       const params = extractParamsFromUrl({
         categories: ['Design', 'Development'],
       })
@@ -118,7 +118,7 @@ describe('Course Filters - Integration Tests', () => {
       expect(params.filter.categories).toEqual(['Design', 'Development'])
     })
 
-    it('باید page و limit را درست parse کند', () => {
+    it('should correctly parse page and limit', () => {
       const params = extractParamsFromUrl({
         page: '3',
         limit: '24',
@@ -128,25 +128,25 @@ describe('Course Filters - Integration Tests', () => {
       expect(params.limit).toBe(24)
     })
 
-    it('باید priceFilter را از freeOnly درست بخواند', () => {
+    it('should read priceFilter from freeOnly', () => {
       const params = extractParamsFromUrl({ freeOnly: 'true' })
 
       expect(params.filter.priceFilter).toBe('free')
     })
 
-    it('باید priceFilter را از paidOnly درست بخواند', () => {
+    it('should read priceFilter from paidOnly', () => {
       const params = extractParamsFromUrl({ paidOnly: 'true' })
 
       expect(params.filter.priceFilter).toBe('paid')
     })
 
-    it('باید searchQuery را درست بخواند', () => {
+    it('should correctly read searchQuery', () => {
       const params = extractParamsFromUrl({ q: 'javascript' })
 
       expect(params.filter.searchQuery).toBe('javascript')
     })
 
-    it('باید همه پارامترها را با هم parse کند', () => {
+    it('should parse all parameters together', () => {
       const params = extractParamsFromUrl({
         categories: ['Design'],
         levels: ['Advanced'],
