@@ -26,6 +26,8 @@ const mockPush = vi.fn()
 vi.mock('vue-router', () => ({
   useRouter: () => ({
     push: mockPush,
+    afterEach: vi.fn(),
+    beforeEach: vi.fn(),
   }),
   useRoute: () => ({
     params: {},
@@ -36,6 +38,8 @@ vi.mock('vue-router', () => ({
 vi.mock('#app', () => ({
   useRouter: () => ({
     push: mockPush,
+    afterEach: vi.fn(),
+    beforeEach: vi.fn(),
   }),
 }))
 
@@ -43,12 +47,17 @@ vi.mock('#app', () => ({
 vi.mock('#imports', () => ({
   useRouter: () => ({
     push: mockPush,
+    afterEach: vi.fn(),
+    beforeEach: vi.fn(),
   }),
 }))
 
-vi.mock('#app/composables/router', () => ({
+vi.mock('#app/composables/router', async (importOriginal) => ({
+  ...(await importOriginal() as Record<string, unknown>),
   useRouter: () => ({
     push: mockPush,
+    afterEach: vi.fn(),
+    beforeEach: vi.fn(),
   }),
   useRoute: () => ({
     params: {},

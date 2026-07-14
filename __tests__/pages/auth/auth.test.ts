@@ -55,11 +55,14 @@ describe('Authentication System', () => {
       }
     })
 
-    vi.doMock('#app/composables/router', () => ({
+    vi.doMock('#app/composables/router', async (importOriginal) => ({
+      ...(await importOriginal()),
       navigateTo: mockNavigateTo,
       useRoute: () => mockRoute,
       useRouter: () => ({
         push: mockNavigateTo,
+        afterEach: vi.fn(),
+        beforeEach: vi.fn(),
       }),
     }))
 

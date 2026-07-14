@@ -137,12 +137,13 @@ describe('Lesson header content', () => {
 
     vi.doMock('vue-router', () => ({
       useRoute: () => route,
-      useRouter: () => ({ push: vi.fn() }),
+      useRouter: () => ({ push: vi.fn(), afterEach: vi.fn(), beforeEach: vi.fn() }),
     }))
 
-    vi.doMock('#app/composables/router', () => ({
+    vi.doMock('#app/composables/router', async (importOriginal) => ({
+      ...(await importOriginal()),
       useRoute: () => route,
-      useRouter: () => ({ push: vi.fn() }),
+      useRouter: () => ({ push: vi.fn(), afterEach: vi.fn(), beforeEach: vi.fn() }),
       navigateTo: mockNavigateTo,
     }))
 

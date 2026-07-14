@@ -51,7 +51,7 @@ vi.mock('#imports', async () => {
   const actual = await vi.importActual<Record<string, unknown>>('#imports')
   return {
     ...actual,
-    useRouter: () => ({ push: mockPush }),
+    useRouter: () => ({ push: mockPush, afterEach: vi.fn(), beforeEach: vi.fn() }),
     useRoute: () => mockRoute.value,
     useFetch: () => mockUseFetchResponse,
     onUnmounted: vi.fn(),
