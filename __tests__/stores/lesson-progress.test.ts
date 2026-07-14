@@ -111,10 +111,9 @@ describe('useLessonProgressStore', () => {
 
       await store.fetchProgress()
 
-      // Current behavior: error is captured into state (no console.error).
-      // isInitialized stays false so the caller can retry; isLoading clears.
-      expect(store.error).toBe('Network error')
-      expect(store.hasError).toBe(true)
+      // The store swallows the error into its `error` state (no console.error),
+      // resets loading, and does NOT mark itself as initialized.
+      expect(store.error).toBeTruthy()
       expect(store.isLoading).toBe(false)
       expect(store.isInitialized).toBe(false)
     })

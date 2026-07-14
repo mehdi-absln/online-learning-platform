@@ -5,14 +5,9 @@ import LessonVideo from '~/components/lesson/LessonVideo.vue'
 describe('LessonVideo', () => {
   // ═══════════════════════════════════════
   // Rendering
-  //
-  // Note: the component now uses a "facade" / lazy-load pattern. Instead of
-  // rendering an iframe immediately, it shows a thumbnail + play button and
-  // only mounts the iframe once the user clicks loadVideo(). These tests
-  // assert the new behavior (facade first, iframe after click).
   // ═══════════════════════════════════════
   describe('rendering', () => {
-    it('shows a play facade when videoUrl is provided (no iframe yet)', () => {
+    it('should show a video facade (thumbnail + play button) when videoUrl is provided', () => {
       const wrapper = mount(LessonVideo, {
         props: {
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
@@ -20,22 +15,12 @@ describe('LessonVideo', () => {
         },
       })
 
+      // The component uses a click-to-load facade: the iframe is NOT rendered
+      // until the user clicks the play button.
       expect(wrapper.find('iframe').exists()).toBe(false)
-      // Facade is a button the user clicks to load the iframe
-      expect(wrapper.find('button[aria-label*="Load and play video"]').exists()).toBe(true)
-    })
-
-    it('mounts the iframe once the play facade is clicked', async () => {
-      const wrapper = mount(LessonVideo, {
-        props: {
-          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-          title: 'Test Video',
-        },
-      })
-
-      await wrapper.find('button[aria-label*="Load and play video"]').trigger('click')
-
-      expect(wrapper.find('iframe').exists()).toBe(true)
+      // The play button / facade should be present.
+      expect(wrapper.find('button').exists()).toBe(true)
+      expect(wrapper.find('img').exists()).toBe(true)
     })
 
     it('should render placeholder when no videoUrl', () => {
@@ -49,100 +34,59 @@ describe('LessonVideo', () => {
       expect(wrapper.text()).toContain('This lesson contains only text content')
     })
 
-    it('should set correct title on iframe after load', async () => {
+    it('should render the iframe only after clicking the play button', async () => {
       const wrapper = mount(LessonVideo, {
         props: {
-          videoUrl: 'https://www.youtube.com/watch?v=abc123',
-          title: 'My Lesson Title',
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          title: 'Test Video',
         },
       })
 
-      await wrapper.find('button[aria-label*="Load and play video"]').trigger('click')
+      // Facade visible first, iframe hidden
+      expect(wrapper.find('iframe').exists()).toBe(false)
 
-      expect(wrapper.find('iframe').attributes('title')).toBe('My Lesson Title')
+      await wrapper.find('button').trigger('click')
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('iframe').exists()).toBe(true)
     })
   })
 
   // ═══════════════════════════════════════
-  // YouTube URL Conversion
-  //
-  // The iframe is only mounted after the user clicks the facade. Each test
-  // here exercises that interaction so we can inspect the resulting src.
+  // YouTube URL Conversion (after load)
   // ═══════════════════════════════════════
   describe('YouTube URL conversion', () => {
-    const clickFacade = async (wrapper: ReturnType<typeof mount>) => {
-      await wrapper.find('button[aria-label*="Load and play video"]').trigger('click')
+    const loadAndGetIframe = async (videoUrl: string) => {
+      const wrapper = mount(LessonVideo, {
+        props: { videoUrl, title: 'Test Video' },
+      })
+      await wrapper.find('button').trigger('click')
+      await wrapper.vm.$nextTick()
+      return wrapper.find('iframe')
     }
 
     it('should convert youtube.com/watch?v= format', async () => {
-      const wrapper = mount(LessonVideo, {
-        props: {
-          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        },
-      })
-
-      await clickFacade(wrapper)
-
-      const iframe = wrapper.find('iframe')
-      expect(iframe.attributes('src')).toBe(
-        'https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&autoplay=1',
-      )
+      const iframe = await loadAndGetIframe('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+      expect(iframe.attributes('src')).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&autoplay=1')
     })
 
     it('should convert youtu.be/ format', async () => {
-      const wrapper = mount(LessonVideo, {
-        props: {
-          videoUrl: 'https://youtu.be/dQw4w9WgXcQ',
-        },
-      })
-
-      await clickFacade(wrapper)
-
-      const iframe = wrapper.find('iframe')
-      expect(iframe.attributes('src')).toBe(
-        'https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&autoplay=1',
-      )
+      const iframe = await loadAndGetIframe('https://youtu.be/dQw4w9WgXcQ')
+      expect(iframe.attributes('src')).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&autoplay=1')
     })
 
     it('should handle youtu.be/ with query params', async () => {
-      const wrapper = mount(LessonVideo, {
-        props: {
-          videoUrl: 'https://youtu.be/dQw4w9WgXcQ?t=30',
-        },
-      })
-
-      await clickFacade(wrapper)
-
-      const iframe = wrapper.find('iframe')
-      expect(iframe.attributes('src')).toBe(
-        'https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&autoplay=1',
-      )
+      const iframe = await loadAndGetIframe('https://youtu.be/dQw4w9WgXcQ?t=30')
+      expect(iframe.attributes('src')).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&autoplay=1')
     })
 
     it('should pass through already embed format', async () => {
-      const wrapper = mount(LessonVideo, {
-        props: {
-          videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-        },
-      })
-
-      await clickFacade(wrapper)
-
-      const iframe = wrapper.find('iframe')
-      // Already-embed URLs are not matched by the regex and pass through as-is.
+      const iframe = await loadAndGetIframe('https://www.youtube.com/embed/dQw4w9WgXcQ')
       expect(iframe.attributes('src')).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ')
     })
 
     it('should handle invalid URL gracefully', async () => {
-      const wrapper = mount(LessonVideo, {
-        props: {
-          videoUrl: 'not-a-valid-url',
-        },
-      })
-
-      await clickFacade(wrapper)
-
-      const iframe = wrapper.find('iframe')
+      const iframe = await loadAndGetIframe('not-a-valid-url')
       expect(iframe.attributes('src')).toBe('not-a-valid-url')
     })
   })

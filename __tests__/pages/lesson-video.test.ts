@@ -2,11 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import LessonVideo from '~/components/lesson/LessonVideo.vue'
 
-describe('LessonVideo (page-level alias)', () => {
-  // Mirrors the assertions in __tests__/components/LessonVideo.test.ts but
-  // is a legacy/shorter entry point. Same facade-then-iframe semantics.
-
-  it('shows a play facade first; mounts the iframe after click', async () => {
+describe('LessonVideo', () => {
+  it('shows a video facade when given a video URL', () => {
     const wrapper = mount(LessonVideo, {
       props: {
         videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
@@ -14,9 +11,22 @@ describe('LessonVideo (page-level alias)', () => {
       },
     })
 
+    // The component uses a click-to-load facade, so the iframe is not rendered
+    // until the user clicks the play button.
     expect(wrapper.find('iframe').exists()).toBe(false)
+    expect(wrapper.find('button').exists()).toBe(true)
+  })
 
-    await wrapper.find('button[aria-label*="Load and play video"]').trigger('click')
+  it('renders the embed iframe after clicking the play button', async () => {
+    const wrapper = mount(LessonVideo, {
+      props: {
+        videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        title: 'Test Video',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await wrapper.vm.$nextTick()
 
     expect(wrapper.find('iframe').exists()).toBe(true)
     expect(wrapper.find('iframe').attributes('src')).toContain('youtube.com/embed/')

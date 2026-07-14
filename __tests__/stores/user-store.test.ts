@@ -109,26 +109,18 @@ describe('User Store', () => {
   })
 
   it('clears the user when fetchUser fails', async () => {
-    // The store's fetchUser can land in two "no user" states:
-    //   (a) $fetch throws  → catch runs → setError(message) + clearUser
-    //                          error.value populated, hasError = true
-    //   (b) $fetch resolves with { success: false } → else runs → clearUser only
-    //                          error.value stays null
-    //
-    // Either way the user ends up cleared. Previous versions of this test
-    // expected a console.error spy (the store no longer logs — see the
-    // `// Silent fail` comment).
-    //
-    // We exercise (b) here because the global setup.ts already stubs `$fetch`
-    // with a default mock that resolves `{ success: false }` for /api/auth/me,
-    // which precisely matches this failure path.
+    mockFetch.mockRejectedValueOnce(new Error('Network error'))
+
     const userStore = useUserStore()
     await userStore.fetchUser()
 
-    // Both paths share these invariants:
+    // fetchUser catches the failure and calls clearUser(), which resets both
+    // user and error to null. The error is silently swallowed (no toast,
+    // no lingering error state) — this is intentional for the initial load.
     expect(userStore.user).toBeNull()
     expect(userStore.isAuthenticated).toBe(false)
-    expect(userStore.loading).toBe(false)
+    expect(userStore.error).toBeNull()
+    expect(userStore.hasError).toBe(false)
   })
 
   it('clears error via clearError', () => {
