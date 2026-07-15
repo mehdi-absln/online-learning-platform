@@ -3,6 +3,7 @@ import { findByUsernameOrEmail, createUser } from '../../db/user-service'
 import { AUTH_ERRORS } from '../../../app/constants'
 import { signUpSchema } from '../../../app/schemas/auth'
 import { errorResponse, successResponse } from '../../utils/response'
+import { generateToken } from '../../utils/jwt'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -24,6 +25,23 @@ export default defineEventHandler(async (event) => {
       username,
       email,
       password,
+    })
+
+    // Issue an auth token + cookie so the user is actually logged in after
+    // signup. Without this, the Pinia store marks the user authenticated but
+    // no accessToken cookie is set, so the next authenticated request (e.g.
+    // add to cart) fails with 401 -> "Failed to add item to cart".
+    const accessToken = await generateToken({
+      userId: newUser.id,
+      username: newUser.username,
+      email: newUser.email,
+    })
+
+    setCookie(event, 'accessToken', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict' as const,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     })
 
     return successResponse(AUTH_ERRORS.ACCOUNT_CREATED_SUCCESS, {
