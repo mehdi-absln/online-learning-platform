@@ -140,7 +140,7 @@ describe('Lesson header content', () => {
       useRouter: () => ({ push: vi.fn(), afterEach: vi.fn(), beforeEach: vi.fn() }),
     }))
 
-    vi.doMock('#app/composables/router', async (importOriginal) => ({
+    vi.doMock('#app/composables/router', async importOriginal => ({
       ...(await importOriginal()),
       useRoute: () => route,
       useRouter: () => ({ push: vi.fn(), afterEach: vi.fn(), beforeEach: vi.fn() }),

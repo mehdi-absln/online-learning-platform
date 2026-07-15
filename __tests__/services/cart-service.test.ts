@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { db } from '../helpers/db'
+import { db, setupTestDb, clearDb } from '../helpers/db'
 import { users, courses, instructors } from '../../server/db/schema'
 import {
   getCartItems,
@@ -8,7 +8,6 @@ import {
   bulkAddToCart,
   clearCart,
 } from '../../server/db/cart-service'
-import { setupTestDb, clearDb } from '../helpers/db'
 
 // ───── Use the in-memory test DB instead of the real Turso client ─────
 // server/db/index.ts throws at import time when TURSO_DATABASE_URL is not

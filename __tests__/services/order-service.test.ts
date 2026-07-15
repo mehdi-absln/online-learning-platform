@@ -1,12 +1,13 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { db } from '../helpers/db'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { db, setupTestDb, clearDb } from '../helpers/db'
 import {
   processCheckout,
   getOrderDetails,
   getUserOrders,
-  isUserEnrolled,
 } from '../../server/db/order-service'
-import { setupTestDb, clearDb } from '../helpers/db'
+
+import { eq } from 'drizzle-orm'
+import { users, courses, instructors, cartItems } from '../../server/db/schema'
 
 // ───── Use the in-memory test DB instead of the real Turso client ─────
 // server/db/index.ts throws at import time when TURSO_DATABASE_URL is not
@@ -24,9 +25,6 @@ vi.mock('../../server/db', async () => {
 // for async transactions, but a stray rejection (e.g. with `Cart is empty`
 // statusMessage) can still leak past the awaited assertion.
 process.on('unhandledRejection', () => {})
-
-import { eq } from 'drizzle-orm'
-import { users, courses, instructors, cartItems, orders } from '../../server/db/schema'
 
 describe('Order Service', () => {
   let testUser: any

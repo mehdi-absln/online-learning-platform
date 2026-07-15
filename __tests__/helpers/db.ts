@@ -3,7 +3,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3'
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
 import { join } from 'path'
 import { tmpdir } from 'os'
-import { readFileSync, writeFileSync, existsSync, cpSync } from 'fs'
+import { existsSync, cpSync } from 'fs'
 import * as schema from '../../server/db/schema'
 
 const sqlite = new Database(':memory:')

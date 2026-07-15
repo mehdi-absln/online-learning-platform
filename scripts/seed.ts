@@ -384,6 +384,7 @@ async function seed() {
           slug: 'introduction-to-tailwind',
           description: 'What is utility-first CSS and why Tailwind?',
           content: 'Tailwind CSS is a utility-first CSS framework...',
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           duration: '10:15',
           orderVal: 0,
           isFree: true,
@@ -397,6 +398,7 @@ async function seed() {
           slug: 'responsive-design-tailwind',
           description: 'Build responsive layouts using Tailwind breakpoints',
           content: 'Tailwind makes responsive design simple...',
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           duration: '20:45',
           orderVal: 1,
           isFree: false,
@@ -406,7 +408,22 @@ async function seed() {
       ]
 
       for (const lesson of twLessonData) {
-        await db.insert(lessons).values(lesson).onConflictDoNothing()
+        await db
+          .insert(lessons)
+          .values(lesson)
+          .onConflictDoUpdate({
+            target: lessons.slug,
+            set: {
+              title: lesson.title,
+              description: lesson.description,
+              content: lesson.content,
+              videoUrl: lesson.videoUrl,
+              duration: lesson.duration,
+              isFree: lesson.isFree,
+              orderVal: lesson.orderVal,
+              updatedAt: lesson.updatedAt,
+            },
+          })
       }
     }
 

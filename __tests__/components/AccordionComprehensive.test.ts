@@ -7,7 +7,7 @@ import Accordion from '~/components/ui/Accordion.vue'
 // via a *partial* mock so the rest of the module's exports stay intact —
 // otherwise this global mock leaks into sibling test files that rely on
 // `useRoute`/`navigateTo` and breaks them depending on execution order.
-vi.mock('#app/composables/router', async (importOriginal) => ({
+vi.mock('#app/composables/router', async importOriginal => ({
   ...(await importOriginal()),
   defineNuxtRouteMiddleware: vi.fn(),
 }))

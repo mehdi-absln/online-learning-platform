@@ -397,11 +397,23 @@ const lesson = computed((): DetailedLesson | null => {
   } as DetailedLesson
 })
 
-const isLocked = computed(() => !!lesson.value && !lesson.value.isFree && !lesson.value.videoUrl)
+// ───── User store (needed for access checks) ─────
+const userStore = useUserStore()
+
+const isLocked = computed(() => {
+  if (!lesson.value) return false
+  if (lesson.value.isFree) return false
+  if (userStore.isEnrolled(courseId.value)) return false
+  if (userStore.isAdminLike) return false
+  if (
+    userStore.user?.role === 'instructor'
+    && userStore.user?.id === course.value?.instructor?.userId
+  ) return false
+  return true
+})
 
 // ───── Fetch Progress (non-blocking) ─────
 const progressStore = useLessonProgressStore()
-const userStore = useUserStore()
 
 // Fetch Progress (non-blocking for authenticated users)
 onMounted(() => {
@@ -425,12 +437,17 @@ const combinedLoading = computed(() =>
 const loadingMessage = computed(() => 'Loading Lesson...')
 
 // ───── Redirect if lesson is locked ─────
+// Wait until enrollments are resolved (for authenticated users) before
+// deciding a lesson is locked, otherwise we'd wrongly redirect enrolled
+// users whose enrollment list hasn't loaded yet.
 watch(
-  () => lesson.value,
-  async (resolvedLesson) => {
+  [() => lesson.value, () => isLocked.value, () => userStore.enrollmentsFetched],
+  async ([resolvedLesson, locked, enrollmentsFetched]) => {
     if (!import.meta.client || !resolvedLesson) return
     if (normalizeSlug(resolvedLesson.slug) !== normalizedLessonSlug.value) return
-    if (!isLocked.value) return
+    // Don't lock (and redirect) while enrollment status is still being fetched
+    if (userStore.isAuthenticated && !enrollmentsFetched) return
+    if (!locked) return
 
     await navigateTo(`/courses/${courseSlug.value}`, { replace: true })
   },

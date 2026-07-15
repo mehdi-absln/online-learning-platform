@@ -50,7 +50,6 @@ export default defineEventHandler(async (event) => {
       ...section,
       content: (section.content || []).map((lesson) => {
         const access = lesson.isFree || courseAccessGranted
-
         return {
           id: lesson.id,
           title: lesson.title,

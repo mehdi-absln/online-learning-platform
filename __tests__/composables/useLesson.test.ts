@@ -52,7 +52,7 @@ vi.mock('#imports', () => ({
   }),
 }))
 
-vi.mock('#app/composables/router', async (importOriginal) => ({
+vi.mock('#app/composables/router', async importOriginal => ({
   ...(await importOriginal() as Record<string, unknown>),
   useRouter: () => ({
     push: mockPush,

@@ -218,7 +218,7 @@ describe('LessonPage', () => {
       }),
     }))
 
-    vi.doMock('#app/composables/router', async (importOriginal) => ({
+    vi.doMock('#app/composables/router', async importOriginal => ({
       ...(await importOriginal()),
       useRoute: () => route,
       useRouter: () => ({
