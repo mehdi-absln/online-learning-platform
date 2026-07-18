@@ -16,11 +16,24 @@ export interface Lesson {
   updatedAt: Date
 }
 
-export interface DetailedLesson extends Lesson {
+export interface DetailedLesson {
+  id: number
+  courseId: number
+  title: string
+  slug: string
+  content: string
+  videoUrl?: string
+  order: number
+  duration: string
+  sectionId?: number
   description?: string
   isFree?: boolean
   attachments?: LessonAttachment[]
   resources?: LessonResource[]
+  // The lesson list comes from course content, which may omit these
+  // server-managed timestamps — they are optional here.
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export interface LessonAttachment {

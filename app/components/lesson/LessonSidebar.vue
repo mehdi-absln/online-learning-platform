@@ -345,11 +345,7 @@ const userStore = useUserStore()
 // ───── Computed from Store ─────
 const course = computed(() => coursesStore.detailedCourse)
 
-const isOwnCourse = computed(() => {
-  if (!userStore.isAuthenticated) return false
-  if (userStore.user?.role !== 'instructor') return false
-  return userStore.user?.id === course.value?.instructor?.userId
-})
+const isOwnCourse = computed(() => userStore.isCourseInstructor(course.value?.instructor?.userId))
 const hasContent = computed(() => coursesStore.allLessons.length > 0)
 
 const courseProgress = computed(() =>

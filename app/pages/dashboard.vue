@@ -178,39 +178,4 @@ const greeting = computed(() => {
   if (hour < 17) return 'Good afternoon! Keep the momentum going.'
   return 'Good evening! Great time to wrap up a lesson.'
 })
-
-// Order helpers
-const _formatDate = (date: Date | string) => {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
-}
-
-const _statusClass = (status: string) => {
-  switch (status) {
-    case 'completed':
-      return 'bg-emerald-500/15 text-emerald-400'
-    case 'pending':
-      return 'bg-amber-500/15 text-amber-400'
-    case 'failed':
-      return 'bg-red-500/15 text-red-400'
-    default:
-      return 'bg-gray-500/15 text-gray-400'
-  }
-}
-
-const _statusIcon = (status: string) => {
-  switch (status) {
-    case 'completed':
-      return '✅'
-    case 'pending':
-      return '⏳'
-    case 'failed':
-      return '❌'
-    default:
-      return '•'
-  }
-}
 </script>

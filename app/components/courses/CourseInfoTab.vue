@@ -185,11 +185,7 @@ const props = defineProps<{
 const userStore = useUserStore()
 const courseSlug = computed(() => props.course.slug)
 
-const isOwnCourse = computed(() => {
-  if (!userStore.isAuthenticated) return false
-  if (userStore.user?.role !== 'instructor') return false
-  return userStore.user?.id === props.course.instructor?.userId
-})
+const isOwnCourse = computed(() => userStore.isCourseInstructor(props.course.instructor?.userId))
 
 // Create properly typed Accordion items for course content sections
 interface AccordionSection {

@@ -21,7 +21,7 @@ export const useCourse = (slug: MaybeRefOrGetter<string>) => {
   const normalizedSlug = computed(() => normalizeSlug(slugValue.value))
   const fetchKey = computed(() => `course:${normalizedSlug.value}`)
 
-  const { data, pending, error, refresh, clear } = useFetch<CourseDetailResponse>(
+  const { data, pending, error, refresh } = useFetch<CourseDetailResponse>(
     () => `/api/course-by-slug/${normalizedSlug.value}`,
     {
       key: fetchKey,
@@ -36,37 +36,22 @@ export const useCourse = (slug: MaybeRefOrGetter<string>) => {
         if (response.success && response.data) {
           coursesStore.setDetailedCourse(response.data)
         }
+        else {
+          coursesStore.setDetailedCourse(null)
+        }
         return response
       },
     },
   )
 
-  watch(data, (newData) => {
-    if (newData?.success && newData.data) {
-      coursesStore.setDetailedCourse(newData.data)
-    }
-  }, { immediate: true })
-
   // Clear stale data on route change
   watch(normalizedSlug, (newSlug, oldSlug) => {
     if (oldSlug && newSlug !== oldSlug) {
-      clear()
       coursesStore.setDetailedCourse(null)
     }
   })
 
-  const fetchedCourse = computed(() => data.value?.success ? data.value.data : null)
-  const course = computed(() => {
-    if (normalizeSlug(fetchedCourse.value?.slug) === normalizedSlug.value) {
-      return fetchedCourse.value
-    }
-
-    if (normalizeSlug(coursesStore.detailedCourse?.slug) === normalizedSlug.value) {
-      return coursesStore.detailedCourse
-    }
-
-    return null
-  })
+  const course = computed(() => (data.value?.success ? data.value.data : null))
   const hasError = useApiError(data, pending, error)
 
   return { course, isLoading: pending, error: hasError, refresh }

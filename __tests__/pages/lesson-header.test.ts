@@ -117,6 +117,7 @@ describe('Lesson header content', () => {
           prevLesson: ref(null),
           nextLesson: ref(null),
           isNextLessonAccessible: ref(false),
+          isLocked: ref(false),
           progressPercentage: ref(20),
           breadcrumbs: ref([
             { name: 'Courses', path: '/courses' },
@@ -168,6 +169,7 @@ describe('Lesson header content', () => {
         prevLesson: ref(null),
         nextLesson: ref(null),
         isNextLessonAccessible: ref(false),
+        isLocked: ref(false),
         progressPercentage: ref(20),
         breadcrumbs: ref([
           { name: 'Courses', path: '/courses' },

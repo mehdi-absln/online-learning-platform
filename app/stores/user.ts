@@ -35,6 +35,10 @@ export const useUserStore = defineStore('user', () => {
     !user.value || !NON_PURCHASING_ROLES.includes(user.value.role),
   )
 
+  /** True when the current user is the instructor who owns the given course. */
+  const isCourseInstructor = (instructorUserId?: number) =>
+    user.value?.role === 'instructor' && user.value?.id === instructorUserId
+
   // Check if user is enrolled in a course (O(1) lookup)
   const isEnrolled = (courseId: number) => {
     return enrolledCourseIds.value.includes(courseId)
@@ -249,6 +253,7 @@ export const useUserStore = defineStore('user', () => {
     isAuthenticated,
     isAdminLike,
     canPurchaseCourses,
+    isCourseInstructor,
     loading,
     error,
     enrollmentsFetched,

@@ -6,8 +6,7 @@ type BlogsResponse = ApiResponse<Blog[]>
 
 export function useBlogs() {
   const route = useRoute()
-  const store = useBlogsStore()
-  const { setTotalItems, limit } = useBlogFilters()
+  const { limit } = useCourseFilters()
   const nuxtApp = useNuxtApp()
 
   const queryParams = computed(() => ({
@@ -17,10 +16,7 @@ export function useBlogs() {
   }))
 
   // Generate unique cache key based on query params (pagination & search)
-  const cacheKey = computed(() => {
-    const params = queryParams.value
-    return `blogs-${JSON.stringify(params)}`
-  })
+  const cacheKey = computed(() => `blogs-${route.query.q as string || ''}-${Number(route.query.page) || 1}-${limit}`)
 
   const { data, pending, error, refresh } = useFetch<BlogsResponse>('/api/blogs', {
     key: cacheKey,
@@ -29,23 +25,16 @@ export function useBlogs() {
     getCachedData(key) {
       return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
     },
-    onResponse({ response }) {
-      if (response._data?.success) {
-        store.setBlogs(response._data.data)
-        if (response._data.pagination?.totalItems) {
-          setTotalItems(response._data.pagination.totalItems)
-        }
-      }
-    },
   })
 
   const hasError = useApiError(data, pending, error)
 
-  const blogs = computed(() => data.value?.data ?? store.blogs)
+  const blogs = computed(() => data.value?.data ?? [])
+  const totalItems = computed(() => data.value?.pagination?.totalItems ?? 0)
 
   return {
     blogs,
-    totalItems: computed(() => data.value?.pagination?.totalItems ?? 0),
+    totalItems,
     isLoading: pending,
     error: hasError,
     refresh,

@@ -191,6 +191,7 @@ describe('LessonPage', () => {
           prevLesson: ref(null),
           nextLesson: ref({ id: 2, title: 'Overview', slug: 'overview', duration: '8:15', isFree: true }),
           isNextLessonAccessible: ref(true),
+          isLocked: ref(false),
           progressPercentage: ref(50),
           breadcrumbs: ref([
             { name: 'Courses', path: '/courses' },
@@ -250,6 +251,7 @@ describe('LessonPage', () => {
         prevLesson: ref(null),
         nextLesson: ref({ id: 2, title: 'Overview', slug: 'overview', duration: '8:15', isFree: true }),
         isNextLessonAccessible: ref(true),
+        isLocked: ref(false),
         progressPercentage: ref(50),
         breadcrumbs: ref([
           { name: 'Courses', path: '/courses' },

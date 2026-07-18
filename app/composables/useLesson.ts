@@ -58,7 +58,7 @@ export const useLesson = (
   // Helper to check if a lesson is accessible (free or user is enrolled)
   const userStore = useUserStore()
   const courseId = computed(() => course.value?.id || 0)
-  const isLessonAccessible = (targetLesson: CourseContentLesson | null) => {
+  const isLessonAccessible = (targetLesson: CourseContentLesson | DetailedLesson | null) => {
     if (!targetLesson) return false
     if (targetLesson.isFree) return true
     if (userStore.isEnrolled(courseId.value)) return true
@@ -71,6 +71,9 @@ export const useLesson = (
   }
 
   const isNextLessonAccessible = computed(() => isLessonAccessible(nextLesson.value ?? null))
+
+  // Whether the CURRENT lesson is locked (inverse of accessible)
+  const isLocked = computed(() => !isLessonAccessible(lesson.value))
 
   const progressPercentage = computed(() =>
     courseProgress.value?.percentage ?? 0,
@@ -171,6 +174,7 @@ export const useLesson = (
     prevLesson,
     nextLesson,
     isNextLessonAccessible,
+    isLocked,
     progressPercentage,
     breadcrumbs,
     goToPrev,

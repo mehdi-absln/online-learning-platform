@@ -117,9 +117,13 @@
                 <span class="flex items-center gap-1.5">
                   <IconCalendar class="w-4 h-4" />
                   <span class="sr-only">Published:</span>
-                  <time :datetime="toDateTimeValue(lesson.createdAt)">
+                  <time
+                    v-if="lesson.createdAt"
+                    :datetime="toDateTimeValue(lesson.createdAt)"
+                  >
                     {{ safeFormatDate(lesson.createdAt) }}
                   </time>
+                  <span v-else>—</span>
                 </span>
               </div>
 
@@ -344,6 +348,7 @@ const {
   course,
   isLoading,
   error: courseError,
+  isLocked,
   currentIndex,
   totalLessons,
   prevLesson,
@@ -392,28 +397,14 @@ const lesson = computed((): DetailedLesson | null => {
     isFree: l.isFree || false,
     videoUrl: l.videoUrl ?? undefined,
     description: l.description ?? null,
-    createdAt: new Date(0),
-    updatedAt: new Date(0),
+    createdAt: undefined,
+    updatedAt: undefined,
   } as DetailedLesson
-})
-
-// ───── User store (needed for access checks) ─────
-const userStore = useUserStore()
-
-const isLocked = computed(() => {
-  if (!lesson.value) return false
-  if (lesson.value.isFree) return false
-  if (userStore.isEnrolled(courseId.value)) return false
-  if (userStore.isAdminLike) return false
-  if (
-    userStore.user?.role === 'instructor'
-    && userStore.user?.id === course.value?.instructor?.userId
-  ) return false
-  return true
 })
 
 // ───── Fetch Progress (non-blocking) ─────
 const progressStore = useLessonProgressStore()
+const userStore = useUserStore()
 
 // Fetch Progress (non-blocking for authenticated users)
 onMounted(() => {
@@ -442,12 +433,12 @@ const loadingMessage = computed(() => 'Loading Lesson...')
 // users whose enrollment list hasn't loaded yet.
 watch(
   [() => lesson.value, () => isLocked.value, () => userStore.enrollmentsFetched],
-  async ([resolvedLesson, locked, enrollmentsFetched]) => {
+  async ([resolvedLesson, , enrollmentsFetched]) => {
     if (!import.meta.client || !resolvedLesson) return
     if (normalizeSlug(resolvedLesson.slug) !== normalizedLessonSlug.value) return
     // Don't lock (and redirect) while enrollment status is still being fetched
     if (userStore.isAuthenticated && !enrollmentsFetched) return
-    if (!locked) return
+    if (!isLocked.value) return
 
     await navigateTo(`/courses/${courseSlug.value}`, { replace: true })
   },

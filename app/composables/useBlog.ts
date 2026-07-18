@@ -5,7 +5,6 @@ import { useApiError } from '~/composables/useApiError'
 type BlogResponse = ApiResponse<Blog>
 
 export const useBlog = (slug: string) => {
-  const store = useBlogsStore()
   const nuxtApp = useNuxtApp()
 
   const { data, pending, error, refresh } = useFetch<BlogResponse>(
@@ -15,20 +14,11 @@ export const useBlog = (slug: string) => {
       getCachedData(key) {
         return nuxtApp.payload.data[key] || nuxtApp.static.data[key]
       },
-      onResponse({ response }) {
-        if (response._data?.success && response._data.data) {
-          store.setCurrentBlog(response._data.data)
-        }
-      },
     },
   )
 
-  const blog = computed(() => data.value?.data ?? store.currentBlog)
+  const blog = computed(() => data.value?.data ?? null)
   const hasError = useApiError(data, pending, error)
-
-  onUnmounted(() => {
-    store.clearCurrentBlog()
-  })
 
   return {
     blog,

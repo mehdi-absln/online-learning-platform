@@ -67,13 +67,16 @@ export const useCourses = () => {
     return params
   })
 
-  // FIX FOR INFINITE LOOP:
-  // Root cause: Using computed/reactive key caused useFetch to re-trigger infinitely
-  // Solution: Use a static string key and let useFetch handle query reactivity naturally
+  // Derive a stable key from the query so each filter/page combination gets
+  // its own cache entry (avoids cache bleed across filtered lists).
+  // watch is explicit to avoid the previous infinite-loop regression that
+  // came from a reactive key without a watch.
+  const fetchKey = computed(() => `courses-list:${JSON.stringify(queryParams.value)}`)
+
   const { data, pending, error } = useFetch<CourseListResponse>('/api/courses', {
-    // Static key - useFetch will handle query param changes automatically
-    key: 'courses-list',
+    key: fetchKey,
     query: queryParams,
+    watch: [queryParams],
     onResponse: ({ response }) => {
       if (response._data?.success && response._data.data) {
         if (response._data.pagination) {

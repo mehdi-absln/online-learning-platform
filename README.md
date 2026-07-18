@@ -14,6 +14,8 @@ A comprehensive online learning platform built with Nuxt.js, featuring user auth
 - State management with Pinia
 - SEO-friendly with proper meta tags
 - Form validation on both client and server
+- **Accessibility-first**: focus traps, keyboard navigation, ARIA live regions, skip-to-content
+- **Lazy-loaded** below-the-fold sections for fast first paint
 
 ## Tech Stack
 
@@ -132,6 +134,9 @@ NODE_ENV=development
 ├── __tests__/                # Test files
 └── drizzle.config.ts         # Drizzle ORM config
 ```
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for the design decisions
+behind the directory layout, state-management split, and data-fetching strategy.
 
 ## Contributing
 

@@ -1,12 +1,8 @@
-import type { Course, DetailedCourse, CourseContentLesson } from '~/types/course'
+import type { DetailedCourse, CourseContentLesson } from '~/types/course'
 
 export const useCoursesStore = defineStore('courses', () => {
   // ───── State ─────
-  const courses = ref<Course[]>([])
   const detailedCourse = ref<DetailedCourse | null>(null)
-
-  // ───── Getters ─────
-  const isEmpty = computed(() => courses.value.length === 0)
 
   // ───── Lesson Helpers ─────
   const allLessons = computed((): CourseContentLesson[] => {
@@ -43,18 +39,9 @@ export const useCoursesStore = defineStore('courses', () => {
     detailedCourse.value = course
   }
 
-  function $reset() {
-    courses.value = []
-    detailedCourse.value = null
-  }
-
   return {
     // State
-    courses,
     detailedCourse,
-
-    // Getters
-    isEmpty,
 
     // Lesson Helpers
     allLessons,
@@ -66,6 +53,5 @@ export const useCoursesStore = defineStore('courses', () => {
 
     // Actions
     setDetailedCourse,
-    $reset,
   }
 })

@@ -23,6 +23,7 @@ vi.mock('~/stores/user', () => ({
     canPurchaseCourses: true,
     user: null,
     isEnrolled: vi.fn(() => false),
+    isCourseInstructor: vi.fn(() => false),
   }),
 }))
 

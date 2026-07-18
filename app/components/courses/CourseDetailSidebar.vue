@@ -328,11 +328,7 @@ const userStore = useUserStore()
 const { addItem, isInCart, openCart } = useCart()
 const route = useRoute()
 
-const isOwnCourse = computed(() => {
-  if (!userStore.isAuthenticated) return false
-  if (userStore.user?.role !== 'instructor') return false
-  return userStore.user?.id === props.course.instructor?.userId
-})
+const isOwnCourse = computed(() => userStore.isCourseInstructor(props.course.instructor?.userId))
 
 const courseTags = computed(() => {
   if (!props.course.tags) return []

@@ -1,3 +1,5 @@
+import { reactive } from 'vue'
+
 interface ToastOptions {
   message: string
   type?: 'info' | 'success' | 'warning' | 'error'
@@ -6,6 +8,8 @@ interface ToastOptions {
   duration?: number
 }
 
+// Module-scoped singleton. Safe because the only consumer (UiToast) is
+// rendered client-only, so there is no SSR hydration mismatch.
 const toastState = reactive({
   isVisible: false,
   message: '',
@@ -16,17 +20,19 @@ const toastState = reactive({
 })
 
 export const useToast = () => {
+  const state = toastState
+
   const show = (options: ToastOptions) => {
-    toastState.message = options.message
-    toastState.type = options.type || 'info'
-    toastState.actionLink = options.actionLink || ''
-    toastState.actionText = options.actionText || ''
-    toastState.duration = options.duration ?? 5000
-    toastState.isVisible = true
+    state.message = options.message
+    state.type = options.type || 'info'
+    state.actionLink = options.actionLink || ''
+    state.actionText = options.actionText || ''
+    state.duration = options.duration ?? 5000
+    state.isVisible = true
   }
 
   const hide = () => {
-    toastState.isVisible = false
+    state.isVisible = false
   }
 
   const success = (message: string, duration?: number) => {
@@ -56,7 +62,7 @@ export const useToast = () => {
   }
 
   return {
-    state: toastState,
+    state,
     show,
     hide,
     success,

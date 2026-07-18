@@ -293,6 +293,7 @@ useHead({
 
 // Cart state and actions
 const { items, totalPrice, isLoading, checkout } = useCart()
+const toast = useToast()
 
 // Computed values
 const itemsCount = computed(() => items.value.length)
@@ -310,6 +311,7 @@ const handleCheckout = async (type: 'success' | 'fail') => {
   }
   else {
     // Unexpected error before order creation
+    toast.error(result.message || 'Something went wrong. Please try again.')
   }
 }
 </script>

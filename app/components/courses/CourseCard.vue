@@ -213,11 +213,7 @@ const props = defineProps<Props>()
 const { addItem, isInCart, openCart } = useCart()
 const userStore = useUserStore()
 
-const isOwnCourse = computed(() => {
-  if (!userStore.isAuthenticated) return false
-  if (userStore.user?.role !== 'instructor') return false
-  return userStore.user?.id === props.course.instructor?.userId
-})
+const isOwnCourse = computed(() => userStore.isCourseInstructor(props.course.instructor?.userId))
 
 const handleAddToCart = async () => {
   const added = await addItem(props.course)
