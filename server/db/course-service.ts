@@ -435,7 +435,17 @@ export async function getAllCategories(): Promise<{ id: number, name: string }[]
       })
       .from(categories)
 
-    return result
+    // Dedupe by name (keep first occurrence) — guards against
+    // duplicate rows left in the DB by older seed runs.
+    const seen = new Set<string>()
+    const unique: { id: number, name: string }[] = []
+    for (const row of result) {
+      const key = row.name.trim().toLowerCase()
+      if (seen.has(key)) continue
+      seen.add(key)
+      unique.push(row)
+    }
+    return unique
   }
   catch {
     // If categories table doesn't exist, return empty
