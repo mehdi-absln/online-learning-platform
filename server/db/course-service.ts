@@ -343,7 +343,7 @@ export async function getDetailedCourseBySlug(slug: string) {
     updatedAt: course.updatedAt,
     tags: course.tags,
     categoryId: course.categoryId,
-    categoryName,
+    category: categoryName,
     instructor: course.instructor
       ? {
           id: course.instructor.id,
