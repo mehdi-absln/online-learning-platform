@@ -112,7 +112,7 @@
           <NuxtLink
             v-if="courseLink"
             :to="courseLink"
-            class="font-medium text-white transition-all duration-300 hover:text-primary whitespace-nowrap"
+            class="font-medium text-white transition-all duration-300 hover:text-primary shrink-0"
           >
             Explore Now
           </NuxtLink>
@@ -125,7 +125,7 @@
           </span>
           <NuxtLink
             :to="`/admin/courses/${course.id}/edit`"
-            class="font-medium text-primary transition-all duration-300 hover:text-white whitespace-nowrap"
+            class="font-medium text-primary transition-all duration-300 hover:text-white shrink-0"
           >
             Manage Course
           </NuxtLink>
@@ -136,7 +136,7 @@
           <span class="text-base font-semibold text-primary-alt">
             {{ '$' + formatPrice(course.price) }}
           </span>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap justify-end">
             <button
               v-if="!isInCart(course.id)"
               class="p-2.5 bg-primary/10 hover:bg-primary text-primary
@@ -187,7 +187,7 @@
               v-if="courseLink"
               :to="courseLink"
               class="font-medium text-white transition-all duration-300
-                     hover:text-primary whitespace-nowrap"
+                     hover:text-primary shrink-0"
             >
               Explore Now
             </NuxtLink>
