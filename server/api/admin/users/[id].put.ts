@@ -41,7 +41,17 @@ export default defineEventHandler(async (event) => {
     const targetUser = await findById(userId)
     if (!targetUser) throw createError({ statusCode: 404, statusMessage: 'User not found' })
 
-    // Only superadmin can change role of another admin
+    // Only a superadmin may grant the admin role (or modify an existing admin).
+    // Note: the request schema only allows admin/instructor/student, so superadmin
+    // cannot be created through this endpoint — that is intentional.
+    if (newRole === 'admin' && authUser.role !== 'superadmin') {
+      throw createError({
+        statusCode: 403,
+        statusMessage: 'Only a superadmin can assign the admin role.',
+      })
+    }
+
+    // Also block a non-superadmin from demoting/modifying an existing admin.
     if (targetUser.role === 'admin' && authUser.role !== 'superadmin') {
       throw createError({
         statusCode: 403,

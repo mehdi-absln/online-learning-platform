@@ -317,9 +317,13 @@ onMounted(() => {
 // ───── Helper: canManageUser ─────
 function canManageUser(user: UserItem) {
   if (user.id === currentAdminId.value) return false
-  // Only superadmin can manage other admins (including superadmin? we'll block via API anyway)
+  // Only a superadmin may manage other admins or grant admin-level roles.
   if (user.role === 'admin' && !isSuperAdmin.value) return false
-  // a superadmin can manage anyone except himself (already handled)
+  if (!isSuperAdmin.value) {
+    // A plain admin can demote/promote only to instructor/student,
+    // never touch an existing admin or create a new one.
+    return user.role !== 'superadmin'
+  }
   return true
 }
 
@@ -374,7 +378,13 @@ const confirmDelete = async () => {
 }
 
 // ───── Role change ─────
-const availableRoles = ['admin', 'instructor', 'student'] as const
+// A plain admin may only assign instructor/student roles.
+// Only a superadmin may grant admin/superadmin roles.
+const availableRoles = computed(() =>
+  isSuperAdmin.value
+    ? (['superadmin', 'admin', 'instructor', 'student'] as const)
+    : (['instructor', 'student'] as const),
+)
 
 const isRoleModalOpen = ref(false)
 const selectedUser = ref<UserItem | null>(null)
