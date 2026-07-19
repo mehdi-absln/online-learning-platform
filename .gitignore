@@ -45,3 +45,5 @@ coverage/
 nul
 
 .vercel
+project-structure.md
+.hermes/
