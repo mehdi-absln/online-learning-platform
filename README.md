@@ -8,6 +8,13 @@ Frontend-focused **Nuxt 4** learning platform (portfolio): course discovery with
 
 **Architecture (decisions, FE-first):** [ARCHITECTURE.md](./ARCHITECTURE.md)
 
+### UI screenshots
+
+| Screen | What it shows |
+|--------|------------------|
+| ![Course discovery with active filter](./docs/shots/courses-discovery-filtered.png) | **Course discovery** — URL-driven filters (category/level/tags/price/search) + grid + skeletons. Shown here with the *Web Development* category filter active. |
+| ![Lesson player with keyboard hint](./docs/shots/lesson-player.png) | **Lesson player** — section sidebar + video + prev/next nav + progress. Keyboard shortcuts (`←/→` navigate, `M` mark complete) are hinted below the nav. |
+
 ---
 
 ## Frontend highlights (what to review)

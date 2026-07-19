@@ -60,6 +60,14 @@
                 @next="goToNext"
                 @toggle-complete="handleToggleComplete"
               />
+              <!-- Keyboard shortcut hint (decorative; real handlers in script) -->
+              <p
+                class="mt-2 text-xs text-gray-500 flex items-center gap-3"
+                aria-hidden="true"
+              >
+                <span><kbd class="px-1.5 py-0.5 rounded bg-dark-bg border border-dark-divider">←</kbd> <kbd class="px-1.5 py-0.5 rounded bg-dark-bg border border-dark-divider">→</kbd> navigate</span>
+                <span><kbd class="px-1.5 py-0.5 rounded bg-dark-bg border border-dark-divider">M</kbd> mark complete</span>
+              </p>
             </div>
           </div>
 

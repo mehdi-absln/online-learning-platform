@@ -301,3 +301,14 @@ Lesson paywall decision (free · enrolled · instructor-owner · admin) is enfor
 | Separate component library repo | second product reuses UI |
 
 `Bottom line:` ceiling = modular Nuxt app with a real `ui/` primitive layer and composable controllers. Next upgrade = extract tokens + Storybook, not a rewrite.
+
+---
+
+## Screenshots (for recruiters)
+
+Live demo: https://online-learning-platform-plum-ten.vercel.app/home
+
+- **Home** — `docs/screenshot-home.png`
+- **Course discovery** (URL-driven filters + grid + skeletons) — `docs/shots/courses-discovery.png`
+- **Course discovery, filtered** (category active) — `docs/shots/courses-discovery-filtered.png`
+- **Lesson player** (sidebar + video + prev/next + keyboard hint) — `docs/shots/lesson-player.png`
