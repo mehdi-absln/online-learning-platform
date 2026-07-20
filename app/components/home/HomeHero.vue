@@ -17,6 +17,7 @@
         <NuxtImg
           src="/images/banner.jpg"
           alt="Students learning online"
+          width="1920"
           height="1080"
           sizes="100vw xl:1920px"
           loading="eager"
