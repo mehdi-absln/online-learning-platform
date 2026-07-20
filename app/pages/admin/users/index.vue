@@ -381,10 +381,11 @@ const confirmDelete = async () => {
 
 // ───── Role change ─────
 // A plain admin may only assign instructor/student roles.
-// Only a superadmin may grant admin/superadmin roles.
+// Only a superadmin may grant the admin role. The superadmin role itself
+// is immutable (server rejects it), so it is intentionally excluded here.
 const availableRoles = computed(() =>
   isSuperAdmin.value
-    ? (['superadmin', 'admin', 'instructor', 'student'] as const)
+    ? (['admin', 'instructor', 'student'] as const)
     : (['instructor', 'student'] as const),
 )
 
