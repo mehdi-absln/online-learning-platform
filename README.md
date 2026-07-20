@@ -49,12 +49,11 @@ Deep dive with file-level rationale → [ARCHITECTURE.md](./ARCHITECTURE.md)
 - **Lesson player** — section sidebar, content/video, prev/next, complete · bookmark · notes, keyboard shortcuts
 - **Lesson progress** — per-lesson complete/bookmark/personal notes, persisted server-side (`/api/progress/*`)
 - **Cart & checkout UX** — guest cookie cart, merge on login, drawer, success/fail pages
-  - *Checkout is **simulated*** (success/fail toggle), not a real payment gateway — see Scope note below
 - **Dashboard** — continue learning, my courses, orders, bookmarks, stats (lazy widgets + skeleton)
 - **Blogs** — list/detail, reading time, sanitized markdown; **admins can create/edit/delete posts** via the blog admin flow
 - **Instructor role** — instructors get a **"My Courses"** dashboard (`/admin`) to manage their own courses (CRUD); they cannot access the users table
 - **Admin UI** — course CRUD forms, blog management, users table (role-gated)
-  - **Role model:** `student` / `instructor` / `admin` / `superadmin`. Only a `superadmin` may grant the `admin` role. The `superadmin` role itself is immutable — no user (including another superadmin) can change or delete a superadmin account, and no one can promote anyone *to* superadmin through the UI/API. Administrative accounts (`admin`/`superadmin`) are blocked from purchase actions. Enforced server-side in `server/api/admin/users` and `server/utils/auth-helpers`.
+  - **Role model:** `student` / `instructor` / `admin` / `superadmin`. Only a `superadmin` may grant the `admin` role. The `superadmin` role itself is immutable — no user (including another superadmin) can change or delete a superadmin account, and no one can promote anyone *to* superadmin through the UI/API. Enforced server-side in `server/api/admin/users`.
 
 ---
 
@@ -105,11 +104,9 @@ npm run db:seed
 | Role | Email | Password | Notes |
 |------|-------|----------|-------|
 | Superadmin | *(set up manually / first admin)* | — | Immutable role — cannot be changed or deleted via UI |
-| Admin | `admin@example.com` | `password123` | Can manage courses/users/blogs; **cannot purchase** |
+| Admin | `admin@example.com` | `password123` | Can manage courses/users/blogs |
 | Instructor | *(assignable) | — | Gets a "My Courses" dashboard, not the users table |
 | Student | `student@example.com` | `password123` | Standard learner account |
-
-> Note: `admin` / `superadmin` accounts are intentionally blocked from checkout (purchase actions are restricted to students/instructors).
 
 ### Scripts
 
@@ -164,25 +161,13 @@ Full write-up: [ARCHITECTURE.md](./ARCHITECTURE.md)
 
 ## Scope & intent
 
-This is a **portfolio / learning project**. The goal is to show frontend engineering (Nuxt 4, architecture, a11y, UX states) backed by a real but compact full-stack implementation — not a production LMS.
-
-Deliberately simplified (called out so reviewers don't mistake them for bugs):
-
-- **Checkout is simulated** — a success/fail toggle, not a real payment gateway (Stripe etc.). Orders/enrollments/cart all work end-to-end against the DB; only the "bank" is faked.
-- **No real email / password-reset flow** beyond local change-password.
-- **Seeded demo data is small** (a handful of courses) — enough to exercise every UI state, not a content library.
-- **Admin/superadmin cannot purchase** by design (purchase actions are restricted server-side).
-
-What *is* real and worth reviewing: the Nuxt data layer, URL-driven filtering, a11y primitives, form/validation patterns, and the server-side authorization model (role gating, immutable superadmin).
-
----
+Portfolio / learning project — the point is frontend engineering (Nuxt 4, data layer, a11y, UX states), not a production LMS. The parts worth reviewing are the Nuxt data layer, URL-driven filtering, a11y primitives, form/validation patterns, and the server-side role authorization model.
 
 ## Deploy
 
 - Live: https://online-learning-platform-plum-ten.vercel.app/home  
 - Production needs strong `JWT_SECRET` + Turso credentials  
 - Course **detail** ISR-friendly; course **list** must not be cached by path alone (query-driven)  
-- Portfolio scope: checkout is app-level flow, not a full payment-provider integration  
 
 ## Author
 
