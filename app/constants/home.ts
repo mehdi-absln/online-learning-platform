@@ -3,7 +3,7 @@ export const TRAINERS = [
     id: 1,
     name: 'Jonathan Bean',
     role: 'Lead Instructor',
-    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&auto=format&fit=crop&fm=webp&q=80',
+    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&auto=format&fit=crop&q=80',
     social: [
       { name: 'Facebook', url: '#' },
       { name: 'Twitter', url: '#' },
@@ -14,7 +14,7 @@ export const TRAINERS = [
     id: 2,
     name: 'Sarah Johnson',
     role: 'UI/UX Expert',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&auto=format&fit=crop&fm=webp&q=80',
+    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=80',
     social: [
       { name: 'Twitter', url: '#' },
       { name: 'LinkedIn', url: '#' },
@@ -25,7 +25,7 @@ export const TRAINERS = [
     id: 3,
     name: 'Michael Chen',
     role: 'Full Stack Developer',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&fm=webp&q=80',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80',
     social: [
       { name: 'GitHub', url: '#' },
       { name: 'LinkedIn', url: '#' },
@@ -36,7 +36,7 @@ export const TRAINERS = [
     id: 4,
     name: 'Emma Wilson',
     role: 'DevOps Engineer',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&auto=format&fit=crop&fm=webp&q=80',
+    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=80',
     social: [
       { name: 'Facebook', url: '#' },
       { name: 'Twitter', url: '#' },

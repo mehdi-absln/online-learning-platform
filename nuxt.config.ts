@@ -84,13 +84,4 @@ export default defineNuxtConfig({
       },
     },
   },
-
-  image: {
-    // Modern formats + capped quality keep payload small (esp. on mobile),
-    // which is the main Lighthouse mobile-Performance win.
-    formats: ['webp', 'avif'],
-    quality: 80,
-    // Local images (banner, etc.) get optimized via the built-in IPX provider.
-    provider: 'ipx',
-  },
 })
