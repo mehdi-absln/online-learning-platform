@@ -98,9 +98,10 @@ Pinia is **not** a dumping ground for every GET. Dumping SSR lists into stores c
 
 ### Cart (FE-relevant)
 
-- Guest: IDs in `guest-cart` cookie → hydrate details via bulk endpoint.
+- Guest: IDs only in `guest-cart` cookie (kept <4KB) → details hydrated via a bulk endpoint.
 - Authed: server cart; badge count from store.
-- Login: merge guest → server, clear cookie.
+- Login: `mergeGuestCart()` POSTs the cookie IDs to `/api/cart/merge`, the server upserts them into the user's cart, then the cookie is cleared — **no items are lost on login**.
+- Merge is silent (no toast) so it doesn't interrupt the login flow.
 - Store hydrates on **client** to avoid SSR mismatch on cookie-derived UI.
 
 ---

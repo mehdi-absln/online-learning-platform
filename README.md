@@ -48,7 +48,7 @@ Deep dive with file-level rationale → [ARCHITECTURE.md](./ARCHITECTURE.md)
 - **Course detail** — curriculum, reviews, related courses (lazy), CTA/cart
 - **Lesson player** — section sidebar, content/video, prev/next, complete · bookmark · notes, keyboard shortcuts
 - **Lesson progress** — per-lesson complete/bookmark/personal notes, persisted server-side (`/api/progress/*`)
-- **Cart & checkout UX** — guest cookie cart, merge on login, drawer, success/fail pages
+- **Cart & checkout UX** — guest cookie cart (IDs only, <4KB), **silent merge into the server cart on login** (no item loss, cookie cleared after), drawer, success/fail pages
 - **Dashboard** — continue learning, my courses, orders, bookmarks, stats (lazy widgets + skeleton)
 - **Blogs** — list/detail, reading time, sanitized markdown; **admins can create/edit/delete posts** via the blog admin flow
 - **Instructor role** — instructors get a **"My Courses"** dashboard (`/admin`) to manage their own courses (CRUD); they cannot access the users table
