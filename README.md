@@ -1,6 +1,6 @@
 # Online Learning Platform
 
-Frontend-focused **Nuxt 4** learning platform (portfolio): course discovery with shareable filters, accessible lesson player, guest→user cart, student dashboard, blogs, and role-aware admin UI.
+Frontend-focused **Nuxt 4** learning platform (portfolio): course discovery with shareable URL filters, an accessible lesson player, a guest→user cart that **silently merges on login**, student dashboard, blogs, and role-aware admin UI — built test-first with **~32 Vitest specs** and accessibility treated as product work (focus trap, keyboard nav, ARIA, live regions).
 
 **Live demo:** https://online-learning-platform-plum-ten.vercel.app/home  
 
@@ -101,12 +101,10 @@ PORT=3000
 npm run db:seed
 ```
 
-| Role | Email | Password | Notes |
-|------|-------|----------|-------|
-| Superadmin | *(set up manually / first admin)* | — | Immutable role — cannot be changed or deleted via UI |
-| Admin | `admin@example.com` | `password123` | Can manage courses/users/blogs |
-| Instructor | *(assignable) | — | Gets a "My Courses" dashboard, not the users table |
-| Student | `student@example.com` | `password123` | Standard learner account |
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | `admin@example.com` | `password123` |
+| Student | `student@example.com` | `password123` |
 
 ### Scripts
 
