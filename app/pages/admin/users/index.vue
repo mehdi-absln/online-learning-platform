@@ -153,13 +153,17 @@
                     </button>
                   </template>
                   <span
+                    v-else-if="user.id === currentAdminId"
+                    class="text-gray-500 text-xs"
+                  >(You)</span>
+                  <span
                     v-else-if="user.id !== currentAdminId && user.role === 'admin'"
                     class="text-gray-500 text-xs"
                   >(Admin)</span>
                   <span
                     v-else
                     class="text-gray-500 text-xs"
-                  >(You)</span>
+                  >({{ user.role === 'superadmin' ? 'Superadmin' : user.role === 'admin' ? 'Admin' : user.role === 'instructor' ? 'Instructor' : 'Student' }})</span>
                 </div>
               </td>
             </tr>
