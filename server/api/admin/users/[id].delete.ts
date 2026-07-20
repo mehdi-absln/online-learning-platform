@@ -38,6 +38,14 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    // No one (not even a superadmin) may delete a superadmin.
+    if (targetUser.role === 'superadmin') {
+      throw createError({
+        statusCode: 403,
+        statusMessage: 'Superadmin accounts are protected and cannot be deleted.',
+      })
+    }
+
     // Clean up related data
     const [instructor] = await db
       .select()

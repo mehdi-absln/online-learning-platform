@@ -317,12 +317,14 @@ onMounted(() => {
 // ───── Helper: canManageUser ─────
 function canManageUser(user: UserItem) {
   if (user.id === currentAdminId.value) return false
+  // Superadmin accounts are protected — no one (incl. other superadmins)
+  // may edit or delete them through this UI.
+  if (user.role === 'superadmin') return false
   // Only a superadmin may manage other admins or grant admin-level roles.
   if (user.role === 'admin' && !isSuperAdmin.value) return false
   if (!isSuperAdmin.value) {
-    // A plain admin can demote/promote only to instructor/student,
-    // never touch an existing admin or create a new one.
-    return user.role !== 'superadmin'
+    // A plain admin may only demote/promote to instructor/student.
+    return true
   }
   return true
 }
