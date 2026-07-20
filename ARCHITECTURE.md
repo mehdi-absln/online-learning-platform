@@ -294,6 +294,10 @@ Lesson paywall decision (free · enrolled · instructor-owner · admin) is enfor
 - The `superadmin` role is **immutable**: no user (including another superadmin) can change a superadmin's role or delete the account, and `superadmin` is excluded from the assignable roles entirely (the Zod schema only allows `admin`/`instructor`/`student`). This prevents privilege escalation and lockout.
 - Implemented in `server/api/admin/users/[id].put.ts` and `[id].delete.ts`.
 
+**Instructor role:** instructors may open `/admin` (titled "My Courses") to CRUD *their own* courses, but are blocked from `/admin/users` (middleware `admin.ts`). Course-create enforces `requireInstructor` in `server/api/admin/courses`.
+
+**Purchase restriction:** `requirePurchaser` (`server/utils/auth-helpers`) rejects `admin`/`superadmin` at checkout — administrative accounts cannot place orders. This is intentional, not a bug.
+
 ---
 
 ## Deliberately skipped (portfolio ceiling)
