@@ -51,6 +51,7 @@ Deep dive with file-level rationale → [ARCHITECTURE.md](./ARCHITECTURE.md)
 - **Dashboard** — continue learning, my courses, orders, bookmarks, stats (lazy widgets + skeleton)
 - **Blogs** — list/detail, reading time, sanitized markdown
 - **Admin UI** — course CRUD forms, users table (role-gated)
+  - **Role model:** `student` / `instructor` / `admin` / `superadmin`. Only a `superadmin` may grant the `admin` role. The `superadmin` role itself is immutable — no user (including another superadmin) can change or delete a superadmin account, and no one can promote anyone *to* superadmin through the UI/API. Enforced server-side in `server/api/admin/users`.
 
 ---
 

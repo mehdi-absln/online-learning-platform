@@ -288,6 +288,12 @@ server/utils/     jwt (jose), lesson-access, response helpers
 
 Lesson paywall decision (free · enrolled · instructor-owner · admin) is enforced server-side; the lesson UI consumes the authorized payload and progress APIs.
 
+**Admin authorization model (server-enforced):** roles are `student` / `instructor` / `admin` / `superadmin`.
+- A plain `admin` may manage students/instructors but **cannot** grant the `admin` role.
+- Only a `superadmin` may promote a user to `admin`.
+- The `superadmin` role is **immutable**: no user (including another superadmin) can change a superadmin's role or delete the account, and `superadmin` is excluded from the assignable roles entirely (the Zod schema only allows `admin`/`instructor`/`student`). This prevents privilege escalation and lockout.
+- Implemented in `server/api/admin/users/[id].put.ts` and `[id].delete.ts`.
+
 ---
 
 ## Deliberately skipped (portfolio ceiling)
@@ -309,6 +315,5 @@ Lesson paywall decision (free · enrolled · instructor-owner · admin) is enfor
 Live demo: https://online-learning-platform-plum-ten.vercel.app/home
 
 - **Home** — `docs/screenshot-home.png`
-- **Course discovery** (URL-driven filters + grid + skeletons) — `docs/shots/courses-discovery.png`
 - **Course discovery, filtered** (category active) — `docs/shots/courses-discovery-filtered.png`
 - **Lesson player** (sidebar + video + prev/next + keyboard hint) — `docs/shots/lesson-player.png`
