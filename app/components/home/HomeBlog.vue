@@ -54,7 +54,7 @@
         role="list"
         :aria-label="`Showing ${posts.length} latest blog articles`"
       >
-        <article
+        <div
           v-for="post in posts"
           :key="post.id"
           role="listitem"
@@ -64,7 +64,7 @@
             :blog="post"
             class="w-full h-full"
           />
-        </article>
+        </div>
       </div>
     </div>
   </section>

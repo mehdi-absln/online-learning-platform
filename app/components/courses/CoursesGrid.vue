@@ -8,13 +8,13 @@
       <div
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 [grid-auto-rows:1fr]"
       >
-        <article
+        <div
           v-for="i in 6"
           :key="i"
           class="flex"
         >
           <CourseCardSkeleton class="w-full h-full" />
-        </article>
+        </div>
       </div>
     </div>
 
@@ -32,7 +32,7 @@
         v-else
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 [grid-auto-rows:1fr]"
       >
-        <article
+        <div
           v-for="course in courses"
           :key="course.id"
           role="listitem"
@@ -42,7 +42,7 @@
             :course="course"
             class="w-full h-full"
           />
-        </article>
+        </div>
       </div>
 
       <nav

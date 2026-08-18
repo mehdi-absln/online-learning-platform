@@ -39,8 +39,8 @@
       <div class="absolute top-4 right-4">
         <span
           class="px-3 py-1 bg-dark-bg/80 backdrop-blur-sm text-white text-sm font-medium rounded-full"
-          :aria-label="`Estimated reading time: ${readTime} minutes`"
         >
+          <span class="sr-only">Estimated reading time: {{ readTime }} minutes</span>
           <span aria-hidden="true">{{ readTime }} min read</span>
         </span>
       </div>

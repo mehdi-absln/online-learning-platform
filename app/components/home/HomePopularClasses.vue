@@ -63,8 +63,6 @@
       <!-- Carousel -->
       <div
         v-else
-        aria-label="Popular courses carousel"
-        role="region"
         class="courses-carousel-wrapper"
       >
         <Carousel

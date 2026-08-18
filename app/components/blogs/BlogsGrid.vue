@@ -7,13 +7,13 @@
       aria-live="polite"
     >
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <article
+        <div
           v-for="i in 3"
           :key="i"
           class="flex"
         >
           <BlogCardSkeleton class="w-full h-full" />
-        </article>
+        </div>
       </div>
     </div>
 
@@ -53,7 +53,7 @@
         role="list"
         :aria-label="`Showing ${blogs.length} blog articles`"
       >
-        <article
+        <div
           v-for="blog in blogs"
           :key="blog.id"
           role="listitem"
@@ -64,7 +64,7 @@
             :show-status="showStatus"
             class="w-full h-full"
           />
-        </article>
+        </div>
       </div>
 
       <!-- Results summary for screen readers -->

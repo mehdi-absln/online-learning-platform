@@ -203,7 +203,7 @@
       </div>
 
       <!-- Copyright -->
-      <div class="w-full border-t border-dark-divider mt-12 pt-8 text-center text-gray-500 text-sm">
+      <div class="w-full border-t border-dark-divider mt-12 pt-8 text-center text-gray-400 text-sm">
         <p>
           <small>&copy; {{ new Date().getFullYear() }} {{ SITE_NAME }}. All rights reserved.</small>
         </p>

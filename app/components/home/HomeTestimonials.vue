@@ -17,8 +17,6 @@
       </div>
       <div
         class="relative testimonial-carousel-wrapper"
-        aria-label="Testimonials carousel"
-        role="region"
       >
         <Carousel
           :items-to-show="1"
@@ -47,9 +45,9 @@
               <blockquote class="text-gray-300 text-sm md:text-lg mb-4 md:mb-6 line-clamp-4 md:line-clamp-none">
                 "{{ testimonial.content }}"
               </blockquote>
-              <h4 class="text-white text-lg md:text-xl font-semibold">
+              <h3 class="text-white text-lg md:text-xl font-semibold">
                 {{ testimonial.name }}
-              </h4>
+              </h3>
               <p class="text-primary text-xs md:text-sm">
                 {{ testimonial.role }}
               </p>
