@@ -21,6 +21,7 @@
         <Carousel
           :items-to-show="1"
           :breakpoints="{ 640: { itemsToShow: 2 } }"
+          :i18n="{ ariaGallery: 'Testimonials carousel' }"
           :wrap-around="false"
           :mouse-drag="true"
           :touch-drag="true"

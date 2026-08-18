@@ -68,6 +68,7 @@
         <Carousel
           :items-to-show="1"
           :breakpoints="{ 640: { itemsToShow: 2 }, 1024: { itemsToShow: 3 } }"
+          :i18n="{ ariaGallery: 'Popular courses carousel' }"
           :wrap-around="false"
           :mouse-drag="true"
           :touch-drag="true"
